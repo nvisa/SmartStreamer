@@ -989,15 +989,15 @@ public:
 
 class KardelenAPIMgeoFlirImpl : public KardelenAPIImpl
 {
+public:
 	KardelenAPIMgeoFlirImpl()
 	{
-
+		_mymode = CONTROL_MODE_JOYSTICK;
 	}
 
 	int64_t getCapabilities()
 	{
 		int64_t caps = 0;
-
 		addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
 		addcap(caps, CAPABILITY_DETECTION);
 		addcap(caps, CAPABILITY_ZOOM);
@@ -1121,8 +1121,6 @@ class KardelenAPIMgeoFlirImpl : public KardelenAPIImpl
 
 	virtual void setEnumParameter(int index, int32_t value)
 	{
-		qDebug() << index << value;
-
 		if (index == ENUM_PARAM_OPERATIONAL_MODE)
 			setMode(value);
 	}
@@ -1148,6 +1146,8 @@ KardelenAPIServer::KardelenAPIServer(PtzpDriver *ptzp, QString nodeType)
 		impl = new KardelenAPIYamgozImpl;
 	else if (nodeType == "mgeoswir")
 		impl = new KardelenAPIMgeoSwirImpl;
+	else if (nodeType == "flir")
+		impl = new KardelenAPIMgeoFlirImpl;
 	impl->ptzp = ptzp;
 	apiinst = this;
 }
