@@ -10,6 +10,7 @@ class RtpTransmitter;
 class ViaWrapper;
 class FFmpegDecoder;
 class QtVideoOutput;
+class SeiInserter;
 
 class SmartStreamer : public BaseStreamer
 {
@@ -87,6 +88,7 @@ protected:
 	ViaWrapper *wrap;
 	FFmpegDecoder *dec;
 	QtVideoOutput *vout;
+	SeiInserter *sei;
 };
 
 #endif // SMARTSTREAMER_H

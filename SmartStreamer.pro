@@ -9,12 +9,14 @@ TEMPLATE = app
 SOURCES += main.cpp \
     smartstreamer.cpp \
     moxadriver.cpp \
-    mjpegserver.cpp
+    mjpegserver.cpp \
+    seiinserter.cpp
 
 HEADERS += \
     smartstreamer.h \
     moxadriver.h \
-    mjpegserver.h
+    mjpegserver.h \
+    seiinserter.h
 
 websockets {
     SOURCES += websocketstreamer.cpp

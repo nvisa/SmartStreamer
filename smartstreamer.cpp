@@ -1,5 +1,6 @@
 #include "smartstreamer.h"
 #include "mjpegserver.h"
+#include "seiinserter.h"
 
 #include <lmm/debug.h>
 #include <lmm/bufferqueue.h>
@@ -16,7 +17,7 @@
 #include <lmm/pipeline/functionpipeelement.h>
 
 #ifdef HAVE_VIA_WRAPPER
-#include <viawrapper.h>
+#include <ViaWrapper/viawrapper.h>
 #endif
 
 extern "C" {
@@ -76,9 +77,12 @@ int SmartStreamer::setupRtspClient(const QString &rtspUrl)
 		dec->getOutputQueue(0)->setRateReduction(pars.decOutputInFps, pars.decOutputOutFps);
 	}
 
+	sei = new SeiInserter;
+	sei->setAlarmTemplate("sei_alarm_template.xml");
 	if (pars.pipelineFlags & Parameters::EL_RTP_OUTPUT) {
 		BaseLmmPipeline *p2 = addPipeline();
 		p2->append(queue);
+		p2->append(sei);
 		p2->append(rtpout);
 		//p2->append(wss);
 		p2->end();
@@ -139,10 +143,10 @@ int SmartStreamer::processMainYUV(const RawBuffer &buf)
 		ffDebug() << buf.getMimeType() << buf.size() << FFmpegColorSpace::getName(buf.constPars()->avPixelFormat)
 			  << buf.constPars()->videoWidth << buf.constPars()->videoHeight;
 #ifdef HAVE_VIA_WRAPPER
-	if (buf.constPars()->streamBufferNo % 6 == 0) {
-		QElapsedTimer t; t.start();
-		wrap->viaEgo(buf);
-		ffDebug() << t.elapsed() << buf.constPars()->streamBufferNo;
+	wrap->viaBase(buf);
+	if (wrap->alarm_flag && sei) {
+		QByteArray ba = QByteArray((char *)wrap->meta, 4096);
+		sei->processMessage(ba);
 	}
 #endif
 	return 0;

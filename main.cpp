@@ -63,7 +63,7 @@ static void printHelp()
 	}
 }
 
-#define getCmdParInt(_x, _str, _desc) _x = getCommandlineParameter(_str, &a, _desc, _x).toInt()
+#define getCmdParInt(_x, _str, _desc) _x = getCommandlineParameter(_str, &a, _desc, _x).toInt(0, 0)
 #define getCmdParStr(_x, _str, _desc) _x = getCommandlineParameter(_str, &a, _desc, _x)
 
 int main(int argc, char *argv[])
@@ -94,6 +94,9 @@ int main(int argc, char *argv[])
 	getCmdParStr(pars.rtspServerUser, "--rtsp-server-user", "RTSP server username, default 'none'");
 	getCmdParStr(pars.rtspServerPass, "--rtsp-server-pass", "RTSP server password, default 'none'");
 	getCmdParInt(pars.enableMoxaHacks, "--moxa-hacks", "Enable MOXA related various hacks, default '0'");
+	getCmdParInt(pars.pipelineFlags, "--pipeline-flags", "Pipeline customization flags, default 0xffffffff");
+	if (pars.pipelineFlags == 0)
+		pars.pipelineFlags = 0xffffffff; //hex fix
 	s.pars = pars;
 
 	QString url = getCommandlineParameter("--rtsp-url", &a, "RTSP camera URL, default 'rtsp://10.5.176.65/Streaming/Channels/1'", "");
