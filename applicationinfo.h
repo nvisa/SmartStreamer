@@ -34,7 +34,8 @@ public:
 		YAMGOZ,
 		TBGTH,
 		FLIR_ORION,
-		MGEO_SWIR
+		MGEO_SWIR,
+		HTR_SWIR
 	};
 
 	bool isGuiApplication();
