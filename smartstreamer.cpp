@@ -26,7 +26,7 @@ extern "C" {
 
 #define PRINT_BUFS 0
 
-#define TEST 1 //0 base 1 panaroma
+#define TEST 0 //0 base 1 panaroma
 
 #include <grpc/grpc.h>
 #include <grpc++/server.h>
@@ -209,22 +209,22 @@ SmartStreamer::SmartStreamer(QObject *parent)
 void SmartStreamer::switchEvent()
 {
     qDebug() << "base " << base << "panaroma" << panaroma;
-//    if (panaroma && !panInitOnce) {
-//        panStop = false;
-//        panInit = true;
-//        panMotionStart = false;
-//        panTiltInfo = false;
-//        panaromaCounter = 0;
-//        connected();
-//        panInitOnce = true;
-//        speed = "90000";
-//        initPanInViaBa = 1;
-//    } else if (base && !baseInitOnce) {
-////        QTimer::singleShot(20000, this, SLOT(connected()));
-//        initBaseInViaBa = 1;
-//        baseInitOnce = true;
-//        connected();
-//    }
+    if (panaroma && !panInitOnce) {
+        panStop = false;
+        panInit = true;
+        panMotionStart = false;
+        panTiltInfo = false;
+        panaromaCounter = 0;
+        connected();
+        panInitOnce = true;
+        speed = "90000";
+        initPanInViaBa = 1;
+    } else if (base && !baseInitOnce) {
+//        QTimer::singleShot(20000, this, SLOT(connected()));
+        initBaseInViaBa = 1;
+        baseInitOnce = true;
+        connected();
+    }
 }
 
 void SmartStreamer::initPanaroma()
@@ -257,7 +257,7 @@ void SmartStreamer::connected()
     static int cnt = 0;
     cnt++;
     static int my_counter = 0;
-    if (cnt == 400) {
+    if (cnt == 200) {
         qDebug() << "stopped ~~~~~~~~~~~~~~~~~~~~~~~~~";
         if (TEST == 0) {
             base = false;
@@ -269,7 +269,7 @@ void SmartStreamer::connected()
             panStop = true;
             panaroma = false;
         }
-    } else if (cnt == 800) {
+    } else if (cnt == 400) {
         qDebug() << "started ~~~~~~~~~~~~~~~~~~~~~~~~~";
         if (TEST == 0) {
             initBaseAlgoritmOnce = false;
@@ -286,7 +286,7 @@ void SmartStreamer::connected()
         }
     }
 
-    if (cnt == 1200) {
+    if (cnt == 800) {
         cnt = 0;
         my_counter++;
         qDebug() << my_counter << "~~~~~~~~~~~~~~~~~~ü";
