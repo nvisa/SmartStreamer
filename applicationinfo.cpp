@@ -101,10 +101,8 @@ int ApplicationInfo::startPtzpDriver()
 				QProcess::execute("killall grpcwebproxy");
 			}
 			drivers << driver;
-#if HAVE_TX1
 			if (obj["kardelen"].toBool())
 				new KardelenAPIServer(driver, obj["type"].toString());
-#endif
 			idt = new InDeviceTest(true);
 			idt->addPtzpDriver("ptz_controller", driver);
 		}

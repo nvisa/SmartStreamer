@@ -16,7 +16,8 @@ SOURCES += main.cpp \
     diagnosticserviceimpl.cpp \
     snapshotelement.cpp \
     indevicetest.cpp \
-    alarmgeneratorelement.cpp
+    alarmgeneratorelement.cpp \
+    kardelenapi.cpp
 
 HEADERS += \
     moxadriver.h \
@@ -29,7 +30,8 @@ HEADERS += \
     diagnosticserviceimpl.h \
     snapshotelement.h \
     indevicetest.h \
-    alarmgeneratorelement.h
+    alarmgeneratorelement.h \
+    kardelenapi.h
 
 websockets {
     SOURCES += websocketstreamer.cpp
@@ -49,8 +51,6 @@ tx1 {
 		simpleipstreamer.cpp \
 		simpleapiserver.cpp \
 		tx1streamer.cpp \
-		kardelenapi.cpp
-
 
 	HEADERS += \
 		ipstreamer.h \
@@ -59,8 +59,7 @@ tx1 {
 		analogstreamer.h \
 		simpleipstreamer.h \
 		simpleapiserver.h \
-		tx1streamer.h \
-		kardelenapi.h
+		tx1streamer.h
 
 	LIBS += -L/usr/local/cuda/lib64 -lcudart -lcufft
 	LIBS += -L/usr/lib/aarch64-linux-gnu/tegra/ -lv4l2 -lnvbuf_utils -lnvinfer -lnvparsers -lnvjpeg -lEGL -lX11
