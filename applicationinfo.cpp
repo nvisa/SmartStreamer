@@ -98,7 +98,7 @@ protected:
 
 bool ApplicationInfo::isGuiApplication()
 {
-	return false;
+	return true;
 }
 
 int ApplicationInfo::startPtzpDriver()
