@@ -44,6 +44,7 @@ void IpStreamer::setCurrentSource(const QString &url)
 	mDebug("Switching video source to %s", qPrintable(url));
 	BaseLmmDemux *demux = (BaseLmmDemux *)getPipeline(0)->getPipe(0);
 	demux->restart(url);
+	currentSourceUrl = url;
 }
 
 QString IpStreamer::getCurrentSource()
