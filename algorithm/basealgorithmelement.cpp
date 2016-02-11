@@ -169,7 +169,11 @@ void BaseAlgorithmElement::restart()
 
 void BaseAlgorithmElement::setState(BaseAlgorithmElement::AlgoState state)
 {
+	/* do not permit recursive algorithm stopping */
 	if (state == STOPALGO && algoState != PROCESS)
+		return;
+	/* do not permit algorithm init on already running algorithm */
+	if (state == INIT && algoState == PROCESS)
 		return;
 	algoState = state;
 }
