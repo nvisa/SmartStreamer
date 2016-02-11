@@ -54,6 +54,7 @@ public:
 	int getMode() { return mode; }
 	float *getTrackObjInfo() {return objProp;}
 	void setTiltReversing(bool on) { reverseTilt = on; }
+	virtual QString getTypeString();
 
 	void setTrackStyle(int s) { control.style = (TrackStyle)s; }
 	int ZoomLevelNo;

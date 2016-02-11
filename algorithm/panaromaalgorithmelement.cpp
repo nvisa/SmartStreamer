@@ -142,3 +142,8 @@ QByteArray PanaromaAlgorithmElement::getPanaromaFrame(const QString &picture)
 	im.save(&qbuf, "JPG");
 	return ba;
 }
+
+QString PanaromaAlgorithmElement::getTypeString()
+{
+	return "panaroma";
+}

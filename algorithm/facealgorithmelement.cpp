@@ -21,6 +21,7 @@ int FaceAlgorithmElement::init()
 
 int FaceAlgorithmElement::reallocate()
 {
+	return 0;
 }
 
 int FaceAlgorithmElement::processAlgo(const RawBuffer &buf)
@@ -40,7 +41,6 @@ int FaceAlgorithmElement::processAlgo(const RawBuffer &buf)
 	}
 	return 0;
 }
-
 
 QString FaceAlgorithmElement::getTypeString()
 {

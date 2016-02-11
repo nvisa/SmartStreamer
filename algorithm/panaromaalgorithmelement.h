@@ -30,6 +30,7 @@ public:
 	};
 	PanaromaControl getPanaromaControl() { return control;}
 	QByteArray getPanaromaFrame(const QString &picture);
+	virtual QString getTypeString();
 protected:
 	PtzpHead* getPanTiltHead();
 	int resetPosition();
