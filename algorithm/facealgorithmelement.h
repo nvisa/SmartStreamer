@@ -10,6 +10,7 @@ using namespace std;
 
 class FaceAlgorithmElement : public BaseAlgorithmElement
 {
+	Q_OBJECT
 public:
 	explicit FaceAlgorithmElement(QObject *parent = 0);
 	int init();

@@ -9,6 +9,7 @@
 
 class PanaromaAlgorithmElement : public BaseAlgorithmElement
 {
+	Q_OBJECT
 public:
 	explicit PanaromaAlgorithmElement(QObject *parent = 0);
 	int init();

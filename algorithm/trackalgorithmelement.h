@@ -3,9 +3,9 @@
 
 #include "basealgorithmelement.h"
 
-
 class TrackAlgorithmElement: public BaseAlgorithmElement
 {
+	Q_OBJECT
 public:
 	TrackAlgorithmElement(QObject *parent = 0);
 	int init();

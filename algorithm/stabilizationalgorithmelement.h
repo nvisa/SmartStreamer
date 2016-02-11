@@ -5,6 +5,7 @@
 
 class StabilizationAlgorithmElement : public BaseAlgorithmElement
 {
+	Q_OBJECT
 public:
 	explicit StabilizationAlgorithmElement(QObject *parent = 0);
 
