@@ -1,0 +1,23 @@
+INSTALL_PREFIX=$$OUT_PWD/../../
+INCLUDEPATH += $$INSTALL_PREFIX/usr/local/include
+DEFINES += DEBUG INFO LOG LOGV DEBUG_TIMING
+LIBS += $$INSTALL_PREFIX/usr/local/lib/liblmm.a
+PRE_TARGETDEPS += $$INSTALL_PREFIX/usr/local/lib/liblmm.a
+LIBS += $$INSTALL_PREFIX/usr/local/lib/libEncoderCommonLibrary.a
+PRE_TARGETDEPS += $$INSTALL_PREFIX/usr/local/lib/libEncoderCommonLibrary.a
+
+qmake-platform-cross-k1 {
+
+	LIBS += -lx264
+	LIBS += -lavformat -lswscale -lavcodec -lavutil -lX11
+	LIBS += -lgstreamer-1.0 -lgobject-2.0 -lglib-2.0 -lgstbase-1.0 -lgstapp-1.0
+
+	#DEFINES += HAVE_LIBYUV
+	#INCLUDEPATH += $PWD/../../../oss/libyuv/include
+	LIBS += /home/amenmd/myfs/source-codes/oss/libyuv/libyuv.a
+}
+
+linux-g++-64 {
+	LIBS += -lx264
+	LIBS += -lavformat -lswscale -lavcodec -lavutil -lX11
+}
