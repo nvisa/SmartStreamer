@@ -1,5 +1,4 @@
 #include "smartstreamer.h"
-#include "websocketstreamer.h"
 
 #include <lmm/debug.h>
 #include <lmm/bufferqueue.h>
@@ -28,7 +27,6 @@ int SmartStreamer::setupRtspClient(const QString &rtspUrl)
 	rtp = new RtpReceiver(this);
 	rtpout = new RtpTransmitter(this);
 	rtpout->setH264SEIInsertion(true);
-	WebsocketStreamer *wss = new WebsocketStreamer;
 
 	/* queues will be used to de-multiplex streams */
 	BufferQueue *queue = new BufferQueue;
@@ -49,7 +47,7 @@ int SmartStreamer::setupRtspClient(const QString &rtspUrl)
 	p1->append(rtp);
 	p1->append(queue);
 	p1->append(dec);
-	dec->setVideoResolution(720, 578);
+	//dec->setVideoResolution(720, 578);
 	p1->append(queueScalerEngine);
 	p1->append(newFunctionPipe(SmartStreamer, this, SmartStreamer::processMainYUV));
 	p1->end();
@@ -79,13 +77,14 @@ int SmartStreamer::setupRtspClient(const QString &rtspUrl)
 	rtsp->addSetupTrack("videoTrack", rtp);
 	rtsp->addSetupTrack("trackID=1", rtp);
 	rtsp->addSetupTrack("video", rtp);
+    //rtsp->setAuthCredentials("admin", "moxamoxa");
 	if (rtspUrl.startsWith("rtsp://"))
 		rtsp->setServerUrl(QString("%1").arg(rtspUrl));
 	else
 		rtsp->setServerUrl(QString("rtsp://%1").arg(rtspUrl));
 
-	rtspServer = new BaseRtspServer(this);
-	rtspServer->setNetworkInterface("enp1s0");
+	rtspServer = new BaseRtspServer(this, 8554);
+	rtspServer->setNetworkInterface("eth0");
 	//rtspServer->setEnabled(true);
 	rtspServer->addStream("stream1", false, rtpout);
 	rtspServer->addStream("stream1m",true, rtpout, 15678);

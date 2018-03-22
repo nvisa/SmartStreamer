@@ -1,4 +1,4 @@
-QT += core network gui widgets websockets
+QT += core network gui widgets
 
 TARGET = SmartStreamer
 CONFIG += console
@@ -8,12 +8,15 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     smartstreamer.cpp \
-    websocketstreamer.cpp \
     moxadriver.cpp
 
 HEADERS += \
     smartstreamer.h \
-    websocketstreamer.h \
     moxadriver.h
+
+websockets {
+    SOURCES += websocketstreamer.cpp
+    HEADERS += websocketstreamer.h
+}
 
 include (build_config.pri)
