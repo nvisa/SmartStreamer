@@ -8,11 +8,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     smartstreamer.cpp \
-    moxadriver.cpp
+    moxadriver.cpp \
+    mjpegserver.cpp
 
 HEADERS += \
     smartstreamer.h \
-    moxadriver.h
+    moxadriver.h \
+    mjpegserver.h
 
 websockets {
     SOURCES += websocketstreamer.cpp

@@ -1,4 +1,5 @@
-#include <QCoreApplication>
+#include <QDir>
+#include <QApplication>
 
 #include <lmm/lmmcommon.h>
 
@@ -20,7 +21,8 @@ static inline QString getArg(const QString &aname, QCoreApplication *a)
 
 int main(int argc, char *argv[])
 {
-	QCoreApplication a(argc, argv);
+	QApplication a(argc, argv);
+	QDir::setCurrent(a.applicationDirPath());
 
 	LmmCommon::init();
 	ecl::initDebug();
