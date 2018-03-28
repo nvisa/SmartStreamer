@@ -15,7 +15,9 @@
 #include <lmm/ffmpeg/ffmpegcolorspace.h>
 #include <lmm/pipeline/functionpipeelement.h>
 
+#ifdef HAVE_VIA_WRAPPER
 #include <viawrapper.h>
+#endif
 
 extern "C" {
 	#include <libavformat/avformat.h>
@@ -26,7 +28,9 @@ extern "C" {
 SmartStreamer::SmartStreamer(QObject *parent)
 	: BaseStreamer(parent)
 {
+#ifdef HAVE_VIA_WRAPPER
 	wrap = new ViaWrapper();
+#endif
 }
 
 int SmartStreamer::setupRtspClient(const QString &rtspUrl)
@@ -134,11 +138,13 @@ int SmartStreamer::processMainYUV(const RawBuffer &buf)
 	if (PRINT_BUFS)
 		ffDebug() << buf.getMimeType() << buf.size() << FFmpegColorSpace::getName(buf.constPars()->avPixelFormat)
 			  << buf.constPars()->videoWidth << buf.constPars()->videoHeight;
+#ifdef HAVE_VIA_WRAPPER
 	if (buf.constPars()->streamBufferNo % 6 == 0) {
 		QElapsedTimer t; t.start();
 		wrap->viaEgo(buf);
 		ffDebug() << t.elapsed() << buf.constPars()->streamBufferNo;
 	}
+#endif
 	return 0;
 }
 
