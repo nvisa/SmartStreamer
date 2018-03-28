@@ -9,6 +9,25 @@
 #include "smartstreamer.h"
 #include "moxadriver.h"
 
+class MyQApp : public QApplication
+{
+public:
+	MyQApp(int &argc, char **argv)
+		: QApplication(argc, argv)
+	{
+
+	}
+
+	bool notify(QObject *r, QEvent *ev)
+	{
+		QElapsedTimer t; t.start();
+		bool res = QApplication::notify(r, ev);
+		if (t.elapsed() > 100)
+			qDebug() << "shite" << r << ev << r->parent() << r->parent()->objectName();
+		return res;
+	}
+};
+
 static inline QString getArg(const QString &aname, QCoreApplication *a)
 {
 	int ind = a->arguments().indexOf(aname);
