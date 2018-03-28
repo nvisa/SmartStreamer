@@ -24,11 +24,60 @@ public:
 	int processScaledRGB(const RawBuffer &buf);
 	int processScaledYUV(const RawBuffer &buf);
 	int checkPoint(const RawBuffer &buf);
+
+	class Parameters {
+	public:
+		Parameters()
+		{
+			decWidth = 0;
+			decHeight = 0;
+			pipelineFlags = 0xffffffff;
+			secWidth = 0;
+			secHeight = 0;
+			rgbMainWidth = 640;
+			rgbMainHeight = 360;
+			decBufferCount = 60;
+			rtpBufferDuration = 0;
+			enableMoxaHacks = false;
+			decOutputInFps = 0;
+			decOutputOutFps = 0;
+		}
+
+		enum EnabledElemenets {
+			EL_YUV_PROCESS = 1 << 0,
+			EL_YUVS_PROCESS = 1 << 1,
+			EL_RGB_PROCESS = 1 << 2,
+			EL_RGBS_PROCESS = 1 << 3,
+			EL_RTP_OUTPUT = 1 << 4,
+			EL_QT_VOUT = 1 << 5,
+			EL_MJPEG_OUTPUT = 1 << 6,
+		};
+
+		bool enableMoxaHacks;
+		int decBufferCount;
+		int decWidth;
+		int decHeight;
+		int secWidth;
+		int secHeight;
+		int rgbMainWidth;
+		int rgbMainHeight;
+		uint pipelineFlags;
+		int rtpBufferDuration;
+		QString rtspClientUser;
+		QString rtspClientPass;
+		QString rtspServerUser;
+		QString rtspServerPass;
+		float decOutputInFps;
+		float decOutputOutFps;
+	};
+	Parameters pars;
+
 signals:
 
 public slots:
 	virtual void timeout();
 protected:
+	void printParameters();
 	int pipelineOutput(BaseLmmPipeline *p, const RawBuffer &buf);
 
 	RtpReceiver *rtp;
