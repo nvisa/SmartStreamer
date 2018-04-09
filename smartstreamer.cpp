@@ -121,6 +121,8 @@ int SmartStreamer::setupRtspClient(const QString &rtspUrl)
 		rtsp->setServerUrl(QString("%1").arg(rtspUrl));
 	else
 		rtsp->setServerUrl(QString("rtsp://%1").arg(rtspUrl));
+    if (pars.enableMoxaHacks)
+        rtsp->setMoxaHacks(true);
 
 	rtspServer = new BaseRtspServer(this, 8554);
 	rtspServer->setNetworkInterface("eth0");
