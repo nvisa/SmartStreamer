@@ -1,0 +1,27 @@
+syntax="proto3";
+
+package config;
+
+service AppConfig {
+    rpc SetPanorama(DummyInfo) returns(AppCommandResult) {}
+    rpc SetMotionDetection(MotionDetectionParameters) returns(AppCommandResult) {}
+    rpc GetCurrentMode(DummyInfo) returns(AppCommandResult) {}
+    rpc GetLastPanaromaFrame(DummyInfo) returns(AppCommandResult) {}
+    rpc GetPanaromaFrames(DummyInfo) returns(AppCommandResult) {}
+}
+
+message DummyInfo {
+    int32 dummy = 1;
+}
+
+message MotionDetectionParameters {
+    int32 dummy = 1;
+}
+
+message AppCommandResult {
+    int32 err = 1;
+}
+
+message AryaParameters {
+    int32 panSpeed = 1;
+}

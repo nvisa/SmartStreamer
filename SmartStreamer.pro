@@ -10,13 +10,17 @@ SOURCES += main.cpp \
     smartstreamer.cpp \
     moxadriver.cpp \
     mjpegserver.cpp \
-    seiinserter.cpp
+    seiinserter.cpp \
+    proto/config.grpc.pb.cc \
+    proto/config.pb.cc
 
 HEADERS += \
     smartstreamer.h \
     moxadriver.h \
     mjpegserver.h \
-    seiinserter.h
+    seiinserter.h \
+    proto/config.grpc.pb.h \
+    proto/config.pb.h
 
 websockets {
     SOURCES += websocketstreamer.cpp
