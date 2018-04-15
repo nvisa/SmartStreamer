@@ -26,9 +26,87 @@ extern "C" {
 
 #define PRINT_BUFS 0
 
+#include <grpc/grpc.h>
+#include <grpc++/server.h>
+#include <grpc++/channel.h>
+#include <grpc++/create_channel.h>
+#include <grpc++/client_context.h>
+#include <grpc++/server_builder.h>
+#include <grpc++/server_context.h>
+#include <grpc++/security/credentials.h>
+#include <grpc++/security/server_credentials.h>
+
+#include <QBuffer>
+
+using grpc::Server;
+using grpc::ServerBuilder;
+using grpc::ServerContext;
+using grpc::ServerReader;
+using grpc::ServerWriter;
+using grpc::Status;
+using namespace std;
+
+class GrpcThread : public QThread
+{
+public:
+    GrpcThread (quint16 port, SmartStreamer *s)
+    {
+        servicePort = port;
+        streamer = s;
+    }
+    void run()
+    {
+        string ep(qPrintable(QString("0.0.0.0:%1").arg(servicePort)));
+        ServerBuilder builder;
+        builder.AddListeningPort(ep, grpc::InsecureServerCredentials());
+        builder.RegisterService(streamer);
+        std::unique_ptr<Server> server(builder.BuildAndStart());
+        server->Wait();
+    }
+
+protected:
+    int servicePort;
+    SmartStreamer *streamer;
+};
+
+class CudaConfigurations
+{
+public:
+    enum CudaList {
+        CU_NONE,
+        CU_PAN_MODE,
+        CU_MOT_MODE,
+        CU_REC_MODE,
+        CU_BYPASS_MODE
+    };
+
+    CudaConfigurations()
+    {
+        activeMode = 0;
+    }
+
+    int getActiveMode()
+    {
+        return activeMode;
+    }
+
+    void changeMode(CudaList cuMode)
+    {
+        l.lock();
+        activeMode = cuMode;
+        l.unlock();
+        return;
+    }
+
+private:
+    QMutex l;
+    int activeMode;
+};
+
 SmartStreamer::SmartStreamer(QObject *parent)
 	: BaseStreamer(parent)
 {
+    cuConf = new CudaConfigurations();
 #ifdef HAVE_VIA_WRAPPER
 	wrap = new ViaWrapper();
 #endif
@@ -143,8 +221,17 @@ int SmartStreamer::processMainYUV(const RawBuffer &buf)
 	if (PRINT_BUFS)
 		ffDebug() << buf.getMimeType() << buf.size() << FFmpegColorSpace::getName(buf.constPars()->avPixelFormat)
 			  << buf.constPars()->videoWidth << buf.constPars()->videoHeight;
+    if (cuConf->getActiveMode() == CudaConfigurations::CudaList::CU_PAN_MODE) {
+        wrap->viaPan(buf);
+        if (PRINT_BUFS)
+            ffDebug() << "Current mode is Panorama";
+    }
+    else if (cuConf->getActiveMode() == CudaConfigurations::CudaList::CU_MOT_MODE) {
+        wrap->viaBase(buf);
+        if (PRINT_BUFS)
+            ffDebug() << "Current mode is Motion Detection";
+    }
 #ifdef HAVE_VIA_WRAPPER
-	wrap->viaBase(buf);
 	if (wrap->alarm_flag && sei) {
 		QByteArray ba = QByteArray((char *)wrap->meta, 4096);
 		sei->processMessage(ba);
@@ -184,6 +271,31 @@ int SmartStreamer::checkPoint(const RawBuffer &buf)
 	stat.addStat();
 	ffDebug() << stat.min << stat.max << stat.avg;
 	return 0;
+}
+grpc::Status SmartStreamer::SetPanorama(grpc::ServerContext *context, const config::DummyInfo *request, config::AppCommandResult *response)
+{
+    Q_UNUSED(context)
+    Q_UNUSED(request)
+    Q_UNUSED(response)
+    cuConf->changeMode(CudaConfigurations::CudaList::CU_PAN_MODE);
+    return grpc::Status::OK;
+}
+
+grpc::Status SmartStreamer::SetMotionDetection(grpc::ServerContext *context, const config::MotionDetectionParameters *request, config::AppCommandResult *response)
+{
+    Q_UNUSED(context)
+    Q_UNUSED(request)
+    Q_UNUSED(response)
+    cuConf->changeMode(CudaConfigurations::CudaList::CU_MOT_MODE);
+    return grpc::Status::OK;
+}
+
+grpc::Status SmartStreamer::GetCurrentMode(grpc::ServerContext *context, const config::DummyInfo *request, config::AppCommandResult *response)
+{
+    Q_UNUSED(context)
+    Q_UNUSED(request)
+    Q_UNUSED(response)
+    return grpc::Status::OK;
 }
 
 void SmartStreamer::timeout()

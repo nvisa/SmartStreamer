@@ -3,6 +3,8 @@
 
 #include <lmm/players/basestreamer.h>
 
+#include "proto/config.grpc.pb.h"
+
 class RtspClient;
 class RtpReceiver;
 class BaseRtspServer;
@@ -11,8 +13,9 @@ class ViaWrapper;
 class FFmpegDecoder;
 class QtVideoOutput;
 class SeiInserter;
+class CudaConfigurations;
 
-class SmartStreamer : public BaseStreamer
+class SmartStreamer : public BaseStreamer, public config::AppConfig::Service
 {
 	Q_OBJECT
 public:
@@ -25,6 +28,10 @@ public:
 	int processScaledRGB(const RawBuffer &buf);
 	int processScaledYUV(const RawBuffer &buf);
 	int checkPoint(const RawBuffer &buf);
+
+    grpc::Status SetPanorama(grpc::ServerContext *context, const config::DummyInfo *request, config::AppCommandResult *response);
+    grpc::Status SetMotionDetection(grpc::ServerContext *context, const config::MotionDetectionParameters *request, config::AppCommandResult *response);
+    grpc::Status GetCurrentMode(grpc::ServerContext *context, const config::DummyInfo *request, config::AppCommandResult *response);
 
 	class Parameters {
 	public:
@@ -89,6 +96,7 @@ protected:
 	FFmpegDecoder *dec;
 	QtVideoOutput *vout;
 	SeiInserter *sei;
+    CudaConfigurations *cuConf;
 };
 
 #endif // SMARTSTREAMER_H
