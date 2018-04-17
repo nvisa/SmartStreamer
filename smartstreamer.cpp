@@ -37,6 +37,7 @@ extern "C" {
 #include <grpc++/security/server_credentials.h>
 
 #include <QBuffer>
+#include <proto/camback.grpc.pb.h>
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -44,7 +45,50 @@ using grpc::ServerContext;
 using grpc::ServerReader;
 using grpc::ServerWriter;
 using grpc::Status;
+
+using grpc::Channel;
+using grpc::ClientContext;
+using grpc::ClientReader;
+using grpc::ClientReaderWriter;
+using grpc::ClientWriter;
 using namespace std;
+using camback::PTZService;
+using camback::PTZInfoQ;
+using camback::PTZCmdInfo;
+using camback::PtzCommandResult;
+
+class GrpcPTZClient
+{
+public:
+    explicit GrpcPTZClient(std::shared_ptr<grpc::Channel> chn)
+    {
+//      std::shared_ptr<grpc::Channel> chn = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
+        stub = camback::PTZService::NewStub(chn);
+    }
+
+    int setPanAbsCmd(const QString &cmd)
+    {
+        camback::PanCmdInfo req;
+        req.set_pan_cmd(cmd.toLatin1().data(), cmd.size());
+        grpc::ClientContext ctx;
+        camback::PtzCommandResult res;
+        stub->PanAbsCmd(&ctx, req, &res);
+        return 0;
+    }
+    int setPanTiltPos(float pan_pos, float tilt_pos)
+    {
+        camback::PanTiltPos req;
+        req.set_pan_pos(pan_pos);
+        req.set_tilt_pos(tilt_pos);
+        grpc::ClientContext ctx;
+        camback::PtzCommandResult res;
+        stub->SetPanTiltPos(&ctx, req, &res);
+        return 0;
+    }
+
+private:
+    std::unique_ptr<camback::PTZService::Stub> stub;
+};
 
 class GrpcThread : public QThread
 {
@@ -104,11 +148,18 @@ private:
 };
 
 SmartStreamer::SmartStreamer(QObject *parent)
-	: BaseStreamer(parent)
+    : BaseStreamer(parent), config::AppConfig::Service()
 {
+    grpcServ = new GrpcThread(50054, this);
+    grpcServ->start();
     cuConf = new CudaConfigurations();
+    cuConf->changeMode(CudaConfigurations::CU_PAN_MODE);
+
+    ptzclient = new GrpcPTZClient(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
+    ptzclient->setPanTiltPos(0,0);
 #ifdef HAVE_VIA_WRAPPER
 	wrap = new ViaWrapper();
+    wrap->pan_enabled = false;
 #endif
 }
 
@@ -222,9 +273,14 @@ int SmartStreamer::processMainYUV(const RawBuffer &buf)
 		ffDebug() << buf.getMimeType() << buf.size() << FFmpegColorSpace::getName(buf.constPars()->avPixelFormat)
 			  << buf.constPars()->videoWidth << buf.constPars()->videoHeight;
     if (cuConf->getActiveMode() == CudaConfigurations::CudaList::CU_PAN_MODE) {
+        if (wrap->pan_enabled == false) {
+            ptzclient->setPanTiltPos(0,0);
+            wrap->pan_enabled = true;
+        }
         wrap->viaPan(buf);
+
         if (PRINT_BUFS)
-            ffDebug() << "Current mode is Panorama";
+            ffDebug() << "Current mode is Panorama" << wrap->meta[0] << wrap->meta[1];
     }
     else if (cuConf->getActiveMode() == CudaConfigurations::CudaList::CU_MOT_MODE) {
         wrap->viaBase(buf);
@@ -270,23 +326,23 @@ int SmartStreamer::checkPoint(const RawBuffer &buf)
 	static UnitTimeStat stat;
 	stat.addStat();
 	ffDebug() << stat.min << stat.max << stat.avg;
-	return 0;
-}
-grpc::Status SmartStreamer::SetPanorama(grpc::ServerContext *context, const config::DummyInfo *request, config::AppCommandResult *response)
-{
-    Q_UNUSED(context)
-    Q_UNUSED(request)
-    Q_UNUSED(response)
-    cuConf->changeMode(CudaConfigurations::CudaList::CU_PAN_MODE);
-    return grpc::Status::OK;
+    return 0;
 }
 
-grpc::Status SmartStreamer::SetMotionDetection(grpc::ServerContext *context, const config::MotionDetectionParameters *request, config::AppCommandResult *response)
+grpc::Status SmartStreamer::SetCurrentMode(grpc::ServerContext *context, const config::SetModeQ *request, config::AppCommandResult *response)
 {
     Q_UNUSED(context)
-    Q_UNUSED(request)
     Q_UNUSED(response)
-    cuConf->changeMode(CudaConfigurations::CudaList::CU_MOT_MODE);
+    int value = request->mode();
+    qDebug() << value << request;
+    if (CudaConfigurations::CudaList::CU_NONE == value)
+        cuConf->changeMode(CudaConfigurations::CudaList::CU_NONE);
+    else if (CudaConfigurations::CudaList::CU_PAN_MODE == value)
+        cuConf->changeMode(CudaConfigurations::CudaList::CU_PAN_MODE);
+    else if (CudaConfigurations::CudaList::CU_MOT_MODE == value)
+        cuConf->changeMode(CudaConfigurations::CudaList::CU_MOT_MODE);
+    else if (CudaConfigurations::CudaList::CU_REC_MODE == value)
+        cuConf->changeMode(CudaConfigurations::CudaList::CU_REC_MODE);
     return grpc::Status::OK;
 }
 
@@ -294,13 +350,27 @@ grpc::Status SmartStreamer::GetCurrentMode(grpc::ServerContext *context, const c
 {
     Q_UNUSED(context)
     Q_UNUSED(request)
+    response->set_err(cuConf->getActiveMode());
+    return grpc::Status::OK;
+}
+
+grpc::Status SmartStreamer::SetPanaromaParameters(grpc::ServerContext *context, const config::PanoramaPars *request, config::AppCommandResult *response)
+{
+    Q_UNUSED(context)
     Q_UNUSED(response)
+    qDebug() << request->fov();
     return grpc::Status::OK;
 }
 
 void SmartStreamer::timeout()
 {
 #if 0
+    static int cnt = 0;
+    cnt++;
+    if (cnt == 5)
+        cuConf->changeMode(CudaConfigurations::CudaList::CU_PAN_MODE);
+    else if (cnt == 30)
+        cuConf->changeMode(CudaConfigurations::CudaList::CU_MOT_MODE);
 	qDebug() << rtp->getOutputQueue(0)->getFps()
 				<< dec->getOutputQueue(0)->getFps()
 				<< vout->getWidget()->getDropCount();

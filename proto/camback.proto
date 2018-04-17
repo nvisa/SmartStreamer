@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package camback;
+
+service PTZService {
+	rpc GetPTZPosInfo (PTZInfoQ) returns (PTZPosInfo) {}
+	rpc PanLeft(PtzCmdPar) returns (PtzCommandResult) {}
+	rpc PanRight(PtzCmdPar) returns (PtzCommandResult) {}
+	rpc TiltUp(PtzCmdPar) returns (PtzCommandResult) {}
+	rpc TiltDown(PtzCmdPar) returns (PtzCommandResult) {}
+	rpc PanStop(PtzCmdPar) returns (PtzCommandResult) {}
+	rpc PanTiltAbs(PtzCmdPar) returns (PtzCommandResult) {}
+	rpc ZoomIn(PtzCmdPar) returns (PtzCommandResult) {}
+	rpc ZoomOut(PtzCmdPar) returns (PtzCommandResult) {}
+	rpc ZoomStop(PtzCmdPar) returns (PtzCommandResult) {}
+	rpc PanAbsCmd(PanCmdInfo) returns (PtzCommandResult) {}
+	rpc TiltAbsCmd(TiltCmdInfo) returns (PtzCommandResult) {}
+	rpc SetPanTiltPos(PanTiltPos) returns (PtzCommandResult) {}
+}
+
+message PtzCmdPar {
+	int32 pan_speed = 1;
+	int32 tilt_speed = 2;
+	int32 zoom_speed = 3;
+
+	float pan_abs = 4;
+	float tilt_abs = 5;
+}
+
+message PtzCommandResult {
+	int32 err = 1;
+}
+
+message PTZInfoQ {
+	int32 dummy = 1;
+}
+
+message PTZPosInfo {
+	int32 pan_pos = 1;
+	int32 tilt_pos = 2;
+	int32 zoom_pos = 3;
+}
+message PanTiltPos {
+	float pan_pos = 1;
+	float tilt_pos = 2;
+}
+
+message PTZCmdInfo {
+	string pan_cmd = 1;
+	string tilt_cmd = 2;
+	string zoom_cmd = 3;	
+}
+
+message PanCmdInfo {
+	string pan_cmd = 1;
+}
+
+message TiltCmdInfo {
+	string tilt_cmd = 1;
+}

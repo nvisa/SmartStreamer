@@ -14,7 +14,8 @@ class FFmpegDecoder;
 class QtVideoOutput;
 class SeiInserter;
 class CudaConfigurations;
-
+class GrpcThread;
+class GrpcPTZClient;
 class SmartStreamer : public BaseStreamer, public config::AppConfig::Service
 {
 	Q_OBJECT
@@ -27,12 +28,12 @@ public:
 	int processMainRGB(const RawBuffer &buf);
 	int processScaledRGB(const RawBuffer &buf);
 	int processScaledYUV(const RawBuffer &buf);
+    int processPanoramaImage(const RawBuffer &buf);
 	int checkPoint(const RawBuffer &buf);
 
-    grpc::Status SetPanorama(grpc::ServerContext *context, const config::DummyInfo *request, config::AppCommandResult *response);
-    grpc::Status SetMotionDetection(grpc::ServerContext *context, const config::MotionDetectionParameters *request, config::AppCommandResult *response);
+    grpc::Status SetCurrentMode(grpc::ServerContext *context, const config::SetModeQ *request, config::AppCommandResult *response);
     grpc::Status GetCurrentMode(grpc::ServerContext *context, const config::DummyInfo *request, config::AppCommandResult *response);
-
+    grpc::Status SetPanaromaParameters(grpc::ServerContext *context, const config::PanoramaPars *request, config::AppCommandResult *response);
 	class Parameters {
 	public:
 		Parameters()
@@ -97,6 +98,8 @@ protected:
 	QtVideoOutput *vout;
 	SeiInserter *sei;
     CudaConfigurations *cuConf;
+    GrpcThread *grpcServ;
+    GrpcPTZClient *ptzclient;
 };
 
 #endif // SMARTSTREAMER_H

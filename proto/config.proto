@@ -3,11 +3,43 @@ syntax="proto3";
 package config;
 
 service AppConfig {
-    rpc SetPanorama(DummyInfo) returns(AppCommandResult) {}
-    rpc SetMotionDetection(MotionDetectionParameters) returns(AppCommandResult) {}
+    rpc SetPanaromaParameters(PanoramaPars) returns(AppCommandResult) {} 
+    rpc SetMotionDetectionParameters(MotDetPars) returns(AppCommandResult) {} 
+    rpc SetCurrentMode(SetModeQ) returns(AppCommandResult) {}
     rpc GetCurrentMode(DummyInfo) returns(AppCommandResult) {}
     rpc GetLastPanaromaFrame(DummyInfo) returns(AppCommandResult) {}
     rpc GetPanaromaFrames(DummyInfo) returns(AppCommandResult) {}
+}
+
+message PanoramaPars {
+    int32 pos = 1;
+    int32 fov = 2;
+    float update_rate = 3;
+    float pan_start_angle = 4;
+    int32 y_start_pos = 5;
+    int32 widthx = 6;
+    int32 heighty = 7;
+    int32 fix_mode = 8;
+    int32 pan_motion_frame_no = 9;
+}
+
+message MotDetPars {
+    string roi1 = 10;
+    string roi2 = 11;
+    string roi3 = 12;
+    string upcorner1 = 13;
+    string upcorner2 = 14;
+    string line1 = 15;
+    string line2 = 16;
+}
+
+message SetModeQ {
+    enum Mode {
+      NONE = 0;
+      PANAROMA = 1;
+      MOTION_DETECTION = 2;
+    }
+    Mode mode = 1;
 }
 
 message DummyInfo {

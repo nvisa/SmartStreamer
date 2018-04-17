@@ -33,19 +33,26 @@ class AppConfig final {
   class StubInterface {
    public:
     virtual ~StubInterface() {}
-    virtual ::grpc::Status SetPanorama(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::config::AppCommandResult* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>> AsyncSetPanorama(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>>(AsyncSetPanoramaRaw(context, request, cq));
+    virtual ::grpc::Status SetPanaromaParameters(::grpc::ClientContext* context, const ::config::PanoramaPars& request, ::config::AppCommandResult* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>> AsyncSetPanaromaParameters(::grpc::ClientContext* context, const ::config::PanoramaPars& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>>(AsyncSetPanaromaParametersRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>> PrepareAsyncSetPanorama(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>>(PrepareAsyncSetPanoramaRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>> PrepareAsyncSetPanaromaParameters(::grpc::ClientContext* context, const ::config::PanoramaPars& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>>(PrepareAsyncSetPanaromaParametersRaw(context, request, cq));
     }
-    virtual ::grpc::Status SetMotionDetection(::grpc::ClientContext* context, const ::config::MotionDetectionParameters& request, ::config::AppCommandResult* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>> AsyncSetMotionDetection(::grpc::ClientContext* context, const ::config::MotionDetectionParameters& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>>(AsyncSetMotionDetectionRaw(context, request, cq));
+    virtual ::grpc::Status SetMotionDetectionParameters(::grpc::ClientContext* context, const ::config::MotDetPars& request, ::config::AppCommandResult* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>> AsyncSetMotionDetectionParameters(::grpc::ClientContext* context, const ::config::MotDetPars& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>>(AsyncSetMotionDetectionParametersRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>> PrepareAsyncSetMotionDetection(::grpc::ClientContext* context, const ::config::MotionDetectionParameters& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>>(PrepareAsyncSetMotionDetectionRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>> PrepareAsyncSetMotionDetectionParameters(::grpc::ClientContext* context, const ::config::MotDetPars& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>>(PrepareAsyncSetMotionDetectionParametersRaw(context, request, cq));
+    }
+    virtual ::grpc::Status SetCurrentMode(::grpc::ClientContext* context, const ::config::SetModeQ& request, ::config::AppCommandResult* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>> AsyncSetCurrentMode(::grpc::ClientContext* context, const ::config::SetModeQ& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>>(AsyncSetCurrentModeRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>> PrepareAsyncSetCurrentMode(::grpc::ClientContext* context, const ::config::SetModeQ& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>>(PrepareAsyncSetCurrentModeRaw(context, request, cq));
     }
     virtual ::grpc::Status GetCurrentMode(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::config::AppCommandResult* response) = 0;
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>> AsyncGetCurrentMode(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::grpc::CompletionQueue* cq) {
@@ -69,10 +76,12 @@ class AppConfig final {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>>(PrepareAsyncGetPanaromaFramesRaw(context, request, cq));
     }
   private:
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>* AsyncSetPanoramaRaw(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>* PrepareAsyncSetPanoramaRaw(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>* AsyncSetMotionDetectionRaw(::grpc::ClientContext* context, const ::config::MotionDetectionParameters& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>* PrepareAsyncSetMotionDetectionRaw(::grpc::ClientContext* context, const ::config::MotionDetectionParameters& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>* AsyncSetPanaromaParametersRaw(::grpc::ClientContext* context, const ::config::PanoramaPars& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>* PrepareAsyncSetPanaromaParametersRaw(::grpc::ClientContext* context, const ::config::PanoramaPars& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>* AsyncSetMotionDetectionParametersRaw(::grpc::ClientContext* context, const ::config::MotDetPars& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>* PrepareAsyncSetMotionDetectionParametersRaw(::grpc::ClientContext* context, const ::config::MotDetPars& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>* AsyncSetCurrentModeRaw(::grpc::ClientContext* context, const ::config::SetModeQ& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>* PrepareAsyncSetCurrentModeRaw(::grpc::ClientContext* context, const ::config::SetModeQ& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>* AsyncGetCurrentModeRaw(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>* PrepareAsyncGetCurrentModeRaw(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::config::AppCommandResult>* AsyncGetLastPanaromaFrameRaw(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::grpc::CompletionQueue* cq) = 0;
@@ -83,19 +92,26 @@ class AppConfig final {
   class Stub final : public StubInterface {
    public:
     Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel);
-    ::grpc::Status SetPanorama(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::config::AppCommandResult* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>> AsyncSetPanorama(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>>(AsyncSetPanoramaRaw(context, request, cq));
+    ::grpc::Status SetPanaromaParameters(::grpc::ClientContext* context, const ::config::PanoramaPars& request, ::config::AppCommandResult* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>> AsyncSetPanaromaParameters(::grpc::ClientContext* context, const ::config::PanoramaPars& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>>(AsyncSetPanaromaParametersRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>> PrepareAsyncSetPanorama(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>>(PrepareAsyncSetPanoramaRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>> PrepareAsyncSetPanaromaParameters(::grpc::ClientContext* context, const ::config::PanoramaPars& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>>(PrepareAsyncSetPanaromaParametersRaw(context, request, cq));
     }
-    ::grpc::Status SetMotionDetection(::grpc::ClientContext* context, const ::config::MotionDetectionParameters& request, ::config::AppCommandResult* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>> AsyncSetMotionDetection(::grpc::ClientContext* context, const ::config::MotionDetectionParameters& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>>(AsyncSetMotionDetectionRaw(context, request, cq));
+    ::grpc::Status SetMotionDetectionParameters(::grpc::ClientContext* context, const ::config::MotDetPars& request, ::config::AppCommandResult* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>> AsyncSetMotionDetectionParameters(::grpc::ClientContext* context, const ::config::MotDetPars& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>>(AsyncSetMotionDetectionParametersRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>> PrepareAsyncSetMotionDetection(::grpc::ClientContext* context, const ::config::MotionDetectionParameters& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>>(PrepareAsyncSetMotionDetectionRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>> PrepareAsyncSetMotionDetectionParameters(::grpc::ClientContext* context, const ::config::MotDetPars& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>>(PrepareAsyncSetMotionDetectionParametersRaw(context, request, cq));
+    }
+    ::grpc::Status SetCurrentMode(::grpc::ClientContext* context, const ::config::SetModeQ& request, ::config::AppCommandResult* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>> AsyncSetCurrentMode(::grpc::ClientContext* context, const ::config::SetModeQ& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>>(AsyncSetCurrentModeRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>> PrepareAsyncSetCurrentMode(::grpc::ClientContext* context, const ::config::SetModeQ& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>>(PrepareAsyncSetCurrentModeRaw(context, request, cq));
     }
     ::grpc::Status GetCurrentMode(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::config::AppCommandResult* response) override;
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>> AsyncGetCurrentMode(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::grpc::CompletionQueue* cq) {
@@ -121,18 +137,21 @@ class AppConfig final {
 
    private:
     std::shared_ptr< ::grpc::ChannelInterface> channel_;
-    ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>* AsyncSetPanoramaRaw(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>* PrepareAsyncSetPanoramaRaw(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>* AsyncSetMotionDetectionRaw(::grpc::ClientContext* context, const ::config::MotionDetectionParameters& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>* PrepareAsyncSetMotionDetectionRaw(::grpc::ClientContext* context, const ::config::MotionDetectionParameters& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>* AsyncSetPanaromaParametersRaw(::grpc::ClientContext* context, const ::config::PanoramaPars& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>* PrepareAsyncSetPanaromaParametersRaw(::grpc::ClientContext* context, const ::config::PanoramaPars& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>* AsyncSetMotionDetectionParametersRaw(::grpc::ClientContext* context, const ::config::MotDetPars& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>* PrepareAsyncSetMotionDetectionParametersRaw(::grpc::ClientContext* context, const ::config::MotDetPars& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>* AsyncSetCurrentModeRaw(::grpc::ClientContext* context, const ::config::SetModeQ& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>* PrepareAsyncSetCurrentModeRaw(::grpc::ClientContext* context, const ::config::SetModeQ& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>* AsyncGetCurrentModeRaw(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>* PrepareAsyncGetCurrentModeRaw(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>* AsyncGetLastPanaromaFrameRaw(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>* PrepareAsyncGetLastPanaromaFrameRaw(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>* AsyncGetPanaromaFramesRaw(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::config::AppCommandResult>* PrepareAsyncGetPanaromaFramesRaw(::grpc::ClientContext* context, const ::config::DummyInfo& request, ::grpc::CompletionQueue* cq) override;
-    const ::grpc::internal::RpcMethod rpcmethod_SetPanorama_;
-    const ::grpc::internal::RpcMethod rpcmethod_SetMotionDetection_;
+    const ::grpc::internal::RpcMethod rpcmethod_SetPanaromaParameters_;
+    const ::grpc::internal::RpcMethod rpcmethod_SetMotionDetectionParameters_;
+    const ::grpc::internal::RpcMethod rpcmethod_SetCurrentMode_;
     const ::grpc::internal::RpcMethod rpcmethod_GetCurrentMode_;
     const ::grpc::internal::RpcMethod rpcmethod_GetLastPanaromaFrame_;
     const ::grpc::internal::RpcMethod rpcmethod_GetPanaromaFrames_;
@@ -143,50 +162,71 @@ class AppConfig final {
    public:
     Service();
     virtual ~Service();
-    virtual ::grpc::Status SetPanorama(::grpc::ServerContext* context, const ::config::DummyInfo* request, ::config::AppCommandResult* response);
-    virtual ::grpc::Status SetMotionDetection(::grpc::ServerContext* context, const ::config::MotionDetectionParameters* request, ::config::AppCommandResult* response);
+    virtual ::grpc::Status SetPanaromaParameters(::grpc::ServerContext* context, const ::config::PanoramaPars* request, ::config::AppCommandResult* response);
+    virtual ::grpc::Status SetMotionDetectionParameters(::grpc::ServerContext* context, const ::config::MotDetPars* request, ::config::AppCommandResult* response);
+    virtual ::grpc::Status SetCurrentMode(::grpc::ServerContext* context, const ::config::SetModeQ* request, ::config::AppCommandResult* response);
     virtual ::grpc::Status GetCurrentMode(::grpc::ServerContext* context, const ::config::DummyInfo* request, ::config::AppCommandResult* response);
     virtual ::grpc::Status GetLastPanaromaFrame(::grpc::ServerContext* context, const ::config::DummyInfo* request, ::config::AppCommandResult* response);
     virtual ::grpc::Status GetPanaromaFrames(::grpc::ServerContext* context, const ::config::DummyInfo* request, ::config::AppCommandResult* response);
   };
   template <class BaseClass>
-  class WithAsyncMethod_SetPanorama : public BaseClass {
+  class WithAsyncMethod_SetPanaromaParameters : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithAsyncMethod_SetPanorama() {
+    WithAsyncMethod_SetPanaromaParameters() {
       ::grpc::Service::MarkMethodAsync(0);
     }
-    ~WithAsyncMethod_SetPanorama() override {
+    ~WithAsyncMethod_SetPanaromaParameters() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status SetPanorama(::grpc::ServerContext* context, const ::config::DummyInfo* request, ::config::AppCommandResult* response) final override {
+    ::grpc::Status SetPanaromaParameters(::grpc::ServerContext* context, const ::config::PanoramaPars* request, ::config::AppCommandResult* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestSetPanorama(::grpc::ServerContext* context, ::config::DummyInfo* request, ::grpc::ServerAsyncResponseWriter< ::config::AppCommandResult>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestSetPanaromaParameters(::grpc::ServerContext* context, ::config::PanoramaPars* request, ::grpc::ServerAsyncResponseWriter< ::config::AppCommandResult>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
-  class WithAsyncMethod_SetMotionDetection : public BaseClass {
+  class WithAsyncMethod_SetMotionDetectionParameters : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithAsyncMethod_SetMotionDetection() {
+    WithAsyncMethod_SetMotionDetectionParameters() {
       ::grpc::Service::MarkMethodAsync(1);
     }
-    ~WithAsyncMethod_SetMotionDetection() override {
+    ~WithAsyncMethod_SetMotionDetectionParameters() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status SetMotionDetection(::grpc::ServerContext* context, const ::config::MotionDetectionParameters* request, ::config::AppCommandResult* response) final override {
+    ::grpc::Status SetMotionDetectionParameters(::grpc::ServerContext* context, const ::config::MotDetPars* request, ::config::AppCommandResult* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestSetMotionDetection(::grpc::ServerContext* context, ::config::MotionDetectionParameters* request, ::grpc::ServerAsyncResponseWriter< ::config::AppCommandResult>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestSetMotionDetectionParameters(::grpc::ServerContext* context, ::config::MotDetPars* request, ::grpc::ServerAsyncResponseWriter< ::config::AppCommandResult>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_SetCurrentMode : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service *service) {}
+   public:
+    WithAsyncMethod_SetCurrentMode() {
+      ::grpc::Service::MarkMethodAsync(2);
+    }
+    ~WithAsyncMethod_SetCurrentMode() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status SetCurrentMode(::grpc::ServerContext* context, const ::config::SetModeQ* request, ::config::AppCommandResult* response) final override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestSetCurrentMode(::grpc::ServerContext* context, ::config::SetModeQ* request, ::grpc::ServerAsyncResponseWriter< ::config::AppCommandResult>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -195,7 +235,7 @@ class AppConfig final {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithAsyncMethod_GetCurrentMode() {
-      ::grpc::Service::MarkMethodAsync(2);
+      ::grpc::Service::MarkMethodAsync(3);
     }
     ~WithAsyncMethod_GetCurrentMode() override {
       BaseClassMustBeDerivedFromService(this);
@@ -206,7 +246,7 @@ class AppConfig final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestGetCurrentMode(::grpc::ServerContext* context, ::config::DummyInfo* request, ::grpc::ServerAsyncResponseWriter< ::config::AppCommandResult>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -215,7 +255,7 @@ class AppConfig final {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithAsyncMethod_GetLastPanaromaFrame() {
-      ::grpc::Service::MarkMethodAsync(3);
+      ::grpc::Service::MarkMethodAsync(4);
     }
     ~WithAsyncMethod_GetLastPanaromaFrame() override {
       BaseClassMustBeDerivedFromService(this);
@@ -226,7 +266,7 @@ class AppConfig final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestGetLastPanaromaFrame(::grpc::ServerContext* context, ::config::DummyInfo* request, ::grpc::ServerAsyncResponseWriter< ::config::AppCommandResult>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -235,7 +275,7 @@ class AppConfig final {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithAsyncMethod_GetPanaromaFrames() {
-      ::grpc::Service::MarkMethodAsync(4);
+      ::grpc::Service::MarkMethodAsync(5);
     }
     ~WithAsyncMethod_GetPanaromaFrames() override {
       BaseClassMustBeDerivedFromService(this);
@@ -246,40 +286,57 @@ class AppConfig final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestGetPanaromaFrames(::grpc::ServerContext* context, ::config::DummyInfo* request, ::grpc::ServerAsyncResponseWriter< ::config::AppCommandResult>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(5, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_SetPanorama<WithAsyncMethod_SetMotionDetection<WithAsyncMethod_GetCurrentMode<WithAsyncMethod_GetLastPanaromaFrame<WithAsyncMethod_GetPanaromaFrames<Service > > > > > AsyncService;
+  typedef WithAsyncMethod_SetPanaromaParameters<WithAsyncMethod_SetMotionDetectionParameters<WithAsyncMethod_SetCurrentMode<WithAsyncMethod_GetCurrentMode<WithAsyncMethod_GetLastPanaromaFrame<WithAsyncMethod_GetPanaromaFrames<Service > > > > > > AsyncService;
   template <class BaseClass>
-  class WithGenericMethod_SetPanorama : public BaseClass {
+  class WithGenericMethod_SetPanaromaParameters : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithGenericMethod_SetPanorama() {
+    WithGenericMethod_SetPanaromaParameters() {
       ::grpc::Service::MarkMethodGeneric(0);
     }
-    ~WithGenericMethod_SetPanorama() override {
+    ~WithGenericMethod_SetPanaromaParameters() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status SetPanorama(::grpc::ServerContext* context, const ::config::DummyInfo* request, ::config::AppCommandResult* response) final override {
+    ::grpc::Status SetPanaromaParameters(::grpc::ServerContext* context, const ::config::PanoramaPars* request, ::config::AppCommandResult* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
   };
   template <class BaseClass>
-  class WithGenericMethod_SetMotionDetection : public BaseClass {
+  class WithGenericMethod_SetMotionDetectionParameters : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithGenericMethod_SetMotionDetection() {
+    WithGenericMethod_SetMotionDetectionParameters() {
       ::grpc::Service::MarkMethodGeneric(1);
     }
-    ~WithGenericMethod_SetMotionDetection() override {
+    ~WithGenericMethod_SetMotionDetectionParameters() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status SetMotionDetection(::grpc::ServerContext* context, const ::config::MotionDetectionParameters* request, ::config::AppCommandResult* response) final override {
+    ::grpc::Status SetMotionDetectionParameters(::grpc::ServerContext* context, const ::config::MotDetPars* request, ::config::AppCommandResult* response) final override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_SetCurrentMode : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service *service) {}
+   public:
+    WithGenericMethod_SetCurrentMode() {
+      ::grpc::Service::MarkMethodGeneric(2);
+    }
+    ~WithGenericMethod_SetCurrentMode() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status SetCurrentMode(::grpc::ServerContext* context, const ::config::SetModeQ* request, ::config::AppCommandResult* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -290,7 +347,7 @@ class AppConfig final {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithGenericMethod_GetCurrentMode() {
-      ::grpc::Service::MarkMethodGeneric(2);
+      ::grpc::Service::MarkMethodGeneric(3);
     }
     ~WithGenericMethod_GetCurrentMode() override {
       BaseClassMustBeDerivedFromService(this);
@@ -307,7 +364,7 @@ class AppConfig final {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithGenericMethod_GetLastPanaromaFrame() {
-      ::grpc::Service::MarkMethodGeneric(3);
+      ::grpc::Service::MarkMethodGeneric(4);
     }
     ~WithGenericMethod_GetLastPanaromaFrame() override {
       BaseClassMustBeDerivedFromService(this);
@@ -324,7 +381,7 @@ class AppConfig final {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithGenericMethod_GetPanaromaFrames() {
-      ::grpc::Service::MarkMethodGeneric(4);
+      ::grpc::Service::MarkMethodGeneric(5);
     }
     ~WithGenericMethod_GetPanaromaFrames() override {
       BaseClassMustBeDerivedFromService(this);
@@ -336,44 +393,64 @@ class AppConfig final {
     }
   };
   template <class BaseClass>
-  class WithStreamedUnaryMethod_SetPanorama : public BaseClass {
+  class WithStreamedUnaryMethod_SetPanaromaParameters : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithStreamedUnaryMethod_SetPanorama() {
+    WithStreamedUnaryMethod_SetPanaromaParameters() {
       ::grpc::Service::MarkMethodStreamed(0,
-        new ::grpc::internal::StreamedUnaryHandler< ::config::DummyInfo, ::config::AppCommandResult>(std::bind(&WithStreamedUnaryMethod_SetPanorama<BaseClass>::StreamedSetPanorama, this, std::placeholders::_1, std::placeholders::_2)));
+        new ::grpc::internal::StreamedUnaryHandler< ::config::PanoramaPars, ::config::AppCommandResult>(std::bind(&WithStreamedUnaryMethod_SetPanaromaParameters<BaseClass>::StreamedSetPanaromaParameters, this, std::placeholders::_1, std::placeholders::_2)));
     }
-    ~WithStreamedUnaryMethod_SetPanorama() override {
+    ~WithStreamedUnaryMethod_SetPanaromaParameters() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status SetPanorama(::grpc::ServerContext* context, const ::config::DummyInfo* request, ::config::AppCommandResult* response) final override {
+    ::grpc::Status SetPanaromaParameters(::grpc::ServerContext* context, const ::config::PanoramaPars* request, ::config::AppCommandResult* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status StreamedSetPanorama(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::config::DummyInfo,::config::AppCommandResult>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedSetPanaromaParameters(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::config::PanoramaPars,::config::AppCommandResult>* server_unary_streamer) = 0;
   };
   template <class BaseClass>
-  class WithStreamedUnaryMethod_SetMotionDetection : public BaseClass {
+  class WithStreamedUnaryMethod_SetMotionDetectionParameters : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithStreamedUnaryMethod_SetMotionDetection() {
+    WithStreamedUnaryMethod_SetMotionDetectionParameters() {
       ::grpc::Service::MarkMethodStreamed(1,
-        new ::grpc::internal::StreamedUnaryHandler< ::config::MotionDetectionParameters, ::config::AppCommandResult>(std::bind(&WithStreamedUnaryMethod_SetMotionDetection<BaseClass>::StreamedSetMotionDetection, this, std::placeholders::_1, std::placeholders::_2)));
+        new ::grpc::internal::StreamedUnaryHandler< ::config::MotDetPars, ::config::AppCommandResult>(std::bind(&WithStreamedUnaryMethod_SetMotionDetectionParameters<BaseClass>::StreamedSetMotionDetectionParameters, this, std::placeholders::_1, std::placeholders::_2)));
     }
-    ~WithStreamedUnaryMethod_SetMotionDetection() override {
+    ~WithStreamedUnaryMethod_SetMotionDetectionParameters() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status SetMotionDetection(::grpc::ServerContext* context, const ::config::MotionDetectionParameters* request, ::config::AppCommandResult* response) final override {
+    ::grpc::Status SetMotionDetectionParameters(::grpc::ServerContext* context, const ::config::MotDetPars* request, ::config::AppCommandResult* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status StreamedSetMotionDetection(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::config::MotionDetectionParameters,::config::AppCommandResult>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedSetMotionDetectionParameters(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::config::MotDetPars,::config::AppCommandResult>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_SetCurrentMode : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service *service) {}
+   public:
+    WithStreamedUnaryMethod_SetCurrentMode() {
+      ::grpc::Service::MarkMethodStreamed(2,
+        new ::grpc::internal::StreamedUnaryHandler< ::config::SetModeQ, ::config::AppCommandResult>(std::bind(&WithStreamedUnaryMethod_SetCurrentMode<BaseClass>::StreamedSetCurrentMode, this, std::placeholders::_1, std::placeholders::_2)));
+    }
+    ~WithStreamedUnaryMethod_SetCurrentMode() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status SetCurrentMode(::grpc::ServerContext* context, const ::config::SetModeQ* request, ::config::AppCommandResult* response) final override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedSetCurrentMode(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::config::SetModeQ,::config::AppCommandResult>* server_unary_streamer) = 0;
   };
   template <class BaseClass>
   class WithStreamedUnaryMethod_GetCurrentMode : public BaseClass {
@@ -381,7 +458,7 @@ class AppConfig final {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithStreamedUnaryMethod_GetCurrentMode() {
-      ::grpc::Service::MarkMethodStreamed(2,
+      ::grpc::Service::MarkMethodStreamed(3,
         new ::grpc::internal::StreamedUnaryHandler< ::config::DummyInfo, ::config::AppCommandResult>(std::bind(&WithStreamedUnaryMethod_GetCurrentMode<BaseClass>::StreamedGetCurrentMode, this, std::placeholders::_1, std::placeholders::_2)));
     }
     ~WithStreamedUnaryMethod_GetCurrentMode() override {
@@ -401,7 +478,7 @@ class AppConfig final {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithStreamedUnaryMethod_GetLastPanaromaFrame() {
-      ::grpc::Service::MarkMethodStreamed(3,
+      ::grpc::Service::MarkMethodStreamed(4,
         new ::grpc::internal::StreamedUnaryHandler< ::config::DummyInfo, ::config::AppCommandResult>(std::bind(&WithStreamedUnaryMethod_GetLastPanaromaFrame<BaseClass>::StreamedGetLastPanaromaFrame, this, std::placeholders::_1, std::placeholders::_2)));
     }
     ~WithStreamedUnaryMethod_GetLastPanaromaFrame() override {
@@ -421,7 +498,7 @@ class AppConfig final {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithStreamedUnaryMethod_GetPanaromaFrames() {
-      ::grpc::Service::MarkMethodStreamed(4,
+      ::grpc::Service::MarkMethodStreamed(5,
         new ::grpc::internal::StreamedUnaryHandler< ::config::DummyInfo, ::config::AppCommandResult>(std::bind(&WithStreamedUnaryMethod_GetPanaromaFrames<BaseClass>::StreamedGetPanaromaFrames, this, std::placeholders::_1, std::placeholders::_2)));
     }
     ~WithStreamedUnaryMethod_GetPanaromaFrames() override {
@@ -435,9 +512,9 @@ class AppConfig final {
     // replace default version of method with streamed unary
     virtual ::grpc::Status StreamedGetPanaromaFrames(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::config::DummyInfo,::config::AppCommandResult>* server_unary_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_SetPanorama<WithStreamedUnaryMethod_SetMotionDetection<WithStreamedUnaryMethod_GetCurrentMode<WithStreamedUnaryMethod_GetLastPanaromaFrame<WithStreamedUnaryMethod_GetPanaromaFrames<Service > > > > > StreamedUnaryService;
+  typedef WithStreamedUnaryMethod_SetPanaromaParameters<WithStreamedUnaryMethod_SetMotionDetectionParameters<WithStreamedUnaryMethod_SetCurrentMode<WithStreamedUnaryMethod_GetCurrentMode<WithStreamedUnaryMethod_GetLastPanaromaFrame<WithStreamedUnaryMethod_GetPanaromaFrames<Service > > > > > > StreamedUnaryService;
   typedef Service SplitStreamedService;
-  typedef WithStreamedUnaryMethod_SetPanorama<WithStreamedUnaryMethod_SetMotionDetection<WithStreamedUnaryMethod_GetCurrentMode<WithStreamedUnaryMethod_GetLastPanaromaFrame<WithStreamedUnaryMethod_GetPanaromaFrames<Service > > > > > StreamedService;
+  typedef WithStreamedUnaryMethod_SetPanaromaParameters<WithStreamedUnaryMethod_SetMotionDetectionParameters<WithStreamedUnaryMethod_SetCurrentMode<WithStreamedUnaryMethod_GetCurrentMode<WithStreamedUnaryMethod_GetLastPanaromaFrame<WithStreamedUnaryMethod_GetPanaromaFrames<Service > > > > > > StreamedService;
 };
 
 }  // namespace config

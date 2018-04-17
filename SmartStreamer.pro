@@ -12,7 +12,9 @@ SOURCES += main.cpp \
     mjpegserver.cpp \
     seiinserter.cpp \
     proto/config.grpc.pb.cc \
-    proto/config.pb.cc
+    proto/config.pb.cc \
+    proto/camback.pb.cc \
+    proto/camback.grpc.pb.cc
 
 HEADERS += \
     smartstreamer.h \
@@ -20,7 +22,9 @@ HEADERS += \
     mjpegserver.h \
     seiinserter.h \
     proto/config.grpc.pb.h \
-    proto/config.pb.h
+    proto/config.pb.h \
+    proto/camback.pb.h \
+    proto/camback.grpc.pb.h
 
 websockets {
     SOURCES += websocketstreamer.cpp

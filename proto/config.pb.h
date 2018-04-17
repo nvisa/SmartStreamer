@@ -28,6 +28,7 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
+#include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 
@@ -36,12 +37,18 @@ namespace protobuf_config_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[4];
+  static const ::google::protobuf::internal::ParseTable schema[7];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
 };
 void AddDescriptors();
+void InitDefaultsPanoramaParsImpl();
+void InitDefaultsPanoramaPars();
+void InitDefaultsMotDetParsImpl();
+void InitDefaultsMotDetPars();
+void InitDefaultsSetModeQImpl();
+void InitDefaultsSetModeQ();
 void InitDefaultsDummyInfoImpl();
 void InitDefaultsDummyInfo();
 void InitDefaultsMotionDetectionParametersImpl();
@@ -51,6 +58,9 @@ void InitDefaultsAppCommandResult();
 void InitDefaultsAryaParametersImpl();
 void InitDefaultsAryaParameters();
 inline void InitDefaults() {
+  InitDefaultsPanoramaPars();
+  InitDefaultsMotDetPars();
+  InitDefaultsSetModeQ();
   InitDefaultsDummyInfo();
   InitDefaultsMotionDetectionParameters();
   InitDefaultsAppCommandResult();
@@ -67,13 +77,523 @@ extern AryaParametersDefaultTypeInternal _AryaParameters_default_instance_;
 class DummyInfo;
 class DummyInfoDefaultTypeInternal;
 extern DummyInfoDefaultTypeInternal _DummyInfo_default_instance_;
+class MotDetPars;
+class MotDetParsDefaultTypeInternal;
+extern MotDetParsDefaultTypeInternal _MotDetPars_default_instance_;
 class MotionDetectionParameters;
 class MotionDetectionParametersDefaultTypeInternal;
 extern MotionDetectionParametersDefaultTypeInternal _MotionDetectionParameters_default_instance_;
+class PanoramaPars;
+class PanoramaParsDefaultTypeInternal;
+extern PanoramaParsDefaultTypeInternal _PanoramaPars_default_instance_;
+class SetModeQ;
+class SetModeQDefaultTypeInternal;
+extern SetModeQDefaultTypeInternal _SetModeQ_default_instance_;
 }  // namespace config
 namespace config {
 
+enum SetModeQ_Mode {
+  SetModeQ_Mode_NONE = 0,
+  SetModeQ_Mode_PANAROMA = 1,
+  SetModeQ_Mode_MOTION_DETECTION = 2,
+  SetModeQ_Mode_SetModeQ_Mode_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
+  SetModeQ_Mode_SetModeQ_Mode_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
+};
+bool SetModeQ_Mode_IsValid(int value);
+const SetModeQ_Mode SetModeQ_Mode_Mode_MIN = SetModeQ_Mode_NONE;
+const SetModeQ_Mode SetModeQ_Mode_Mode_MAX = SetModeQ_Mode_MOTION_DETECTION;
+const int SetModeQ_Mode_Mode_ARRAYSIZE = SetModeQ_Mode_Mode_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* SetModeQ_Mode_descriptor();
+inline const ::std::string& SetModeQ_Mode_Name(SetModeQ_Mode value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    SetModeQ_Mode_descriptor(), value);
+}
+inline bool SetModeQ_Mode_Parse(
+    const ::std::string& name, SetModeQ_Mode* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<SetModeQ_Mode>(
+    SetModeQ_Mode_descriptor(), name, value);
+}
 // ===================================================================
+
+class PanoramaPars : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:config.PanoramaPars) */ {
+ public:
+  PanoramaPars();
+  virtual ~PanoramaPars();
+
+  PanoramaPars(const PanoramaPars& from);
+
+  inline PanoramaPars& operator=(const PanoramaPars& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  PanoramaPars(PanoramaPars&& from) noexcept
+    : PanoramaPars() {
+    *this = ::std::move(from);
+  }
+
+  inline PanoramaPars& operator=(PanoramaPars&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const PanoramaPars& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const PanoramaPars* internal_default_instance() {
+    return reinterpret_cast<const PanoramaPars*>(
+               &_PanoramaPars_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    0;
+
+  void Swap(PanoramaPars* other);
+  friend void swap(PanoramaPars& a, PanoramaPars& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline PanoramaPars* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  PanoramaPars* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const PanoramaPars& from);
+  void MergeFrom(const PanoramaPars& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(PanoramaPars* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // int32 pos = 1;
+  void clear_pos();
+  static const int kPosFieldNumber = 1;
+  ::google::protobuf::int32 pos() const;
+  void set_pos(::google::protobuf::int32 value);
+
+  // int32 fov = 2;
+  void clear_fov();
+  static const int kFovFieldNumber = 2;
+  ::google::protobuf::int32 fov() const;
+  void set_fov(::google::protobuf::int32 value);
+
+  // float update_rate = 3;
+  void clear_update_rate();
+  static const int kUpdateRateFieldNumber = 3;
+  float update_rate() const;
+  void set_update_rate(float value);
+
+  // float pan_start_angle = 4;
+  void clear_pan_start_angle();
+  static const int kPanStartAngleFieldNumber = 4;
+  float pan_start_angle() const;
+  void set_pan_start_angle(float value);
+
+  // int32 y_start_pos = 5;
+  void clear_y_start_pos();
+  static const int kYStartPosFieldNumber = 5;
+  ::google::protobuf::int32 y_start_pos() const;
+  void set_y_start_pos(::google::protobuf::int32 value);
+
+  // int32 widthx = 6;
+  void clear_widthx();
+  static const int kWidthxFieldNumber = 6;
+  ::google::protobuf::int32 widthx() const;
+  void set_widthx(::google::protobuf::int32 value);
+
+  // int32 heighty = 7;
+  void clear_heighty();
+  static const int kHeightyFieldNumber = 7;
+  ::google::protobuf::int32 heighty() const;
+  void set_heighty(::google::protobuf::int32 value);
+
+  // int32 fix_mode = 8;
+  void clear_fix_mode();
+  static const int kFixModeFieldNumber = 8;
+  ::google::protobuf::int32 fix_mode() const;
+  void set_fix_mode(::google::protobuf::int32 value);
+
+  // int32 pan_motion_frame_no = 9;
+  void clear_pan_motion_frame_no();
+  static const int kPanMotionFrameNoFieldNumber = 9;
+  ::google::protobuf::int32 pan_motion_frame_no() const;
+  void set_pan_motion_frame_no(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:config.PanoramaPars)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::int32 pos_;
+  ::google::protobuf::int32 fov_;
+  float update_rate_;
+  float pan_start_angle_;
+  ::google::protobuf::int32 y_start_pos_;
+  ::google::protobuf::int32 widthx_;
+  ::google::protobuf::int32 heighty_;
+  ::google::protobuf::int32 fix_mode_;
+  ::google::protobuf::int32 pan_motion_frame_no_;
+  mutable int _cached_size_;
+  friend struct ::protobuf_config_2eproto::TableStruct;
+  friend void ::protobuf_config_2eproto::InitDefaultsPanoramaParsImpl();
+};
+// -------------------------------------------------------------------
+
+class MotDetPars : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:config.MotDetPars) */ {
+ public:
+  MotDetPars();
+  virtual ~MotDetPars();
+
+  MotDetPars(const MotDetPars& from);
+
+  inline MotDetPars& operator=(const MotDetPars& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  MotDetPars(MotDetPars&& from) noexcept
+    : MotDetPars() {
+    *this = ::std::move(from);
+  }
+
+  inline MotDetPars& operator=(MotDetPars&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const MotDetPars& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const MotDetPars* internal_default_instance() {
+    return reinterpret_cast<const MotDetPars*>(
+               &_MotDetPars_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    1;
+
+  void Swap(MotDetPars* other);
+  friend void swap(MotDetPars& a, MotDetPars& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline MotDetPars* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  MotDetPars* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const MotDetPars& from);
+  void MergeFrom(const MotDetPars& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(MotDetPars* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // string roi1 = 10;
+  void clear_roi1();
+  static const int kRoi1FieldNumber = 10;
+  const ::std::string& roi1() const;
+  void set_roi1(const ::std::string& value);
+  #if LANG_CXX11
+  void set_roi1(::std::string&& value);
+  #endif
+  void set_roi1(const char* value);
+  void set_roi1(const char* value, size_t size);
+  ::std::string* mutable_roi1();
+  ::std::string* release_roi1();
+  void set_allocated_roi1(::std::string* roi1);
+
+  // string roi2 = 11;
+  void clear_roi2();
+  static const int kRoi2FieldNumber = 11;
+  const ::std::string& roi2() const;
+  void set_roi2(const ::std::string& value);
+  #if LANG_CXX11
+  void set_roi2(::std::string&& value);
+  #endif
+  void set_roi2(const char* value);
+  void set_roi2(const char* value, size_t size);
+  ::std::string* mutable_roi2();
+  ::std::string* release_roi2();
+  void set_allocated_roi2(::std::string* roi2);
+
+  // string roi3 = 12;
+  void clear_roi3();
+  static const int kRoi3FieldNumber = 12;
+  const ::std::string& roi3() const;
+  void set_roi3(const ::std::string& value);
+  #if LANG_CXX11
+  void set_roi3(::std::string&& value);
+  #endif
+  void set_roi3(const char* value);
+  void set_roi3(const char* value, size_t size);
+  ::std::string* mutable_roi3();
+  ::std::string* release_roi3();
+  void set_allocated_roi3(::std::string* roi3);
+
+  // string upcorner1 = 13;
+  void clear_upcorner1();
+  static const int kUpcorner1FieldNumber = 13;
+  const ::std::string& upcorner1() const;
+  void set_upcorner1(const ::std::string& value);
+  #if LANG_CXX11
+  void set_upcorner1(::std::string&& value);
+  #endif
+  void set_upcorner1(const char* value);
+  void set_upcorner1(const char* value, size_t size);
+  ::std::string* mutable_upcorner1();
+  ::std::string* release_upcorner1();
+  void set_allocated_upcorner1(::std::string* upcorner1);
+
+  // string upcorner2 = 14;
+  void clear_upcorner2();
+  static const int kUpcorner2FieldNumber = 14;
+  const ::std::string& upcorner2() const;
+  void set_upcorner2(const ::std::string& value);
+  #if LANG_CXX11
+  void set_upcorner2(::std::string&& value);
+  #endif
+  void set_upcorner2(const char* value);
+  void set_upcorner2(const char* value, size_t size);
+  ::std::string* mutable_upcorner2();
+  ::std::string* release_upcorner2();
+  void set_allocated_upcorner2(::std::string* upcorner2);
+
+  // string line1 = 15;
+  void clear_line1();
+  static const int kLine1FieldNumber = 15;
+  const ::std::string& line1() const;
+  void set_line1(const ::std::string& value);
+  #if LANG_CXX11
+  void set_line1(::std::string&& value);
+  #endif
+  void set_line1(const char* value);
+  void set_line1(const char* value, size_t size);
+  ::std::string* mutable_line1();
+  ::std::string* release_line1();
+  void set_allocated_line1(::std::string* line1);
+
+  // string line2 = 16;
+  void clear_line2();
+  static const int kLine2FieldNumber = 16;
+  const ::std::string& line2() const;
+  void set_line2(const ::std::string& value);
+  #if LANG_CXX11
+  void set_line2(::std::string&& value);
+  #endif
+  void set_line2(const char* value);
+  void set_line2(const char* value, size_t size);
+  ::std::string* mutable_line2();
+  ::std::string* release_line2();
+  void set_allocated_line2(::std::string* line2);
+
+  // @@protoc_insertion_point(class_scope:config.MotDetPars)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::ArenaStringPtr roi1_;
+  ::google::protobuf::internal::ArenaStringPtr roi2_;
+  ::google::protobuf::internal::ArenaStringPtr roi3_;
+  ::google::protobuf::internal::ArenaStringPtr upcorner1_;
+  ::google::protobuf::internal::ArenaStringPtr upcorner2_;
+  ::google::protobuf::internal::ArenaStringPtr line1_;
+  ::google::protobuf::internal::ArenaStringPtr line2_;
+  mutable int _cached_size_;
+  friend struct ::protobuf_config_2eproto::TableStruct;
+  friend void ::protobuf_config_2eproto::InitDefaultsMotDetParsImpl();
+};
+// -------------------------------------------------------------------
+
+class SetModeQ : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:config.SetModeQ) */ {
+ public:
+  SetModeQ();
+  virtual ~SetModeQ();
+
+  SetModeQ(const SetModeQ& from);
+
+  inline SetModeQ& operator=(const SetModeQ& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  SetModeQ(SetModeQ&& from) noexcept
+    : SetModeQ() {
+    *this = ::std::move(from);
+  }
+
+  inline SetModeQ& operator=(SetModeQ&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SetModeQ& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const SetModeQ* internal_default_instance() {
+    return reinterpret_cast<const SetModeQ*>(
+               &_SetModeQ_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    2;
+
+  void Swap(SetModeQ* other);
+  friend void swap(SetModeQ& a, SetModeQ& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline SetModeQ* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  SetModeQ* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const SetModeQ& from);
+  void MergeFrom(const SetModeQ& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(SetModeQ* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  typedef SetModeQ_Mode Mode;
+  static const Mode NONE =
+    SetModeQ_Mode_NONE;
+  static const Mode PANAROMA =
+    SetModeQ_Mode_PANAROMA;
+  static const Mode MOTION_DETECTION =
+    SetModeQ_Mode_MOTION_DETECTION;
+  static inline bool Mode_IsValid(int value) {
+    return SetModeQ_Mode_IsValid(value);
+  }
+  static const Mode Mode_MIN =
+    SetModeQ_Mode_Mode_MIN;
+  static const Mode Mode_MAX =
+    SetModeQ_Mode_Mode_MAX;
+  static const int Mode_ARRAYSIZE =
+    SetModeQ_Mode_Mode_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  Mode_descriptor() {
+    return SetModeQ_Mode_descriptor();
+  }
+  static inline const ::std::string& Mode_Name(Mode value) {
+    return SetModeQ_Mode_Name(value);
+  }
+  static inline bool Mode_Parse(const ::std::string& name,
+      Mode* value) {
+    return SetModeQ_Mode_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  // .config.SetModeQ.Mode mode = 1;
+  void clear_mode();
+  static const int kModeFieldNumber = 1;
+  ::config::SetModeQ_Mode mode() const;
+  void set_mode(::config::SetModeQ_Mode value);
+
+  // @@protoc_insertion_point(class_scope:config.SetModeQ)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  int mode_;
+  mutable int _cached_size_;
+  friend struct ::protobuf_config_2eproto::TableStruct;
+  friend void ::protobuf_config_2eproto::InitDefaultsSetModeQImpl();
+};
+// -------------------------------------------------------------------
 
 class DummyInfo : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:config.DummyInfo) */ {
  public:
@@ -110,7 +630,7 @@ class DummyInfo : public ::google::protobuf::Message /* @@protoc_insertion_point
                &_DummyInfo_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    0;
+    3;
 
   void Swap(DummyInfo* other);
   friend void swap(DummyInfo& a, DummyInfo& b) {
@@ -209,7 +729,7 @@ class MotionDetectionParameters : public ::google::protobuf::Message /* @@protoc
                &_MotionDetectionParameters_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    1;
+    4;
 
   void Swap(MotionDetectionParameters* other);
   friend void swap(MotionDetectionParameters& a, MotionDetectionParameters& b) {
@@ -308,7 +828,7 @@ class AppCommandResult : public ::google::protobuf::Message /* @@protoc_insertio
                &_AppCommandResult_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    2;
+    5;
 
   void Swap(AppCommandResult* other);
   friend void swap(AppCommandResult& a, AppCommandResult& b) {
@@ -407,7 +927,7 @@ class AryaParameters : public ::google::protobuf::Message /* @@protoc_insertion_
                &_AryaParameters_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    3;
+    6;
 
   void Swap(AryaParameters* other);
   friend void swap(AryaParameters& a, AryaParameters& b) {
@@ -478,6 +998,529 @@ class AryaParameters : public ::google::protobuf::Message /* @@protoc_insertion_
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
+// PanoramaPars
+
+// int32 pos = 1;
+inline void PanoramaPars::clear_pos() {
+  pos_ = 0;
+}
+inline ::google::protobuf::int32 PanoramaPars::pos() const {
+  // @@protoc_insertion_point(field_get:config.PanoramaPars.pos)
+  return pos_;
+}
+inline void PanoramaPars::set_pos(::google::protobuf::int32 value) {
+  
+  pos_ = value;
+  // @@protoc_insertion_point(field_set:config.PanoramaPars.pos)
+}
+
+// int32 fov = 2;
+inline void PanoramaPars::clear_fov() {
+  fov_ = 0;
+}
+inline ::google::protobuf::int32 PanoramaPars::fov() const {
+  // @@protoc_insertion_point(field_get:config.PanoramaPars.fov)
+  return fov_;
+}
+inline void PanoramaPars::set_fov(::google::protobuf::int32 value) {
+  
+  fov_ = value;
+  // @@protoc_insertion_point(field_set:config.PanoramaPars.fov)
+}
+
+// float update_rate = 3;
+inline void PanoramaPars::clear_update_rate() {
+  update_rate_ = 0;
+}
+inline float PanoramaPars::update_rate() const {
+  // @@protoc_insertion_point(field_get:config.PanoramaPars.update_rate)
+  return update_rate_;
+}
+inline void PanoramaPars::set_update_rate(float value) {
+  
+  update_rate_ = value;
+  // @@protoc_insertion_point(field_set:config.PanoramaPars.update_rate)
+}
+
+// float pan_start_angle = 4;
+inline void PanoramaPars::clear_pan_start_angle() {
+  pan_start_angle_ = 0;
+}
+inline float PanoramaPars::pan_start_angle() const {
+  // @@protoc_insertion_point(field_get:config.PanoramaPars.pan_start_angle)
+  return pan_start_angle_;
+}
+inline void PanoramaPars::set_pan_start_angle(float value) {
+  
+  pan_start_angle_ = value;
+  // @@protoc_insertion_point(field_set:config.PanoramaPars.pan_start_angle)
+}
+
+// int32 y_start_pos = 5;
+inline void PanoramaPars::clear_y_start_pos() {
+  y_start_pos_ = 0;
+}
+inline ::google::protobuf::int32 PanoramaPars::y_start_pos() const {
+  // @@protoc_insertion_point(field_get:config.PanoramaPars.y_start_pos)
+  return y_start_pos_;
+}
+inline void PanoramaPars::set_y_start_pos(::google::protobuf::int32 value) {
+  
+  y_start_pos_ = value;
+  // @@protoc_insertion_point(field_set:config.PanoramaPars.y_start_pos)
+}
+
+// int32 widthx = 6;
+inline void PanoramaPars::clear_widthx() {
+  widthx_ = 0;
+}
+inline ::google::protobuf::int32 PanoramaPars::widthx() const {
+  // @@protoc_insertion_point(field_get:config.PanoramaPars.widthx)
+  return widthx_;
+}
+inline void PanoramaPars::set_widthx(::google::protobuf::int32 value) {
+  
+  widthx_ = value;
+  // @@protoc_insertion_point(field_set:config.PanoramaPars.widthx)
+}
+
+// int32 heighty = 7;
+inline void PanoramaPars::clear_heighty() {
+  heighty_ = 0;
+}
+inline ::google::protobuf::int32 PanoramaPars::heighty() const {
+  // @@protoc_insertion_point(field_get:config.PanoramaPars.heighty)
+  return heighty_;
+}
+inline void PanoramaPars::set_heighty(::google::protobuf::int32 value) {
+  
+  heighty_ = value;
+  // @@protoc_insertion_point(field_set:config.PanoramaPars.heighty)
+}
+
+// int32 fix_mode = 8;
+inline void PanoramaPars::clear_fix_mode() {
+  fix_mode_ = 0;
+}
+inline ::google::protobuf::int32 PanoramaPars::fix_mode() const {
+  // @@protoc_insertion_point(field_get:config.PanoramaPars.fix_mode)
+  return fix_mode_;
+}
+inline void PanoramaPars::set_fix_mode(::google::protobuf::int32 value) {
+  
+  fix_mode_ = value;
+  // @@protoc_insertion_point(field_set:config.PanoramaPars.fix_mode)
+}
+
+// int32 pan_motion_frame_no = 9;
+inline void PanoramaPars::clear_pan_motion_frame_no() {
+  pan_motion_frame_no_ = 0;
+}
+inline ::google::protobuf::int32 PanoramaPars::pan_motion_frame_no() const {
+  // @@protoc_insertion_point(field_get:config.PanoramaPars.pan_motion_frame_no)
+  return pan_motion_frame_no_;
+}
+inline void PanoramaPars::set_pan_motion_frame_no(::google::protobuf::int32 value) {
+  
+  pan_motion_frame_no_ = value;
+  // @@protoc_insertion_point(field_set:config.PanoramaPars.pan_motion_frame_no)
+}
+
+// -------------------------------------------------------------------
+
+// MotDetPars
+
+// string roi1 = 10;
+inline void MotDetPars::clear_roi1() {
+  roi1_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& MotDetPars::roi1() const {
+  // @@protoc_insertion_point(field_get:config.MotDetPars.roi1)
+  return roi1_.GetNoArena();
+}
+inline void MotDetPars::set_roi1(const ::std::string& value) {
+  
+  roi1_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:config.MotDetPars.roi1)
+}
+#if LANG_CXX11
+inline void MotDetPars::set_roi1(::std::string&& value) {
+  
+  roi1_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:config.MotDetPars.roi1)
+}
+#endif
+inline void MotDetPars::set_roi1(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  
+  roi1_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:config.MotDetPars.roi1)
+}
+inline void MotDetPars::set_roi1(const char* value, size_t size) {
+  
+  roi1_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:config.MotDetPars.roi1)
+}
+inline ::std::string* MotDetPars::mutable_roi1() {
+  
+  // @@protoc_insertion_point(field_mutable:config.MotDetPars.roi1)
+  return roi1_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* MotDetPars::release_roi1() {
+  // @@protoc_insertion_point(field_release:config.MotDetPars.roi1)
+  
+  return roi1_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void MotDetPars::set_allocated_roi1(::std::string* roi1) {
+  if (roi1 != NULL) {
+    
+  } else {
+    
+  }
+  roi1_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), roi1);
+  // @@protoc_insertion_point(field_set_allocated:config.MotDetPars.roi1)
+}
+
+// string roi2 = 11;
+inline void MotDetPars::clear_roi2() {
+  roi2_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& MotDetPars::roi2() const {
+  // @@protoc_insertion_point(field_get:config.MotDetPars.roi2)
+  return roi2_.GetNoArena();
+}
+inline void MotDetPars::set_roi2(const ::std::string& value) {
+  
+  roi2_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:config.MotDetPars.roi2)
+}
+#if LANG_CXX11
+inline void MotDetPars::set_roi2(::std::string&& value) {
+  
+  roi2_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:config.MotDetPars.roi2)
+}
+#endif
+inline void MotDetPars::set_roi2(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  
+  roi2_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:config.MotDetPars.roi2)
+}
+inline void MotDetPars::set_roi2(const char* value, size_t size) {
+  
+  roi2_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:config.MotDetPars.roi2)
+}
+inline ::std::string* MotDetPars::mutable_roi2() {
+  
+  // @@protoc_insertion_point(field_mutable:config.MotDetPars.roi2)
+  return roi2_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* MotDetPars::release_roi2() {
+  // @@protoc_insertion_point(field_release:config.MotDetPars.roi2)
+  
+  return roi2_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void MotDetPars::set_allocated_roi2(::std::string* roi2) {
+  if (roi2 != NULL) {
+    
+  } else {
+    
+  }
+  roi2_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), roi2);
+  // @@protoc_insertion_point(field_set_allocated:config.MotDetPars.roi2)
+}
+
+// string roi3 = 12;
+inline void MotDetPars::clear_roi3() {
+  roi3_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& MotDetPars::roi3() const {
+  // @@protoc_insertion_point(field_get:config.MotDetPars.roi3)
+  return roi3_.GetNoArena();
+}
+inline void MotDetPars::set_roi3(const ::std::string& value) {
+  
+  roi3_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:config.MotDetPars.roi3)
+}
+#if LANG_CXX11
+inline void MotDetPars::set_roi3(::std::string&& value) {
+  
+  roi3_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:config.MotDetPars.roi3)
+}
+#endif
+inline void MotDetPars::set_roi3(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  
+  roi3_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:config.MotDetPars.roi3)
+}
+inline void MotDetPars::set_roi3(const char* value, size_t size) {
+  
+  roi3_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:config.MotDetPars.roi3)
+}
+inline ::std::string* MotDetPars::mutable_roi3() {
+  
+  // @@protoc_insertion_point(field_mutable:config.MotDetPars.roi3)
+  return roi3_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* MotDetPars::release_roi3() {
+  // @@protoc_insertion_point(field_release:config.MotDetPars.roi3)
+  
+  return roi3_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void MotDetPars::set_allocated_roi3(::std::string* roi3) {
+  if (roi3 != NULL) {
+    
+  } else {
+    
+  }
+  roi3_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), roi3);
+  // @@protoc_insertion_point(field_set_allocated:config.MotDetPars.roi3)
+}
+
+// string upcorner1 = 13;
+inline void MotDetPars::clear_upcorner1() {
+  upcorner1_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& MotDetPars::upcorner1() const {
+  // @@protoc_insertion_point(field_get:config.MotDetPars.upcorner1)
+  return upcorner1_.GetNoArena();
+}
+inline void MotDetPars::set_upcorner1(const ::std::string& value) {
+  
+  upcorner1_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:config.MotDetPars.upcorner1)
+}
+#if LANG_CXX11
+inline void MotDetPars::set_upcorner1(::std::string&& value) {
+  
+  upcorner1_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:config.MotDetPars.upcorner1)
+}
+#endif
+inline void MotDetPars::set_upcorner1(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  
+  upcorner1_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:config.MotDetPars.upcorner1)
+}
+inline void MotDetPars::set_upcorner1(const char* value, size_t size) {
+  
+  upcorner1_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:config.MotDetPars.upcorner1)
+}
+inline ::std::string* MotDetPars::mutable_upcorner1() {
+  
+  // @@protoc_insertion_point(field_mutable:config.MotDetPars.upcorner1)
+  return upcorner1_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* MotDetPars::release_upcorner1() {
+  // @@protoc_insertion_point(field_release:config.MotDetPars.upcorner1)
+  
+  return upcorner1_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void MotDetPars::set_allocated_upcorner1(::std::string* upcorner1) {
+  if (upcorner1 != NULL) {
+    
+  } else {
+    
+  }
+  upcorner1_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), upcorner1);
+  // @@protoc_insertion_point(field_set_allocated:config.MotDetPars.upcorner1)
+}
+
+// string upcorner2 = 14;
+inline void MotDetPars::clear_upcorner2() {
+  upcorner2_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& MotDetPars::upcorner2() const {
+  // @@protoc_insertion_point(field_get:config.MotDetPars.upcorner2)
+  return upcorner2_.GetNoArena();
+}
+inline void MotDetPars::set_upcorner2(const ::std::string& value) {
+  
+  upcorner2_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:config.MotDetPars.upcorner2)
+}
+#if LANG_CXX11
+inline void MotDetPars::set_upcorner2(::std::string&& value) {
+  
+  upcorner2_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:config.MotDetPars.upcorner2)
+}
+#endif
+inline void MotDetPars::set_upcorner2(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  
+  upcorner2_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:config.MotDetPars.upcorner2)
+}
+inline void MotDetPars::set_upcorner2(const char* value, size_t size) {
+  
+  upcorner2_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:config.MotDetPars.upcorner2)
+}
+inline ::std::string* MotDetPars::mutable_upcorner2() {
+  
+  // @@protoc_insertion_point(field_mutable:config.MotDetPars.upcorner2)
+  return upcorner2_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* MotDetPars::release_upcorner2() {
+  // @@protoc_insertion_point(field_release:config.MotDetPars.upcorner2)
+  
+  return upcorner2_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void MotDetPars::set_allocated_upcorner2(::std::string* upcorner2) {
+  if (upcorner2 != NULL) {
+    
+  } else {
+    
+  }
+  upcorner2_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), upcorner2);
+  // @@protoc_insertion_point(field_set_allocated:config.MotDetPars.upcorner2)
+}
+
+// string line1 = 15;
+inline void MotDetPars::clear_line1() {
+  line1_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& MotDetPars::line1() const {
+  // @@protoc_insertion_point(field_get:config.MotDetPars.line1)
+  return line1_.GetNoArena();
+}
+inline void MotDetPars::set_line1(const ::std::string& value) {
+  
+  line1_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:config.MotDetPars.line1)
+}
+#if LANG_CXX11
+inline void MotDetPars::set_line1(::std::string&& value) {
+  
+  line1_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:config.MotDetPars.line1)
+}
+#endif
+inline void MotDetPars::set_line1(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  
+  line1_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:config.MotDetPars.line1)
+}
+inline void MotDetPars::set_line1(const char* value, size_t size) {
+  
+  line1_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:config.MotDetPars.line1)
+}
+inline ::std::string* MotDetPars::mutable_line1() {
+  
+  // @@protoc_insertion_point(field_mutable:config.MotDetPars.line1)
+  return line1_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* MotDetPars::release_line1() {
+  // @@protoc_insertion_point(field_release:config.MotDetPars.line1)
+  
+  return line1_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void MotDetPars::set_allocated_line1(::std::string* line1) {
+  if (line1 != NULL) {
+    
+  } else {
+    
+  }
+  line1_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), line1);
+  // @@protoc_insertion_point(field_set_allocated:config.MotDetPars.line1)
+}
+
+// string line2 = 16;
+inline void MotDetPars::clear_line2() {
+  line2_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& MotDetPars::line2() const {
+  // @@protoc_insertion_point(field_get:config.MotDetPars.line2)
+  return line2_.GetNoArena();
+}
+inline void MotDetPars::set_line2(const ::std::string& value) {
+  
+  line2_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:config.MotDetPars.line2)
+}
+#if LANG_CXX11
+inline void MotDetPars::set_line2(::std::string&& value) {
+  
+  line2_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:config.MotDetPars.line2)
+}
+#endif
+inline void MotDetPars::set_line2(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  
+  line2_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:config.MotDetPars.line2)
+}
+inline void MotDetPars::set_line2(const char* value, size_t size) {
+  
+  line2_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:config.MotDetPars.line2)
+}
+inline ::std::string* MotDetPars::mutable_line2() {
+  
+  // @@protoc_insertion_point(field_mutable:config.MotDetPars.line2)
+  return line2_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* MotDetPars::release_line2() {
+  // @@protoc_insertion_point(field_release:config.MotDetPars.line2)
+  
+  return line2_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void MotDetPars::set_allocated_line2(::std::string* line2) {
+  if (line2 != NULL) {
+    
+  } else {
+    
+  }
+  line2_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), line2);
+  // @@protoc_insertion_point(field_set_allocated:config.MotDetPars.line2)
+}
+
+// -------------------------------------------------------------------
+
+// SetModeQ
+
+// .config.SetModeQ.Mode mode = 1;
+inline void SetModeQ::clear_mode() {
+  mode_ = 0;
+}
+inline ::config::SetModeQ_Mode SetModeQ::mode() const {
+  // @@protoc_insertion_point(field_get:config.SetModeQ.mode)
+  return static_cast< ::config::SetModeQ_Mode >(mode_);
+}
+inline void SetModeQ::set_mode(::config::SetModeQ_Mode value) {
+  
+  mode_ = value;
+  // @@protoc_insertion_point(field_set:config.SetModeQ.mode)
+}
+
+// -------------------------------------------------------------------
+
 // DummyInfo
 
 // int32 dummy = 1;
@@ -557,10 +1600,28 @@ inline void AryaParameters::set_panspeed(::google::protobuf::int32 value) {
 
 // -------------------------------------------------------------------
 
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 
 // @@protoc_insertion_point(namespace_scope)
 
 }  // namespace config
+
+namespace google {
+namespace protobuf {
+
+template <> struct is_proto_enum< ::config::SetModeQ_Mode> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::config::SetModeQ_Mode>() {
+  return ::config::SetModeQ_Mode_descriptor();
+}
+
+}  // namespace protobuf
+}  // namespace google
 
 // @@protoc_insertion_point(global_scope)
 
