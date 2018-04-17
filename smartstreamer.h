@@ -5,6 +5,8 @@
 
 #include "proto/config.grpc.pb.h"
 
+#include <QTcpSocket>
+
 class RtspClient;
 class RtpReceiver;
 class BaseRtspServer;
@@ -81,9 +83,14 @@ public:
 	};
 	Parameters pars;
 
+    int processCudaMode(const RawBuffer &buf);
+    int processCudaBaseMode(const RawBuffer &buf);
+    QString doPtzCommand(QString ascii);
 signals:
 
 public slots:
+    void connected();
+    void switchEvent();
 	virtual void timeout();
 protected:
 	void printParameters();
@@ -100,6 +107,43 @@ protected:
     CudaConfigurations *cuConf;
     GrpcThread *grpcServ;
     GrpcPTZClient *ptzclient;
+
+    QTimer *timer;
+    QTcpSocket *socket;
+
+
+    //Pan speed
+    QString speed;
+    //Pan&Tilt values
+    QString panVal;
+    QString tiltVal;
+
+    //dummy counter
+    int counterForDummyEvents;
+
+    //flag for switchevent slot
+    bool panInitOnce;
+
+    //flags for algorithms
+    bool panaroma;
+    bool base;
+
+    //flags for init of algorithms
+    bool initAlgoritmOnce;
+    int init;
+
+    //pan counter to set init location before going to next step
+    int panaromaCounter;
+
+    //pan_states_init
+    bool panInit;
+    bool panMotionStart;
+    bool panTiltInfo;
+    bool panStop;
+    //pan_states_end
+
+    QElapsedTimer timerElapsed;
+    qint64 prevTime;
 };
 
 #endif // SMARTSTREAMER_H

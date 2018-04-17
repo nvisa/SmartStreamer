@@ -153,15 +153,127 @@ SmartStreamer::SmartStreamer(QObject *parent)
     grpcServ = new GrpcThread(50054, this);
     grpcServ->start();
     cuConf = new CudaConfigurations();
-    cuConf->changeMode(CudaConfigurations::CU_PAN_MODE);
 
-    ptzclient = new GrpcPTZClient(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
-    ptzclient->setPanTiltPos(0,0);
+//    ptzclient = new GrpcPTZClient(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
+//    ptzclient->setPanTiltPos(0,0);
 #ifdef HAVE_VIA_WRAPPER
 	wrap = new ViaWrapper();
-    wrap->pan_enabled = false;
+//    wrap->pan_enabled = false;
+    socket = new QTcpSocket();
+    panaroma = false;
+    panInitOnce = false;
+    initAlgoritmOnce = false;
+    base = true;
+
+    timer = new QTimer(this);
+    connect(timer,SIGNAL(timeout()),this,SLOT(switchEvent()));
+    timer->start(1000);
+    counterForDummyEvents = 0;
 #endif
 }
+
+void SmartStreamer::switchEvent()
+{
+    qDebug() << "Inside the switch event";
+
+    if (panaroma && !panInitOnce) {
+        socket->connectToHost("50.23.169.213", 4001);
+        //timer.start();
+        connect(socket, SIGNAL(connected()), SLOT(connected()));
+        //connect(socket,SIGNAL(readyRead()),SLOT(readyRead()));
+        panaromaCounter = 0;
+        timerElapsed.start();
+        panInit = true;
+        panMotionStart = false;
+        panStop = false;
+        panTiltInfo = false;
+        prevTime = 0;
+        panInitOnce = true;
+        speed = "90000";
+        initPanInViaBa = 1;
+    } else if (base) {
+        initBaseInViaBa = 1;
+    }
+}
+
+
+void SmartStreamer::connected()
+{
+    qDebug() << "inside the connected";
+
+    QTimer::singleShot(50, this, SLOT(connected()));
+    QString data;
+    if (panaroma) {
+       if (panInit) {
+            data = doPtzCommand(QString("<IP2PTA:0,0;IP0"));
+            socket->write(data.toUtf8());
+            socket->waitForBytesWritten();
+            panaromaCounter++;
+            if (panaromaCounter > 80) {
+                panMotionStart = true;
+                panInit = false;
+            }
+            if (panStop)
+                panTiltInfo = false;
+            qDebug() << "panInit " << panaromaCounter;
+        } else if(panMotionStart) {
+            data = doPtzCommand(QString("<IP2PRR:%1;IP0").arg(speed));//30000->1.20min/360
+            socket->write(data.toUtf8());
+            panMotionStart = false;
+            panTiltInfo = true;
+            if (panStop)
+                panTiltInfo = false;
+            qDebug() << "panMotionStart";
+        } else if (panTiltInfo) {
+            data = "<ZZZPTT:;ZZZ??>";
+
+            socket->write(data.toUtf8());
+            //qDebug() << "Info: " << socket->readLine().data();
+            QByteArray panTiltInformation = socket->readLine().data();
+            //qDebug() << "elapsed time" << timerElapsed.elapsed() - prevTime;
+            prevTime = timerElapsed.elapsed();
+            QString DataAsString = QString::fromUtf8(panTiltInformation.data());
+            qDebug() << "message" << DataAsString;
+            DataAsString = DataAsString.mid(8);
+            DataAsString = DataAsString.left(DataAsString.indexOf(";"));
+            panVal = DataAsString.left(DataAsString.indexOf(","));
+            tiltVal = DataAsString.mid(DataAsString.indexOf(",") + 1);
+            if (panStop)
+                panTiltInfo = false;
+            //qDebug() << "panTiltInfo";
+        } else if (panStop && !panTiltInfo && !panMotionStart && !panInit) {
+            qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~Stopping Panaroma";
+            data = doPtzCommand(QString("<IP2STP:;IP0"));
+            socket->write(data.toUtf8());
+            socket->waitForBytesWritten();
+            panaroma = false;
+            //panInit = false;
+            //panMotionStart = false;
+            //panTiltInfo = false;
+            panaromaCounter = 0;
+            panInitOnce = false;
+            initAlgoritmOnce = false;
+            wrap->viaPan_Release();
+            socket->close();
+            qDebug() << "panaroma counter is " << panaromaCounter;
+}
+    }
+}
+
+
+QString SmartStreamer::doPtzCommand(QString ascii)
+{
+    QByteArray ba = ascii.toLatin1();
+    int len = ba.length();
+    char *el = ba.data();
+    char checksum = el[0];
+    for (int i = 1; i < len ; i++) {
+        checksum = checksum ^ el[i];
+    }
+    QString data = QString("%1%2>").arg(ascii).arg(QString::number((uint)checksum, 16).toUpper());
+    return data;
+}
+
 
 int SmartStreamer::setupRtspClient(const QString &rtspUrl)
 {
@@ -272,6 +384,7 @@ int SmartStreamer::processMainYUV(const RawBuffer &buf)
 	if (PRINT_BUFS)
 		ffDebug() << buf.getMimeType() << buf.size() << FFmpegColorSpace::getName(buf.constPars()->avPixelFormat)
 			  << buf.constPars()->videoWidth << buf.constPars()->videoHeight;
+#if 0
     if (cuConf->getActiveMode() == CudaConfigurations::CudaList::CU_PAN_MODE) {
         if (wrap->pan_enabled == false) {
             ptzclient->setPanTiltPos(0,0);
@@ -287,11 +400,44 @@ int SmartStreamer::processMainYUV(const RawBuffer &buf)
         if (PRINT_BUFS)
             ffDebug() << "Current mode is Motion Detection";
     }
+#endif
 #ifdef HAVE_VIA_WRAPPER
-	if (wrap->alarm_flag && sei) {
-		QByteArray ba = QByteArray((char *)wrap->meta, 4096);
-		sei->processMessage(ba);
-	}
+    qDebug() << "BASE ~~~~~~~~~~~~~~~~~~~~~~ " << base;
+    counterForDummyEvents++;
+    if (panaroma) {
+        if (panaromaCounter > 79) {
+
+            if (initAlgoritmOnce) {
+                initPanInViaBa = 0;
+            }
+            float pan_tilt_zoom_read[3];
+            pan_tilt_zoom_read[0] = QString(panVal).toFloat()/17777.777;
+            pan_tilt_zoom_read[1] = QString(tiltVal).toFloat()/17777.777;
+            pan_tilt_zoom_read[2] = QString(speed).toFloat();
+            wrap->viaPan(buf,pan_tilt_zoom_read,initPanInViaBa);
+            if (wrap->meta[0] != 0) {
+                panStop = true;
+                //qDebug() << "first element of meta is " << wrap->meta[0];
+            }
+            else {
+                panStop = false;
+                //qDebug() << "first element of meta is " << wrap->meta[1];
+            }
+            initAlgoritmOnce = true;
+        }
+
+    } else if (base) {
+        if (initAlgoritmOnce) {
+            initBaseInViaBa = 0;
+        }
+        qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~" << initBaseInViaBa;
+        wrap->viaBase(buf,initBaseInViaBa);
+        initAlgoritmOnce = true;
+        if (sei) {
+            QByteArray ba = QByteArray((char *)wrap->meta, 4096);
+            sei->processMessage(ba);
+        }
+    }
 #endif
 	return 0;
 }
@@ -335,12 +481,19 @@ grpc::Status SmartStreamer::SetCurrentMode(grpc::ServerContext *context, const c
     Q_UNUSED(response)
     int value = request->mode();
     qDebug() << value << request;
-    if (CudaConfigurations::CudaList::CU_NONE == value)
+    if (CudaConfigurations::CudaList::CU_NONE == value) {
         cuConf->changeMode(CudaConfigurations::CudaList::CU_NONE);
-    else if (CudaConfigurations::CudaList::CU_PAN_MODE == value)
+        base = false;
+        panaroma = false;
+    }
+    else if (CudaConfigurations::CudaList::CU_PAN_MODE == value) {
         cuConf->changeMode(CudaConfigurations::CudaList::CU_PAN_MODE);
-    else if (CudaConfigurations::CudaList::CU_MOT_MODE == value)
+        panaroma = true;
+    }
+    else if (CudaConfigurations::CudaList::CU_MOT_MODE == value) {
         cuConf->changeMode(CudaConfigurations::CudaList::CU_MOT_MODE);
+        base = true;
+    }
     else if (CudaConfigurations::CudaList::CU_REC_MODE == value)
         cuConf->changeMode(CudaConfigurations::CudaList::CU_REC_MODE);
     return grpc::Status::OK;
