@@ -11,8 +11,8 @@ SOURCES += main.cpp \
     moxadriver.cpp \
     mjpegserver.cpp \
     seiinserter.cpp \
-    proto/config.grpc.pb.cc \
-    proto/config.pb.cc \
+    proto/OrionCommunication.grpc.pb.cc \
+    proto/OrionCommunication.pb.cc \
     proto/camback.pb.cc \
     proto/camback.grpc.pb.cc
 
@@ -21,8 +21,8 @@ HEADERS += \
     moxadriver.h \
     mjpegserver.h \
     seiinserter.h \
-    proto/config.grpc.pb.h \
-    proto/config.pb.h \
+    proto/OrionCommunication.grpc.pb.h \
+    proto/OrionCommunication.pb.h \
     proto/camback.pb.h \
     proto/camback.grpc.pb.h
 

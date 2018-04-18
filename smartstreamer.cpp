@@ -169,7 +169,7 @@ private:
 };
 
 SmartStreamer::SmartStreamer(QObject *parent)
-    : BaseStreamer(parent), config::AppConfig::Service()
+    : BaseStreamer(parent), OrionCommunication::AppConfig::Service()
 {
     grpcServ = new GrpcThread(50054, this);
     grpcServ->start();
@@ -476,7 +476,7 @@ int SmartStreamer::checkPoint(const RawBuffer &buf)
     return 0;
 }
 
-grpc::Status SmartStreamer::SetCurrentMode(grpc::ServerContext *context, const config::SetModeQ *request, config::AppCommandResult *response)
+grpc::Status SmartStreamer::SetCurrentMode(grpc::ServerContext *context, const OrionCommunication::SetModeQ *request, OrionCommunication::AppCommandResult *response)
 {
     Q_UNUSED(context)
     Q_UNUSED(response)
@@ -500,7 +500,7 @@ grpc::Status SmartStreamer::SetCurrentMode(grpc::ServerContext *context, const c
     return grpc::Status::OK;
 }
 
-grpc::Status SmartStreamer::GetCurrentMode(grpc::ServerContext *context, const config::DummyInfo *request, config::AppCommandResult *response)
+grpc::Status SmartStreamer::GetCurrentMode(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response)
 {
     Q_UNUSED(context)
     Q_UNUSED(request)
@@ -508,7 +508,7 @@ grpc::Status SmartStreamer::GetCurrentMode(grpc::ServerContext *context, const c
     return grpc::Status::OK;
 }
 
-grpc::Status SmartStreamer::SetPanaromaParameters(grpc::ServerContext *context, const config::PanoramaPars *request, config::AppCommandResult *response)
+grpc::Status SmartStreamer::SetPanaromaParameters(grpc::ServerContext *context, const OrionCommunication::PanoramaPars *request, OrionCommunication::AppCommandResult *response)
 {
     Q_UNUSED(context)
     Q_UNUSED(response)

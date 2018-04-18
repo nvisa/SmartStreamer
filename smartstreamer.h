@@ -3,7 +3,7 @@
 
 #include <lmm/players/basestreamer.h>
 
-#include "proto/config.grpc.pb.h"
+#include "proto/OrionCommunication.grpc.pb.h"
 
 #include <QTcpSocket>
 
@@ -18,7 +18,7 @@ class SeiInserter;
 class CudaConfigurations;
 class GrpcThread;
 class GrpcPTZClient;
-class SmartStreamer : public BaseStreamer, public config::AppConfig::Service
+class SmartStreamer : public BaseStreamer, public OrionCommunication::AppConfig::Service
 {
 	Q_OBJECT
 public:
@@ -33,9 +33,9 @@ public:
     int processPanoramaImage(const RawBuffer &buf);
 	int checkPoint(const RawBuffer &buf);
 
-    grpc::Status SetCurrentMode(grpc::ServerContext *context, const config::SetModeQ *request, config::AppCommandResult *response);
-    grpc::Status GetCurrentMode(grpc::ServerContext *context, const config::DummyInfo *request, config::AppCommandResult *response);
-    grpc::Status SetPanaromaParameters(grpc::ServerContext *context, const config::PanoramaPars *request, config::AppCommandResult *response);
+    grpc::Status SetCurrentMode(grpc::ServerContext *context, const OrionCommunication::SetModeQ *request, OrionCommunication::AppCommandResult *response);
+    grpc::Status GetCurrentMode(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response);
+    grpc::Status SetPanaromaParameters(grpc::ServerContext *context, const OrionCommunication::PanoramaPars *request, OrionCommunication::AppCommandResult *response);
 	class Parameters {
 	public:
 		Parameters()

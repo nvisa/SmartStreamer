@@ -1,6 +1,6 @@
 syntax="proto3";
 
-package config;
+package OrionCommunication;
 
 service AppConfig {
     rpc SetPanaromaParameters(PanoramaPars) returns(AppCommandResult) {} 
@@ -8,7 +8,7 @@ service AppConfig {
     rpc SetCurrentMode(SetModeQ) returns(AppCommandResult) {}
     rpc GetCurrentMode(DummyInfo) returns(AppCommandResult) {}
     rpc GetLastPanaromaFrame(DummyInfo) returns(AppCommandResult) {}
-    rpc GetPanaromaFrames(DummyInfo) returns(AppCommandResult) {}
+    rpc GetPanaromaFrames(DummyInfo) returns(stream PanoramaFrame) {}
 }
 
 message PanoramaPars {
@@ -56,4 +56,10 @@ message AppCommandResult {
 
 message AryaParameters {
     int32 panSpeed = 1;
+}
+
+message PanoramaFrame {
+    bool valid = 1;
+    float progress = 2;
+    bytes frameData = 3;
 }
