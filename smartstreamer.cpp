@@ -85,6 +85,27 @@ public:
         stub->SetPanTiltPos(&ctx, req, &res);
         return 0;
     }
+    int setPanTiltAbs(float pan_speed, float tilt_speed)
+    {
+        camback::PtzCmdPar req;
+        req.set_pan_abs(pan_speed);
+        req.set_tilt_abs(tilt_speed);
+        grpc::ClientContext ctx;
+        camback::PtzCommandResult res;
+        stub->PanTiltAbs(&ctx, req, &res);
+        return 0;
+    }
+    int  getPTZPosInfo(int &pan, int &tilt, int &zoom)
+    {
+        camback::PTZInfoQ req;
+        grpc::ClientContext ctx;
+        camback::PTZPosInfo res;
+        stub->GetPTZPosInfo(&ctx, req, &res);
+        pan = res.pan_pos();
+        tilt = res.tilt_pos();
+        zoom = res.zoom_pos();
+        return 0;
+    }
 
 private:
     std::unique_ptr<camback::PTZService::Stub> stub;
@@ -154,16 +175,15 @@ SmartStreamer::SmartStreamer(QObject *parent)
     grpcServ->start();
     cuConf = new CudaConfigurations();
 
-//    ptzclient = new GrpcPTZClient(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
-//    ptzclient->setPanTiltPos(0,0);
+    ptzclient = new GrpcPTZClient(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
 #ifdef HAVE_VIA_WRAPPER
 	wrap = new ViaWrapper();
 //    wrap->pan_enabled = false;
     socket = new QTcpSocket();
-    panaroma = false;
+    panaroma = true;
     panInitOnce = false;
     initAlgoritmOnce = false;
-    base = true;
+    base = false;
 
     timer = new QTimer(this);
     connect(timer,SIGNAL(timeout()),this,SLOT(switchEvent()));
@@ -177,10 +197,7 @@ void SmartStreamer::switchEvent()
     qDebug() << "Inside the switch event";
 
     if (panaroma && !panInitOnce) {
-        socket->connectToHost("50.23.169.213", 4001);
-        //timer.start();
-        connect(socket, SIGNAL(connected()), SLOT(connected()));
-        //connect(socket,SIGNAL(readyRead()),SLOT(readyRead()));
+        connected();
         panaromaCounter = 0;
         timerElapsed.start();
         panInit = true;
@@ -201,13 +218,11 @@ void SmartStreamer::connected()
 {
     qDebug() << "inside the connected";
 
-    QTimer::singleShot(50, this, SLOT(connected()));
-    QString data;
+    QTimer::singleShot(100, this, SLOT(connected()));
     if (panaroma) {
-       if (panInit) {
-            data = doPtzCommand(QString("<IP2PTA:0,0;IP0"));
-            socket->write(data.toUtf8());
-            socket->waitForBytesWritten();
+        if (panInit) {
+            if (panaromaCounter < 4)
+                ptzclient->setPanTiltPos(0,0);
             panaromaCounter++;
             if (panaromaCounter > 80) {
                 panMotionStart = true;
@@ -217,39 +232,26 @@ void SmartStreamer::connected()
                 panTiltInfo = false;
             qDebug() << "panInit " << panaromaCounter;
         } else if(panMotionStart) {
-            data = doPtzCommand(QString("<IP2PRR:%1;IP0").arg(speed));//30000->1.20min/360
-            socket->write(data.toUtf8());
+            ptzclient->setPanTiltAbs(0.02, 0);
             panMotionStart = false;
             panTiltInfo = true;
             if (panStop)
                 panTiltInfo = false;
             qDebug() << "panMotionStart";
         } else if (panTiltInfo) {
-            data = "<ZZZPTT:;ZZZ??>";
-
-            socket->write(data.toUtf8());
-            //qDebug() << "Info: " << socket->readLine().data();
-            QByteArray panTiltInformation = socket->readLine().data();
-            //qDebug() << "elapsed time" << timerElapsed.elapsed() - prevTime;
-            prevTime = timerElapsed.elapsed();
-            QString DataAsString = QString::fromUtf8(panTiltInformation.data());
-            qDebug() << "message" << DataAsString;
-            DataAsString = DataAsString.mid(8);
-            DataAsString = DataAsString.left(DataAsString.indexOf(";"));
-            panVal = DataAsString.left(DataAsString.indexOf(","));
-            tiltVal = DataAsString.mid(DataAsString.indexOf(",") + 1);
+            int pan;
+            int tilt;
+            int zoom;
+            ptzclient->getPTZPosInfo(pan, tilt, zoom);
+            panVal = QString::number(pan);
+            tiltVal = QString::number(tilt);
             if (panStop)
                 panTiltInfo = false;
             //qDebug() << "panTiltInfo";
         } else if (panStop && !panTiltInfo && !panMotionStart && !panInit) {
             qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~Stopping Panaroma";
-            data = doPtzCommand(QString("<IP2STP:;IP0"));
-            socket->write(data.toUtf8());
-            socket->waitForBytesWritten();
+            ptzclient->setPanTiltAbs(0, 0);
             panaroma = false;
-            //panInit = false;
-            //panMotionStart = false;
-            //panTiltInfo = false;
             panaromaCounter = 0;
             panInitOnce = false;
             initAlgoritmOnce = false;
@@ -402,11 +404,10 @@ int SmartStreamer::processMainYUV(const RawBuffer &buf)
     }
 #endif
 #ifdef HAVE_VIA_WRAPPER
-    qDebug() << "BASE ~~~~~~~~~~~~~~~~~~~~~~ " << base;
+    qDebug() << "Panorama ~~~~~~~~~~~~~~~~~~~~~~ " << panaroma;
     counterForDummyEvents++;
     if (panaroma) {
         if (panaromaCounter > 79) {
-
             if (initAlgoritmOnce) {
                 initPanInViaBa = 0;
             }

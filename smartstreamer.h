@@ -51,7 +51,7 @@ public:
 			rtpBufferDuration = 0;
 			enableMoxaHacks = false;
 			decOutputInFps = 0;
-			decOutputOutFps = 0;
+            decOutputOutFps = 0;
 		}
 
 		enum EnabledElemenets {
@@ -131,7 +131,8 @@ protected:
     //flags for init of algorithms
     bool initAlgoritmOnce;
     int init;
-
+    int initPanInViaBa;
+    int initBaseInViaBa;
     //pan counter to set init location before going to next step
     int panaromaCounter;
 
