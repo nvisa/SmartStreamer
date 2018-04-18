@@ -36,7 +36,11 @@ extern "C" {
 #include <grpc++/security/credentials.h>
 #include <grpc++/security/server_credentials.h>
 
+#include <QFile>
+#include <QImage>
 #include <QBuffer>
+#include <QProcess>
+#include <unistd.h>
 #include <proto/camback.grpc.pb.h>
 
 using grpc::Server;
@@ -174,13 +178,12 @@ SmartStreamer::SmartStreamer(QObject *parent)
     grpcServ = new GrpcThread(50054, this);
     grpcServ->start();
     cuConf = new CudaConfigurations();
-
     ptzclient = new GrpcPTZClient(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
 #ifdef HAVE_VIA_WRAPPER
 	wrap = new ViaWrapper();
 //    wrap->pan_enabled = false;
     socket = new QTcpSocket();
-    panaroma = true;
+    panaroma = false;
     panInitOnce = false;
     initAlgoritmOnce = false;
     base = false;
@@ -217,7 +220,6 @@ void SmartStreamer::switchEvent()
 void SmartStreamer::connected()
 {
     qDebug() << "inside the connected";
-
     QTimer::singleShot(100, this, SLOT(connected()));
     if (panaroma) {
         if (panInit) {
@@ -404,7 +406,7 @@ int SmartStreamer::processMainYUV(const RawBuffer &buf)
     }
 #endif
 #ifdef HAVE_VIA_WRAPPER
-    qDebug() << "Panorama ~~~~~~~~~~~~~~~~~~~~~~ " << panaroma;
+    //qDebug() << "Panorama ~~~~~~~~~~~~~~~~~~~~~~ " << panaroma;
     counterForDummyEvents++;
     if (panaroma) {
         if (panaromaCounter > 79) {
@@ -490,6 +492,7 @@ grpc::Status SmartStreamer::SetCurrentMode(grpc::ServerContext *context, const O
     else if (CudaConfigurations::CudaList::CU_PAN_MODE == value) {
         cuConf->changeMode(CudaConfigurations::CudaList::CU_PAN_MODE);
         panaroma = true;
+        QProcess::execute("sh -c \"rm -f /home/ubuntu/Desktop/Pan_images/*\"");
     }
     else if (CudaConfigurations::CudaList::CU_MOT_MODE == value) {
         cuConf->changeMode(CudaConfigurations::CudaList::CU_MOT_MODE);
@@ -516,6 +519,44 @@ grpc::Status SmartStreamer::SetPanaromaParameters(grpc::ServerContext *context, 
     return grpc::Status::OK;
 }
 
+grpc::Status SmartStreamer::GetPanaromaFrames(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, ::grpc::ServerWriter<OrionCommunication::PanoramaFrame> *writer)
+{
+    if (!panaroma)
+        return Status::CANCELLED;
+    QString next = "/home/ubuntu/Desktop/Pan_images/Pan%1.jpg";
+    QString nextFinal = "/home/ubuntu/Desktop/Pan_images/PanFinal.jpg";
+    int progress = 0;
+    int nameLastValue = 200;
+    while (1) {
+        QString picture;
+        picture = next.arg(QString::number(nameLastValue), 4, QChar('0'));
+        qDebug() << "-------------------------------------------------------" << picture << QFile::exists(picture);
+        if (QFile::exists(nextFinal)) {
+            picture = nextFinal;
+            progress = 9;
+        } else if (!QFile::exists(picture)) {
+            sleep(1);
+            //qDebug() << "I'm in sleep";
+            continue;
+        }
+        QImage im(picture);
+        OrionCommunication::PanoramaFrame panFrames;
+        panFrames.set_valid(true);
+        progress = progress + 1;
+        panFrames.set_progress(progress * 10);
+        QByteArray ba;
+        QBuffer qbuf(&ba);
+        qbuf.open(QIODevice::WriteOnly);
+        im.save(&qbuf, "JPG");
+        panFrames.set_framedata(ba.data(), ba.size());
+        writer->Write(panFrames);
+        nameLastValue = nameLastValue + 200;
+        if (picture == nextFinal)
+            break;
+    }
+    return Status::OK;
+}
+
 void SmartStreamer::timeout()
 {
 #if 0
@@ -529,7 +570,7 @@ void SmartStreamer::timeout()
 				<< dec->getOutputQueue(0)->getFps()
 				<< vout->getWidget()->getDropCount();
 #endif
-	PipelineManager::timeout();
+    PipelineManager::timeout();
 }
 
 #define printPar(member_name) lines << QString("\t%1: %2").arg(#member_name).arg(pars.member_name)
