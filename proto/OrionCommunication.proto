@@ -4,11 +4,16 @@ package OrionCommunication;
 
 service AppConfig {
     rpc SetPanaromaParameters(PanoramaPars) returns(AppCommandResult) {} 
-    rpc SetMotionDetectionParameters(MotDetPars) returns(AppCommandResult) {} 
+    rpc SetMotionDetectionParameters(TRoi) returns(AppCommandResult) {}
     rpc SetCurrentMode(SetModeQ) returns(AppCommandResult) {}
-    rpc GetCurrentMode(DummyInfo) returns(AppCommandResult) {}
+    rpc GetCurrentMode(DummyInfo) returns(SetModeQ) {}
     rpc GetLastPanaromaFrame(DummyInfo) returns(AppCommandResult) {}
-    rpc GetPanaromaFrames(DummyInfo) returns(stream PanoramaFrame) {}
+    rpc GetPanaromaFrames(GetFrames) returns(stream PanoramaFrame) {}
+    rpc RunMotion(DummyInfo) returns(AppCommandResult) {}
+    rpc RunPanaroma(DummyInfo) returns(AppCommandResult) {}
+    rpc StopMotion(DummyInfo) returns(AppCommandResult) {}
+    rpc StopPanaroma(DummyInfo) returns(AppCommandResult) {}
+    rpc GetScreenShot(DummyInfo) returns(ScreenFrame) {}
 }
 
 message PanoramaPars {
@@ -23,14 +28,24 @@ message PanoramaPars {
     int32 pan_motion_frame_no = 9;
 }
 
-message MotDetPars {
-    string roi1 = 10;
-    string roi2 = 11;
-    string roi3 = 12;
-    string upcorner1 = 13;
-    string upcorner2 = 14;
-    string line1 = 15;
-    string line2 = 16;
+message TRoi {
+    TPolygon polygon = 1;
+    TRectangle rect1 = 2;
+    TRectangle rect2 = 3;
+}
+
+message TPoint{
+    int32 x = 1;
+    int32 y = 2;
+}
+
+message TPolygon {
+    repeated TPoint points = 1;
+}
+
+message TRectangle {
+    TPoint upperLeft = 1;
+    TPoint bottomRight = 2;
 }
 
 message SetModeQ {
@@ -58,8 +73,21 @@ message AryaParameters {
     int32 panSpeed = 1;
 }
 
+message GetFrames {
+    enum Frames {
+      LastFrame = 0;
+      AllFrames = 1;
+    }
+    Frames modeFrame = 1;
+}
+
 message PanoramaFrame {
     bool valid = 1;
     float progress = 2;
     bytes frameData = 3;
+}
+message ScreenFrame {
+    bytes frame = 1;
+    int32 width = 2;
+    int32 height = 3;
 }

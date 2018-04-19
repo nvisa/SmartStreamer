@@ -34,9 +34,15 @@ public:
 	int checkPoint(const RawBuffer &buf);
 
     grpc::Status SetCurrentMode(grpc::ServerContext *context, const OrionCommunication::SetModeQ *request, OrionCommunication::AppCommandResult *response);
-    grpc::Status GetCurrentMode(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response);
+    grpc::Status GetCurrentMode(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::SetModeQ *response);
     grpc::Status SetPanaromaParameters(grpc::ServerContext *context, const OrionCommunication::PanoramaPars *request, OrionCommunication::AppCommandResult *response);
-    grpc::Status GetPanaromaFrames(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, ::grpc::ServerWriter<OrionCommunication::PanoramaFrame> *writer);
+    grpc::Status GetPanaromaFrames(grpc::ServerContext *context, const OrionCommunication::GetFrames *request, ::grpc::ServerWriter<OrionCommunication::PanoramaFrame> *writer);
+    grpc::Status RunPanaroma(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response);
+    grpc::Status RunMotion(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response);
+    grpc::Status StopPanaroma(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response);
+    grpc::Status StopMotion(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response);
+    grpc::Status GetScreenShot(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::ScreenFrame *response);
+    grpc::Status SetMotionDetectionParameters(grpc::ServerContext *context, const OrionCommunication::TRoi *request, OrionCommunication::AppCommandResult *response);
 	class Parameters {
 	public:
 		Parameters()
@@ -108,6 +114,9 @@ protected:
     CudaConfigurations *cuConf;
     GrpcThread *grpcServ;
     GrpcPTZClient *ptzclient;
+    unsigned char *screenBuffer;
+    int width;
+    int height;
 
     QTimer *timer;
     QTcpSocket *socket;
@@ -119,11 +128,9 @@ protected:
     QString panVal;
     QString tiltVal;
 
-    //dummy counter
-    int counterForDummyEvents;
-
     //flag for switchevent slot
     bool panInitOnce;
+    bool baseInitOnce;
 
     //flags for algorithms
     bool panaroma;
@@ -131,6 +138,7 @@ protected:
 
     //flags for init of algorithms
     bool initAlgoritmOnce;
+    bool initBaseAlgoritmOnce;
     int init;
     int initPanInViaBa;
     int initBaseInViaBa;
@@ -143,7 +151,7 @@ protected:
     bool panTiltInfo;
     bool panStop;
     //pan_states_end
-
+    bool baseStop;
     QElapsedTimer timerElapsed;
     qint64 prevTime;
 };

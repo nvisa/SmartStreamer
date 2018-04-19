@@ -37,7 +37,7 @@ namespace protobuf_OrionCommunication_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[8];
+  static const ::google::protobuf::internal::ParseTable schema[13];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
@@ -45,8 +45,14 @@ struct TableStruct {
 void AddDescriptors();
 void InitDefaultsPanoramaParsImpl();
 void InitDefaultsPanoramaPars();
-void InitDefaultsMotDetParsImpl();
-void InitDefaultsMotDetPars();
+void InitDefaultsTRoiImpl();
+void InitDefaultsTRoi();
+void InitDefaultsTPointImpl();
+void InitDefaultsTPoint();
+void InitDefaultsTPolygonImpl();
+void InitDefaultsTPolygon();
+void InitDefaultsTRectangleImpl();
+void InitDefaultsTRectangle();
 void InitDefaultsSetModeQImpl();
 void InitDefaultsSetModeQ();
 void InitDefaultsDummyInfoImpl();
@@ -57,17 +63,26 @@ void InitDefaultsAppCommandResultImpl();
 void InitDefaultsAppCommandResult();
 void InitDefaultsAryaParametersImpl();
 void InitDefaultsAryaParameters();
+void InitDefaultsGetFramesImpl();
+void InitDefaultsGetFrames();
 void InitDefaultsPanoramaFrameImpl();
 void InitDefaultsPanoramaFrame();
+void InitDefaultsScreenFrameImpl();
+void InitDefaultsScreenFrame();
 inline void InitDefaults() {
   InitDefaultsPanoramaPars();
-  InitDefaultsMotDetPars();
+  InitDefaultsTRoi();
+  InitDefaultsTPoint();
+  InitDefaultsTPolygon();
+  InitDefaultsTRectangle();
   InitDefaultsSetModeQ();
   InitDefaultsDummyInfo();
   InitDefaultsMotionDetectionParameters();
   InitDefaultsAppCommandResult();
   InitDefaultsAryaParameters();
+  InitDefaultsGetFrames();
   InitDefaultsPanoramaFrame();
+  InitDefaultsScreenFrame();
 }
 }  // namespace protobuf_OrionCommunication_2eproto
 namespace OrionCommunication {
@@ -80,9 +95,9 @@ extern AryaParametersDefaultTypeInternal _AryaParameters_default_instance_;
 class DummyInfo;
 class DummyInfoDefaultTypeInternal;
 extern DummyInfoDefaultTypeInternal _DummyInfo_default_instance_;
-class MotDetPars;
-class MotDetParsDefaultTypeInternal;
-extern MotDetParsDefaultTypeInternal _MotDetPars_default_instance_;
+class GetFrames;
+class GetFramesDefaultTypeInternal;
+extern GetFramesDefaultTypeInternal _GetFrames_default_instance_;
 class MotionDetectionParameters;
 class MotionDetectionParametersDefaultTypeInternal;
 extern MotionDetectionParametersDefaultTypeInternal _MotionDetectionParameters_default_instance_;
@@ -92,9 +107,24 @@ extern PanoramaFrameDefaultTypeInternal _PanoramaFrame_default_instance_;
 class PanoramaPars;
 class PanoramaParsDefaultTypeInternal;
 extern PanoramaParsDefaultTypeInternal _PanoramaPars_default_instance_;
+class ScreenFrame;
+class ScreenFrameDefaultTypeInternal;
+extern ScreenFrameDefaultTypeInternal _ScreenFrame_default_instance_;
 class SetModeQ;
 class SetModeQDefaultTypeInternal;
 extern SetModeQDefaultTypeInternal _SetModeQ_default_instance_;
+class TPoint;
+class TPointDefaultTypeInternal;
+extern TPointDefaultTypeInternal _TPoint_default_instance_;
+class TPolygon;
+class TPolygonDefaultTypeInternal;
+extern TPolygonDefaultTypeInternal _TPolygon_default_instance_;
+class TRectangle;
+class TRectangleDefaultTypeInternal;
+extern TRectangleDefaultTypeInternal _TRectangle_default_instance_;
+class TRoi;
+class TRoiDefaultTypeInternal;
+extern TRoiDefaultTypeInternal _TRoi_default_instance_;
 }  // namespace OrionCommunication
 namespace OrionCommunication {
 
@@ -119,6 +149,27 @@ inline bool SetModeQ_Mode_Parse(
     const ::std::string& name, SetModeQ_Mode* value) {
   return ::google::protobuf::internal::ParseNamedEnum<SetModeQ_Mode>(
     SetModeQ_Mode_descriptor(), name, value);
+}
+enum GetFrames_Frames {
+  GetFrames_Frames_LastFrame = 0,
+  GetFrames_Frames_AllFrames = 1,
+  GetFrames_Frames_GetFrames_Frames_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
+  GetFrames_Frames_GetFrames_Frames_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
+};
+bool GetFrames_Frames_IsValid(int value);
+const GetFrames_Frames GetFrames_Frames_Frames_MIN = GetFrames_Frames_LastFrame;
+const GetFrames_Frames GetFrames_Frames_Frames_MAX = GetFrames_Frames_AllFrames;
+const int GetFrames_Frames_Frames_ARRAYSIZE = GetFrames_Frames_Frames_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* GetFrames_Frames_descriptor();
+inline const ::std::string& GetFrames_Frames_Name(GetFrames_Frames value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    GetFrames_Frames_descriptor(), value);
+}
+inline bool GetFrames_Frames_Parse(
+    const ::std::string& name, GetFrames_Frames* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<GetFrames_Frames>(
+    GetFrames_Frames_descriptor(), name, value);
 }
 // ===================================================================
 
@@ -277,24 +328,24 @@ class PanoramaPars : public ::google::protobuf::Message /* @@protoc_insertion_po
 };
 // -------------------------------------------------------------------
 
-class MotDetPars : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:OrionCommunication.MotDetPars) */ {
+class TRoi : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:OrionCommunication.TRoi) */ {
  public:
-  MotDetPars();
-  virtual ~MotDetPars();
+  TRoi();
+  virtual ~TRoi();
 
-  MotDetPars(const MotDetPars& from);
+  TRoi(const TRoi& from);
 
-  inline MotDetPars& operator=(const MotDetPars& from) {
+  inline TRoi& operator=(const TRoi& from) {
     CopyFrom(from);
     return *this;
   }
   #if LANG_CXX11
-  MotDetPars(MotDetPars&& from) noexcept
-    : MotDetPars() {
+  TRoi(TRoi&& from) noexcept
+    : TRoi() {
     *this = ::std::move(from);
   }
 
-  inline MotDetPars& operator=(MotDetPars&& from) noexcept {
+  inline TRoi& operator=(TRoi&& from) noexcept {
     if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -304,30 +355,30 @@ class MotDetPars : public ::google::protobuf::Message /* @@protoc_insertion_poin
   }
   #endif
   static const ::google::protobuf::Descriptor* descriptor();
-  static const MotDetPars& default_instance();
+  static const TRoi& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const MotDetPars* internal_default_instance() {
-    return reinterpret_cast<const MotDetPars*>(
-               &_MotDetPars_default_instance_);
+  static inline const TRoi* internal_default_instance() {
+    return reinterpret_cast<const TRoi*>(
+               &_TRoi_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
     1;
 
-  void Swap(MotDetPars* other);
-  friend void swap(MotDetPars& a, MotDetPars& b) {
+  void Swap(TRoi* other);
+  friend void swap(TRoi& a, TRoi& b) {
     a.Swap(&b);
   }
 
   // implements Message ----------------------------------------------
 
-  inline MotDetPars* New() const PROTOBUF_FINAL { return New(NULL); }
+  inline TRoi* New() const PROTOBUF_FINAL { return New(NULL); }
 
-  MotDetPars* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  TRoi* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
   void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
   void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void CopyFrom(const MotDetPars& from);
-  void MergeFrom(const MotDetPars& from);
+  void CopyFrom(const TRoi& from);
+  void MergeFrom(const TRoi& from);
   void Clear() PROTOBUF_FINAL;
   bool IsInitialized() const PROTOBUF_FINAL;
 
@@ -343,7 +394,7 @@ class MotDetPars : public ::google::protobuf::Message /* @@protoc_insertion_poin
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const PROTOBUF_FINAL;
-  void InternalSwap(MotDetPars* other);
+  void InternalSwap(TRoi* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return NULL;
@@ -359,118 +410,366 @@ class MotDetPars : public ::google::protobuf::Message /* @@protoc_insertion_poin
 
   // accessors -------------------------------------------------------
 
-  // string roi1 = 10;
-  void clear_roi1();
-  static const int kRoi1FieldNumber = 10;
-  const ::std::string& roi1() const;
-  void set_roi1(const ::std::string& value);
-  #if LANG_CXX11
-  void set_roi1(::std::string&& value);
-  #endif
-  void set_roi1(const char* value);
-  void set_roi1(const char* value, size_t size);
-  ::std::string* mutable_roi1();
-  ::std::string* release_roi1();
-  void set_allocated_roi1(::std::string* roi1);
+  // .OrionCommunication.TPolygon polygon = 1;
+  bool has_polygon() const;
+  void clear_polygon();
+  static const int kPolygonFieldNumber = 1;
+  const ::OrionCommunication::TPolygon& polygon() const;
+  ::OrionCommunication::TPolygon* release_polygon();
+  ::OrionCommunication::TPolygon* mutable_polygon();
+  void set_allocated_polygon(::OrionCommunication::TPolygon* polygon);
 
-  // string roi2 = 11;
-  void clear_roi2();
-  static const int kRoi2FieldNumber = 11;
-  const ::std::string& roi2() const;
-  void set_roi2(const ::std::string& value);
-  #if LANG_CXX11
-  void set_roi2(::std::string&& value);
-  #endif
-  void set_roi2(const char* value);
-  void set_roi2(const char* value, size_t size);
-  ::std::string* mutable_roi2();
-  ::std::string* release_roi2();
-  void set_allocated_roi2(::std::string* roi2);
+  // .OrionCommunication.TRectangle rect1 = 2;
+  bool has_rect1() const;
+  void clear_rect1();
+  static const int kRect1FieldNumber = 2;
+  const ::OrionCommunication::TRectangle& rect1() const;
+  ::OrionCommunication::TRectangle* release_rect1();
+  ::OrionCommunication::TRectangle* mutable_rect1();
+  void set_allocated_rect1(::OrionCommunication::TRectangle* rect1);
 
-  // string roi3 = 12;
-  void clear_roi3();
-  static const int kRoi3FieldNumber = 12;
-  const ::std::string& roi3() const;
-  void set_roi3(const ::std::string& value);
-  #if LANG_CXX11
-  void set_roi3(::std::string&& value);
-  #endif
-  void set_roi3(const char* value);
-  void set_roi3(const char* value, size_t size);
-  ::std::string* mutable_roi3();
-  ::std::string* release_roi3();
-  void set_allocated_roi3(::std::string* roi3);
+  // .OrionCommunication.TRectangle rect2 = 3;
+  bool has_rect2() const;
+  void clear_rect2();
+  static const int kRect2FieldNumber = 3;
+  const ::OrionCommunication::TRectangle& rect2() const;
+  ::OrionCommunication::TRectangle* release_rect2();
+  ::OrionCommunication::TRectangle* mutable_rect2();
+  void set_allocated_rect2(::OrionCommunication::TRectangle* rect2);
 
-  // string upcorner1 = 13;
-  void clear_upcorner1();
-  static const int kUpcorner1FieldNumber = 13;
-  const ::std::string& upcorner1() const;
-  void set_upcorner1(const ::std::string& value);
-  #if LANG_CXX11
-  void set_upcorner1(::std::string&& value);
-  #endif
-  void set_upcorner1(const char* value);
-  void set_upcorner1(const char* value, size_t size);
-  ::std::string* mutable_upcorner1();
-  ::std::string* release_upcorner1();
-  void set_allocated_upcorner1(::std::string* upcorner1);
-
-  // string upcorner2 = 14;
-  void clear_upcorner2();
-  static const int kUpcorner2FieldNumber = 14;
-  const ::std::string& upcorner2() const;
-  void set_upcorner2(const ::std::string& value);
-  #if LANG_CXX11
-  void set_upcorner2(::std::string&& value);
-  #endif
-  void set_upcorner2(const char* value);
-  void set_upcorner2(const char* value, size_t size);
-  ::std::string* mutable_upcorner2();
-  ::std::string* release_upcorner2();
-  void set_allocated_upcorner2(::std::string* upcorner2);
-
-  // string line1 = 15;
-  void clear_line1();
-  static const int kLine1FieldNumber = 15;
-  const ::std::string& line1() const;
-  void set_line1(const ::std::string& value);
-  #if LANG_CXX11
-  void set_line1(::std::string&& value);
-  #endif
-  void set_line1(const char* value);
-  void set_line1(const char* value, size_t size);
-  ::std::string* mutable_line1();
-  ::std::string* release_line1();
-  void set_allocated_line1(::std::string* line1);
-
-  // string line2 = 16;
-  void clear_line2();
-  static const int kLine2FieldNumber = 16;
-  const ::std::string& line2() const;
-  void set_line2(const ::std::string& value);
-  #if LANG_CXX11
-  void set_line2(::std::string&& value);
-  #endif
-  void set_line2(const char* value);
-  void set_line2(const char* value, size_t size);
-  ::std::string* mutable_line2();
-  ::std::string* release_line2();
-  void set_allocated_line2(::std::string* line2);
-
-  // @@protoc_insertion_point(class_scope:OrionCommunication.MotDetPars)
+  // @@protoc_insertion_point(class_scope:OrionCommunication.TRoi)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::internal::ArenaStringPtr roi1_;
-  ::google::protobuf::internal::ArenaStringPtr roi2_;
-  ::google::protobuf::internal::ArenaStringPtr roi3_;
-  ::google::protobuf::internal::ArenaStringPtr upcorner1_;
-  ::google::protobuf::internal::ArenaStringPtr upcorner2_;
-  ::google::protobuf::internal::ArenaStringPtr line1_;
-  ::google::protobuf::internal::ArenaStringPtr line2_;
+  ::OrionCommunication::TPolygon* polygon_;
+  ::OrionCommunication::TRectangle* rect1_;
+  ::OrionCommunication::TRectangle* rect2_;
   mutable int _cached_size_;
   friend struct ::protobuf_OrionCommunication_2eproto::TableStruct;
-  friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsMotDetParsImpl();
+  friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsTRoiImpl();
+};
+// -------------------------------------------------------------------
+
+class TPoint : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:OrionCommunication.TPoint) */ {
+ public:
+  TPoint();
+  virtual ~TPoint();
+
+  TPoint(const TPoint& from);
+
+  inline TPoint& operator=(const TPoint& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  TPoint(TPoint&& from) noexcept
+    : TPoint() {
+    *this = ::std::move(from);
+  }
+
+  inline TPoint& operator=(TPoint&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const TPoint& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const TPoint* internal_default_instance() {
+    return reinterpret_cast<const TPoint*>(
+               &_TPoint_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    2;
+
+  void Swap(TPoint* other);
+  friend void swap(TPoint& a, TPoint& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline TPoint* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  TPoint* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const TPoint& from);
+  void MergeFrom(const TPoint& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(TPoint* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // int32 x = 1;
+  void clear_x();
+  static const int kXFieldNumber = 1;
+  ::google::protobuf::int32 x() const;
+  void set_x(::google::protobuf::int32 value);
+
+  // int32 y = 2;
+  void clear_y();
+  static const int kYFieldNumber = 2;
+  ::google::protobuf::int32 y() const;
+  void set_y(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:OrionCommunication.TPoint)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::int32 x_;
+  ::google::protobuf::int32 y_;
+  mutable int _cached_size_;
+  friend struct ::protobuf_OrionCommunication_2eproto::TableStruct;
+  friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsTPointImpl();
+};
+// -------------------------------------------------------------------
+
+class TPolygon : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:OrionCommunication.TPolygon) */ {
+ public:
+  TPolygon();
+  virtual ~TPolygon();
+
+  TPolygon(const TPolygon& from);
+
+  inline TPolygon& operator=(const TPolygon& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  TPolygon(TPolygon&& from) noexcept
+    : TPolygon() {
+    *this = ::std::move(from);
+  }
+
+  inline TPolygon& operator=(TPolygon&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const TPolygon& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const TPolygon* internal_default_instance() {
+    return reinterpret_cast<const TPolygon*>(
+               &_TPolygon_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    3;
+
+  void Swap(TPolygon* other);
+  friend void swap(TPolygon& a, TPolygon& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline TPolygon* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  TPolygon* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const TPolygon& from);
+  void MergeFrom(const TPolygon& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(TPolygon* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated .OrionCommunication.TPoint points = 1;
+  int points_size() const;
+  void clear_points();
+  static const int kPointsFieldNumber = 1;
+  const ::OrionCommunication::TPoint& points(int index) const;
+  ::OrionCommunication::TPoint* mutable_points(int index);
+  ::OrionCommunication::TPoint* add_points();
+  ::google::protobuf::RepeatedPtrField< ::OrionCommunication::TPoint >*
+      mutable_points();
+  const ::google::protobuf::RepeatedPtrField< ::OrionCommunication::TPoint >&
+      points() const;
+
+  // @@protoc_insertion_point(class_scope:OrionCommunication.TPolygon)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedPtrField< ::OrionCommunication::TPoint > points_;
+  mutable int _cached_size_;
+  friend struct ::protobuf_OrionCommunication_2eproto::TableStruct;
+  friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsTPolygonImpl();
+};
+// -------------------------------------------------------------------
+
+class TRectangle : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:OrionCommunication.TRectangle) */ {
+ public:
+  TRectangle();
+  virtual ~TRectangle();
+
+  TRectangle(const TRectangle& from);
+
+  inline TRectangle& operator=(const TRectangle& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  TRectangle(TRectangle&& from) noexcept
+    : TRectangle() {
+    *this = ::std::move(from);
+  }
+
+  inline TRectangle& operator=(TRectangle&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const TRectangle& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const TRectangle* internal_default_instance() {
+    return reinterpret_cast<const TRectangle*>(
+               &_TRectangle_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    4;
+
+  void Swap(TRectangle* other);
+  friend void swap(TRectangle& a, TRectangle& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline TRectangle* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  TRectangle* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const TRectangle& from);
+  void MergeFrom(const TRectangle& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(TRectangle* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // .OrionCommunication.TPoint upperLeft = 1;
+  bool has_upperleft() const;
+  void clear_upperleft();
+  static const int kUpperLeftFieldNumber = 1;
+  const ::OrionCommunication::TPoint& upperleft() const;
+  ::OrionCommunication::TPoint* release_upperleft();
+  ::OrionCommunication::TPoint* mutable_upperleft();
+  void set_allocated_upperleft(::OrionCommunication::TPoint* upperleft);
+
+  // .OrionCommunication.TPoint bottomRight = 2;
+  bool has_bottomright() const;
+  void clear_bottomright();
+  static const int kBottomRightFieldNumber = 2;
+  const ::OrionCommunication::TPoint& bottomright() const;
+  ::OrionCommunication::TPoint* release_bottomright();
+  ::OrionCommunication::TPoint* mutable_bottomright();
+  void set_allocated_bottomright(::OrionCommunication::TPoint* bottomright);
+
+  // @@protoc_insertion_point(class_scope:OrionCommunication.TRectangle)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::OrionCommunication::TPoint* upperleft_;
+  ::OrionCommunication::TPoint* bottomright_;
+  mutable int _cached_size_;
+  friend struct ::protobuf_OrionCommunication_2eproto::TableStruct;
+  friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsTRectangleImpl();
 };
 // -------------------------------------------------------------------
 
@@ -509,7 +808,7 @@ class SetModeQ : public ::google::protobuf::Message /* @@protoc_insertion_point(
                &_SetModeQ_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    2;
+    5;
 
   void Swap(SetModeQ* other);
   friend void swap(SetModeQ& a, SetModeQ& b) {
@@ -636,7 +935,7 @@ class DummyInfo : public ::google::protobuf::Message /* @@protoc_insertion_point
                &_DummyInfo_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    3;
+    6;
 
   void Swap(DummyInfo* other);
   friend void swap(DummyInfo& a, DummyInfo& b) {
@@ -735,7 +1034,7 @@ class MotionDetectionParameters : public ::google::protobuf::Message /* @@protoc
                &_MotionDetectionParameters_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    4;
+    7;
 
   void Swap(MotionDetectionParameters* other);
   friend void swap(MotionDetectionParameters& a, MotionDetectionParameters& b) {
@@ -834,7 +1133,7 @@ class AppCommandResult : public ::google::protobuf::Message /* @@protoc_insertio
                &_AppCommandResult_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    5;
+    8;
 
   void Swap(AppCommandResult* other);
   friend void swap(AppCommandResult& a, AppCommandResult& b) {
@@ -933,7 +1232,7 @@ class AryaParameters : public ::google::protobuf::Message /* @@protoc_insertion_
                &_AryaParameters_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    6;
+    9;
 
   void Swap(AryaParameters* other);
   friend void swap(AryaParameters& a, AryaParameters& b) {
@@ -997,6 +1296,131 @@ class AryaParameters : public ::google::protobuf::Message /* @@protoc_insertion_
 };
 // -------------------------------------------------------------------
 
+class GetFrames : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:OrionCommunication.GetFrames) */ {
+ public:
+  GetFrames();
+  virtual ~GetFrames();
+
+  GetFrames(const GetFrames& from);
+
+  inline GetFrames& operator=(const GetFrames& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  GetFrames(GetFrames&& from) noexcept
+    : GetFrames() {
+    *this = ::std::move(from);
+  }
+
+  inline GetFrames& operator=(GetFrames&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const GetFrames& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const GetFrames* internal_default_instance() {
+    return reinterpret_cast<const GetFrames*>(
+               &_GetFrames_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    10;
+
+  void Swap(GetFrames* other);
+  friend void swap(GetFrames& a, GetFrames& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline GetFrames* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  GetFrames* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const GetFrames& from);
+  void MergeFrom(const GetFrames& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(GetFrames* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  typedef GetFrames_Frames Frames;
+  static const Frames LastFrame =
+    GetFrames_Frames_LastFrame;
+  static const Frames AllFrames =
+    GetFrames_Frames_AllFrames;
+  static inline bool Frames_IsValid(int value) {
+    return GetFrames_Frames_IsValid(value);
+  }
+  static const Frames Frames_MIN =
+    GetFrames_Frames_Frames_MIN;
+  static const Frames Frames_MAX =
+    GetFrames_Frames_Frames_MAX;
+  static const int Frames_ARRAYSIZE =
+    GetFrames_Frames_Frames_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  Frames_descriptor() {
+    return GetFrames_Frames_descriptor();
+  }
+  static inline const ::std::string& Frames_Name(Frames value) {
+    return GetFrames_Frames_Name(value);
+  }
+  static inline bool Frames_Parse(const ::std::string& name,
+      Frames* value) {
+    return GetFrames_Frames_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  // .OrionCommunication.GetFrames.Frames modeFrame = 1;
+  void clear_modeframe();
+  static const int kModeFrameFieldNumber = 1;
+  ::OrionCommunication::GetFrames_Frames modeframe() const;
+  void set_modeframe(::OrionCommunication::GetFrames_Frames value);
+
+  // @@protoc_insertion_point(class_scope:OrionCommunication.GetFrames)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  int modeframe_;
+  mutable int _cached_size_;
+  friend struct ::protobuf_OrionCommunication_2eproto::TableStruct;
+  friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsGetFramesImpl();
+};
+// -------------------------------------------------------------------
+
 class PanoramaFrame : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:OrionCommunication.PanoramaFrame) */ {
  public:
   PanoramaFrame();
@@ -1032,7 +1456,7 @@ class PanoramaFrame : public ::google::protobuf::Message /* @@protoc_insertion_p
                &_PanoramaFrame_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    7;
+    11;
 
   void Swap(PanoramaFrame* other);
   friend void swap(PanoramaFrame& a, PanoramaFrame& b) {
@@ -1115,6 +1539,127 @@ class PanoramaFrame : public ::google::protobuf::Message /* @@protoc_insertion_p
   mutable int _cached_size_;
   friend struct ::protobuf_OrionCommunication_2eproto::TableStruct;
   friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsPanoramaFrameImpl();
+};
+// -------------------------------------------------------------------
+
+class ScreenFrame : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:OrionCommunication.ScreenFrame) */ {
+ public:
+  ScreenFrame();
+  virtual ~ScreenFrame();
+
+  ScreenFrame(const ScreenFrame& from);
+
+  inline ScreenFrame& operator=(const ScreenFrame& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  ScreenFrame(ScreenFrame&& from) noexcept
+    : ScreenFrame() {
+    *this = ::std::move(from);
+  }
+
+  inline ScreenFrame& operator=(ScreenFrame&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ScreenFrame& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ScreenFrame* internal_default_instance() {
+    return reinterpret_cast<const ScreenFrame*>(
+               &_ScreenFrame_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    12;
+
+  void Swap(ScreenFrame* other);
+  friend void swap(ScreenFrame& a, ScreenFrame& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ScreenFrame* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  ScreenFrame* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const ScreenFrame& from);
+  void MergeFrom(const ScreenFrame& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(ScreenFrame* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // bytes frame = 1;
+  void clear_frame();
+  static const int kFrameFieldNumber = 1;
+  const ::std::string& frame() const;
+  void set_frame(const ::std::string& value);
+  #if LANG_CXX11
+  void set_frame(::std::string&& value);
+  #endif
+  void set_frame(const char* value);
+  void set_frame(const void* value, size_t size);
+  ::std::string* mutable_frame();
+  ::std::string* release_frame();
+  void set_allocated_frame(::std::string* frame);
+
+  // int32 width = 2;
+  void clear_width();
+  static const int kWidthFieldNumber = 2;
+  ::google::protobuf::int32 width() const;
+  void set_width(::google::protobuf::int32 value);
+
+  // int32 height = 3;
+  void clear_height();
+  static const int kHeightFieldNumber = 3;
+  ::google::protobuf::int32 height() const;
+  void set_height(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:OrionCommunication.ScreenFrame)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::ArenaStringPtr frame_;
+  ::google::protobuf::int32 width_;
+  ::google::protobuf::int32 height_;
+  mutable int _cached_size_;
+  friend struct ::protobuf_OrionCommunication_2eproto::TableStruct;
+  friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsScreenFrameImpl();
 };
 // ===================================================================
 
@@ -1255,377 +1800,326 @@ inline void PanoramaPars::set_pan_motion_frame_no(::google::protobuf::int32 valu
 
 // -------------------------------------------------------------------
 
-// MotDetPars
+// TRoi
 
-// string roi1 = 10;
-inline void MotDetPars::clear_roi1() {
-  roi1_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// .OrionCommunication.TPolygon polygon = 1;
+inline bool TRoi::has_polygon() const {
+  return this != internal_default_instance() && polygon_ != NULL;
 }
-inline const ::std::string& MotDetPars::roi1() const {
-  // @@protoc_insertion_point(field_get:OrionCommunication.MotDetPars.roi1)
-  return roi1_.GetNoArena();
+inline void TRoi::clear_polygon() {
+  if (GetArenaNoVirtual() == NULL && polygon_ != NULL) {
+    delete polygon_;
+  }
+  polygon_ = NULL;
 }
-inline void MotDetPars::set_roi1(const ::std::string& value) {
+inline const ::OrionCommunication::TPolygon& TRoi::polygon() const {
+  const ::OrionCommunication::TPolygon* p = polygon_;
+  // @@protoc_insertion_point(field_get:OrionCommunication.TRoi.polygon)
+  return p != NULL ? *p : *reinterpret_cast<const ::OrionCommunication::TPolygon*>(
+      &::OrionCommunication::_TPolygon_default_instance_);
+}
+inline ::OrionCommunication::TPolygon* TRoi::release_polygon() {
+  // @@protoc_insertion_point(field_release:OrionCommunication.TRoi.polygon)
   
-  roi1_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:OrionCommunication.MotDetPars.roi1)
+  ::OrionCommunication::TPolygon* temp = polygon_;
+  polygon_ = NULL;
+  return temp;
 }
-#if LANG_CXX11
-inline void MotDetPars::set_roi1(::std::string&& value) {
+inline ::OrionCommunication::TPolygon* TRoi::mutable_polygon() {
   
-  roi1_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:OrionCommunication.MotDetPars.roi1)
+  if (polygon_ == NULL) {
+    polygon_ = new ::OrionCommunication::TPolygon;
+  }
+  // @@protoc_insertion_point(field_mutable:OrionCommunication.TRoi.polygon)
+  return polygon_;
 }
-#endif
-inline void MotDetPars::set_roi1(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  roi1_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:OrionCommunication.MotDetPars.roi1)
-}
-inline void MotDetPars::set_roi1(const char* value, size_t size) {
-  
-  roi1_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:OrionCommunication.MotDetPars.roi1)
-}
-inline ::std::string* MotDetPars::mutable_roi1() {
-  
-  // @@protoc_insertion_point(field_mutable:OrionCommunication.MotDetPars.roi1)
-  return roi1_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* MotDetPars::release_roi1() {
-  // @@protoc_insertion_point(field_release:OrionCommunication.MotDetPars.roi1)
-  
-  return roi1_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void MotDetPars::set_allocated_roi1(::std::string* roi1) {
-  if (roi1 != NULL) {
+inline void TRoi::set_allocated_polygon(::OrionCommunication::TPolygon* polygon) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete polygon_;
+  }
+  if (polygon) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      polygon = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, polygon, submessage_arena);
+    }
     
   } else {
     
   }
-  roi1_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), roi1);
-  // @@protoc_insertion_point(field_set_allocated:OrionCommunication.MotDetPars.roi1)
+  polygon_ = polygon;
+  // @@protoc_insertion_point(field_set_allocated:OrionCommunication.TRoi.polygon)
 }
 
-// string roi2 = 11;
-inline void MotDetPars::clear_roi2() {
-  roi2_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// .OrionCommunication.TRectangle rect1 = 2;
+inline bool TRoi::has_rect1() const {
+  return this != internal_default_instance() && rect1_ != NULL;
 }
-inline const ::std::string& MotDetPars::roi2() const {
-  // @@protoc_insertion_point(field_get:OrionCommunication.MotDetPars.roi2)
-  return roi2_.GetNoArena();
+inline void TRoi::clear_rect1() {
+  if (GetArenaNoVirtual() == NULL && rect1_ != NULL) {
+    delete rect1_;
+  }
+  rect1_ = NULL;
 }
-inline void MotDetPars::set_roi2(const ::std::string& value) {
+inline const ::OrionCommunication::TRectangle& TRoi::rect1() const {
+  const ::OrionCommunication::TRectangle* p = rect1_;
+  // @@protoc_insertion_point(field_get:OrionCommunication.TRoi.rect1)
+  return p != NULL ? *p : *reinterpret_cast<const ::OrionCommunication::TRectangle*>(
+      &::OrionCommunication::_TRectangle_default_instance_);
+}
+inline ::OrionCommunication::TRectangle* TRoi::release_rect1() {
+  // @@protoc_insertion_point(field_release:OrionCommunication.TRoi.rect1)
   
-  roi2_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:OrionCommunication.MotDetPars.roi2)
+  ::OrionCommunication::TRectangle* temp = rect1_;
+  rect1_ = NULL;
+  return temp;
 }
-#if LANG_CXX11
-inline void MotDetPars::set_roi2(::std::string&& value) {
+inline ::OrionCommunication::TRectangle* TRoi::mutable_rect1() {
   
-  roi2_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:OrionCommunication.MotDetPars.roi2)
+  if (rect1_ == NULL) {
+    rect1_ = new ::OrionCommunication::TRectangle;
+  }
+  // @@protoc_insertion_point(field_mutable:OrionCommunication.TRoi.rect1)
+  return rect1_;
 }
-#endif
-inline void MotDetPars::set_roi2(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  roi2_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:OrionCommunication.MotDetPars.roi2)
-}
-inline void MotDetPars::set_roi2(const char* value, size_t size) {
-  
-  roi2_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:OrionCommunication.MotDetPars.roi2)
-}
-inline ::std::string* MotDetPars::mutable_roi2() {
-  
-  // @@protoc_insertion_point(field_mutable:OrionCommunication.MotDetPars.roi2)
-  return roi2_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* MotDetPars::release_roi2() {
-  // @@protoc_insertion_point(field_release:OrionCommunication.MotDetPars.roi2)
-  
-  return roi2_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void MotDetPars::set_allocated_roi2(::std::string* roi2) {
-  if (roi2 != NULL) {
+inline void TRoi::set_allocated_rect1(::OrionCommunication::TRectangle* rect1) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete rect1_;
+  }
+  if (rect1) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      rect1 = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, rect1, submessage_arena);
+    }
     
   } else {
     
   }
-  roi2_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), roi2);
-  // @@protoc_insertion_point(field_set_allocated:OrionCommunication.MotDetPars.roi2)
+  rect1_ = rect1;
+  // @@protoc_insertion_point(field_set_allocated:OrionCommunication.TRoi.rect1)
 }
 
-// string roi3 = 12;
-inline void MotDetPars::clear_roi3() {
-  roi3_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// .OrionCommunication.TRectangle rect2 = 3;
+inline bool TRoi::has_rect2() const {
+  return this != internal_default_instance() && rect2_ != NULL;
 }
-inline const ::std::string& MotDetPars::roi3() const {
-  // @@protoc_insertion_point(field_get:OrionCommunication.MotDetPars.roi3)
-  return roi3_.GetNoArena();
+inline void TRoi::clear_rect2() {
+  if (GetArenaNoVirtual() == NULL && rect2_ != NULL) {
+    delete rect2_;
+  }
+  rect2_ = NULL;
 }
-inline void MotDetPars::set_roi3(const ::std::string& value) {
+inline const ::OrionCommunication::TRectangle& TRoi::rect2() const {
+  const ::OrionCommunication::TRectangle* p = rect2_;
+  // @@protoc_insertion_point(field_get:OrionCommunication.TRoi.rect2)
+  return p != NULL ? *p : *reinterpret_cast<const ::OrionCommunication::TRectangle*>(
+      &::OrionCommunication::_TRectangle_default_instance_);
+}
+inline ::OrionCommunication::TRectangle* TRoi::release_rect2() {
+  // @@protoc_insertion_point(field_release:OrionCommunication.TRoi.rect2)
   
-  roi3_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:OrionCommunication.MotDetPars.roi3)
+  ::OrionCommunication::TRectangle* temp = rect2_;
+  rect2_ = NULL;
+  return temp;
 }
-#if LANG_CXX11
-inline void MotDetPars::set_roi3(::std::string&& value) {
+inline ::OrionCommunication::TRectangle* TRoi::mutable_rect2() {
   
-  roi3_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:OrionCommunication.MotDetPars.roi3)
+  if (rect2_ == NULL) {
+    rect2_ = new ::OrionCommunication::TRectangle;
+  }
+  // @@protoc_insertion_point(field_mutable:OrionCommunication.TRoi.rect2)
+  return rect2_;
 }
-#endif
-inline void MotDetPars::set_roi3(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  roi3_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:OrionCommunication.MotDetPars.roi3)
-}
-inline void MotDetPars::set_roi3(const char* value, size_t size) {
-  
-  roi3_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:OrionCommunication.MotDetPars.roi3)
-}
-inline ::std::string* MotDetPars::mutable_roi3() {
-  
-  // @@protoc_insertion_point(field_mutable:OrionCommunication.MotDetPars.roi3)
-  return roi3_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* MotDetPars::release_roi3() {
-  // @@protoc_insertion_point(field_release:OrionCommunication.MotDetPars.roi3)
-  
-  return roi3_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void MotDetPars::set_allocated_roi3(::std::string* roi3) {
-  if (roi3 != NULL) {
+inline void TRoi::set_allocated_rect2(::OrionCommunication::TRectangle* rect2) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete rect2_;
+  }
+  if (rect2) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      rect2 = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, rect2, submessage_arena);
+    }
     
   } else {
     
   }
-  roi3_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), roi3);
-  // @@protoc_insertion_point(field_set_allocated:OrionCommunication.MotDetPars.roi3)
+  rect2_ = rect2;
+  // @@protoc_insertion_point(field_set_allocated:OrionCommunication.TRoi.rect2)
 }
 
-// string upcorner1 = 13;
-inline void MotDetPars::clear_upcorner1() {
-  upcorner1_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// -------------------------------------------------------------------
+
+// TPoint
+
+// int32 x = 1;
+inline void TPoint::clear_x() {
+  x_ = 0;
 }
-inline const ::std::string& MotDetPars::upcorner1() const {
-  // @@protoc_insertion_point(field_get:OrionCommunication.MotDetPars.upcorner1)
-  return upcorner1_.GetNoArena();
+inline ::google::protobuf::int32 TPoint::x() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.TPoint.x)
+  return x_;
 }
-inline void MotDetPars::set_upcorner1(const ::std::string& value) {
+inline void TPoint::set_x(::google::protobuf::int32 value) {
   
-  upcorner1_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:OrionCommunication.MotDetPars.upcorner1)
+  x_ = value;
+  // @@protoc_insertion_point(field_set:OrionCommunication.TPoint.x)
 }
-#if LANG_CXX11
-inline void MotDetPars::set_upcorner1(::std::string&& value) {
+
+// int32 y = 2;
+inline void TPoint::clear_y() {
+  y_ = 0;
+}
+inline ::google::protobuf::int32 TPoint::y() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.TPoint.y)
+  return y_;
+}
+inline void TPoint::set_y(::google::protobuf::int32 value) {
   
-  upcorner1_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:OrionCommunication.MotDetPars.upcorner1)
+  y_ = value;
+  // @@protoc_insertion_point(field_set:OrionCommunication.TPoint.y)
 }
-#endif
-inline void MotDetPars::set_upcorner1(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
+
+// -------------------------------------------------------------------
+
+// TPolygon
+
+// repeated .OrionCommunication.TPoint points = 1;
+inline int TPolygon::points_size() const {
+  return points_.size();
+}
+inline void TPolygon::clear_points() {
+  points_.Clear();
+}
+inline const ::OrionCommunication::TPoint& TPolygon::points(int index) const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.TPolygon.points)
+  return points_.Get(index);
+}
+inline ::OrionCommunication::TPoint* TPolygon::mutable_points(int index) {
+  // @@protoc_insertion_point(field_mutable:OrionCommunication.TPolygon.points)
+  return points_.Mutable(index);
+}
+inline ::OrionCommunication::TPoint* TPolygon::add_points() {
+  // @@protoc_insertion_point(field_add:OrionCommunication.TPolygon.points)
+  return points_.Add();
+}
+inline ::google::protobuf::RepeatedPtrField< ::OrionCommunication::TPoint >*
+TPolygon::mutable_points() {
+  // @@protoc_insertion_point(field_mutable_list:OrionCommunication.TPolygon.points)
+  return &points_;
+}
+inline const ::google::protobuf::RepeatedPtrField< ::OrionCommunication::TPoint >&
+TPolygon::points() const {
+  // @@protoc_insertion_point(field_list:OrionCommunication.TPolygon.points)
+  return points_;
+}
+
+// -------------------------------------------------------------------
+
+// TRectangle
+
+// .OrionCommunication.TPoint upperLeft = 1;
+inline bool TRectangle::has_upperleft() const {
+  return this != internal_default_instance() && upperleft_ != NULL;
+}
+inline void TRectangle::clear_upperleft() {
+  if (GetArenaNoVirtual() == NULL && upperleft_ != NULL) {
+    delete upperleft_;
+  }
+  upperleft_ = NULL;
+}
+inline const ::OrionCommunication::TPoint& TRectangle::upperleft() const {
+  const ::OrionCommunication::TPoint* p = upperleft_;
+  // @@protoc_insertion_point(field_get:OrionCommunication.TRectangle.upperLeft)
+  return p != NULL ? *p : *reinterpret_cast<const ::OrionCommunication::TPoint*>(
+      &::OrionCommunication::_TPoint_default_instance_);
+}
+inline ::OrionCommunication::TPoint* TRectangle::release_upperleft() {
+  // @@protoc_insertion_point(field_release:OrionCommunication.TRectangle.upperLeft)
   
-  upcorner1_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:OrionCommunication.MotDetPars.upcorner1)
+  ::OrionCommunication::TPoint* temp = upperleft_;
+  upperleft_ = NULL;
+  return temp;
 }
-inline void MotDetPars::set_upcorner1(const char* value, size_t size) {
+inline ::OrionCommunication::TPoint* TRectangle::mutable_upperleft() {
   
-  upcorner1_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:OrionCommunication.MotDetPars.upcorner1)
+  if (upperleft_ == NULL) {
+    upperleft_ = new ::OrionCommunication::TPoint;
+  }
+  // @@protoc_insertion_point(field_mutable:OrionCommunication.TRectangle.upperLeft)
+  return upperleft_;
 }
-inline ::std::string* MotDetPars::mutable_upcorner1() {
-  
-  // @@protoc_insertion_point(field_mutable:OrionCommunication.MotDetPars.upcorner1)
-  return upcorner1_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* MotDetPars::release_upcorner1() {
-  // @@protoc_insertion_point(field_release:OrionCommunication.MotDetPars.upcorner1)
-  
-  return upcorner1_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void MotDetPars::set_allocated_upcorner1(::std::string* upcorner1) {
-  if (upcorner1 != NULL) {
+inline void TRectangle::set_allocated_upperleft(::OrionCommunication::TPoint* upperleft) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete upperleft_;
+  }
+  if (upperleft) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      upperleft = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, upperleft, submessage_arena);
+    }
     
   } else {
     
   }
-  upcorner1_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), upcorner1);
-  // @@protoc_insertion_point(field_set_allocated:OrionCommunication.MotDetPars.upcorner1)
+  upperleft_ = upperleft;
+  // @@protoc_insertion_point(field_set_allocated:OrionCommunication.TRectangle.upperLeft)
 }
 
-// string upcorner2 = 14;
-inline void MotDetPars::clear_upcorner2() {
-  upcorner2_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// .OrionCommunication.TPoint bottomRight = 2;
+inline bool TRectangle::has_bottomright() const {
+  return this != internal_default_instance() && bottomright_ != NULL;
 }
-inline const ::std::string& MotDetPars::upcorner2() const {
-  // @@protoc_insertion_point(field_get:OrionCommunication.MotDetPars.upcorner2)
-  return upcorner2_.GetNoArena();
+inline void TRectangle::clear_bottomright() {
+  if (GetArenaNoVirtual() == NULL && bottomright_ != NULL) {
+    delete bottomright_;
+  }
+  bottomright_ = NULL;
 }
-inline void MotDetPars::set_upcorner2(const ::std::string& value) {
+inline const ::OrionCommunication::TPoint& TRectangle::bottomright() const {
+  const ::OrionCommunication::TPoint* p = bottomright_;
+  // @@protoc_insertion_point(field_get:OrionCommunication.TRectangle.bottomRight)
+  return p != NULL ? *p : *reinterpret_cast<const ::OrionCommunication::TPoint*>(
+      &::OrionCommunication::_TPoint_default_instance_);
+}
+inline ::OrionCommunication::TPoint* TRectangle::release_bottomright() {
+  // @@protoc_insertion_point(field_release:OrionCommunication.TRectangle.bottomRight)
   
-  upcorner2_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:OrionCommunication.MotDetPars.upcorner2)
+  ::OrionCommunication::TPoint* temp = bottomright_;
+  bottomright_ = NULL;
+  return temp;
 }
-#if LANG_CXX11
-inline void MotDetPars::set_upcorner2(::std::string&& value) {
+inline ::OrionCommunication::TPoint* TRectangle::mutable_bottomright() {
   
-  upcorner2_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:OrionCommunication.MotDetPars.upcorner2)
+  if (bottomright_ == NULL) {
+    bottomright_ = new ::OrionCommunication::TPoint;
+  }
+  // @@protoc_insertion_point(field_mutable:OrionCommunication.TRectangle.bottomRight)
+  return bottomright_;
 }
-#endif
-inline void MotDetPars::set_upcorner2(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  upcorner2_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:OrionCommunication.MotDetPars.upcorner2)
-}
-inline void MotDetPars::set_upcorner2(const char* value, size_t size) {
-  
-  upcorner2_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:OrionCommunication.MotDetPars.upcorner2)
-}
-inline ::std::string* MotDetPars::mutable_upcorner2() {
-  
-  // @@protoc_insertion_point(field_mutable:OrionCommunication.MotDetPars.upcorner2)
-  return upcorner2_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* MotDetPars::release_upcorner2() {
-  // @@protoc_insertion_point(field_release:OrionCommunication.MotDetPars.upcorner2)
-  
-  return upcorner2_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void MotDetPars::set_allocated_upcorner2(::std::string* upcorner2) {
-  if (upcorner2 != NULL) {
+inline void TRectangle::set_allocated_bottomright(::OrionCommunication::TPoint* bottomright) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete bottomright_;
+  }
+  if (bottomright) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      bottomright = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, bottomright, submessage_arena);
+    }
     
   } else {
     
   }
-  upcorner2_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), upcorner2);
-  // @@protoc_insertion_point(field_set_allocated:OrionCommunication.MotDetPars.upcorner2)
-}
-
-// string line1 = 15;
-inline void MotDetPars::clear_line1() {
-  line1_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& MotDetPars::line1() const {
-  // @@protoc_insertion_point(field_get:OrionCommunication.MotDetPars.line1)
-  return line1_.GetNoArena();
-}
-inline void MotDetPars::set_line1(const ::std::string& value) {
-  
-  line1_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:OrionCommunication.MotDetPars.line1)
-}
-#if LANG_CXX11
-inline void MotDetPars::set_line1(::std::string&& value) {
-  
-  line1_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:OrionCommunication.MotDetPars.line1)
-}
-#endif
-inline void MotDetPars::set_line1(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  line1_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:OrionCommunication.MotDetPars.line1)
-}
-inline void MotDetPars::set_line1(const char* value, size_t size) {
-  
-  line1_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:OrionCommunication.MotDetPars.line1)
-}
-inline ::std::string* MotDetPars::mutable_line1() {
-  
-  // @@protoc_insertion_point(field_mutable:OrionCommunication.MotDetPars.line1)
-  return line1_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* MotDetPars::release_line1() {
-  // @@protoc_insertion_point(field_release:OrionCommunication.MotDetPars.line1)
-  
-  return line1_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void MotDetPars::set_allocated_line1(::std::string* line1) {
-  if (line1 != NULL) {
-    
-  } else {
-    
-  }
-  line1_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), line1);
-  // @@protoc_insertion_point(field_set_allocated:OrionCommunication.MotDetPars.line1)
-}
-
-// string line2 = 16;
-inline void MotDetPars::clear_line2() {
-  line2_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& MotDetPars::line2() const {
-  // @@protoc_insertion_point(field_get:OrionCommunication.MotDetPars.line2)
-  return line2_.GetNoArena();
-}
-inline void MotDetPars::set_line2(const ::std::string& value) {
-  
-  line2_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:OrionCommunication.MotDetPars.line2)
-}
-#if LANG_CXX11
-inline void MotDetPars::set_line2(::std::string&& value) {
-  
-  line2_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:OrionCommunication.MotDetPars.line2)
-}
-#endif
-inline void MotDetPars::set_line2(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  line2_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:OrionCommunication.MotDetPars.line2)
-}
-inline void MotDetPars::set_line2(const char* value, size_t size) {
-  
-  line2_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:OrionCommunication.MotDetPars.line2)
-}
-inline ::std::string* MotDetPars::mutable_line2() {
-  
-  // @@protoc_insertion_point(field_mutable:OrionCommunication.MotDetPars.line2)
-  return line2_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* MotDetPars::release_line2() {
-  // @@protoc_insertion_point(field_release:OrionCommunication.MotDetPars.line2)
-  
-  return line2_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void MotDetPars::set_allocated_line2(::std::string* line2) {
-  if (line2 != NULL) {
-    
-  } else {
-    
-  }
-  line2_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), line2);
-  // @@protoc_insertion_point(field_set_allocated:OrionCommunication.MotDetPars.line2)
+  bottomright_ = bottomright;
+  // @@protoc_insertion_point(field_set_allocated:OrionCommunication.TRectangle.bottomRight)
 }
 
 // -------------------------------------------------------------------
@@ -1720,6 +2214,24 @@ inline void AryaParameters::set_panspeed(::google::protobuf::int32 value) {
 
 // -------------------------------------------------------------------
 
+// GetFrames
+
+// .OrionCommunication.GetFrames.Frames modeFrame = 1;
+inline void GetFrames::clear_modeframe() {
+  modeframe_ = 0;
+}
+inline ::OrionCommunication::GetFrames_Frames GetFrames::modeframe() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.GetFrames.modeFrame)
+  return static_cast< ::OrionCommunication::GetFrames_Frames >(modeframe_);
+}
+inline void GetFrames::set_modeframe(::OrionCommunication::GetFrames_Frames value) {
+  
+  modeframe_ = value;
+  // @@protoc_insertion_point(field_set:OrionCommunication.GetFrames.modeFrame)
+}
+
+// -------------------------------------------------------------------
+
 // PanoramaFrame
 
 // bool valid = 1;
@@ -1803,9 +2315,104 @@ inline void PanoramaFrame::set_allocated_framedata(::std::string* framedata) {
   // @@protoc_insertion_point(field_set_allocated:OrionCommunication.PanoramaFrame.frameData)
 }
 
+// -------------------------------------------------------------------
+
+// ScreenFrame
+
+// bytes frame = 1;
+inline void ScreenFrame::clear_frame() {
+  frame_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& ScreenFrame::frame() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.ScreenFrame.frame)
+  return frame_.GetNoArena();
+}
+inline void ScreenFrame::set_frame(const ::std::string& value) {
+  
+  frame_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:OrionCommunication.ScreenFrame.frame)
+}
+#if LANG_CXX11
+inline void ScreenFrame::set_frame(::std::string&& value) {
+  
+  frame_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:OrionCommunication.ScreenFrame.frame)
+}
+#endif
+inline void ScreenFrame::set_frame(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  
+  frame_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:OrionCommunication.ScreenFrame.frame)
+}
+inline void ScreenFrame::set_frame(const void* value, size_t size) {
+  
+  frame_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:OrionCommunication.ScreenFrame.frame)
+}
+inline ::std::string* ScreenFrame::mutable_frame() {
+  
+  // @@protoc_insertion_point(field_mutable:OrionCommunication.ScreenFrame.frame)
+  return frame_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* ScreenFrame::release_frame() {
+  // @@protoc_insertion_point(field_release:OrionCommunication.ScreenFrame.frame)
+  
+  return frame_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void ScreenFrame::set_allocated_frame(::std::string* frame) {
+  if (frame != NULL) {
+    
+  } else {
+    
+  }
+  frame_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), frame);
+  // @@protoc_insertion_point(field_set_allocated:OrionCommunication.ScreenFrame.frame)
+}
+
+// int32 width = 2;
+inline void ScreenFrame::clear_width() {
+  width_ = 0;
+}
+inline ::google::protobuf::int32 ScreenFrame::width() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.ScreenFrame.width)
+  return width_;
+}
+inline void ScreenFrame::set_width(::google::protobuf::int32 value) {
+  
+  width_ = value;
+  // @@protoc_insertion_point(field_set:OrionCommunication.ScreenFrame.width)
+}
+
+// int32 height = 3;
+inline void ScreenFrame::clear_height() {
+  height_ = 0;
+}
+inline ::google::protobuf::int32 ScreenFrame::height() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.ScreenFrame.height)
+  return height_;
+}
+inline void ScreenFrame::set_height(::google::protobuf::int32 value) {
+  
+  height_ = value;
+  // @@protoc_insertion_point(field_set:OrionCommunication.ScreenFrame.height)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
@@ -1832,6 +2439,11 @@ template <> struct is_proto_enum< ::OrionCommunication::SetModeQ_Mode> : ::googl
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::OrionCommunication::SetModeQ_Mode>() {
   return ::OrionCommunication::SetModeQ_Mode_descriptor();
+}
+template <> struct is_proto_enum< ::OrionCommunication::GetFrames_Frames> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::OrionCommunication::GetFrames_Frames>() {
+  return ::OrionCommunication::GetFrames_Frames_descriptor();
 }
 
 }  // namespace protobuf
