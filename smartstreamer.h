@@ -93,6 +93,8 @@ public:
     int processCudaMode(const RawBuffer &buf);
     int processCudaBaseMode(const RawBuffer &buf);
     QString doPtzCommand(QString ascii);
+    void initPanaroma();
+    void GoToPositionPanaroma();
 signals:
 
 public slots:

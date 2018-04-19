@@ -26,6 +26,8 @@ extern "C" {
 
 #define PRINT_BUFS 0
 
+#define TEST 1 //0 base 1 panaroma
+
 #include <grpc/grpc.h>
 #include <grpc++/server.h>
 #include <grpc++/channel.h>
@@ -189,9 +191,15 @@ SmartStreamer::SmartStreamer(QObject *parent)
     baseInitOnce = false;
     initAlgoritmOnce = false;
     initBaseAlgoritmOnce = false;
-    base = true;
+    panStop = false;
+    base = false;
     baseStop = false;
-
+    if (TEST == 0) {
+        base = true;
+    }
+    if (TEST == 1) {
+        panaroma = true;
+    }
     timer = new QTimer(this);
     connect(timer,SIGNAL(timeout()),this,SLOT(switchEvent()));
     timer->start(1000);
@@ -201,42 +209,89 @@ SmartStreamer::SmartStreamer(QObject *parent)
 void SmartStreamer::switchEvent()
 {
     qDebug() << "base " << base << "panaroma" << panaroma;
-    if (panaroma && !panInitOnce) {
-        panStop = false;
-        panInit = true;
-        panMotionStart = false;
-        panTiltInfo = false;
-        panaromaCounter = 0;
-        connected();
-        panInitOnce = true;
-        speed = "90000";
-        initPanInViaBa = 1;
-    } else if (base && !baseInitOnce) {
-//        QTimer::singleShot(20000, this, SLOT(connected()));
-        initBaseInViaBa = 1;
-        baseInitOnce = true;
-        connected();
+//    if (panaroma && !panInitOnce) {
+//        panStop = false;
+//        panInit = true;
+//        panMotionStart = false;
+//        panTiltInfo = false;
+//        panaromaCounter = 0;
+//        connected();
+//        panInitOnce = true;
+//        speed = "90000";
+//        initPanInViaBa = 1;
+//    } else if (base && !baseInitOnce) {
+////        QTimer::singleShot(20000, this, SLOT(connected()));
+//        initBaseInViaBa = 1;
+//        baseInitOnce = true;
+//        connected();
+//    }
+}
+
+void SmartStreamer::initPanaroma()
+{
+    panStop = false;
+    panInit = true;
+    panMotionStart = false;
+    panTiltInfo = false;
+    panaromaCounter = 0;
+    panInitOnce = true;
+    speed = "90000";
+    initPanInViaBa = 1;
+}
+
+void SmartStreamer::GoToPositionPanaroma()
+{
+    if (panInit) {
+            ptzclient->setPanTiltPos(0,0);
+        while(panaromaCounter != 100) {
+            qDebug() << "going to position";
+            panaromaCounter++;
+            panMotionStart = true;
+            panInit = false;
+        }
     }
 }
 
-
 void SmartStreamer::connected()
 {
-    qDebug() << "inside the connected";
     static int cnt = 0;
     cnt++;
-    if (cnt % 201 == 0) {
+    static int my_counter = 0;
+    if (cnt == 400) {
         qDebug() << "stopped ~~~~~~~~~~~~~~~~~~~~~~~~~";
-        base = false;
-        baseStop = true;
-        initBaseAlgoritmOnce = false;
-        baseInitOnce = false;
-    } else if (cnt % 403 == 0) {
+        if (TEST == 0) {
+            base = false;
+            baseStop = true;
+            initBaseAlgoritmOnce = false;
+            baseInitOnce = false;
+        }
+        if (TEST == 1) {
+            panStop = true;
+            panaroma = false;
+        }
+    } else if (cnt == 800) {
         qDebug() << "started ~~~~~~~~~~~~~~~~~~~~~~~~~";
-        initBaseAlgoritmOnce = true;
-        baseStop = false;
-        base = true;
+        if (TEST == 0) {
+            initBaseAlgoritmOnce = false;
+            baseStop = false;
+            base = true;
+            initBaseInViaBa = 1;
+        }
+        if (TEST == 1) {
+            panaroma = true;
+            panStop = false;
+            panInitOnce = false;
+            initAlgoritmOnce = false;
+            QProcess::execute("sh -c \"rm -f /home/ubuntu/Desktop/Pan_images/*\"");
+        }
     }
+
+    if (cnt == 1200) {
+        cnt = 0;
+        my_counter++;
+        qDebug() << my_counter << "~~~~~~~~~~~~~~~~~~ü";
+    }
+
     QTimer::singleShot(100, this, SLOT(connected()));
     if (baseStop && !base) {
         base = false;
@@ -245,6 +300,7 @@ void SmartStreamer::connected()
     }
     if (panStop) {
         ptzclient->setPanTiltAbs(0, 0);
+        panStop = false;
         panaroma = false;
         panaromaCounter = 0;
         panInitOnce = false;
@@ -623,10 +679,11 @@ grpc::Status SmartStreamer::RunMotion(grpc::ServerContext *context, const OrionC
     Q_UNUSED(request)
     Q_UNUSED(response)
     if (panaroma)
-        panaroma = false;
+        panaroma = false;    
     base = true;
     baseStop = false;
-    initAlgoritmOnce = true;
+    initBaseAlgoritmOnce = false;
+    initBaseInViaBa = 1;
     return Status::OK;
 }
 
@@ -644,7 +701,8 @@ grpc::Status SmartStreamer::StopMotion(grpc::ServerContext *context, const Orion
 {
     base = false;
     baseStop = true;
-    initAlgoritmOnce = true;
+    initBaseAlgoritmOnce = false;
+    baseInitOnce = false;
     return Status::OK;
 }
 
