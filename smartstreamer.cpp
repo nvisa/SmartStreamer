@@ -26,7 +26,7 @@ extern "C" {
 
 #define PRINT_BUFS 0
 
-#define TEST 0 //0 base 1 panaroma
+#define TEST 5 //0 base 1 panaroma 2 base_always
 
 #include <grpc/grpc.h>
 #include <grpc++/server.h>
@@ -203,6 +203,11 @@ SmartStreamer::SmartStreamer(QObject *parent)
     timer = new QTimer(this);
     connect(timer,SIGNAL(timeout()),this,SLOT(switchEvent()));
     timer->start(1000);
+
+    if (TEST == 2) {
+        initBaseAlgoritmOnce = false;
+        base = true;
+    }
 #endif
 }
 
@@ -254,8 +259,11 @@ void SmartStreamer::GoToPositionPanaroma()
 
 void SmartStreamer::connected()
 {
+    if (TEST != 5) {
     static int cnt = 0;
     cnt++;
+    if (TEST == 2)
+        cnt = 400;
     static int my_counter = 0;
     if (cnt == 200) {
         qDebug() << "stopped ~~~~~~~~~~~~~~~~~~~~~~~~~";
@@ -284,6 +292,11 @@ void SmartStreamer::connected()
             initAlgoritmOnce = false;
             QProcess::execute("sh -c \"rm -f /home/ubuntu/Desktop/Pan_images/*\"");
         }
+        if (TEST == 2) {
+            baseStop = false;
+            base = true;
+            initBaseInViaBa = 1;
+        }
     }
 
     if (cnt == 800) {
@@ -291,7 +304,7 @@ void SmartStreamer::connected()
         my_counter++;
         qDebug() << my_counter << "~~~~~~~~~~~~~~~~~~ü";
     }
-
+    }
     QTimer::singleShot(100, this, SLOT(connected()));
     if (baseStop && !base) {
         base = false;
