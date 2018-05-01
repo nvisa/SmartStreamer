@@ -17,9 +17,13 @@ namespace OrionCommunication {
 
 static const char* AppConfig_method_names[] = {
   "/OrionCommunication.AppConfig/SetPanaromaParameters",
+  "/OrionCommunication.AppConfig/GetPanaromaParameters",
   "/OrionCommunication.AppConfig/SetMotionDetectionParameters",
+  "/OrionCommunication.AppConfig/GetMotionDetectionParameters",
   "/OrionCommunication.AppConfig/SetCurrentMode",
   "/OrionCommunication.AppConfig/GetCurrentMode",
+  "/OrionCommunication.AppConfig/SetSensivityParameter",
+  "/OrionCommunication.AppConfig/GetSensivityParameter",
   "/OrionCommunication.AppConfig/GetLastPanaromaFrame",
   "/OrionCommunication.AppConfig/GetPanaromaFrames",
   "/OrionCommunication.AppConfig/RunMotion",
@@ -27,6 +31,8 @@ static const char* AppConfig_method_names[] = {
   "/OrionCommunication.AppConfig/StopMotion",
   "/OrionCommunication.AppConfig/StopPanaroma",
   "/OrionCommunication.AppConfig/GetScreenShot",
+  "/OrionCommunication.AppConfig/GotoPanaromaPixel",
+  "/OrionCommunication.AppConfig/CurrentPanaromaPixel",
 };
 
 std::unique_ptr< AppConfig::Stub> AppConfig::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -37,16 +43,22 @@ std::unique_ptr< AppConfig::Stub> AppConfig::NewStub(const std::shared_ptr< ::gr
 
 AppConfig::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   : channel_(channel), rpcmethod_SetPanaromaParameters_(AppConfig_method_names[0], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_SetMotionDetectionParameters_(AppConfig_method_names[1], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_SetCurrentMode_(AppConfig_method_names[2], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GetCurrentMode_(AppConfig_method_names[3], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GetLastPanaromaFrame_(AppConfig_method_names[4], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GetPanaromaFrames_(AppConfig_method_names[5], ::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
-  , rpcmethod_RunMotion_(AppConfig_method_names[6], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_RunPanaroma_(AppConfig_method_names[7], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_StopMotion_(AppConfig_method_names[8], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_StopPanaroma_(AppConfig_method_names[9], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GetScreenShot_(AppConfig_method_names[10], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetPanaromaParameters_(AppConfig_method_names[1], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_SetMotionDetectionParameters_(AppConfig_method_names[2], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetMotionDetectionParameters_(AppConfig_method_names[3], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_SetCurrentMode_(AppConfig_method_names[4], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetCurrentMode_(AppConfig_method_names[5], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_SetSensivityParameter_(AppConfig_method_names[6], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetSensivityParameter_(AppConfig_method_names[7], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetLastPanaromaFrame_(AppConfig_method_names[8], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetPanaromaFrames_(AppConfig_method_names[9], ::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
+  , rpcmethod_RunMotion_(AppConfig_method_names[10], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_RunPanaroma_(AppConfig_method_names[11], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_StopMotion_(AppConfig_method_names[12], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_StopPanaroma_(AppConfig_method_names[13], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetScreenShot_(AppConfig_method_names[14], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GotoPanaromaPixel_(AppConfig_method_names[15], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_CurrentPanaromaPixel_(AppConfig_method_names[16], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status AppConfig::Stub::SetPanaromaParameters(::grpc::ClientContext* context, const ::OrionCommunication::PanoramaPars& request, ::OrionCommunication::AppCommandResult* response) {
@@ -61,6 +73,18 @@ AppConfig::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_SetPanaromaParameters_, context, request, false);
 }
 
+::grpc::Status AppConfig::Stub::GetPanaromaParameters(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::PanoramaPars* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_GetPanaromaParameters_, context, request, response);
+}
+
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::PanoramaPars>* AppConfig::Stub::AsyncGetPanaromaParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::PanoramaPars>::Create(channel_.get(), cq, rpcmethod_GetPanaromaParameters_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::PanoramaPars>* AppConfig::Stub::PrepareAsyncGetPanaromaParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::PanoramaPars>::Create(channel_.get(), cq, rpcmethod_GetPanaromaParameters_, context, request, false);
+}
+
 ::grpc::Status AppConfig::Stub::SetMotionDetectionParameters(::grpc::ClientContext* context, const ::OrionCommunication::TRoi& request, ::OrionCommunication::AppCommandResult* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_SetMotionDetectionParameters_, context, request, response);
 }
@@ -71,6 +95,18 @@ AppConfig::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
 
 ::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::PrepareAsyncSetMotionDetectionParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::TRoi& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_SetMotionDetectionParameters_, context, request, false);
+}
+
+::grpc::Status AppConfig::Stub::GetMotionDetectionParameters(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::TRoi* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_GetMotionDetectionParameters_, context, request, response);
+}
+
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::TRoi>* AppConfig::Stub::AsyncGetMotionDetectionParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::TRoi>::Create(channel_.get(), cq, rpcmethod_GetMotionDetectionParameters_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::TRoi>* AppConfig::Stub::PrepareAsyncGetMotionDetectionParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::TRoi>::Create(channel_.get(), cq, rpcmethod_GetMotionDetectionParameters_, context, request, false);
 }
 
 ::grpc::Status AppConfig::Stub::SetCurrentMode(::grpc::ClientContext* context, const ::OrionCommunication::SetModeQ& request, ::OrionCommunication::AppCommandResult* response) {
@@ -95,6 +131,30 @@ AppConfig::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
 
 ::grpc::ClientAsyncResponseReader< ::OrionCommunication::SetModeQ>* AppConfig::Stub::PrepareAsyncGetCurrentModeRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::SetModeQ>::Create(channel_.get(), cq, rpcmethod_GetCurrentMode_, context, request, false);
+}
+
+::grpc::Status AppConfig::Stub::SetSensivityParameter(::grpc::ClientContext* context, const ::OrionCommunication::SetSensivity& request, ::OrionCommunication::AppCommandResult* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_SetSensivityParameter_, context, request, response);
+}
+
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::AsyncSetSensivityParameterRaw(::grpc::ClientContext* context, const ::OrionCommunication::SetSensivity& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_SetSensivityParameter_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::PrepareAsyncSetSensivityParameterRaw(::grpc::ClientContext* context, const ::OrionCommunication::SetSensivity& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_SetSensivityParameter_, context, request, false);
+}
+
+::grpc::Status AppConfig::Stub::GetSensivityParameter(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::SetSensivity* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_GetSensivityParameter_, context, request, response);
+}
+
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::SetSensivity>* AppConfig::Stub::AsyncGetSensivityParameterRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::SetSensivity>::Create(channel_.get(), cq, rpcmethod_GetSensivityParameter_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::SetSensivity>* AppConfig::Stub::PrepareAsyncGetSensivityParameterRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::SetSensivity>::Create(channel_.get(), cq, rpcmethod_GetSensivityParameter_, context, request, false);
 }
 
 ::grpc::Status AppConfig::Stub::GetLastPanaromaFrame(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::AppCommandResult* response) {
@@ -181,6 +241,30 @@ AppConfig::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::ScreenFrame>::Create(channel_.get(), cq, rpcmethod_GetScreenShot_, context, request, false);
 }
 
+::grpc::Status AppConfig::Stub::GotoPanaromaPixel(::grpc::ClientContext* context, const ::OrionCommunication::TPoint& request, ::OrionCommunication::AppCommandResult* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_GotoPanaromaPixel_, context, request, response);
+}
+
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::AsyncGotoPanaromaPixelRaw(::grpc::ClientContext* context, const ::OrionCommunication::TPoint& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_GotoPanaromaPixel_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::PrepareAsyncGotoPanaromaPixelRaw(::grpc::ClientContext* context, const ::OrionCommunication::TPoint& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_GotoPanaromaPixel_, context, request, false);
+}
+
+::grpc::Status AppConfig::Stub::CurrentPanaromaPixel(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::TPoint* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_CurrentPanaromaPixel_, context, request, response);
+}
+
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::TPoint>* AppConfig::Stub::AsyncCurrentPanaromaPixelRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::TPoint>::Create(channel_.get(), cq, rpcmethod_CurrentPanaromaPixel_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::TPoint>* AppConfig::Stub::PrepareAsyncCurrentPanaromaPixelRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::TPoint>::Create(channel_.get(), cq, rpcmethod_CurrentPanaromaPixel_, context, request, false);
+}
+
 AppConfig::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       AppConfig_method_names[0],
@@ -190,53 +274,83 @@ AppConfig::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       AppConfig_method_names[1],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::PanoramaPars>(
+          std::mem_fn(&AppConfig::Service::GetPanaromaParameters), this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      AppConfig_method_names[2],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::TRoi, ::OrionCommunication::AppCommandResult>(
           std::mem_fn(&AppConfig::Service::SetMotionDetectionParameters), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[2],
+      AppConfig_method_names[3],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::TRoi>(
+          std::mem_fn(&AppConfig::Service::GetMotionDetectionParameters), this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      AppConfig_method_names[4],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::SetModeQ, ::OrionCommunication::AppCommandResult>(
           std::mem_fn(&AppConfig::Service::SetCurrentMode), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[3],
+      AppConfig_method_names[5],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::SetModeQ>(
           std::mem_fn(&AppConfig::Service::GetCurrentMode), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[4],
-      ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
-          std::mem_fn(&AppConfig::Service::GetLastPanaromaFrame), this)));
-  AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[5],
-      ::grpc::internal::RpcMethod::SERVER_STREAMING,
-      new ::grpc::internal::ServerStreamingHandler< AppConfig::Service, ::OrionCommunication::GetFrames, ::OrionCommunication::PanoramaFrame>(
-          std::mem_fn(&AppConfig::Service::GetPanaromaFrames), this)));
-  AddMethod(new ::grpc::internal::RpcServiceMethod(
       AppConfig_method_names[6],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
-          std::mem_fn(&AppConfig::Service::RunMotion), this)));
+      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::SetSensivity, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&AppConfig::Service::SetSensivityParameter), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       AppConfig_method_names[7],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
-          std::mem_fn(&AppConfig::Service::RunPanaroma), this)));
+      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::SetSensivity>(
+          std::mem_fn(&AppConfig::Service::GetSensivityParameter), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       AppConfig_method_names[8],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
-          std::mem_fn(&AppConfig::Service::StopMotion), this)));
+          std::mem_fn(&AppConfig::Service::GetLastPanaromaFrame), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       AppConfig_method_names[9],
+      ::grpc::internal::RpcMethod::SERVER_STREAMING,
+      new ::grpc::internal::ServerStreamingHandler< AppConfig::Service, ::OrionCommunication::GetFrames, ::OrionCommunication::PanoramaFrame>(
+          std::mem_fn(&AppConfig::Service::GetPanaromaFrames), this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      AppConfig_method_names[10],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&AppConfig::Service::RunMotion), this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      AppConfig_method_names[11],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&AppConfig::Service::RunPanaroma), this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      AppConfig_method_names[12],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&AppConfig::Service::StopMotion), this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      AppConfig_method_names[13],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
           std::mem_fn(&AppConfig::Service::StopPanaroma), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[10],
+      AppConfig_method_names[14],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::ScreenFrame>(
           std::mem_fn(&AppConfig::Service::GetScreenShot), this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      AppConfig_method_names[15],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::TPoint, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&AppConfig::Service::GotoPanaromaPixel), this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      AppConfig_method_names[16],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::TPoint>(
+          std::mem_fn(&AppConfig::Service::CurrentPanaromaPixel), this)));
 }
 
 AppConfig::Service::~Service() {
@@ -249,7 +363,21 @@ AppConfig::Service::~Service() {
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
+::grpc::Status AppConfig::Service::GetPanaromaParameters(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::PanoramaPars* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
 ::grpc::Status AppConfig::Service::SetMotionDetectionParameters(::grpc::ServerContext* context, const ::OrionCommunication::TRoi* request, ::OrionCommunication::AppCommandResult* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status AppConfig::Service::GetMotionDetectionParameters(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::TRoi* response) {
   (void) context;
   (void) request;
   (void) response;
@@ -264,6 +392,20 @@ AppConfig::Service::~Service() {
 }
 
 ::grpc::Status AppConfig::Service::GetCurrentMode(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::SetModeQ* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status AppConfig::Service::SetSensivityParameter(::grpc::ServerContext* context, const ::OrionCommunication::SetSensivity* request, ::OrionCommunication::AppCommandResult* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status AppConfig::Service::GetSensivityParameter(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::SetSensivity* response) {
   (void) context;
   (void) request;
   (void) response;
@@ -313,6 +455,20 @@ AppConfig::Service::~Service() {
 }
 
 ::grpc::Status AppConfig::Service::GetScreenShot(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::ScreenFrame* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status AppConfig::Service::GotoPanaromaPixel(::grpc::ServerContext* context, const ::OrionCommunication::TPoint* request, ::OrionCommunication::AppCommandResult* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status AppConfig::Service::CurrentPanaromaPixel(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::TPoint* response) {
   (void) context;
   (void) request;
   (void) response;

@@ -37,7 +37,7 @@ namespace protobuf_OrionCommunication_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[13];
+  static const ::google::protobuf::internal::ParseTable schema[14];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
@@ -69,6 +69,8 @@ void InitDefaultsPanoramaFrameImpl();
 void InitDefaultsPanoramaFrame();
 void InitDefaultsScreenFrameImpl();
 void InitDefaultsScreenFrame();
+void InitDefaultsSetSensivityImpl();
+void InitDefaultsSetSensivity();
 inline void InitDefaults() {
   InitDefaultsPanoramaPars();
   InitDefaultsTRoi();
@@ -83,6 +85,7 @@ inline void InitDefaults() {
   InitDefaultsGetFrames();
   InitDefaultsPanoramaFrame();
   InitDefaultsScreenFrame();
+  InitDefaultsSetSensivity();
 }
 }  // namespace protobuf_OrionCommunication_2eproto
 namespace OrionCommunication {
@@ -113,6 +116,9 @@ extern ScreenFrameDefaultTypeInternal _ScreenFrame_default_instance_;
 class SetModeQ;
 class SetModeQDefaultTypeInternal;
 extern SetModeQDefaultTypeInternal _SetModeQ_default_instance_;
+class SetSensivity;
+class SetSensivityDefaultTypeInternal;
+extern SetSensivityDefaultTypeInternal _SetSensivity_default_instance_;
 class TPoint;
 class TPointDefaultTypeInternal;
 extern TPointDefaultTypeInternal _TPoint_default_instance_;
@@ -410,14 +416,17 @@ class TRoi : public ::google::protobuf::Message /* @@protoc_insertion_point(clas
 
   // accessors -------------------------------------------------------
 
-  // .OrionCommunication.TPolygon polygon = 1;
-  bool has_polygon() const;
+  // repeated .OrionCommunication.TPolygon polygon = 1;
+  int polygon_size() const;
   void clear_polygon();
   static const int kPolygonFieldNumber = 1;
-  const ::OrionCommunication::TPolygon& polygon() const;
-  ::OrionCommunication::TPolygon* release_polygon();
-  ::OrionCommunication::TPolygon* mutable_polygon();
-  void set_allocated_polygon(::OrionCommunication::TPolygon* polygon);
+  const ::OrionCommunication::TPolygon& polygon(int index) const;
+  ::OrionCommunication::TPolygon* mutable_polygon(int index);
+  ::OrionCommunication::TPolygon* add_polygon();
+  ::google::protobuf::RepeatedPtrField< ::OrionCommunication::TPolygon >*
+      mutable_polygon();
+  const ::google::protobuf::RepeatedPtrField< ::OrionCommunication::TPolygon >&
+      polygon() const;
 
   // .OrionCommunication.TRectangle rect1 = 2;
   bool has_rect1() const;
@@ -441,7 +450,7 @@ class TRoi : public ::google::protobuf::Message /* @@protoc_insertion_point(clas
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::OrionCommunication::TPolygon* polygon_;
+  ::google::protobuf::RepeatedPtrField< ::OrionCommunication::TPolygon > polygon_;
   ::OrionCommunication::TRectangle* rect1_;
   ::OrionCommunication::TRectangle* rect2_;
   mutable int _cached_size_;
@@ -532,24 +541,24 @@ class TPoint : public ::google::protobuf::Message /* @@protoc_insertion_point(cl
 
   // accessors -------------------------------------------------------
 
-  // int32 x = 1;
+  // float x = 1;
   void clear_x();
   static const int kXFieldNumber = 1;
-  ::google::protobuf::int32 x() const;
-  void set_x(::google::protobuf::int32 value);
+  float x() const;
+  void set_x(float value);
 
-  // int32 y = 2;
+  // float y = 2;
   void clear_y();
   static const int kYFieldNumber = 2;
-  ::google::protobuf::int32 y() const;
-  void set_y(::google::protobuf::int32 value);
+  float y() const;
+  void set_y(float value);
 
   // @@protoc_insertion_point(class_scope:OrionCommunication.TPoint)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::int32 x_;
-  ::google::protobuf::int32 y_;
+  float x_;
+  float y_;
   mutable int _cached_size_;
   friend struct ::protobuf_OrionCommunication_2eproto::TableStruct;
   friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsTPointImpl();
@@ -650,11 +659,18 @@ class TPolygon : public ::google::protobuf::Message /* @@protoc_insertion_point(
   const ::google::protobuf::RepeatedPtrField< ::OrionCommunication::TPoint >&
       points() const;
 
+  // bool is_active = 2;
+  void clear_is_active();
+  static const int kIsActiveFieldNumber = 2;
+  bool is_active() const;
+  void set_is_active(bool value);
+
   // @@protoc_insertion_point(class_scope:OrionCommunication.TPolygon)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::RepeatedPtrField< ::OrionCommunication::TPoint > points_;
+  bool is_active_;
   mutable int _cached_size_;
   friend struct ::protobuf_OrionCommunication_2eproto::TableStruct;
   friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsTPolygonImpl();
@@ -1661,6 +1677,105 @@ class ScreenFrame : public ::google::protobuf::Message /* @@protoc_insertion_poi
   friend struct ::protobuf_OrionCommunication_2eproto::TableStruct;
   friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsScreenFrameImpl();
 };
+// -------------------------------------------------------------------
+
+class SetSensivity : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:OrionCommunication.SetSensivity) */ {
+ public:
+  SetSensivity();
+  virtual ~SetSensivity();
+
+  SetSensivity(const SetSensivity& from);
+
+  inline SetSensivity& operator=(const SetSensivity& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  SetSensivity(SetSensivity&& from) noexcept
+    : SetSensivity() {
+    *this = ::std::move(from);
+  }
+
+  inline SetSensivity& operator=(SetSensivity&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SetSensivity& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const SetSensivity* internal_default_instance() {
+    return reinterpret_cast<const SetSensivity*>(
+               &_SetSensivity_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    13;
+
+  void Swap(SetSensivity* other);
+  friend void swap(SetSensivity& a, SetSensivity& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline SetSensivity* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  SetSensivity* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const SetSensivity& from);
+  void MergeFrom(const SetSensivity& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(SetSensivity* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // int32 sensivity = 1;
+  void clear_sensivity();
+  static const int kSensivityFieldNumber = 1;
+  ::google::protobuf::int32 sensivity() const;
+  void set_sensivity(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:OrionCommunication.SetSensivity)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::int32 sensivity_;
+  mutable int _cached_size_;
+  friend struct ::protobuf_OrionCommunication_2eproto::TableStruct;
+  friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsSetSensivityImpl();
+};
 // ===================================================================
 
 
@@ -1802,54 +1917,34 @@ inline void PanoramaPars::set_pan_motion_frame_no(::google::protobuf::int32 valu
 
 // TRoi
 
-// .OrionCommunication.TPolygon polygon = 1;
-inline bool TRoi::has_polygon() const {
-  return this != internal_default_instance() && polygon_ != NULL;
+// repeated .OrionCommunication.TPolygon polygon = 1;
+inline int TRoi::polygon_size() const {
+  return polygon_.size();
 }
 inline void TRoi::clear_polygon() {
-  if (GetArenaNoVirtual() == NULL && polygon_ != NULL) {
-    delete polygon_;
-  }
-  polygon_ = NULL;
+  polygon_.Clear();
 }
-inline const ::OrionCommunication::TPolygon& TRoi::polygon() const {
-  const ::OrionCommunication::TPolygon* p = polygon_;
+inline const ::OrionCommunication::TPolygon& TRoi::polygon(int index) const {
   // @@protoc_insertion_point(field_get:OrionCommunication.TRoi.polygon)
-  return p != NULL ? *p : *reinterpret_cast<const ::OrionCommunication::TPolygon*>(
-      &::OrionCommunication::_TPolygon_default_instance_);
+  return polygon_.Get(index);
 }
-inline ::OrionCommunication::TPolygon* TRoi::release_polygon() {
-  // @@protoc_insertion_point(field_release:OrionCommunication.TRoi.polygon)
-  
-  ::OrionCommunication::TPolygon* temp = polygon_;
-  polygon_ = NULL;
-  return temp;
-}
-inline ::OrionCommunication::TPolygon* TRoi::mutable_polygon() {
-  
-  if (polygon_ == NULL) {
-    polygon_ = new ::OrionCommunication::TPolygon;
-  }
+inline ::OrionCommunication::TPolygon* TRoi::mutable_polygon(int index) {
   // @@protoc_insertion_point(field_mutable:OrionCommunication.TRoi.polygon)
-  return polygon_;
+  return polygon_.Mutable(index);
 }
-inline void TRoi::set_allocated_polygon(::OrionCommunication::TPolygon* polygon) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete polygon_;
-  }
-  if (polygon) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      polygon = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, polygon, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  polygon_ = polygon;
-  // @@protoc_insertion_point(field_set_allocated:OrionCommunication.TRoi.polygon)
+inline ::OrionCommunication::TPolygon* TRoi::add_polygon() {
+  // @@protoc_insertion_point(field_add:OrionCommunication.TRoi.polygon)
+  return polygon_.Add();
+}
+inline ::google::protobuf::RepeatedPtrField< ::OrionCommunication::TPolygon >*
+TRoi::mutable_polygon() {
+  // @@protoc_insertion_point(field_mutable_list:OrionCommunication.TRoi.polygon)
+  return &polygon_;
+}
+inline const ::google::protobuf::RepeatedPtrField< ::OrionCommunication::TPolygon >&
+TRoi::polygon() const {
+  // @@protoc_insertion_point(field_list:OrionCommunication.TRoi.polygon)
+  return polygon_;
 }
 
 // .OrionCommunication.TRectangle rect1 = 2;
@@ -1956,29 +2051,29 @@ inline void TRoi::set_allocated_rect2(::OrionCommunication::TRectangle* rect2) {
 
 // TPoint
 
-// int32 x = 1;
+// float x = 1;
 inline void TPoint::clear_x() {
   x_ = 0;
 }
-inline ::google::protobuf::int32 TPoint::x() const {
+inline float TPoint::x() const {
   // @@protoc_insertion_point(field_get:OrionCommunication.TPoint.x)
   return x_;
 }
-inline void TPoint::set_x(::google::protobuf::int32 value) {
+inline void TPoint::set_x(float value) {
   
   x_ = value;
   // @@protoc_insertion_point(field_set:OrionCommunication.TPoint.x)
 }
 
-// int32 y = 2;
+// float y = 2;
 inline void TPoint::clear_y() {
   y_ = 0;
 }
-inline ::google::protobuf::int32 TPoint::y() const {
+inline float TPoint::y() const {
   // @@protoc_insertion_point(field_get:OrionCommunication.TPoint.y)
   return y_;
 }
-inline void TPoint::set_y(::google::protobuf::int32 value) {
+inline void TPoint::set_y(float value) {
   
   y_ = value;
   // @@protoc_insertion_point(field_set:OrionCommunication.TPoint.y)
@@ -2016,6 +2111,20 @@ inline const ::google::protobuf::RepeatedPtrField< ::OrionCommunication::TPoint 
 TPolygon::points() const {
   // @@protoc_insertion_point(field_list:OrionCommunication.TPolygon.points)
   return points_;
+}
+
+// bool is_active = 2;
+inline void TPolygon::clear_is_active() {
+  is_active_ = false;
+}
+inline bool TPolygon::is_active() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.TPolygon.is_active)
+  return is_active_;
+}
+inline void TPolygon::set_is_active(bool value) {
+  
+  is_active_ = value;
+  // @@protoc_insertion_point(field_set:OrionCommunication.TPolygon.is_active)
 }
 
 // -------------------------------------------------------------------
@@ -2400,9 +2509,29 @@ inline void ScreenFrame::set_height(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:OrionCommunication.ScreenFrame.height)
 }
 
+// -------------------------------------------------------------------
+
+// SetSensivity
+
+// int32 sensivity = 1;
+inline void SetSensivity::clear_sensivity() {
+  sensivity_ = 0;
+}
+inline ::google::protobuf::int32 SetSensivity::sensivity() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.SetSensivity.sensivity)
+  return sensivity_;
+}
+inline void SetSensivity::set_sensivity(::google::protobuf::int32 value) {
+  
+  sensivity_ = value;
+  // @@protoc_insertion_point(field_set:OrionCommunication.SetSensivity.sensivity)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

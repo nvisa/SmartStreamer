@@ -85,6 +85,11 @@ class ScreenFrameDefaultTypeInternal {
   ::google::protobuf::internal::ExplicitlyConstructed<ScreenFrame>
       _instance;
 } _ScreenFrame_default_instance_;
+class SetSensivityDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<SetSensivity>
+      _instance;
+} _SetSensivity_default_instance_;
 }  // namespace OrionCommunication
 namespace protobuf_OrionCommunication_2eproto {
 void InitDefaultsPanoramaParsImpl() {
@@ -364,7 +369,28 @@ void InitDefaultsScreenFrame() {
   ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsScreenFrameImpl);
 }
 
-::google::protobuf::Metadata file_level_metadata[13];
+void InitDefaultsSetSensivityImpl() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+#ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
+  ::google::protobuf::internal::InitProtobufDefaultsForceUnique();
+#else
+  ::google::protobuf::internal::InitProtobufDefaults();
+#endif  // GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
+  {
+    void* ptr = &::OrionCommunication::_SetSensivity_default_instance_;
+    new (ptr) ::OrionCommunication::SetSensivity();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::OrionCommunication::SetSensivity::InitAsDefaultInstance();
+}
+
+void InitDefaultsSetSensivity() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsSetSensivityImpl);
+}
+
+::google::protobuf::Metadata file_level_metadata[14];
 const ::google::protobuf::EnumDescriptor* file_level_enum_descriptors[2];
 
 const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
@@ -403,6 +429,7 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::TPolygon, points_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::TPolygon, is_active_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::TRectangle, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -462,21 +489,28 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::ScreenFrame, frame_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::ScreenFrame, width_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::ScreenFrame, height_),
+  ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::SetSensivity, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::SetSensivity, sensivity_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::OrionCommunication::PanoramaPars)},
   { 14, -1, sizeof(::OrionCommunication::TRoi)},
   { 22, -1, sizeof(::OrionCommunication::TPoint)},
   { 29, -1, sizeof(::OrionCommunication::TPolygon)},
-  { 35, -1, sizeof(::OrionCommunication::TRectangle)},
-  { 42, -1, sizeof(::OrionCommunication::SetModeQ)},
-  { 48, -1, sizeof(::OrionCommunication::DummyInfo)},
-  { 54, -1, sizeof(::OrionCommunication::MotionDetectionParameters)},
-  { 60, -1, sizeof(::OrionCommunication::AppCommandResult)},
-  { 66, -1, sizeof(::OrionCommunication::AryaParameters)},
-  { 72, -1, sizeof(::OrionCommunication::GetFrames)},
-  { 78, -1, sizeof(::OrionCommunication::PanoramaFrame)},
-  { 86, -1, sizeof(::OrionCommunication::ScreenFrame)},
+  { 36, -1, sizeof(::OrionCommunication::TRectangle)},
+  { 43, -1, sizeof(::OrionCommunication::SetModeQ)},
+  { 49, -1, sizeof(::OrionCommunication::DummyInfo)},
+  { 55, -1, sizeof(::OrionCommunication::MotionDetectionParameters)},
+  { 61, -1, sizeof(::OrionCommunication::AppCommandResult)},
+  { 67, -1, sizeof(::OrionCommunication::AryaParameters)},
+  { 73, -1, sizeof(::OrionCommunication::GetFrames)},
+  { 79, -1, sizeof(::OrionCommunication::PanoramaFrame)},
+  { 87, -1, sizeof(::OrionCommunication::ScreenFrame)},
+  { 95, -1, sizeof(::OrionCommunication::SetSensivity)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
@@ -493,6 +527,7 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::google::protobuf::Message*>(&::OrionCommunication::_GetFrames_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::OrionCommunication::_PanoramaFrame_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::OrionCommunication::_ScreenFrame_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::OrionCommunication::_SetSensivity_default_instance_),
 };
 
 void protobuf_AssignDescriptors() {
@@ -511,7 +546,7 @@ void protobuf_AssignDescriptorsOnce() {
 void protobuf_RegisterTypes(const ::std::string&) GOOGLE_PROTOBUF_ATTRIBUTE_COLD;
 void protobuf_RegisterTypes(const ::std::string&) {
   protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 13);
+  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 14);
 }
 
 void AddDescriptorsImpl() {
@@ -523,55 +558,71 @@ void AddDescriptorsImpl() {
       "art_angle\030\004 \001(\002\022\023\n\013y_start_pos\030\005 \001(\005\022\016\n\006"
       "widthx\030\006 \001(\005\022\017\n\007heighty\030\007 \001(\005\022\020\n\010fix_mod"
       "e\030\010 \001(\005\022\033\n\023pan_motion_frame_no\030\t \001(\005\"\223\001\n"
-      "\004TRoi\022-\n\007polygon\030\001 \001(\0132\034.OrionCommunicat"
+      "\004TRoi\022-\n\007polygon\030\001 \003(\0132\034.OrionCommunicat"
       "ion.TPolygon\022-\n\005rect1\030\002 \001(\0132\036.OrionCommu"
       "nication.TRectangle\022-\n\005rect2\030\003 \001(\0132\036.Ori"
       "onCommunication.TRectangle\"\036\n\006TPoint\022\t\n\001"
-      "x\030\001 \001(\005\022\t\n\001y\030\002 \001(\005\"6\n\010TPolygon\022*\n\006points"
-      "\030\001 \003(\0132\032.OrionCommunication.TPoint\"l\n\nTR"
-      "ectangle\022-\n\tupperLeft\030\001 \001(\0132\032.OrionCommu"
-      "nication.TPoint\022/\n\013bottomRight\030\002 \001(\0132\032.O"
-      "rionCommunication.TPoint\"q\n\010SetModeQ\022/\n\004"
-      "mode\030\001 \001(\0162!.OrionCommunication.SetModeQ"
-      ".Mode\"4\n\004Mode\022\010\n\004NONE\020\000\022\014\n\010PANAROMA\020\001\022\024\n"
-      "\020MOTION_DETECTION\020\002\"\032\n\tDummyInfo\022\r\n\005dumm"
-      "y\030\001 \001(\005\"*\n\031MotionDetectionParameters\022\r\n\005"
-      "dummy\030\001 \001(\005\"\037\n\020AppCommandResult\022\013\n\003err\030\001"
-      " \001(\005\"\"\n\016AryaParameters\022\020\n\010panSpeed\030\001 \001(\005"
-      "\"l\n\tGetFrames\0227\n\tmodeFrame\030\001 \001(\0162$.Orion"
-      "Communication.GetFrames.Frames\"&\n\006Frames"
-      "\022\r\n\tLastFrame\020\000\022\r\n\tAllFrames\020\001\"C\n\rPanora"
-      "maFrame\022\r\n\005valid\030\001 \001(\010\022\020\n\010progress\030\002 \001(\002"
-      "\022\021\n\tframeData\030\003 \001(\014\";\n\013ScreenFrame\022\r\n\005fr"
-      "ame\030\001 \001(\014\022\r\n\005width\030\002 \001(\005\022\016\n\006height\030\003 \001(\005"
-      "2\334\007\n\tAppConfig\022a\n\025SetPanaromaParameters\022"
-      " .OrionCommunication.PanoramaPars\032$.Orio"
-      "nCommunication.AppCommandResult\"\000\022`\n\034Set"
-      "MotionDetectionParameters\022\030.OrionCommuni"
-      "cation.TRoi\032$.OrionCommunication.AppComm"
-      "andResult\"\000\022V\n\016SetCurrentMode\022\034.OrionCom"
-      "munication.SetModeQ\032$.OrionCommunication"
-      ".AppCommandResult\"\000\022O\n\016GetCurrentMode\022\035."
+      "x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\"I\n\010TPolygon\022*\n\006points"
+      "\030\001 \003(\0132\032.OrionCommunication.TPoint\022\021\n\tis"
+      "_active\030\002 \001(\010\"l\n\nTRectangle\022-\n\tupperLeft"
+      "\030\001 \001(\0132\032.OrionCommunication.TPoint\022/\n\013bo"
+      "ttomRight\030\002 \001(\0132\032.OrionCommunication.TPo"
+      "int\"q\n\010SetModeQ\022/\n\004mode\030\001 \001(\0162!.OrionCom"
+      "munication.SetModeQ.Mode\"4\n\004Mode\022\010\n\004NONE"
+      "\020\000\022\014\n\010PANAROMA\020\001\022\024\n\020MOTION_DETECTION\020\002\"\032"
+      "\n\tDummyInfo\022\r\n\005dummy\030\001 \001(\005\"*\n\031MotionDete"
+      "ctionParameters\022\r\n\005dummy\030\001 \001(\005\"\037\n\020AppCom"
+      "mandResult\022\013\n\003err\030\001 \001(\005\"\"\n\016AryaParameter"
+      "s\022\020\n\010panSpeed\030\001 \001(\005\"l\n\tGetFrames\0227\n\tmode"
+      "Frame\030\001 \001(\0162$.OrionCommunication.GetFram"
+      "es.Frames\"&\n\006Frames\022\r\n\tLastFrame\020\000\022\r\n\tAl"
+      "lFrames\020\001\"C\n\rPanoramaFrame\022\r\n\005valid\030\001 \001("
+      "\010\022\020\n\010progress\030\002 \001(\002\022\021\n\tframeData\030\003 \001(\014\";"
+      "\n\013ScreenFrame\022\r\n\005frame\030\001 \001(\014\022\r\n\005width\030\002 "
+      "\001(\005\022\016\n\006height\030\003 \001(\005\"!\n\014SetSensivity\022\021\n\ts"
+      "ensivity\030\001 \001(\0052\206\014\n\tAppConfig\022a\n\025SetPanar"
+      "omaParameters\022 .OrionCommunication.Panor"
+      "amaPars\032$.OrionCommunication.AppCommandR"
+      "esult\"\000\022Z\n\025GetPanaromaParameters\022\035.Orion"
+      "Communication.DummyInfo\032 .OrionCommunica"
+      "tion.PanoramaPars\"\000\022`\n\034SetMotionDetectio"
+      "nParameters\022\030.OrionCommunication.TRoi\032$."
+      "OrionCommunication.AppCommandResult\"\000\022Y\n"
+      "\034GetMotionDetectionParameters\022\035.OrionCom"
+      "munication.DummyInfo\032\030.OrionCommunicatio"
+      "n.TRoi\"\000\022Y\n\016SetCurrentMode\022\034.OrionCommun"
+      "ication.SetModeQ\032$.OrionCommunication.Ap"
+      "pCommandResult\"\003\210\002\001\022R\n\016GetCurrentMode\022\035."
       "OrionCommunication.DummyInfo\032\034.OrionComm"
-      "unication.SetModeQ\"\000\022]\n\024GetLastPanaromaF"
-      "rame\022\035.OrionCommunication.DummyInfo\032$.Or"
-      "ionCommunication.AppCommandResult\"\000\022Y\n\021G"
-      "etPanaromaFrames\022\035.OrionCommunication.Ge"
-      "tFrames\032!.OrionCommunication.PanoramaFra"
-      "me\"\0000\001\022R\n\tRunMotion\022\035.OrionCommunication"
+      "unication.SetModeQ\"\003\210\002\001\022a\n\025SetSensivityP"
+      "arameter\022 .OrionCommunication.SetSensivi"
+      "ty\032$.OrionCommunication.AppCommandResult"
+      "\"\000\022Z\n\025GetSensivityParameter\022\035.OrionCommu"
+      "nication.DummyInfo\032 .OrionCommunication."
+      "SetSensivity\"\000\022]\n\024GetLastPanaromaFrame\022\035"
+      ".OrionCommunication.DummyInfo\032$.OrionCom"
+      "munication.AppCommandResult\"\000\022Y\n\021GetPana"
+      "romaFrames\022\035.OrionCommunication.GetFrame"
+      "s\032!.OrionCommunication.PanoramaFrame\"\0000\001"
+      "\022R\n\tRunMotion\022\035.OrionCommunication.Dummy"
+      "Info\032$.OrionCommunication.AppCommandResu"
+      "lt\"\000\022T\n\013RunPanaroma\022\035.OrionCommunication"
       ".DummyInfo\032$.OrionCommunication.AppComma"
-      "ndResult\"\000\022T\n\013RunPanaroma\022\035.OrionCommuni"
-      "cation.DummyInfo\032$.OrionCommunication.Ap"
-      "pCommandResult\"\000\022S\n\nStopMotion\022\035.OrionCo"
-      "mmunication.DummyInfo\032$.OrionCommunicati"
-      "on.AppCommandResult\"\000\022U\n\014StopPanaroma\022\035."
-      "OrionCommunication.DummyInfo\032$.OrionComm"
-      "unication.AppCommandResult\"\000\022Q\n\rGetScree"
-      "nShot\022\035.OrionCommunication.DummyInfo\032\037.O"
-      "rionCommunication.ScreenFrame\"\000b\006proto3"
+      "ndResult\"\000\022S\n\nStopMotion\022\035.OrionCommunic"
+      "ation.DummyInfo\032$.OrionCommunication.App"
+      "CommandResult\"\000\022U\n\014StopPanaroma\022\035.OrionC"
+      "ommunication.DummyInfo\032$.OrionCommunicat"
+      "ion.AppCommandResult\"\000\022Q\n\rGetScreenShot\022"
+      "\035.OrionCommunication.DummyInfo\032\037.OrionCo"
+      "mmunication.ScreenFrame\"\000\022W\n\021GotoPanarom"
+      "aPixel\022\032.OrionCommunication.TPoint\032$.Ori"
+      "onCommunication.AppCommandResult\"\000\022S\n\024Cu"
+      "rrentPanaromaPixel\022\035.OrionCommunication."
+      "DummyInfo\032\032.OrionCommunication.TPoint\"\000b"
+      "\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 2079);
+      descriptor, 2687);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "OrionCommunication.proto", &protobuf_RegisterTypes);
 }
@@ -1164,8 +1215,6 @@ void PanoramaPars::InternalSwap(PanoramaPars* other) {
 // ===================================================================
 
 void TRoi::InitAsDefaultInstance() {
-  ::OrionCommunication::_TRoi_default_instance_._instance.get_mutable()->polygon_ = const_cast< ::OrionCommunication::TPolygon*>(
-      ::OrionCommunication::TPolygon::internal_default_instance());
   ::OrionCommunication::_TRoi_default_instance_._instance.get_mutable()->rect1_ = const_cast< ::OrionCommunication::TRectangle*>(
       ::OrionCommunication::TRectangle::internal_default_instance());
   ::OrionCommunication::_TRoi_default_instance_._instance.get_mutable()->rect2_ = const_cast< ::OrionCommunication::TRectangle*>(
@@ -1188,13 +1237,9 @@ TRoi::TRoi()
 TRoi::TRoi(const TRoi& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL),
+      polygon_(from.polygon_),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  if (from.has_polygon()) {
-    polygon_ = new ::OrionCommunication::TPolygon(*from.polygon_);
-  } else {
-    polygon_ = NULL;
-  }
   if (from.has_rect1()) {
     rect1_ = new ::OrionCommunication::TRectangle(*from.rect1_);
   } else {
@@ -1209,9 +1254,9 @@ TRoi::TRoi(const TRoi& from)
 }
 
 void TRoi::SharedCtor() {
-  ::memset(&polygon_, 0, static_cast<size_t>(
+  ::memset(&rect1_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&rect2_) -
-      reinterpret_cast<char*>(&polygon_)) + sizeof(rect2_));
+      reinterpret_cast<char*>(&rect1_)) + sizeof(rect2_));
   _cached_size_ = 0;
 }
 
@@ -1221,7 +1266,6 @@ TRoi::~TRoi() {
 }
 
 void TRoi::SharedDtor() {
-  if (this != internal_default_instance()) delete polygon_;
   if (this != internal_default_instance()) delete rect1_;
   if (this != internal_default_instance()) delete rect2_;
 }
@@ -1255,10 +1299,7 @@ void TRoi::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  if (GetArenaNoVirtual() == NULL && polygon_ != NULL) {
-    delete polygon_;
-  }
-  polygon_ = NULL;
+  polygon_.Clear();
   if (GetArenaNoVirtual() == NULL && rect1_ != NULL) {
     delete rect1_;
   }
@@ -1280,12 +1321,11 @@ bool TRoi::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // .OrionCommunication.TPolygon polygon = 1;
+      // repeated .OrionCommunication.TPolygon polygon = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
-               input, mutable_polygon()));
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(input, add_polygon()));
         } else {
           goto handle_unusual;
         }
@@ -1342,10 +1382,11 @@ void TRoi::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .OrionCommunication.TPolygon polygon = 1;
-  if (this->has_polygon()) {
+  // repeated .OrionCommunication.TPolygon polygon = 1;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->polygon_size()); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, *this->polygon_, output);
+      1, this->polygon(static_cast<int>(i)), output);
   }
 
   // .OrionCommunication.TRectangle rect1 = 2;
@@ -1374,11 +1415,12 @@ void TRoi::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .OrionCommunication.TPolygon polygon = 1;
-  if (this->has_polygon()) {
+  // repeated .OrionCommunication.TPolygon polygon = 1;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->polygon_size()); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        1, *this->polygon_, deterministic, target);
+        1, this->polygon(static_cast<int>(i)), deterministic, target);
   }
 
   // .OrionCommunication.TRectangle rect1 = 2;
@@ -1412,11 +1454,15 @@ size_t TRoi::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
-  // .OrionCommunication.TPolygon polygon = 1;
-  if (this->has_polygon()) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *this->polygon_);
+  // repeated .OrionCommunication.TPolygon polygon = 1;
+  {
+    unsigned int count = static_cast<unsigned int>(this->polygon_size());
+    total_size += 1UL * count;
+    for (unsigned int i = 0; i < count; i++) {
+      total_size +=
+        ::google::protobuf::internal::WireFormatLite::MessageSize(
+          this->polygon(static_cast<int>(i)));
+    }
   }
 
   // .OrionCommunication.TRectangle rect1 = 2;
@@ -1462,9 +1508,7 @@ void TRoi::MergeFrom(const TRoi& from) {
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.has_polygon()) {
-    mutable_polygon()->::OrionCommunication::TPolygon::MergeFrom(from.polygon());
-  }
+  polygon_.MergeFrom(from.polygon_);
   if (from.has_rect1()) {
     mutable_rect1()->::OrionCommunication::TRectangle::MergeFrom(from.rect1());
   }
@@ -1497,7 +1541,7 @@ void TRoi::Swap(TRoi* other) {
 }
 void TRoi::InternalSwap(TRoi* other) {
   using std::swap;
-  swap(polygon_, other->polygon_);
+  polygon_.InternalSwap(&other->polygon_);
   swap(rect1_, other->rect1_);
   swap(rect2_, other->rect2_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
@@ -1598,13 +1642,13 @@ bool TPoint::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // int32 x = 1;
+      // float x = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
+            static_cast< ::google::protobuf::uint8>(13u /* 13 & 0xFF */)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
                  input, &x_)));
         } else {
           goto handle_unusual;
@@ -1612,13 +1656,13 @@ bool TPoint::MergePartialFromCodedStream(
         break;
       }
 
-      // int32 y = 2;
+      // float y = 2;
       case 2: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
+            static_cast< ::google::protobuf::uint8>(21u /* 21 & 0xFF */)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
                  input, &y_)));
         } else {
           goto handle_unusual;
@@ -1652,14 +1696,14 @@ void TPoint::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 x = 1;
+  // float x = 1;
   if (this->x() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->x(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(1, this->x(), output);
   }
 
-  // int32 y = 2;
+  // float y = 2;
   if (this->y() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->y(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->y(), output);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -1676,14 +1720,14 @@ void TPoint::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 x = 1;
+  // float x = 1;
   if (this->x() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->x(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(1, this->x(), target);
   }
 
-  // int32 y = 2;
+  // float y = 2;
   if (this->y() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->y(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->y(), target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -1703,18 +1747,14 @@ size_t TPoint::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
-  // int32 x = 1;
+  // float x = 1;
   if (this->x() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->x());
+    total_size += 1 + 4;
   }
 
-  // int32 y = 2;
+  // float y = 2;
   if (this->y() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->y());
+    total_size += 1 + 4;
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -1796,6 +1836,7 @@ void TPolygon::InitAsDefaultInstance() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int TPolygon::kPointsFieldNumber;
+const int TPolygon::kIsActiveFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 TPolygon::TPolygon()
@@ -1812,10 +1853,12 @@ TPolygon::TPolygon(const TPolygon& from)
       points_(from.points_),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
+  is_active_ = from.is_active_;
   // @@protoc_insertion_point(copy_constructor:OrionCommunication.TPolygon)
 }
 
 void TPolygon::SharedCtor() {
+  is_active_ = false;
   _cached_size_ = 0;
 }
 
@@ -1857,6 +1900,7 @@ void TPolygon::Clear() {
   (void) cached_has_bits;
 
   points_.Clear();
+  is_active_ = false;
   _internal_metadata_.Clear();
 }
 
@@ -1875,6 +1919,20 @@ bool TPolygon::MergePartialFromCodedStream(
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(input, add_points()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // bool is_active = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &is_active_)));
         } else {
           goto handle_unusual;
         }
@@ -1914,6 +1972,11 @@ void TPolygon::SerializeWithCachedSizes(
       1, this->points(static_cast<int>(i)), output);
   }
 
+  // bool is_active = 2;
+  if (this->is_active() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(2, this->is_active(), output);
+  }
+
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
@@ -1934,6 +1997,11 @@ void TPolygon::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
         1, this->points(static_cast<int>(i)), deterministic, target);
+  }
+
+  // bool is_active = 2;
+  if (this->is_active() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(2, this->is_active(), target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -1962,6 +2030,11 @@ size_t TPolygon::ByteSizeLong() const {
         ::google::protobuf::internal::WireFormatLite::MessageSize(
           this->points(static_cast<int>(i)));
     }
+  }
+
+  // bool is_active = 2;
+  if (this->is_active() != 0) {
+    total_size += 1 + 1;
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -1994,6 +2067,9 @@ void TPolygon::MergeFrom(const TPolygon& from) {
   (void) cached_has_bits;
 
   points_.MergeFrom(from.points_);
+  if (from.is_active() != 0) {
+    set_is_active(from.is_active());
+  }
 }
 
 void TPolygon::CopyFrom(const ::google::protobuf::Message& from) {
@@ -2021,6 +2097,7 @@ void TPolygon::Swap(TPolygon* other) {
 void TPolygon::InternalSwap(TPolygon* other) {
   using std::swap;
   points_.InternalSwap(&other->points_);
+  swap(is_active_, other->is_active_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   swap(_cached_size_, other->_cached_size_);
 }
@@ -4404,6 +4481,244 @@ void ScreenFrame::InternalSwap(ScreenFrame* other) {
 }
 
 ::google::protobuf::Metadata ScreenFrame::GetMetadata() const {
+  protobuf_OrionCommunication_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_OrionCommunication_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+
+// ===================================================================
+
+void SetSensivity::InitAsDefaultInstance() {
+}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int SetSensivity::kSensivityFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+SetSensivity::SetSensivity()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    ::protobuf_OrionCommunication_2eproto::InitDefaultsSetSensivity();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:OrionCommunication.SetSensivity)
+}
+SetSensivity::SetSensivity(const SetSensivity& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  sensivity_ = from.sensivity_;
+  // @@protoc_insertion_point(copy_constructor:OrionCommunication.SetSensivity)
+}
+
+void SetSensivity::SharedCtor() {
+  sensivity_ = 0;
+  _cached_size_ = 0;
+}
+
+SetSensivity::~SetSensivity() {
+  // @@protoc_insertion_point(destructor:OrionCommunication.SetSensivity)
+  SharedDtor();
+}
+
+void SetSensivity::SharedDtor() {
+}
+
+void SetSensivity::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* SetSensivity::descriptor() {
+  ::protobuf_OrionCommunication_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_OrionCommunication_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const SetSensivity& SetSensivity::default_instance() {
+  ::protobuf_OrionCommunication_2eproto::InitDefaultsSetSensivity();
+  return *internal_default_instance();
+}
+
+SetSensivity* SetSensivity::New(::google::protobuf::Arena* arena) const {
+  SetSensivity* n = new SetSensivity;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void SetSensivity::Clear() {
+// @@protoc_insertion_point(message_clear_start:OrionCommunication.SetSensivity)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  sensivity_ = 0;
+  _internal_metadata_.Clear();
+}
+
+bool SetSensivity::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:OrionCommunication.SetSensivity)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // int32 sensivity = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &sensivity_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:OrionCommunication.SetSensivity)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:OrionCommunication.SetSensivity)
+  return false;
+#undef DO_
+}
+
+void SetSensivity::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:OrionCommunication.SetSensivity)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int32 sensivity = 1;
+  if (this->sensivity() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->sensivity(), output);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:OrionCommunication.SetSensivity)
+}
+
+::google::protobuf::uint8* SetSensivity::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:OrionCommunication.SetSensivity)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int32 sensivity = 1;
+  if (this->sensivity() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->sensivity(), target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:OrionCommunication.SetSensivity)
+  return target;
+}
+
+size_t SetSensivity::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:OrionCommunication.SetSensivity)
+  size_t total_size = 0;
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+  }
+  // int32 sensivity = 1;
+  if (this->sensivity() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->sensivity());
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void SetSensivity::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:OrionCommunication.SetSensivity)
+  GOOGLE_DCHECK_NE(&from, this);
+  const SetSensivity* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const SetSensivity>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:OrionCommunication.SetSensivity)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:OrionCommunication.SetSensivity)
+    MergeFrom(*source);
+  }
+}
+
+void SetSensivity::MergeFrom(const SetSensivity& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:OrionCommunication.SetSensivity)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.sensivity() != 0) {
+    set_sensivity(from.sensivity());
+  }
+}
+
+void SetSensivity::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:OrionCommunication.SetSensivity)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void SetSensivity::CopyFrom(const SetSensivity& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:OrionCommunication.SetSensivity)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SetSensivity::IsInitialized() const {
+  return true;
+}
+
+void SetSensivity::Swap(SetSensivity* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void SetSensivity::InternalSwap(SetSensivity* other) {
+  using std::swap;
+  swap(sensivity_, other->sensivity_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata SetSensivity::GetMetadata() const {
   protobuf_OrionCommunication_2eproto::protobuf_AssignDescriptorsOnce();
   return ::protobuf_OrionCommunication_2eproto::file_level_metadata[kIndexInFileMessages];
 }

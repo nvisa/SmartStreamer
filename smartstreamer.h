@@ -15,7 +15,6 @@ class ViaWrapper;
 class FFmpegDecoder;
 class QtVideoOutput;
 class SeiInserter;
-class CudaConfigurations;
 class GrpcThread;
 class GrpcPTZClient;
 class SmartStreamer : public BaseStreamer, public OrionCommunication::AppConfig::Service
@@ -43,6 +42,10 @@ public:
     grpc::Status StopMotion(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response);
     grpc::Status GetScreenShot(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::ScreenFrame *response);
     grpc::Status SetMotionDetectionParameters(grpc::ServerContext *context, const OrionCommunication::TRoi *request, OrionCommunication::AppCommandResult *response);
+    grpc::Status GetMotionDetectionParameters(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::TRoi *response);
+    grpc::Status GetSensivityParameter(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::SetSensivity *response);
+    grpc::Status SetSensivityParameter(grpc::ServerContext *context, const OrionCommunication::SetSensivity *request, OrionCommunication::AppCommandResult *response);
+    grpc::Status GotoPanaromaPixel(grpc::ServerContext *context, const OrionCommunication::TPoint *request, OrionCommunication::AppCommandResult *response);
 	class Parameters {
 	public:
 		Parameters()
@@ -90,16 +93,9 @@ public:
 	};
 	Parameters pars;
 
-    int processCudaMode(const RawBuffer &buf);
-    int processCudaBaseMode(const RawBuffer &buf);
-    QString doPtzCommand(QString ascii);
-    void initPanaroma();
-    void GoToPositionPanaroma();
 signals:
 
 public slots:
-    void connected();
-    void switchEvent();
 	virtual void timeout();
 protected:
 	void printParameters();
@@ -113,49 +109,19 @@ protected:
 	FFmpegDecoder *dec;
 	QtVideoOutput *vout;
 	SeiInserter *sei;
-    CudaConfigurations *cuConf;
     GrpcThread *grpcServ;
     GrpcPTZClient *ptzclient;
     unsigned char *screenBuffer;
     int width;
     int height;
+    int sensivity;
 
-    QTimer *timer;
-    QTcpSocket *socket;
-
-
-    //Pan speed
-    QString speed;
-    //Pan&Tilt values
-    QString panVal;
-    QString tiltVal;
-
-    //flag for switchevent slot
-    bool panInitOnce;
-    bool baseInitOnce;
-
-    //flags for algorithms
-    bool panaroma;
-    bool base;
-
-    //flags for init of algorithms
-    bool initAlgoritmOnce;
-    bool initBaseAlgoritmOnce;
-    int init;
-    int initPanInViaBa;
-    int initBaseInViaBa;
-    //pan counter to set init location before going to next step
-    int panaromaCounter;
-
-    //pan_states_init
-    bool panInit;
-    bool panMotionStart;
-    bool panTiltInfo;
-    bool panStop;
-    //pan_states_end
-    bool baseStop;
-    QElapsedTimer timerElapsed;
-    qint64 prevTime;
+    bool goToZeroPosition();
+    void doPanaroma(const RawBuffer &buf);
+    void doMotionDetection(const RawBuffer &buf);
+    bool startSpinnig(float sSpeed = 0);
+    QByteArray getImageFromFile(const QString &filename);
+    QByteArray convertImageToByteArray(const QString &filename);
 };
 
 #endif // SMARTSTREAMER_H

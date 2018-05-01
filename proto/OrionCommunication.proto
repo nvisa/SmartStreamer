@@ -2,18 +2,38 @@ syntax="proto3";
 
 package OrionCommunication;
 
+/*
+        - all coordinates are in normalized points (0 -1 )
+        - we only support one ROI
+*/
+
 service AppConfig {
-    rpc SetPanaromaParameters(PanoramaPars) returns(AppCommandResult) {} 
+    rpc SetPanaromaParameters(PanoramaPars) returns(AppCommandResult) {}
+    rpc GetPanaromaParameters(DummyInfo) returns(PanoramaPars) {}
+
     rpc SetMotionDetectionParameters(TRoi) returns(AppCommandResult) {}
-    rpc SetCurrentMode(SetModeQ) returns(AppCommandResult) {}
-    rpc GetCurrentMode(DummyInfo) returns(SetModeQ) {}
+    rpc GetMotionDetectionParameters(DummyInfo) returns(TRoi) {}
+
+    rpc SetCurrentMode(SetModeQ) returns(AppCommandResult) {
+        option deprecated = true;
+    }
+    rpc GetCurrentMode(DummyInfo) returns(SetModeQ) {
+        option deprecated = true;
+    }
+
+    rpc SetSensivityParameter(SetSensivity) returns(AppCommandResult) {}
+    rpc GetSensivityParameter(DummyInfo) returns(SetSensivity) {}
     rpc GetLastPanaromaFrame(DummyInfo) returns(AppCommandResult) {}
     rpc GetPanaromaFrames(GetFrames) returns(stream PanoramaFrame) {}
+
     rpc RunMotion(DummyInfo) returns(AppCommandResult) {}
     rpc RunPanaroma(DummyInfo) returns(AppCommandResult) {}
     rpc StopMotion(DummyInfo) returns(AppCommandResult) {}
     rpc StopPanaroma(DummyInfo) returns(AppCommandResult) {}
+
     rpc GetScreenShot(DummyInfo) returns(ScreenFrame) {}
+    rpc GotoPanaromaPixel(TPoint) returns(AppCommandResult) {}
+    rpc CurrentPanaromaPixel(DummyInfo) returns(TPoint) {}
 }
 
 message PanoramaPars {
@@ -29,18 +49,19 @@ message PanoramaPars {
 }
 
 message TRoi {
-    TPolygon polygon = 1;
+    repeated TPolygon polygon = 1;
     TRectangle rect1 = 2;
     TRectangle rect2 = 3;
 }
 
 message TPoint{
-    int32 x = 1;
-    int32 y = 2;
+    float x = 1;
+    float y = 2;
 }
 
 message TPolygon {
     repeated TPoint points = 1;
+    bool is_active = 2;
 }
 
 message TRectangle {
@@ -90,4 +111,8 @@ message ScreenFrame {
     bytes frame = 1;
     int32 width = 2;
     int32 height = 3;
+}
+
+message SetSensivity {
+    int32 sensivity = 1;
 }

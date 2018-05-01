@@ -26,8 +26,6 @@ extern "C" {
 
 #define PRINT_BUFS 0
 
-#define TEST 5 //0 base 1 panaroma 2 base_always
-
 #include <grpc/grpc.h>
 #include <grpc++/server.h>
 #include <grpc++/channel.h>
@@ -140,241 +138,97 @@ protected:
     SmartStreamer *streamer;
 };
 
-class CudaConfigurations
-{
-public:
-    enum CudaList {
-        CU_NONE,
-        CU_PAN_MODE,
-        CU_MOT_MODE,
-        CU_REC_MODE,
-        CU_BYPASS_MODE
-    };
-
-    CudaConfigurations()
-    {
-        activeMode = 0;
-    }
-
-    int getActiveMode()
-    {
-        return activeMode;
-    }
-
-    void changeMode(CudaList cuMode)
-    {
-        l.lock();
-        activeMode = cuMode;
-        l.unlock();
-        return;
-    }
-
-private:
-    QMutex l;
-    int activeMode;
-};
-
 SmartStreamer::SmartStreamer(QObject *parent)
     : BaseStreamer(parent), OrionCommunication::AppConfig::Service()
 {
     grpcServ = new GrpcThread(50054, this);
     grpcServ->start();
-    cuConf = new CudaConfigurations();
     ptzclient = new GrpcPTZClient(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
+
 #ifdef HAVE_VIA_WRAPPER
 	wrap = new ViaWrapper();
-//    wrap->pan_enabled = false;
-    socket = new QTcpSocket();
-    panaroma = false;
-    QProcess::execute("sh -c \"rm -f /home/ubuntu/Desktop/Pan_images/*\"");
-    panInitOnce = false;
-    baseInitOnce = false;
-    initAlgoritmOnce = false;
-    initBaseAlgoritmOnce = false;
-    panStop = false;
-    base = false;
-    baseStop = false;
-    if (TEST == 0) {
-        base = true;
-    }
-    if (TEST == 1) {
-        panaroma = true;
-    }
-    timer = new QTimer(this);
-    connect(timer,SIGNAL(timeout()),this,SLOT(switchEvent()));
-    timer->start(1000);
-
-    if (TEST == 2) {
-        initBaseAlgoritmOnce = false;
-        base = true;
-    }
 #endif
 }
 
-void SmartStreamer::switchEvent()
+bool SmartStreamer::goToZeroPosition()
 {
-    qDebug() << "base " << base << "panaroma" << panaroma;
-    if (panaroma && !panInitOnce) {
-        panStop = false;
-        panInit = true;
-        panMotionStart = false;
-        panTiltInfo = false;
-        panaromaCounter = 0;
-        connected();
-        panInitOnce = true;
-        speed = "90000";
-        initPanInViaBa = 1;
-    } else if (base && !baseInitOnce) {
-//        QTimer::singleShot(20000, this, SLOT(connected()));
-        initBaseInViaBa = 1;
-        baseInitOnce = true;
-        connected();
+    int span = 9999;
+    int stilt = 9999;
+    int szoom = 9999;
+    ptzclient->getPTZPosInfo(span, stilt, szoom);
+    QElapsedTimer elap;
+    elap.start();
+    while (span != 0) {
+        ptzclient->setPanTiltPos(0,0);
+        sleep(3);
+        ptzclient->getPTZPosInfo(span, stilt, szoom);
+        if (elap.elapsed() > 30000) {
+            mDebug("I can't found  0,0 position on this device.. ");
+            return false;
+        }
     }
+    if (wrap)
+        wrap->panaroma.initStart = false;
+    return true;
 }
 
-void SmartStreamer::initPanaroma()
+bool SmartStreamer::startSpinnig(float sSpeed)
 {
-    panStop = false;
-    panInit = true;
-    panMotionStart = false;
-    panTiltInfo = false;
-    panaromaCounter = 0;
-    panInitOnce = true;
-    speed = "90000";
-    initPanInViaBa = 1;
+    if (sSpeed == 0)
+        sSpeed = 0.225;
+    ptzclient->setPanTiltAbs(sSpeed, 0);
+    int span = 0; int stilt; int szoom;
+    ptzclient->getPTZPosInfo(span, stilt, szoom);
+    while (span == 0) {
+        ptzclient->getPTZPosInfo(span, stilt, szoom);
+    }
+    if (span != 0) {
+        wrap->panaroma.startSpinnig = true;
+        wrap->panaroma.initializing = 1;
+    }
+    return true;
 }
 
-void SmartStreamer::GoToPositionPanaroma()
+void SmartStreamer::doPanaroma(const RawBuffer &buf)
 {
-    if (panInit) {
-            ptzclient->setPanTiltPos(0,0);
-        while(panaromaCounter != 100) {
-            qDebug() << "going to position";
-            panaromaCounter++;
-            panMotionStart = true;
-            panInit = false;
-        }
-    }
-}
-
-void SmartStreamer::connected()
-{
-    if (TEST != 5) {
-    static int cnt = 0;
-    cnt++;
-    if (TEST == 2)
-        cnt = 400;
-    static int my_counter = 0;
-    if (cnt == 200) {
-        qDebug() << "stopped ~~~~~~~~~~~~~~~~~~~~~~~~~";
-        if (TEST == 0) {
-            base = false;
-            baseStop = true;
-            initBaseAlgoritmOnce = false;
-            baseInitOnce = false;
-        }
-        if (TEST == 1) {
-            panStop = true;
-            panaroma = false;
-        }
-    } else if (cnt == 400) {
-        qDebug() << "started ~~~~~~~~~~~~~~~~~~~~~~~~~";
-        if (TEST == 0) {
-            initBaseAlgoritmOnce = false;
-            baseStop = false;
-            base = true;
-            initBaseInViaBa = 1;
-        }
-        if (TEST == 1) {
-            panaroma = true;
-            panStop = false;
-            panInitOnce = false;
-            initAlgoritmOnce = false;
-            QProcess::execute("sh -c \"rm -f /home/ubuntu/Desktop/Pan_images/*\"");
-        }
-        if (TEST == 2) {
-            baseStop = false;
-            base = true;
-            initBaseInViaBa = 1;
-        }
-    }
-
-    if (cnt == 800) {
-        cnt = 0;
-        my_counter++;
-        qDebug() << my_counter << "~~~~~~~~~~~~~~~~~~ü";
-    }
-    }
-    QTimer::singleShot(100, this, SLOT(connected()));
-    if (baseStop && !base) {
-        base = false;
-        wrap->viaBase_Release();
-        baseStop = false;
-    }
-    if (panStop) {
-        ptzclient->setPanTiltAbs(0, 0);
-        panStop = false;
-        panaroma = false;
-        panaromaCounter = 0;
-        panInitOnce = false;
-        initAlgoritmOnce = false;
-        wrap->viaPan_Release();
-    }
-    if (panaroma) {    // Bu if i de if (panaroma && !panStop)
-        if (panInit) {
-            if (panaromaCounter < 4)
-                ptzclient->setPanTiltPos(0,0);
-            panaromaCounter++;
-            if (panaromaCounter > 80) {
-                panMotionStart = true;
-                panInit = false;
-            }
-            if (panStop)
-                panTiltInfo = false;
-            qDebug() << "panInit " << panaromaCounter;
-        } else if(panMotionStart) {
-            ptzclient->setPanTiltAbs(0.0225, 0); //Hızı 90000 e denk gelecek şekilde eşitlemek için 0.225 e eşitledim, 4.000.000 * 0.0225
-            panMotionStart = false;
-            panTiltInfo = true;
-            if (panStop)
-                panTiltInfo = false;
-            qDebug() << "panMotionStart";
-        } else if (panTiltInfo) {
-            int pan;
-            int tilt;
-            int zoom;
-            ptzclient->getPTZPosInfo(pan, tilt, zoom);
-            panVal = QString::number(pan);
-            tiltVal = QString::number(tilt);
-            if (panStop)
-                panTiltInfo = false;
-            //qDebug() << "panTiltInfo";
-        } else if (panStop && !panTiltInfo && !panMotionStart && !panInit) {
-//            qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~Stopping Panaroma";
-//            ptzclient->setPanTiltAbs(0, 0);
-//            panaroma = false;
-//            panaromaCounter = 0;
-//            panInitOnce = false;
-//            initAlgoritmOnce = false;
-//            wrap->viaPan_Release();
-//            qDebug() << "panaroma counter is " << panaromaCounter;
+    ffDebug() << "Panaroma state: " << "Stop state = " <<  wrap->panaroma.stop  << "Start state = " << wrap->panaroma.start;
+    if (wrap->panaroma.stop)
+        return;
+    if (wrap->panaroma.start) {
+        if (wrap->panaroma.initStart)
+            if (!goToZeroPosition())
+                mDebug("Closing panaroma mode");
+        if (!wrap->panaroma.startSpinnig)
+            startSpinnig();
+        float pan_tilt_zoom_read[3];
+        int pan; int tilt; int zoom;
+        ptzclient->getPTZPosInfo(pan, tilt, zoom);
+        pan_tilt_zoom_read[0] = (float) pan / 17777.777;
+        pan_tilt_zoom_read[1] = (float) tilt / 17777.777;
+        pan_tilt_zoom_read[2] = 90000.0;
+        wrap->viaPan(buf, pan_tilt_zoom_read, wrap->panaroma.initializing);
+        wrap->panaroma.initializing = 0;
+        if (wrap->meta[0] != 0) {
+            ptzclient->setPanTiltAbs(0,0);
+            wrap->stopPanaroma();
         }
     }
 }
 
-QString SmartStreamer::doPtzCommand(QString ascii)
+void SmartStreamer::doMotionDetection(const RawBuffer &buf)
 {
-    QByteArray ba = ascii.toLatin1();
-    int len = ba.length();
-    char *el = ba.data();
-    char checksum = el[0];
-    for (int i = 1; i < len ; i++) {
-        checksum = checksum ^ el[i];
+    ffDebug() << "Motion State: " << "Stop state = " <<  wrap->motion.stop  << "Start state = " << wrap->motion.start;
+    if (wrap->motion.stop)
+        return;
+    if (wrap->motion.start) {
+        wrap->viaBase(buf, wrap->motion.initializing, 50);
+        wrap->motion.initializing = 0;
+        if (sei) {
+            QByteArray ba = QByteArray((char *)wrap->meta, 4096);
+            sei->processMessage(ba);
+        }
     }
-    QString data = QString("%1%2>").arg(ascii).arg(QString::number((uint)checksum, 16).toUpper());
-    return data;
 }
-
 
 int SmartStreamer::setupRtspClient(const QString &rtspUrl)
 {
@@ -488,52 +342,9 @@ int SmartStreamer::processMainYUV(const RawBuffer &buf)
     screenBuffer = (uchar *)buf.constData();
     width = buf.constPars()->videoWidth;
     height = buf.constPars()->videoHeight;
-#if 0
-    if (cuConf->getActiveMode() == CudaConfigurations::CudaList::CU_PAN_MODE) {
-        if (wrap->pan_enabled == false) {
-            ptzclient->setPanTiltPos(0,0);
-            wrap->pan_enabled = true;
-        }
-        wrap->viaPan(buf);
-
-        if (PRINT_BUFS)
-            ffDebug() << "Current mode is Panorama" << wrap->meta[0] << wrap->meta[1];
-    }
-    else if (cuConf->getActiveMode() == CudaConfigurations::CudaList::CU_MOT_MODE) {
-        wrap->viaBase(buf);
-        if (PRINT_BUFS)
-            ffDebug() << "Current mode is Motion Detection";
-    }
-#endif
 #ifdef HAVE_VIA_WRAPPER
-    //qDebug() << "Panorama ~~~~~~~~~~~~~~~~~~~~~~ " << panaroma;
-    if (panaroma) {
-        if (panaromaCounter > 79) {
-            if (initAlgoritmOnce) {
-                initPanInViaBa = 0;
-            }
-            float pan_tilt_zoom_read[3];
-            pan_tilt_zoom_read[0] = QString(panVal).toFloat()/17777.777;
-            pan_tilt_zoom_read[1] = QString(tiltVal).toFloat()/17777.777;
-            pan_tilt_zoom_read[2] = QString(speed).toFloat();
-            wrap->viaPan(buf,pan_tilt_zoom_read,initPanInViaBa);
-            if (wrap->meta[0] != 0)
-                panStop = true;
-            else panStop = false;
-            initAlgoritmOnce = true;
-        }
-
-    } else if (base) {
-        if (initBaseAlgoritmOnce) {
-            initBaseInViaBa = 0;
-        }
-        wrap->viaBase(buf,initBaseInViaBa);
-        initBaseAlgoritmOnce = true;
-        if (sei) {
-            QByteArray ba = QByteArray((char *)wrap->meta, 4096);
-            sei->processMessage(ba);
-        }
-    }
+    doPanaroma(buf);
+    doMotionDetection(buf);
 #endif
 	return 0;
 }
@@ -575,24 +386,7 @@ grpc::Status SmartStreamer::SetCurrentMode(grpc::ServerContext *context, const O
 {
     Q_UNUSED(context)
     Q_UNUSED(response)
-    int value = request->mode();
-    qDebug() << value << request;
-    if (CudaConfigurations::CudaList::CU_NONE == value) {
-        cuConf->changeMode(CudaConfigurations::CudaList::CU_NONE);
-        base = false;
-        panaroma = false;
-    }
-    else if (CudaConfigurations::CudaList::CU_PAN_MODE == value) {
-        cuConf->changeMode(CudaConfigurations::CudaList::CU_PAN_MODE);
-        panaroma = true;
-        QProcess::execute("sh -c \"rm -f /home/ubuntu/Desktop/Pan_images/*\"");
-    }
-    else if (CudaConfigurations::CudaList::CU_MOT_MODE == value) {
-        cuConf->changeMode(CudaConfigurations::CudaList::CU_MOT_MODE);
-        base = true;
-    }
-    else if (CudaConfigurations::CudaList::CU_REC_MODE == value)
-        cuConf->changeMode(CudaConfigurations::CudaList::CU_REC_MODE);
+    // unusing function.
     return grpc::Status::OK;
 }
 
@@ -600,11 +394,14 @@ grpc::Status SmartStreamer::GetCurrentMode(grpc::ServerContext *context, const O
 {
     Q_UNUSED(context)
     Q_UNUSED(request)
-    if (panaroma && !base)
+
+    ViaWrapper::ModeState myMode = wrap->getMode();
+
+    if (ViaWrapper::Panaroma == myMode)
         response->set_mode(response->PANAROMA);
-    else if (base && !panaroma)
+    else if (ViaWrapper::Motion == myMode)
         response->set_mode(response->MOTION_DETECTION);
-    else if (!base && !panaroma)
+    else
         response->set_mode(response->NONE);
     return grpc::Status::OK;
 }
@@ -619,54 +416,61 @@ grpc::Status SmartStreamer::SetPanaromaParameters(grpc::ServerContext *context, 
 
 grpc::Status SmartStreamer::GetPanaromaFrames(grpc::ServerContext *context, const OrionCommunication::GetFrames *request, ::grpc::ServerWriter<OrionCommunication::PanoramaFrame> *writer)
 {
-    bool lastFrame = false;
-    bool allFrames = false;
+    Q_UNUSED(context)
+    if (wrap->getMode() != ViaWrapper::Panaroma)
+        return Status::CANCELLED;
+    bool lastFrame;
     if (request->modeframe() == request->LastFrame)
         lastFrame = true;
-    else if (request->modeframe() == request->AllFrames)
-        allFrames = true;
+    else lastFrame = false;
     QString next = "/home/ubuntu/Desktop/Pan_images/Pan%1.jpg";
     QString nextFinal = "/home/ubuntu/Desktop/Pan_images/PanFinal.jpg";
-    int progress = 0;
-    int nameLastValue = 200;
-    while (1) {
-        qDebug() << "-------------------------------------------------------" << panaroma << panStop;
-        if (!panaroma) {
-            return Status::CANCELLED;
-        }
-        QString picture;
-        picture = next.arg(QString::number(nameLastValue), 4, QChar('0'));
-        qDebug() << "-------------------------------------------------------" << picture << QFile::exists(picture);    
-        if (lastFrame) {
+    if (lastFrame) {
+        while (1) {
+            QString picture;
             picture = nextFinal;
-            if (!QFile::exists(picture)) { // check last frame enabled.
+            if (!QFile::exists(picture)) {
                 sleep(1);
                 continue;
             }
-            progress = 9;
+            sleep(2); // writing image  to folder, wait for buffer
+            QByteArray imageBuf = convertImageToByteArray(picture);
+            OrionCommunication::PanoramaFrame panFrames;
+            panFrames.set_valid(true);
+            panFrames.set_progress(100);
+            panFrames.set_framedata(imageBuf.data(), imageBuf.size());
+            writer->Write(panFrames);
+            return Status::OK;
         }
-        if (QFile::exists(nextFinal)) { // check each frames and running standart progress
-            picture = nextFinal;
-            progress = 9;
-        } else if (!QFile::exists(picture)) {
+    } else {
+        int progress = 0;
+        int nameLastValue = 200;
+        QElapsedTimer elaps;
+        elaps.start();
+        while (1) {
+            if (elaps.elapsed() > 60000 * 4) // maybe we can see connection error or panaroma cancel state..
+                return Status::CANCELLED;
+            QString picture;
+            picture = next.arg(QString::number(nameLastValue), 4, QChar('0'));
+            if (QFile::exists(nextFinal)) {
+                picture = nextFinal;
+                progress = 9;
+            } else if (!QFile::exists(picture)) {
+                sleep(1);
+                continue;
+            }
             sleep(1);
-            continue;
+            QByteArray imageBuf = convertImageToByteArray(picture);
+            OrionCommunication::PanoramaFrame panFrames;
+            panFrames.set_valid(true);
+            progress = progress + 1;
+            panFrames.set_progress(progress * 10);
+            panFrames.set_framedata(imageBuf.data(), imageBuf.size());
+            writer->Write(panFrames);
+            nameLastValue = nameLastValue + 200;
+            if (picture == nextFinal)
+                break;
         }
-        sleep(1);
-        QImage im(picture);
-        OrionCommunication::PanoramaFrame panFrames;
-        panFrames.set_valid(true);
-        progress = progress + 1;
-        panFrames.set_progress(progress * 10);
-        QByteArray ba;
-        QBuffer qbuf(&ba);
-        qbuf.open(QIODevice::WriteOnly);
-        im.save(&qbuf, "JPG");
-        panFrames.set_framedata(ba.data(), ba.size());
-        writer->Write(panFrames);
-        nameLastValue = nameLastValue + 200;
-        if (picture == nextFinal)
-            break;
     }
     return Status::OK;
 }
@@ -676,13 +480,8 @@ grpc::Status SmartStreamer::RunPanaroma(grpc::ServerContext *context, const Orio
     Q_UNUSED(context)
     Q_UNUSED(request)
     Q_UNUSED(response)
-    if (base)
-        base = false;
-    panaroma = true;
-    panStop = false;
-    panInitOnce = false;
-    initAlgoritmOnce = false;
-    QProcess::execute("sh -c \"rm -f /home/ubuntu/Desktop/Pan_images/*\"");
+    QProcess::execute("bash -c \"rm -f /home/ubuntu/Desktop/Pan_images/*\"");
+    wrap->startPanaroma();
     return Status::OK;
 }
 
@@ -690,13 +489,8 @@ grpc::Status SmartStreamer::RunMotion(grpc::ServerContext *context, const OrionC
 {
     Q_UNUSED(context)
     Q_UNUSED(request)
-    Q_UNUSED(response)
-    if (panaroma)
-        panaroma = false;    
-    base = true;
-    baseStop = false;
-    initBaseAlgoritmOnce = false;
-    initBaseInViaBa = 1;
+    wrap->startMotion();
+    response->set_err(0);
     return Status::OK;
 }
 
@@ -704,18 +498,18 @@ grpc::Status SmartStreamer::StopPanaroma(grpc::ServerContext *context, const Ori
 {
     Q_UNUSED(context)
     Q_UNUSED(request)
-    Q_UNUSED(response)
-    panStop = true;
-    panaroma = false;
+    wrap->stopPanaroma();
+    ptzclient->setPanTiltAbs(0,0);
+    response->set_err(0);
     return Status::OK;
 }
 
 grpc::Status SmartStreamer::StopMotion(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response)
 {
-    base = false;
-    baseStop = true;
-    initBaseAlgoritmOnce = false;
-    baseInitOnce = false;
+    Q_UNUSED(context)
+    Q_UNUSED(request)
+    wrap->stopMotion();
+    response->set_err(0);
     return Status::OK;
 }
 
@@ -734,65 +528,140 @@ grpc::Status SmartStreamer::SetMotionDetectionParameters(grpc::ServerContext *co
 {
     Q_UNUSED(context)
     Q_UNUSED(response)
-    qDebug() << "polygon byte size " << request->polygon().ByteSize();
-    if (request->polygon().ByteSize() < 20) {
+    qDebug() << "polygon byte size " << request->polygon().size();
+    if (request->polygon().size() < 1) {
         response->set_err(1);
-        return Status::CANCELLED;
+        return grpc::Status::CANCELLED;
     }
-
     QFile f("points.txt");
     if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
         response->set_err(2);
         return Status::CANCELLED;
     }
-
     QTextStream out(&f);
-    qDebug() << "Polygon size" << request->polygon().points_size();
-    for (int i = 0; i < request->polygon().points_size(); i++) {
-        qDebug() << "Polygon.x : " << request->polygon().points(i).x();
-        qDebug() << "Polygon.y : " << request->polygon().points(i).y();
-        out << request->polygon().points(i).x() << "\n";
-        out << request->polygon().points(i).y() << "\n";
+
+    out << request->polygon().size() << "\n";
+    for (int i = 0; i < request->polygon().size(); i++) {
+        OrionCommunication::TPolygon myPoly = request->polygon(i);
+        out << myPoly.points_size() << "\n";
     }
-    for (int i = 0; i < request->polygon().points_size(); i++) {
-        out << 0 << "\n";
-        out << 0 << "\n";
+
+    for (int i = 0; i < request->polygon().size(); i++) {
+        OrionCommunication::TPolygon myPoly = request->polygon(i);
+        qDebug() << "Is polygon active? " << myPoly.is_active();
+        int state = (myPoly.is_active() == true) ? 1 : 0;
+        out << state << "\n";
     }
+
+    for (int i = 0; i < request->polygon().size(); i++) {
+        OrionCommunication::TPolygon myPoly = request->polygon(i);
+        for (int k = 0; k < myPoly.points_size(); k++) {
+            qDebug() << myPoly.points(k).x();
+            qDebug() << myPoly.points(k).y();
+            out << myPoly.points(k).x() << "\n";
+            out << myPoly.points(k).y() << "\n";
+        }
+    }
+
     // rect1
     out << request->rect1().upperleft().x() << "\n";
     out << request->rect1().upperleft().y() << "\n";
+    out << request->rect1().bottomright().x() << "\n";
     out << request->rect1().bottomright().y() << "\n";
-    out << request->rect1().bottomright().y() << "\n";
+
     // rect2
     out << request->rect2().upperleft().x() << "\n";
     out << request->rect2().upperleft().y() << "\n";
+    out << request->rect2().bottomright().x() << "\n";
     out << request->rect2().bottomright().y() << "\n";
-    out << request->rect2().bottomright().y() << "\n";
-    qDebug() << "Rectangle1.x : " << request->rect1().upperleft().x();
-    qDebug() << "Rectangle1.y : " << request->rect1().upperleft().y();
-    qDebug() << "Rectangle1.x : " << request->rect1().bottomright().y();
-    qDebug() << "Rectangle1.y : " << request->rect1().bottomright().y();
-    qDebug() << "Rectangle1.x : " << request->rect2().upperleft().x();
-    qDebug() << "Rectangle1.y : " << request->rect2().upperleft().y();
-    qDebug() << "Rectangle1.x : " << request->rect2().bottomright().y();
-    qDebug() << "Rectangle1.y : " << request->rect2().bottomright().y();
     f.close();
+    return Status::OK;
+}
+
+grpc::Status SmartStreamer::GetMotionDetectionParameters(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::TRoi *response)
+{
+    Q_UNUSED(context)
+    Q_UNUSED(request)
+    QFile f("points.txt");
+    if (!f.open(QIODevice::ReadOnly))
+        return grpc::Status::CANCELLED;
+    QTextStream in(&f);
+    QStringList lines;
+    while (!in.atEnd()) {
+        lines << in.readLine();
+    }
+    int numOfPolySize = lines.at(0).toInt();
+    QList<int> pointSize;
+    for (int i = 0; i < numOfPolySize; i++) {
+        pointSize << lines.at(i + 1).toInt();
+    }
+
+    QList<int> polyState;
+    for (int i = 0; i < numOfPolySize; i++) {
+        polyState << lines.at(i + 1 + numOfPolySize).toInt();
+    }
+
+    int polyCounter = 0;
+    for (int j = 0; j < numOfPolySize; j++) {
+        OrionCommunication::TPolygon *myPoly1 = response->add_polygon();
+        bool state = (polyState[j] == 1) ? true : false;
+        myPoly1->set_is_active(state);
+        for (int i = 0; i < pointSize[j] * 2; i = i + 2) {
+            OrionCommunication::TPoint *myPoints = myPoly1->add_points();
+            myPoints->set_x(lines.at(polyCounter + i + 1  + 2 * numOfPolySize).toFloat());
+            myPoints->set_y(lines.at(polyCounter + i + 2  + 2 * numOfPolySize).toFloat());
+        }
+        polyCounter = polyCounter + 2 * pointSize[j];
+    }
+
+    OrionCommunication::TRectangle *myRect1 = response->mutable_rect1();
+    OrionCommunication::TRectangle *myRect2 = response->mutable_rect2();
+    myRect1->mutable_upperleft()->set_x(lines.at(lines.size() - 8).toFloat());
+    myRect1->mutable_upperleft()->set_y(lines.at(lines.size() - 7).toFloat());
+    myRect1->mutable_bottomright()->set_x(lines.at(lines.size() - 6).toFloat());
+    myRect1->mutable_bottomright()->set_y(lines.at(lines.size() - 5).toFloat());
+
+    myRect2->mutable_upperleft()->set_x(lines.at(lines.size() - 4).toFloat());
+    myRect2->mutable_upperleft()->set_y(lines.at(lines.size() - 3).toFloat());
+    myRect2->mutable_bottomright()->set_x(lines.at(lines.size() - 2).toFloat());
+    myRect2->mutable_bottomright()->set_y(lines.at(lines.size() - 1).toFloat());
+    return Status::OK;
+}
+
+grpc::Status SmartStreamer::GetSensivityParameter(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::SetSensivity *response)
+{
+    Q_UNUSED(context)
+    Q_UNUSED(request)
+    response->set_sensivity(sensivity);
+    return Status::OK;
+}
+
+grpc::Status SmartStreamer::SetSensivityParameter(grpc::ServerContext *context, const OrionCommunication::SetSensivity *request, OrionCommunication::AppCommandResult *response)
+{
+    Q_UNUSED(context)
+    Q_UNUSED(response)
+
+    sensivity = request->sensivity();
+    response->set_err(0);
+    return Status::OK;
+}
+
+grpc::Status SmartStreamer::GotoPanaromaPixel(grpc::ServerContext *context, const OrionCommunication::TPoint *request, OrionCommunication::AppCommandResult *response)
+{
+    Q_UNUSED(context)
+    Q_UNUSED(request)
+    Q_UNUSED(response)
+    float point_x = (float)((int)((request->x() * 360 + 1) * 17777));
+    float theta = 6.5 * 576.0 / 720.0;
+    float point_y = - (((float)request->y() - 0.5) / 0.5 * theta / 2.0 * 17777.77);
+    ptzclient->setPanTiltPos(point_x, point_y);
+
     return Status::OK;
 }
 
 void SmartStreamer::timeout()
 {
-#if 0
-    static int cnt = 0;
-    cnt++;
-    if (cnt == 5)
-        cuConf->changeMode(CudaConfigurations::CudaList::CU_PAN_MODE);
-    else if (cnt == 30)
-        cuConf->changeMode(CudaConfigurations::CudaList::CU_MOT_MODE);
-	qDebug() << rtp->getOutputQueue(0)->getFps()
-				<< dec->getOutputQueue(0)->getFps()
-				<< vout->getWidget()->getDropCount();
-#endif
+
     PipelineManager::timeout();
 }
 
@@ -831,4 +700,12 @@ int SmartStreamer::pipelineOutput(BaseLmmPipeline *p, const RawBuffer &buf)
 	return 0;
 }
 
-
+QByteArray SmartStreamer::convertImageToByteArray(const QString &filename)
+{
+    QImage im(filename);
+    QByteArray ba;
+    QBuffer qbuf(&ba);
+    qbuf.open(QIODevice::WriteOnly);
+    im.save(&qbuf, "JPG");
+    return ba;
+}
