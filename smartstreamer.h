@@ -40,7 +40,8 @@ public:
     grpc::Status RunMotion(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response);
     grpc::Status StopPanaroma(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response);
     grpc::Status StopMotion(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response);
-    grpc::Status GetScreenShot(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::ScreenFrame *response);
+    grpc::Status GetSecScreenShot(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::ScreenFrame *response);
+    grpc::Status GetMainScreenShot(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::ScreenFrame *response);
     grpc::Status SetMotionDetectionParameters(grpc::ServerContext *context, const OrionCommunication::TRoi *request, OrionCommunication::AppCommandResult *response);
     grpc::Status GetMotionDetectionParameters(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::TRoi *response);
     grpc::Status GetSensivityParameter(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::SetSensivity *response);
@@ -93,6 +94,7 @@ public:
 	};
 	Parameters pars;
 
+    QByteArray doScreenShot(const RawBuffer &buf);
 signals:
 
 public slots:
@@ -111,16 +113,18 @@ protected:
 	SeiInserter *sei;
     GrpcThread *grpcServ;
     GrpcPTZClient *ptzclient;
-    unsigned char *screenBuffer;
+    QByteArray screenMainShot;
+    QByteArray screenSecShot;
     int width;
     int height;
 
     bool goToZeroPosition();
+    bool startSpinnig(float sSpeed = 0);
     void doPanaroma(const RawBuffer &buf);
     void doMotionDetection(const RawBuffer &buf);
-    bool startSpinnig(float sSpeed = 0);
     QByteArray getImageFromFile(const QString &filename);
     QByteArray convertImageToByteArray(const QString &filename);
+    QMutex mutex;
 };
 
 #endif // SMARTSTREAMER_H

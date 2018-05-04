@@ -487,8 +487,6 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::ScreenFrame, frame_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::ScreenFrame, width_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::ScreenFrame, height_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::SetSensivity, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -510,7 +508,7 @@ static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROT
   { 73, -1, sizeof(::OrionCommunication::GetFrames)},
   { 79, -1, sizeof(::OrionCommunication::PanoramaFrame)},
   { 87, -1, sizeof(::OrionCommunication::ScreenFrame)},
-  { 95, -1, sizeof(::OrionCommunication::SetSensivity)},
+  { 93, -1, sizeof(::OrionCommunication::SetSensivity)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
@@ -577,52 +575,53 @@ void AddDescriptorsImpl() {
       "Frame\030\001 \001(\0162$.OrionCommunication.GetFram"
       "es.Frames\"&\n\006Frames\022\r\n\tLastFrame\020\000\022\r\n\tAl"
       "lFrames\020\001\"C\n\rPanoramaFrame\022\r\n\005valid\030\001 \001("
-      "\010\022\020\n\010progress\030\002 \001(\002\022\021\n\tframeData\030\003 \001(\014\";"
-      "\n\013ScreenFrame\022\r\n\005frame\030\001 \001(\014\022\r\n\005width\030\002 "
-      "\001(\005\022\016\n\006height\030\003 \001(\005\"!\n\014SetSensivity\022\021\n\ts"
-      "ensivity\030\001 \001(\0052\206\014\n\tAppConfig\022a\n\025SetPanar"
-      "omaParameters\022 .OrionCommunication.Panor"
-      "amaPars\032$.OrionCommunication.AppCommandR"
-      "esult\"\000\022Z\n\025GetPanaromaParameters\022\035.Orion"
-      "Communication.DummyInfo\032 .OrionCommunica"
-      "tion.PanoramaPars\"\000\022`\n\034SetMotionDetectio"
-      "nParameters\022\030.OrionCommunication.TRoi\032$."
-      "OrionCommunication.AppCommandResult\"\000\022Y\n"
-      "\034GetMotionDetectionParameters\022\035.OrionCom"
-      "munication.DummyInfo\032\030.OrionCommunicatio"
-      "n.TRoi\"\000\022Y\n\016SetCurrentMode\022\034.OrionCommun"
-      "ication.SetModeQ\032$.OrionCommunication.Ap"
-      "pCommandResult\"\003\210\002\001\022R\n\016GetCurrentMode\022\035."
-      "OrionCommunication.DummyInfo\032\034.OrionComm"
-      "unication.SetModeQ\"\003\210\002\001\022a\n\025SetSensivityP"
-      "arameter\022 .OrionCommunication.SetSensivi"
-      "ty\032$.OrionCommunication.AppCommandResult"
-      "\"\000\022Z\n\025GetSensivityParameter\022\035.OrionCommu"
-      "nication.DummyInfo\032 .OrionCommunication."
-      "SetSensivity\"\000\022]\n\024GetLastPanaromaFrame\022\035"
-      ".OrionCommunication.DummyInfo\032$.OrionCom"
-      "munication.AppCommandResult\"\000\022Y\n\021GetPana"
-      "romaFrames\022\035.OrionCommunication.GetFrame"
-      "s\032!.OrionCommunication.PanoramaFrame\"\0000\001"
-      "\022R\n\tRunMotion\022\035.OrionCommunication.Dummy"
-      "Info\032$.OrionCommunication.AppCommandResu"
-      "lt\"\000\022T\n\013RunPanaroma\022\035.OrionCommunication"
-      ".DummyInfo\032$.OrionCommunication.AppComma"
-      "ndResult\"\000\022S\n\nStopMotion\022\035.OrionCommunic"
-      "ation.DummyInfo\032$.OrionCommunication.App"
-      "CommandResult\"\000\022U\n\014StopPanaroma\022\035.OrionC"
-      "ommunication.DummyInfo\032$.OrionCommunicat"
-      "ion.AppCommandResult\"\000\022Q\n\rGetScreenShot\022"
-      "\035.OrionCommunication.DummyInfo\032\037.OrionCo"
-      "mmunication.ScreenFrame\"\000\022W\n\021GotoPanarom"
-      "aPixel\022\032.OrionCommunication.TPoint\032$.Ori"
-      "onCommunication.AppCommandResult\"\000\022S\n\024Cu"
-      "rrentPanaromaPixel\022\035.OrionCommunication."
-      "DummyInfo\032\032.OrionCommunication.TPoint\"\000b"
-      "\006proto3"
+      "\010\022\020\n\010progress\030\002 \001(\002\022\021\n\tframeData\030\003 \001(\014\"\034"
+      "\n\013ScreenFrame\022\r\n\005frame\030\001 \001(\014\"!\n\014SetSensi"
+      "vity\022\021\n\tsensivity\030\001 \001(\0052\340\014\n\tAppConfig\022a\n"
+      "\025SetPanaromaParameters\022 .OrionCommunicat"
+      "ion.PanoramaPars\032$.OrionCommunication.Ap"
+      "pCommandResult\"\000\022Z\n\025GetPanaromaParameter"
+      "s\022\035.OrionCommunication.DummyInfo\032 .Orion"
+      "Communication.PanoramaPars\"\000\022`\n\034SetMotio"
+      "nDetectionParameters\022\030.OrionCommunicatio"
+      "n.TRoi\032$.OrionCommunication.AppCommandRe"
+      "sult\"\000\022Y\n\034GetMotionDetectionParameters\022\035"
+      ".OrionCommunication.DummyInfo\032\030.OrionCom"
+      "munication.TRoi\"\000\022Y\n\016SetCurrentMode\022\034.Or"
+      "ionCommunication.SetModeQ\032$.OrionCommuni"
+      "cation.AppCommandResult\"\003\210\002\001\022R\n\016GetCurre"
+      "ntMode\022\035.OrionCommunication.DummyInfo\032\034."
+      "OrionCommunication.SetModeQ\"\003\210\002\001\022a\n\025SetS"
+      "ensivityParameter\022 .OrionCommunication.S"
+      "etSensivity\032$.OrionCommunication.AppComm"
+      "andResult\"\000\022Z\n\025GetSensivityParameter\022\035.O"
+      "rionCommunication.DummyInfo\032 .OrionCommu"
+      "nication.SetSensivity\"\000\022]\n\024GetLastPanaro"
+      "maFrame\022\035.OrionCommunication.DummyInfo\032$"
+      ".OrionCommunication.AppCommandResult\"\000\022Y"
+      "\n\021GetPanaromaFrames\022\035.OrionCommunication"
+      ".GetFrames\032!.OrionCommunication.Panorama"
+      "Frame\"\0000\001\022R\n\tRunMotion\022\035.OrionCommunicat"
+      "ion.DummyInfo\032$.OrionCommunication.AppCo"
+      "mmandResult\"\000\022T\n\013RunPanaroma\022\035.OrionComm"
+      "unication.DummyInfo\032$.OrionCommunication"
+      ".AppCommandResult\"\000\022S\n\nStopMotion\022\035.Orio"
+      "nCommunication.DummyInfo\032$.OrionCommunic"
+      "ation.AppCommandResult\"\000\022U\n\014StopPanaroma"
+      "\022\035.OrionCommunication.DummyInfo\032$.OrionC"
+      "ommunication.AppCommandResult\"\000\022U\n\021GetMa"
+      "inScreenShot\022\035.OrionCommunication.DummyI"
+      "nfo\032\037.OrionCommunication.ScreenFrame\"\000\022T"
+      "\n\020GetSecScreenShot\022\035.OrionCommunication."
+      "DummyInfo\032\037.OrionCommunication.ScreenFra"
+      "me\"\000\022W\n\021GotoPanaromaPixel\022\032.OrionCommuni"
+      "cation.TPoint\032$.OrionCommunication.AppCo"
+      "mmandResult\"\000\022S\n\024CurrentPanaromaPixel\022\035."
+      "OrionCommunication.DummyInfo\032\032.OrionComm"
+      "unication.TPoint\"\000b\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 2687);
+      descriptor, 2746);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "OrionCommunication.proto", &protobuf_RegisterTypes);
 }
@@ -4167,8 +4166,6 @@ void ScreenFrame::InitAsDefaultInstance() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int ScreenFrame::kFrameFieldNumber;
-const int ScreenFrame::kWidthFieldNumber;
-const int ScreenFrame::kHeightFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ScreenFrame::ScreenFrame()
@@ -4188,17 +4185,11 @@ ScreenFrame::ScreenFrame(const ScreenFrame& from)
   if (from.frame().size() > 0) {
     frame_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.frame_);
   }
-  ::memcpy(&width_, &from.width_,
-    static_cast<size_t>(reinterpret_cast<char*>(&height_) -
-    reinterpret_cast<char*>(&width_)) + sizeof(height_));
   // @@protoc_insertion_point(copy_constructor:OrionCommunication.ScreenFrame)
 }
 
 void ScreenFrame::SharedCtor() {
   frame_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  ::memset(&width_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&height_) -
-      reinterpret_cast<char*>(&width_)) + sizeof(height_));
   _cached_size_ = 0;
 }
 
@@ -4241,9 +4232,6 @@ void ScreenFrame::Clear() {
   (void) cached_has_bits;
 
   frame_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  ::memset(&width_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&height_) -
-      reinterpret_cast<char*>(&width_)) + sizeof(height_));
   _internal_metadata_.Clear();
 }
 
@@ -4263,34 +4251,6 @@ bool ScreenFrame::MergePartialFromCodedStream(
             static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
                 input, this->mutable_frame()));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // int32 width = 2;
-      case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
-
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &width_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // int32 height = 3;
-      case 3: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
-
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &height_)));
         } else {
           goto handle_unusual;
         }
@@ -4329,16 +4289,6 @@ void ScreenFrame::SerializeWithCachedSizes(
       1, this->frame(), output);
   }
 
-  // int32 width = 2;
-  if (this->width() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->width(), output);
-  }
-
-  // int32 height = 3;
-  if (this->height() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->height(), output);
-  }
-
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
@@ -4358,16 +4308,6 @@ void ScreenFrame::SerializeWithCachedSizes(
     target =
       ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
         1, this->frame(), target);
-  }
-
-  // int32 width = 2;
-  if (this->width() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->width(), target);
-  }
-
-  // int32 height = 3;
-  if (this->height() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(3, this->height(), target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -4392,20 +4332,6 @@ size_t ScreenFrame::ByteSizeLong() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::BytesSize(
         this->frame());
-  }
-
-  // int32 width = 2;
-  if (this->width() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->width());
-  }
-
-  // int32 height = 3;
-  if (this->height() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->height());
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -4441,12 +4367,6 @@ void ScreenFrame::MergeFrom(const ScreenFrame& from) {
 
     frame_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.frame_);
   }
-  if (from.width() != 0) {
-    set_width(from.width());
-  }
-  if (from.height() != 0) {
-    set_height(from.height());
-  }
 }
 
 void ScreenFrame::CopyFrom(const ::google::protobuf::Message& from) {
@@ -4474,8 +4394,6 @@ void ScreenFrame::Swap(ScreenFrame* other) {
 void ScreenFrame::InternalSwap(ScreenFrame* other) {
   using std::swap;
   frame_.Swap(&other->frame_);
-  swap(width_, other->width_);
-  swap(height_, other->height_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   swap(_cached_size_, other->_cached_size_);
 }

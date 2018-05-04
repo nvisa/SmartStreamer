@@ -342,9 +342,6 @@ int SmartStreamer::processMainYUV(const RawBuffer &buf)
 	if (PRINT_BUFS)
 		ffDebug() << buf.getMimeType() << buf.size() << FFmpegColorSpace::getName(buf.constPars()->avPixelFormat)
 			  << buf.constPars()->videoWidth << buf.constPars()->videoHeight;
-    screenBuffer = (uchar *)buf.constData();
-    width = buf.constPars()->videoWidth;
-    height = buf.constPars()->videoHeight;
 #ifdef HAVE_VIA_WRAPPER
     doPanaroma(buf);
     doMotionDetection(buf);
@@ -357,7 +354,8 @@ int SmartStreamer::processMainRGB(const RawBuffer &buf)
 	if (PRINT_BUFS)
 		ffDebug() << buf.getMimeType() << buf.size() << FFmpegColorSpace::getName(buf.constPars()->avPixelFormat)
 			  << buf.constPars()->videoWidth << buf.constPars()->videoHeight;
-	return 0;
+    screenMainShot = doScreenShot(buf);
+    return 0;
 }
 
 int SmartStreamer::processScaledRGB(const RawBuffer &buf)
@@ -365,6 +363,7 @@ int SmartStreamer::processScaledRGB(const RawBuffer &buf)
 	if (PRINT_BUFS)
 		ffDebug() << buf.getMimeType() << buf.size() << FFmpegColorSpace::getName(buf.constPars()->avPixelFormat)
 			  << buf.constPars()->videoWidth << buf.constPars()->videoHeight;
+    screenSecShot = doScreenShot(buf);
 	return 0;
 }
 
@@ -385,9 +384,26 @@ int SmartStreamer::checkPoint(const RawBuffer &buf)
     return 0;
 }
 
+QByteArray SmartStreamer::doScreenShot(const RawBuffer &buf)
+{
+    QByteArray ba;
+    QImage im;
+    if (buf.size() == buf.constPars()->videoWidth * buf.constPars()->videoHeight * 3)
+        im = QImage((const uchar *)buf.constData(), buf.constPars()->videoWidth, buf.constPars()->videoHeight,
+              QImage::Format_RGB888);
+    else
+        im = QImage((const uchar *)buf.constData(), buf.constPars()->videoWidth, buf.constPars()->videoHeight,
+                    QImage::Format_RGB32);
+    QBuffer qbuf(&ba);
+    qbuf.open(QIODevice::WriteOnly);
+    im.save(&qbuf, "JPG");
+    return ba;
+}
+
 grpc::Status SmartStreamer::SetCurrentMode(grpc::ServerContext *context, const OrionCommunication::SetModeQ *request, OrionCommunication::AppCommandResult *response)
 {
     Q_UNUSED(context)
+    Q_UNUSED(request)
     Q_UNUSED(response)
     // unusing function.
     return grpc::Status::OK;
@@ -516,14 +532,29 @@ grpc::Status SmartStreamer::StopMotion(grpc::ServerContext *context, const Orion
     return Status::OK;
 }
 
-grpc::Status SmartStreamer::GetScreenShot(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::ScreenFrame *response)
+grpc::Status SmartStreamer::GetSecScreenShot(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::ScreenFrame *response)
 {
     Q_UNUSED(context)
     Q_UNUSED(request)
-    response->set_width(width);
-    response->set_height(height);
-    QByteArray ba(reinterpret_cast<const char*>(screenBuffer));
-    response->set_frame(ba.data(), ba.size());
+    Q_UNUSED(response)
+    if (screenSecShot.isEmpty())
+        return Status::CANCELLED;
+    mutex.lock();
+    response->set_frame(screenSecShot, screenSecShot.size());
+    mutex.unlock();
+    return Status::OK;
+}
+
+grpc::Status SmartStreamer::GetMainScreenShot(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::ScreenFrame *response)
+{
+    Q_UNUSED(context)
+    Q_UNUSED(request)
+    Q_UNUSED(response)
+    if (screenMainShot.isEmpty())
+        return Status::CANCELLED;
+    mutex.lock();
+    response->set_frame(screenMainShot, screenMainShot.size());
+    mutex.unlock();
     return Status::OK;
 }
 

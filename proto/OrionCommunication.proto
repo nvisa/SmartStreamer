@@ -31,7 +31,8 @@ service AppConfig {
     rpc StopMotion(DummyInfo) returns(AppCommandResult) {}
     rpc StopPanaroma(DummyInfo) returns(AppCommandResult) {}
 
-    rpc GetScreenShot(DummyInfo) returns(ScreenFrame) {}
+    rpc GetMainScreenShot(DummyInfo) returns(ScreenFrame) {}
+    rpc GetSecScreenShot(DummyInfo) returns(ScreenFrame) {}
     rpc GotoPanaromaPixel(TPoint) returns(AppCommandResult) {}
     rpc CurrentPanaromaPixel(DummyInfo) returns(TPoint) {}
 }
@@ -109,8 +110,6 @@ message PanoramaFrame {
 }
 message ScreenFrame {
     bytes frame = 1;
-    int32 width = 2;
-    int32 height = 3;
 }
 
 message SetSensivity {

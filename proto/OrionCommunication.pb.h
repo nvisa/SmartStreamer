@@ -1654,25 +1654,11 @@ class ScreenFrame : public ::google::protobuf::Message /* @@protoc_insertion_poi
   ::std::string* release_frame();
   void set_allocated_frame(::std::string* frame);
 
-  // int32 width = 2;
-  void clear_width();
-  static const int kWidthFieldNumber = 2;
-  ::google::protobuf::int32 width() const;
-  void set_width(::google::protobuf::int32 value);
-
-  // int32 height = 3;
-  void clear_height();
-  static const int kHeightFieldNumber = 3;
-  ::google::protobuf::int32 height() const;
-  void set_height(::google::protobuf::int32 value);
-
   // @@protoc_insertion_point(class_scope:OrionCommunication.ScreenFrame)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::ArenaStringPtr frame_;
-  ::google::protobuf::int32 width_;
-  ::google::protobuf::int32 height_;
   mutable int _cached_size_;
   friend struct ::protobuf_OrionCommunication_2eproto::TableStruct;
   friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsScreenFrameImpl();
@@ -2479,34 +2465,6 @@ inline void ScreenFrame::set_allocated_frame(::std::string* frame) {
   }
   frame_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), frame);
   // @@protoc_insertion_point(field_set_allocated:OrionCommunication.ScreenFrame.frame)
-}
-
-// int32 width = 2;
-inline void ScreenFrame::clear_width() {
-  width_ = 0;
-}
-inline ::google::protobuf::int32 ScreenFrame::width() const {
-  // @@protoc_insertion_point(field_get:OrionCommunication.ScreenFrame.width)
-  return width_;
-}
-inline void ScreenFrame::set_width(::google::protobuf::int32 value) {
-  
-  width_ = value;
-  // @@protoc_insertion_point(field_set:OrionCommunication.ScreenFrame.width)
-}
-
-// int32 height = 3;
-inline void ScreenFrame::clear_height() {
-  height_ = 0;
-}
-inline ::google::protobuf::int32 ScreenFrame::height() const {
-  // @@protoc_insertion_point(field_get:OrionCommunication.ScreenFrame.height)
-  return height_;
-}
-inline void ScreenFrame::set_height(::google::protobuf::int32 value) {
-  
-  height_ = value;
-  // @@protoc_insertion_point(field_set:OrionCommunication.ScreenFrame.height)
 }
 
 // -------------------------------------------------------------------

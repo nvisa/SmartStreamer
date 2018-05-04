@@ -137,12 +137,19 @@ class AppConfig final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::AppCommandResult>> PrepareAsyncStopPanaroma(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::AppCommandResult>>(PrepareAsyncStopPanaromaRaw(context, request, cq));
     }
-    virtual ::grpc::Status GetScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::ScreenFrame* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::ScreenFrame>> AsyncGetScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::ScreenFrame>>(AsyncGetScreenShotRaw(context, request, cq));
+    virtual ::grpc::Status GetMainScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::ScreenFrame* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::ScreenFrame>> AsyncGetMainScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::ScreenFrame>>(AsyncGetMainScreenShotRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::ScreenFrame>> PrepareAsyncGetScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::ScreenFrame>>(PrepareAsyncGetScreenShotRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::ScreenFrame>> PrepareAsyncGetMainScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::ScreenFrame>>(PrepareAsyncGetMainScreenShotRaw(context, request, cq));
+    }
+    virtual ::grpc::Status GetSecScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::ScreenFrame* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::ScreenFrame>> AsyncGetSecScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::ScreenFrame>>(AsyncGetSecScreenShotRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::ScreenFrame>> PrepareAsyncGetSecScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::ScreenFrame>>(PrepareAsyncGetSecScreenShotRaw(context, request, cq));
     }
     virtual ::grpc::Status GotoPanaromaPixel(::grpc::ClientContext* context, const ::OrionCommunication::TPoint& request, ::OrionCommunication::AppCommandResult* response) = 0;
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::AppCommandResult>> AsyncGotoPanaromaPixel(::grpc::ClientContext* context, const ::OrionCommunication::TPoint& request, ::grpc::CompletionQueue* cq) {
@@ -188,8 +195,10 @@ class AppConfig final {
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::AppCommandResult>* PrepareAsyncStopMotionRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::AppCommandResult>* AsyncStopPanaromaRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::AppCommandResult>* PrepareAsyncStopPanaromaRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::ScreenFrame>* AsyncGetScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::ScreenFrame>* PrepareAsyncGetScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::ScreenFrame>* AsyncGetMainScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::ScreenFrame>* PrepareAsyncGetMainScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::ScreenFrame>* AsyncGetSecScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::ScreenFrame>* PrepareAsyncGetSecScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::AppCommandResult>* AsyncGotoPanaromaPixelRaw(::grpc::ClientContext* context, const ::OrionCommunication::TPoint& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::AppCommandResult>* PrepareAsyncGotoPanaromaPixelRaw(::grpc::ClientContext* context, const ::OrionCommunication::TPoint& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::OrionCommunication::TPoint>* AsyncCurrentPanaromaPixelRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) = 0;
@@ -298,12 +307,19 @@ class AppConfig final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>> PrepareAsyncStopPanaroma(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>>(PrepareAsyncStopPanaromaRaw(context, request, cq));
     }
-    ::grpc::Status GetScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::ScreenFrame* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>> AsyncGetScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>>(AsyncGetScreenShotRaw(context, request, cq));
+    ::grpc::Status GetMainScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::ScreenFrame* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>> AsyncGetMainScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>>(AsyncGetMainScreenShotRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>> PrepareAsyncGetScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>>(PrepareAsyncGetScreenShotRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>> PrepareAsyncGetMainScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>>(PrepareAsyncGetMainScreenShotRaw(context, request, cq));
+    }
+    ::grpc::Status GetSecScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::ScreenFrame* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>> AsyncGetSecScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>>(AsyncGetSecScreenShotRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>> PrepareAsyncGetSecScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>>(PrepareAsyncGetSecScreenShotRaw(context, request, cq));
     }
     ::grpc::Status GotoPanaromaPixel(::grpc::ClientContext* context, const ::OrionCommunication::TPoint& request, ::OrionCommunication::AppCommandResult* response) override;
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>> AsyncGotoPanaromaPixel(::grpc::ClientContext* context, const ::OrionCommunication::TPoint& request, ::grpc::CompletionQueue* cq) {
@@ -351,8 +367,10 @@ class AppConfig final {
     ::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* PrepareAsyncStopMotionRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AsyncStopPanaromaRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* PrepareAsyncStopPanaromaRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>* AsyncGetScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>* PrepareAsyncGetScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>* AsyncGetMainScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>* PrepareAsyncGetMainScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>* AsyncGetSecScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>* PrepareAsyncGetSecScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AsyncGotoPanaromaPixelRaw(::grpc::ClientContext* context, const ::OrionCommunication::TPoint& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* PrepareAsyncGotoPanaromaPixelRaw(::grpc::ClientContext* context, const ::OrionCommunication::TPoint& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::OrionCommunication::TPoint>* AsyncCurrentPanaromaPixelRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) override;
@@ -371,7 +389,8 @@ class AppConfig final {
     const ::grpc::internal::RpcMethod rpcmethod_RunPanaroma_;
     const ::grpc::internal::RpcMethod rpcmethod_StopMotion_;
     const ::grpc::internal::RpcMethod rpcmethod_StopPanaroma_;
-    const ::grpc::internal::RpcMethod rpcmethod_GetScreenShot_;
+    const ::grpc::internal::RpcMethod rpcmethod_GetMainScreenShot_;
+    const ::grpc::internal::RpcMethod rpcmethod_GetSecScreenShot_;
     const ::grpc::internal::RpcMethod rpcmethod_GotoPanaromaPixel_;
     const ::grpc::internal::RpcMethod rpcmethod_CurrentPanaromaPixel_;
   };
@@ -395,7 +414,8 @@ class AppConfig final {
     virtual ::grpc::Status RunPanaroma(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response);
     virtual ::grpc::Status StopMotion(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response);
     virtual ::grpc::Status StopPanaroma(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response);
-    virtual ::grpc::Status GetScreenShot(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::ScreenFrame* response);
+    virtual ::grpc::Status GetMainScreenShot(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::ScreenFrame* response);
+    virtual ::grpc::Status GetSecScreenShot(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::ScreenFrame* response);
     virtual ::grpc::Status GotoPanaromaPixel(::grpc::ServerContext* context, const ::OrionCommunication::TPoint* request, ::OrionCommunication::AppCommandResult* response);
     virtual ::grpc::Status CurrentPanaromaPixel(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::TPoint* response);
   };
@@ -680,23 +700,43 @@ class AppConfig final {
     }
   };
   template <class BaseClass>
-  class WithAsyncMethod_GetScreenShot : public BaseClass {
+  class WithAsyncMethod_GetMainScreenShot : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithAsyncMethod_GetScreenShot() {
+    WithAsyncMethod_GetMainScreenShot() {
       ::grpc::Service::MarkMethodAsync(14);
     }
-    ~WithAsyncMethod_GetScreenShot() override {
+    ~WithAsyncMethod_GetMainScreenShot() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status GetScreenShot(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::ScreenFrame* response) final override {
+    ::grpc::Status GetMainScreenShot(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::ScreenFrame* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestGetScreenShot(::grpc::ServerContext* context, ::OrionCommunication::DummyInfo* request, ::grpc::ServerAsyncResponseWriter< ::OrionCommunication::ScreenFrame>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestGetMainScreenShot(::grpc::ServerContext* context, ::OrionCommunication::DummyInfo* request, ::grpc::ServerAsyncResponseWriter< ::OrionCommunication::ScreenFrame>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(14, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_GetSecScreenShot : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service *service) {}
+   public:
+    WithAsyncMethod_GetSecScreenShot() {
+      ::grpc::Service::MarkMethodAsync(15);
+    }
+    ~WithAsyncMethod_GetSecScreenShot() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status GetSecScreenShot(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::ScreenFrame* response) final override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestGetSecScreenShot(::grpc::ServerContext* context, ::OrionCommunication::DummyInfo* request, ::grpc::ServerAsyncResponseWriter< ::OrionCommunication::ScreenFrame>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(15, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -705,7 +745,7 @@ class AppConfig final {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithAsyncMethod_GotoPanaromaPixel() {
-      ::grpc::Service::MarkMethodAsync(15);
+      ::grpc::Service::MarkMethodAsync(16);
     }
     ~WithAsyncMethod_GotoPanaromaPixel() override {
       BaseClassMustBeDerivedFromService(this);
@@ -716,7 +756,7 @@ class AppConfig final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestGotoPanaromaPixel(::grpc::ServerContext* context, ::OrionCommunication::TPoint* request, ::grpc::ServerAsyncResponseWriter< ::OrionCommunication::AppCommandResult>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(15, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(16, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -725,7 +765,7 @@ class AppConfig final {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithAsyncMethod_CurrentPanaromaPixel() {
-      ::grpc::Service::MarkMethodAsync(16);
+      ::grpc::Service::MarkMethodAsync(17);
     }
     ~WithAsyncMethod_CurrentPanaromaPixel() override {
       BaseClassMustBeDerivedFromService(this);
@@ -736,10 +776,10 @@ class AppConfig final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestCurrentPanaromaPixel(::grpc::ServerContext* context, ::OrionCommunication::DummyInfo* request, ::grpc::ServerAsyncResponseWriter< ::OrionCommunication::TPoint>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(16, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(17, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_SetPanaromaParameters<WithAsyncMethod_GetPanaromaParameters<WithAsyncMethod_SetMotionDetectionParameters<WithAsyncMethod_GetMotionDetectionParameters<WithAsyncMethod_SetCurrentMode<WithAsyncMethod_GetCurrentMode<WithAsyncMethod_SetSensivityParameter<WithAsyncMethod_GetSensivityParameter<WithAsyncMethod_GetLastPanaromaFrame<WithAsyncMethod_GetPanaromaFrames<WithAsyncMethod_RunMotion<WithAsyncMethod_RunPanaroma<WithAsyncMethod_StopMotion<WithAsyncMethod_StopPanaroma<WithAsyncMethod_GetScreenShot<WithAsyncMethod_GotoPanaromaPixel<WithAsyncMethod_CurrentPanaromaPixel<Service > > > > > > > > > > > > > > > > > AsyncService;
+  typedef WithAsyncMethod_SetPanaromaParameters<WithAsyncMethod_GetPanaromaParameters<WithAsyncMethod_SetMotionDetectionParameters<WithAsyncMethod_GetMotionDetectionParameters<WithAsyncMethod_SetCurrentMode<WithAsyncMethod_GetCurrentMode<WithAsyncMethod_SetSensivityParameter<WithAsyncMethod_GetSensivityParameter<WithAsyncMethod_GetLastPanaromaFrame<WithAsyncMethod_GetPanaromaFrames<WithAsyncMethod_RunMotion<WithAsyncMethod_RunPanaroma<WithAsyncMethod_StopMotion<WithAsyncMethod_StopPanaroma<WithAsyncMethod_GetMainScreenShot<WithAsyncMethod_GetSecScreenShot<WithAsyncMethod_GotoPanaromaPixel<WithAsyncMethod_CurrentPanaromaPixel<Service > > > > > > > > > > > > > > > > > > AsyncService;
   template <class BaseClass>
   class WithGenericMethod_SetPanaromaParameters : public BaseClass {
    private:
@@ -979,18 +1019,35 @@ class AppConfig final {
     }
   };
   template <class BaseClass>
-  class WithGenericMethod_GetScreenShot : public BaseClass {
+  class WithGenericMethod_GetMainScreenShot : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithGenericMethod_GetScreenShot() {
+    WithGenericMethod_GetMainScreenShot() {
       ::grpc::Service::MarkMethodGeneric(14);
     }
-    ~WithGenericMethod_GetScreenShot() override {
+    ~WithGenericMethod_GetMainScreenShot() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status GetScreenShot(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::ScreenFrame* response) final override {
+    ::grpc::Status GetMainScreenShot(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::ScreenFrame* response) final override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_GetSecScreenShot : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service *service) {}
+   public:
+    WithGenericMethod_GetSecScreenShot() {
+      ::grpc::Service::MarkMethodGeneric(15);
+    }
+    ~WithGenericMethod_GetSecScreenShot() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status GetSecScreenShot(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::ScreenFrame* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -1001,7 +1058,7 @@ class AppConfig final {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithGenericMethod_GotoPanaromaPixel() {
-      ::grpc::Service::MarkMethodGeneric(15);
+      ::grpc::Service::MarkMethodGeneric(16);
     }
     ~WithGenericMethod_GotoPanaromaPixel() override {
       BaseClassMustBeDerivedFromService(this);
@@ -1018,7 +1075,7 @@ class AppConfig final {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithGenericMethod_CurrentPanaromaPixel() {
-      ::grpc::Service::MarkMethodGeneric(16);
+      ::grpc::Service::MarkMethodGeneric(17);
     }
     ~WithGenericMethod_CurrentPanaromaPixel() override {
       BaseClassMustBeDerivedFromService(this);
@@ -1290,24 +1347,44 @@ class AppConfig final {
     virtual ::grpc::Status StreamedStopPanaroma(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::OrionCommunication::DummyInfo,::OrionCommunication::AppCommandResult>* server_unary_streamer) = 0;
   };
   template <class BaseClass>
-  class WithStreamedUnaryMethod_GetScreenShot : public BaseClass {
+  class WithStreamedUnaryMethod_GetMainScreenShot : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithStreamedUnaryMethod_GetScreenShot() {
+    WithStreamedUnaryMethod_GetMainScreenShot() {
       ::grpc::Service::MarkMethodStreamed(14,
-        new ::grpc::internal::StreamedUnaryHandler< ::OrionCommunication::DummyInfo, ::OrionCommunication::ScreenFrame>(std::bind(&WithStreamedUnaryMethod_GetScreenShot<BaseClass>::StreamedGetScreenShot, this, std::placeholders::_1, std::placeholders::_2)));
+        new ::grpc::internal::StreamedUnaryHandler< ::OrionCommunication::DummyInfo, ::OrionCommunication::ScreenFrame>(std::bind(&WithStreamedUnaryMethod_GetMainScreenShot<BaseClass>::StreamedGetMainScreenShot, this, std::placeholders::_1, std::placeholders::_2)));
     }
-    ~WithStreamedUnaryMethod_GetScreenShot() override {
+    ~WithStreamedUnaryMethod_GetMainScreenShot() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status GetScreenShot(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::ScreenFrame* response) final override {
+    ::grpc::Status GetMainScreenShot(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::ScreenFrame* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status StreamedGetScreenShot(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::OrionCommunication::DummyInfo,::OrionCommunication::ScreenFrame>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedGetMainScreenShot(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::OrionCommunication::DummyInfo,::OrionCommunication::ScreenFrame>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_GetSecScreenShot : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service *service) {}
+   public:
+    WithStreamedUnaryMethod_GetSecScreenShot() {
+      ::grpc::Service::MarkMethodStreamed(15,
+        new ::grpc::internal::StreamedUnaryHandler< ::OrionCommunication::DummyInfo, ::OrionCommunication::ScreenFrame>(std::bind(&WithStreamedUnaryMethod_GetSecScreenShot<BaseClass>::StreamedGetSecScreenShot, this, std::placeholders::_1, std::placeholders::_2)));
+    }
+    ~WithStreamedUnaryMethod_GetSecScreenShot() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status GetSecScreenShot(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::ScreenFrame* response) final override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedGetSecScreenShot(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::OrionCommunication::DummyInfo,::OrionCommunication::ScreenFrame>* server_unary_streamer) = 0;
   };
   template <class BaseClass>
   class WithStreamedUnaryMethod_GotoPanaromaPixel : public BaseClass {
@@ -1315,7 +1392,7 @@ class AppConfig final {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithStreamedUnaryMethod_GotoPanaromaPixel() {
-      ::grpc::Service::MarkMethodStreamed(15,
+      ::grpc::Service::MarkMethodStreamed(16,
         new ::grpc::internal::StreamedUnaryHandler< ::OrionCommunication::TPoint, ::OrionCommunication::AppCommandResult>(std::bind(&WithStreamedUnaryMethod_GotoPanaromaPixel<BaseClass>::StreamedGotoPanaromaPixel, this, std::placeholders::_1, std::placeholders::_2)));
     }
     ~WithStreamedUnaryMethod_GotoPanaromaPixel() override {
@@ -1335,7 +1412,7 @@ class AppConfig final {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithStreamedUnaryMethod_CurrentPanaromaPixel() {
-      ::grpc::Service::MarkMethodStreamed(16,
+      ::grpc::Service::MarkMethodStreamed(17,
         new ::grpc::internal::StreamedUnaryHandler< ::OrionCommunication::DummyInfo, ::OrionCommunication::TPoint>(std::bind(&WithStreamedUnaryMethod_CurrentPanaromaPixel<BaseClass>::StreamedCurrentPanaromaPixel, this, std::placeholders::_1, std::placeholders::_2)));
     }
     ~WithStreamedUnaryMethod_CurrentPanaromaPixel() override {
@@ -1349,7 +1426,7 @@ class AppConfig final {
     // replace default version of method with streamed unary
     virtual ::grpc::Status StreamedCurrentPanaromaPixel(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::OrionCommunication::DummyInfo,::OrionCommunication::TPoint>* server_unary_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_SetPanaromaParameters<WithStreamedUnaryMethod_GetPanaromaParameters<WithStreamedUnaryMethod_SetMotionDetectionParameters<WithStreamedUnaryMethod_GetMotionDetectionParameters<WithStreamedUnaryMethod_SetCurrentMode<WithStreamedUnaryMethod_GetCurrentMode<WithStreamedUnaryMethod_SetSensivityParameter<WithStreamedUnaryMethod_GetSensivityParameter<WithStreamedUnaryMethod_GetLastPanaromaFrame<WithStreamedUnaryMethod_RunMotion<WithStreamedUnaryMethod_RunPanaroma<WithStreamedUnaryMethod_StopMotion<WithStreamedUnaryMethod_StopPanaroma<WithStreamedUnaryMethod_GetScreenShot<WithStreamedUnaryMethod_GotoPanaromaPixel<WithStreamedUnaryMethod_CurrentPanaromaPixel<Service > > > > > > > > > > > > > > > > StreamedUnaryService;
+  typedef WithStreamedUnaryMethod_SetPanaromaParameters<WithStreamedUnaryMethod_GetPanaromaParameters<WithStreamedUnaryMethod_SetMotionDetectionParameters<WithStreamedUnaryMethod_GetMotionDetectionParameters<WithStreamedUnaryMethod_SetCurrentMode<WithStreamedUnaryMethod_GetCurrentMode<WithStreamedUnaryMethod_SetSensivityParameter<WithStreamedUnaryMethod_GetSensivityParameter<WithStreamedUnaryMethod_GetLastPanaromaFrame<WithStreamedUnaryMethod_RunMotion<WithStreamedUnaryMethod_RunPanaroma<WithStreamedUnaryMethod_StopMotion<WithStreamedUnaryMethod_StopPanaroma<WithStreamedUnaryMethod_GetMainScreenShot<WithStreamedUnaryMethod_GetSecScreenShot<WithStreamedUnaryMethod_GotoPanaromaPixel<WithStreamedUnaryMethod_CurrentPanaromaPixel<Service > > > > > > > > > > > > > > > > > StreamedUnaryService;
   template <class BaseClass>
   class WithSplitStreamingMethod_GetPanaromaFrames : public BaseClass {
    private:
@@ -1371,7 +1448,7 @@ class AppConfig final {
     virtual ::grpc::Status StreamedGetPanaromaFrames(::grpc::ServerContext* context, ::grpc::ServerSplitStreamer< ::OrionCommunication::GetFrames,::OrionCommunication::PanoramaFrame>* server_split_streamer) = 0;
   };
   typedef WithSplitStreamingMethod_GetPanaromaFrames<Service > SplitStreamedService;
-  typedef WithStreamedUnaryMethod_SetPanaromaParameters<WithStreamedUnaryMethod_GetPanaromaParameters<WithStreamedUnaryMethod_SetMotionDetectionParameters<WithStreamedUnaryMethod_GetMotionDetectionParameters<WithStreamedUnaryMethod_SetCurrentMode<WithStreamedUnaryMethod_GetCurrentMode<WithStreamedUnaryMethod_SetSensivityParameter<WithStreamedUnaryMethod_GetSensivityParameter<WithStreamedUnaryMethod_GetLastPanaromaFrame<WithSplitStreamingMethod_GetPanaromaFrames<WithStreamedUnaryMethod_RunMotion<WithStreamedUnaryMethod_RunPanaroma<WithStreamedUnaryMethod_StopMotion<WithStreamedUnaryMethod_StopPanaroma<WithStreamedUnaryMethod_GetScreenShot<WithStreamedUnaryMethod_GotoPanaromaPixel<WithStreamedUnaryMethod_CurrentPanaromaPixel<Service > > > > > > > > > > > > > > > > > StreamedService;
+  typedef WithStreamedUnaryMethod_SetPanaromaParameters<WithStreamedUnaryMethod_GetPanaromaParameters<WithStreamedUnaryMethod_SetMotionDetectionParameters<WithStreamedUnaryMethod_GetMotionDetectionParameters<WithStreamedUnaryMethod_SetCurrentMode<WithStreamedUnaryMethod_GetCurrentMode<WithStreamedUnaryMethod_SetSensivityParameter<WithStreamedUnaryMethod_GetSensivityParameter<WithStreamedUnaryMethod_GetLastPanaromaFrame<WithSplitStreamingMethod_GetPanaromaFrames<WithStreamedUnaryMethod_RunMotion<WithStreamedUnaryMethod_RunPanaroma<WithStreamedUnaryMethod_StopMotion<WithStreamedUnaryMethod_StopPanaroma<WithStreamedUnaryMethod_GetMainScreenShot<WithStreamedUnaryMethod_GetSecScreenShot<WithStreamedUnaryMethod_GotoPanaromaPixel<WithStreamedUnaryMethod_CurrentPanaromaPixel<Service > > > > > > > > > > > > > > > > > > StreamedService;
 };
 
 }  // namespace OrionCommunication
