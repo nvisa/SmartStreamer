@@ -25,6 +25,7 @@ extern "C" {
 }
 
 #define PRINT_BUFS 0
+#define PRINT_CUDA 1
 
 #include <grpc/grpc.h>
 #include <grpc++/server.h>
@@ -191,7 +192,8 @@ bool SmartStreamer::startSpinnig(float sSpeed)
 
 void SmartStreamer::doPanaroma(const RawBuffer &buf)
 {
-    ffDebug() << "Panaroma state: " << "Stop state = " <<  wrap->panaroma.stop  << "Start state = " << wrap->panaroma.start;
+    if (PRINT_CUDA)
+        ffDebug() << "Panaroma state: " << "Stop state = " <<  wrap->panaroma.stop  << "Start state = " << wrap->panaroma.start;
     if (wrap->panaroma.stop)
         return;
     if (wrap->panaroma.start) {
@@ -217,11 +219,12 @@ void SmartStreamer::doPanaroma(const RawBuffer &buf)
 
 void SmartStreamer::doMotionDetection(const RawBuffer &buf)
 {
-    ffDebug() << "Motion State: " << "Stop state = " <<  wrap->motion.stop  << "Start state = " << wrap->motion.start;
+    if (PRINT_CUDA)
+        ffDebug() << "Motion State: " << "Stop state = " <<  wrap->motion.stop  << "Start state = " << wrap->motion.start;
     if (wrap->motion.stop)
         return;
     if (wrap->motion.start) {
-        wrap->viaBase(buf, wrap->motion.initializing, 50);
+        wrap->viaBase(buf, wrap->motion.initializing);
         wrap->motion.initializing = 0;
         if (sei) {
             QByteArray ba = QByteArray((char *)wrap->meta, 4096);
@@ -632,7 +635,7 @@ grpc::Status SmartStreamer::GetSensivityParameter(grpc::ServerContext *context, 
 {
     Q_UNUSED(context)
     Q_UNUSED(request)
-    response->set_sensivity(sensivity);
+    response->set_sensivity(wrap->motion.sensivity);
     return Status::OK;
 }
 
@@ -641,7 +644,7 @@ grpc::Status SmartStreamer::SetSensivityParameter(grpc::ServerContext *context, 
     Q_UNUSED(context)
     Q_UNUSED(response)
 
-    sensivity = request->sensivity();
+    wrap->motion.sensivity = request->sensivity();
     response->set_err(0);
     return Status::OK;
 }

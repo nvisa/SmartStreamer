@@ -114,7 +114,6 @@ protected:
     unsigned char *screenBuffer;
     int width;
     int height;
-    int sensivity;
 
     bool goToZeroPosition();
     void doPanaroma(const RawBuffer &buf);
