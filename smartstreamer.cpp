@@ -439,9 +439,9 @@ grpc::Status SmartStreamer::GetPanaromaFrames(grpc::ServerContext *context, cons
     if (wrap->getMode() != ViaWrapper::Panaroma)
         return Status::CANCELLED;
     bool lastFrame;
-    if (request->modeframe() == request->LastFrame)
-        lastFrame = true;
-    else lastFrame = false;
+    if (request->modeframe() == 0)
+        lastFrame = false;
+    else lastFrame = true;
     QString next = "/home/ubuntu/Desktop/Pan_images/Pan%1.jpg";
     QString nextFinal = "/home/ubuntu/Desktop/Pan_images/PanFinal.jpg";
     if (lastFrame) {
