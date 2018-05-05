@@ -39,7 +39,6 @@ int SmartStreamer::setupRtspClient(const QString &rtspUrl)
 	printParameters();
 
 	rtp = new RtpReceiver(this);
-	rtp->useThreadedReading(true);
 	rtpout = new RtpTransmitter(this);
 	rtpout->setH264SEIInsertion(true);
 	rtpout->useIncomingTimestamp(false);
