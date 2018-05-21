@@ -192,8 +192,6 @@ bool SmartStreamer::startSpinnig(float sSpeed)
 
 void SmartStreamer::doPanaroma(const RawBuffer &buf)
 {
-    if (PRINT_CUDA)
-        ffDebug() << "Panaroma state: " << "Stop state = " <<  wrap->panaroma.stop  << "Start state = " << wrap->panaroma.start;
     if (wrap->panaroma.stop)
         return;
     if (wrap->panaroma.start) {
@@ -219,8 +217,6 @@ void SmartStreamer::doPanaroma(const RawBuffer &buf)
 
 void SmartStreamer::doMotionDetection(const RawBuffer &buf)
 {
-    if (PRINT_CUDA)
-        ffDebug() << "Motion State: " << "Stop state = " <<  wrap->motion.stop  << "Start state = " << wrap->motion.start;
     if (wrap->motion.stop)
         return;
     if (wrap->motion.start) {
@@ -354,7 +350,9 @@ int SmartStreamer::processMainRGB(const RawBuffer &buf)
 	if (PRINT_BUFS)
 		ffDebug() << buf.getMimeType() << buf.size() << FFmpegColorSpace::getName(buf.constPars()->avPixelFormat)
 			  << buf.constPars()->videoWidth << buf.constPars()->videoHeight;
+    mutex.lock();
     screenMainShot = doScreenShot(buf);
+    mutex.unlock();
     return 0;
 }
 
@@ -363,7 +361,9 @@ int SmartStreamer::processScaledRGB(const RawBuffer &buf)
 	if (PRINT_BUFS)
 		ffDebug() << buf.getMimeType() << buf.size() << FFmpegColorSpace::getName(buf.constPars()->avPixelFormat)
 			  << buf.constPars()->videoWidth << buf.constPars()->videoHeight;
+    mutex.lock();
     screenSecShot = doScreenShot(buf);
+    mutex.unlock();
 	return 0;
 }
 
@@ -695,7 +695,10 @@ grpc::Status SmartStreamer::GotoPanaromaPixel(grpc::ServerContext *context, cons
 
 void SmartStreamer::timeout()
 {
-
+    if (PRINT_CUDA) {
+        ffDebug() << "Motion State: " << "Stop state = " <<  wrap->motion.stop  << "Start state = " << wrap->motion.start;
+        ffDebug() << "Panaroma state: " << "Stop state = " <<  wrap->panaroma.stop  << "Start state = " << wrap->panaroma.start;
+    }
     PipelineManager::timeout();
 }
 
