@@ -111,20 +111,20 @@ protected:
 	FFmpegDecoder *dec;
 	QtVideoOutput *vout;
 	SeiInserter *sei;
-    GrpcThread *grpcServ;
-    GrpcPTZClient *ptzclient;
-    QByteArray screenMainShot;
-    QByteArray screenSecShot;
-    int width;
-    int height;
+	GrpcThread *grpcServ;
+	GrpcPTZClient *ptzclient;
+	QByteArray screenMainShot;
+	QByteArray screenSecShot;
+	int width;
+	int height;
 
-    bool goToZeroPosition();
-    bool startSpinnig(float sSpeed = 0);
-    void doPanaroma(const RawBuffer &buf);
-    void doMotionDetection(const RawBuffer &buf);
-    QByteArray getImageFromFile(const QString &filename);
-    QByteArray convertImageToByteArray(const QString &filename);
-    QMutex mutex;
+	bool goToZeroPosition();
+	bool startSpinnig(float sSpeed = 0);
+	void doPanaroma(const RawBuffer &buf);
+	void doMotionDetection(const RawBuffer &buf);
+	QByteArray getImageFromFile(const QString &filename);
+	QByteArray convertImageToByteArray(const QString &filename);
+	QMutex mutex;
 };
 
 #endif // SMARTSTREAMER_H
