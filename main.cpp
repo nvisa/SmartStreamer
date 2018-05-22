@@ -13,55 +13,56 @@
 
 static void printStackTrace(void)
 {
-        void *array[25];
-        size_t size;
-        char **strings;
-        size_t i;
+	void *array[25];
+	size_t size;
+	char **strings;
+	size_t i;
 
-        size = backtrace (array, 25);
-        strings = backtrace_symbols (array, size);
+	size = backtrace (array, 25);
+	strings = backtrace_symbols (array, size);
 
-        qWarning("Obtained %zd stack frames.", size);
+	qWarning("Obtained %zd stack frames.", size);
 
-        for (i = 0; i < size; i++)
-                qWarning("%s", strings[i]);
+	for (i = 0; i < size; i++)
+		qWarning("%s", strings[i]);
 
-        free (strings);
+	free (strings);
 }
 
 static void signalHandler(int signalNumber)
 {
-        static int once = 0;
-        if (once) {
-                exit(23);
-                return;
-        }
-        once = 1;
-        Qt::HANDLE id = QThread::currentThreadId();
-        qWarning("crash: Received signal %d, thread id is %p", signalNumber, id);
-        printStackTrace();
+	static int once = 0;
+	if (once) {
+		exit(23);
+		return;
+	}
+	once = 1;
+	Qt::HANDLE id = QThread::currentThreadId();
+	qWarning("crash: Received signal %d, thread id is %p", signalNumber, id);
+	printStackTrace();
 
-        exit(19);
+	exit(19);
 }
 
 static int installSignalHandlers()
 {
-        struct sigaction sigInstaller;
-        sigset_t block_mask;
+	struct sigaction sigInstaller;
+	sigset_t block_mask;
 
-        sigemptyset(&block_mask);
-        sigfillset(&block_mask);
-        sigInstaller.sa_flags   = (SA_RESTART) ;
-        sigInstaller.sa_mask    = block_mask;
-        sigInstaller.sa_handler = &signalHandler;
-        sigaction(SIGSEGV, &sigInstaller, NULL);
-        sigaction(SIGINT, &sigInstaller, NULL);
-        sigaction(SIGTERM, &sigInstaller, NULL);
-        sigaction(SIGABRT, &sigInstaller, NULL);
-        sigaction(SIGPIPE, &sigInstaller, NULL);
-        sigaction(SIGBUS, &sigInstaller, NULL);
-        sigaction(SIGFPE, &sigInstaller, NULL);
-        return 0;
+	sigemptyset(&block_mask);
+	sigfillset(&block_mask);
+	sigInstaller.sa_flags   = (SA_RESTART) ;
+	sigInstaller.sa_mask    = block_mask;
+	sigInstaller.sa_handler = &signalHandler;
+	sigaction(SIGSEGV, &sigInstaller, NULL);
+	sigaction(SIGINT, &sigInstaller, NULL);
+	sigaction(SIGTERM, &sigInstaller, NULL);
+	sigaction(SIGABRT, &sigInstaller, NULL);
+	sigaction(SIGPIPE, &sigInstaller, NULL);
+	sigaction(SIGBUS, &sigInstaller, NULL);
+	sigaction(SIGFPE, &sigInstaller, NULL);
+
+	return 0;
 }
 
 class MyQApp : public QApplication
