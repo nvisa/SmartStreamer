@@ -1,11 +1,8 @@
 #ifndef SMARTSTREAMER_H
 #define SMARTSTREAMER_H
 
-#include <lmm/players/basestreamer.h>
-
+#include "lmm/players/basestreamer.h"
 #include "proto/OrionCommunication.grpc.pb.h"
-
-#include <QTcpSocket>
 
 class RtspClient;
 class RtpReceiver;
@@ -16,7 +13,8 @@ class FFmpegDecoder;
 class QtVideoOutput;
 class SeiInserter;
 class GrpcThread;
-class GrpcPTZClient;
+class PtzpHead;
+class AryaDriver;
 class SmartStreamer : public BaseStreamer, public OrionCommunication::AppConfig::Service
 {
 	Q_OBJECT
@@ -112,9 +110,10 @@ protected:
 	QtVideoOutput *vout;
 	SeiInserter *sei;
 	GrpcThread *grpcServ;
-	GrpcPTZClient *ptzclient;
 	QByteArray screenMainShot;
 	QByteArray screenSecShot;
+	AryaDriver *arya;
+	PtzpHead *pt;
 	int width;
 	int height;
 

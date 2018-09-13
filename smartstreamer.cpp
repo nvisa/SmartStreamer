@@ -16,6 +16,9 @@
 #include <lmm/ffmpeg/ffmpegcolorspace.h>
 #include <lmm/pipeline/functionpipeelement.h>
 
+#include <ecl/ptzp/ptzphead.h>
+#include <ecl/ptzp/aryadriver.h>
+
 #ifdef HAVE_VIA_WRAPPER
 #include <ViaWrapper/viawrapper.h>
 #endif
@@ -142,9 +145,10 @@ protected:
 SmartStreamer::SmartStreamer(QObject *parent)
 	: BaseStreamer(parent), OrionCommunication::AppConfig::Service()
 {
+	arya = new AryaDriver();
+	pt = arya->getHead(0);
 	grpcServ = new GrpcThread(50054, this);
 	grpcServ->start();
-	ptzclient = new GrpcPTZClient(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
 
 #ifdef HAVE_VIA_WRAPPER
 	wrap = new ViaWrapper();
@@ -154,15 +158,13 @@ SmartStreamer::SmartStreamer(QObject *parent)
 bool SmartStreamer::goToZeroPosition()
 {
 	int span = 9999;
-	int stilt = 9999;
-	int szoom = 9999;
-	ptzclient->getPTZPosInfo(span, stilt, szoom);
+	span = (int) pt->getPanAngle();
 	QElapsedTimer elap;
 	elap.start();
 	while (span != 0) {
-		ptzclient->setPanTiltPos(0,0);
+		pt->panTiltGoPos(0, 0);
 		sleep(3);
-		ptzclient->getPTZPosInfo(span, stilt, szoom);
+		span = (int) pt->getPanAngle();
 		if (elap.elapsed() > 30000) {
 			mDebug("I can't found  0,0 position on this device.. ");
 			return false;
@@ -177,12 +179,11 @@ bool SmartStreamer::startSpinnig(float sSpeed)
 {
 	if (sSpeed == 0)
 		sSpeed = 0.225;
-	ptzclient->setPanTiltAbs(sSpeed, 0);
-	int span = 0; int stilt; int szoom;
-	ptzclient->getPTZPosInfo(span, stilt, szoom);
-	while (span == 0) {
-		ptzclient->getPTZPosInfo(span, stilt, szoom);
-	}
+	pt->panTiltAbs(sSpeed, 0);
+	int span = 0;
+	span = (int) pt->getPanAngle();
+	while (span == 0)
+		span = (int) pt->getPanAngle();
 	if (span != 0) {
 		wrap->panaroma.startSpinnig = true;
 		wrap->panaroma.initializing = 1;
@@ -201,15 +202,18 @@ void SmartStreamer::doPanaroma(const RawBuffer &buf)
 		if (!wrap->panaroma.startSpinnig)
 			startSpinnig();
 		float pan_tilt_zoom_read[3];
-		int pan; int tilt; int zoom;
-		ptzclient->getPTZPosInfo(pan, tilt, zoom);
+		float pan, tilt; int zoom;
+		zoom = pt->getZoom();
+		pan = pt->getPanAngle();
+		tilt = pt->getTiltAngle();
+		mInfo("Panaroma doing, pan angle %f, Tilt angle %f, Zoom angle %d", pan, tilt, zoom);
 		pan_tilt_zoom_read[0] = (float) pan / 17777.777;
 		pan_tilt_zoom_read[1] = (float) tilt / 17777.777;
-		pan_tilt_zoom_read[2] = 90000.0;
+		pan_tilt_zoom_read[2] = zoom;
 		wrap->viaPan(buf, pan_tilt_zoom_read, wrap->panaroma.initializing);
 		wrap->panaroma.initializing = 0;
 		if (wrap->meta[0] != 0) {
-			ptzclient->setPanTiltAbs(0,0);
+			pt->panTiltStop();
 			wrap->stopPanaroma();
 		}
 	}
@@ -517,7 +521,7 @@ grpc::Status SmartStreamer::StopPanaroma(grpc::ServerContext *context, const Ori
 	Q_UNUSED(context)
 	Q_UNUSED(request)
 	wrap->stopPanaroma();
-	ptzclient->setPanTiltAbs(0,0);
+	pt->panTiltStop();
 	response->set_err(0);
 	return Status::OK;
 }
@@ -687,7 +691,7 @@ grpc::Status SmartStreamer::GotoPanaromaPixel(grpc::ServerContext *context, cons
 	float point_x = (float)((int)((request->x() * 360 + 1) * 17777));
 	float theta = 6.5 * 576.0 / 720.0;
 	float point_y = - (((float)request->y() - 0.5) / 0.5 * theta / 2.0 * 17777.77);
-	ptzclient->setPanTiltPos(point_x, point_y);
+	pt->panTiltGoPos(point_x, point_y);
 
 	return Status::OK;
 }
