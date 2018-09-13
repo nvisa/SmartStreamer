@@ -27,9 +27,6 @@ extern "C" {
 #include <libavformat/avformat.h>
 }
 
-#define PRINT_BUFS 0
-#define PRINT_CUDA 1
-
 #include <grpc/grpc.h>
 #include <grpc++/server.h>
 #include <grpc++/channel.h>
@@ -40,84 +37,22 @@ extern "C" {
 #include <grpc++/security/credentials.h>
 #include <grpc++/security/server_credentials.h>
 
-#include <QFile>
-#include <QImage>
-#include <QBuffer>
-#include <QProcess>
-#include <unistd.h>
-#include <proto/camback.grpc.pb.h>
-
 using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
 using grpc::ServerReader;
 using grpc::ServerWriter;
 using grpc::Status;
-
-using grpc::Channel;
-using grpc::ClientContext;
-using grpc::ClientReader;
-using grpc::ClientReaderWriter;
-using grpc::ClientWriter;
 using namespace std;
-using camback::PTZService;
-using camback::PTZInfoQ;
-using camback::PTZCmdInfo;
-using camback::PtzCommandResult;
 
-class GrpcPTZClient
-{
-public:
-	explicit GrpcPTZClient(std::shared_ptr<grpc::Channel> chn)
-	{
-		//      std::shared_ptr<grpc::Channel> chn = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
-		stub = camback::PTZService::NewStub(chn);
-	}
+#include <QFile>
+#include <QImage>
+#include <QBuffer>
+#include <QProcess>
+#include <unistd.h>
 
-	int setPanAbsCmd(const QString &cmd)
-	{
-		camback::PanCmdInfo req;
-		req.set_pan_cmd(cmd.toLatin1().data(), cmd.size());
-		grpc::ClientContext ctx;
-		camback::PtzCommandResult res;
-		stub->PanAbsCmd(&ctx, req, &res);
-		return 0;
-	}
-	int setPanTiltPos(float pan_pos, float tilt_pos)
-	{
-		camback::PanTiltPos req;
-		req.set_pan_pos(pan_pos);
-		req.set_tilt_pos(tilt_pos);
-		grpc::ClientContext ctx;
-		camback::PtzCommandResult res;
-		stub->SetPanTiltPos(&ctx, req, &res);
-		return 0;
-	}
-	int setPanTiltAbs(float pan_speed, float tilt_speed)
-	{
-		camback::PtzCmdPar req;
-		req.set_pan_abs(pan_speed);
-		req.set_tilt_abs(tilt_speed);
-		grpc::ClientContext ctx;
-		camback::PtzCommandResult res;
-		stub->PanTiltAbs(&ctx, req, &res);
-		return 0;
-	}
-	int  getPTZPosInfo(int &pan, int &tilt, int &zoom)
-	{
-		camback::PTZInfoQ req;
-		grpc::ClientContext ctx;
-		camback::PTZPosInfo res;
-		stub->GetPTZPosInfo(&ctx, req, &res);
-		pan = res.pan_pos();
-		tilt = res.tilt_pos();
-		zoom = res.zoom_pos();
-		return 0;
-	}
-
-private:
-	std::unique_ptr<camback::PTZService::Stub> stub;
-};
+#define PRINT_BUFS 0
+#define PRINT_CUDA 1
 
 class GrpcThread : public QThread
 {
