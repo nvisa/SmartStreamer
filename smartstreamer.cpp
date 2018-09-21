@@ -81,10 +81,12 @@ SmartStreamer::SmartStreamer(QObject *parent)
 	: BaseStreamer(parent), OrionCommunication::AppConfig::Service()
 {
 	arya = new AryaDriver();
+	arya->startSocketApi(8945);
+	arya->setTarget("50.23.169.213");
+	arya->startGrpcApi(50058);
 	pt = arya->getHead(0);
-	grpcServ = new GrpcThread(50054, this);
+	grpcServ = new GrpcThread(50059, this);
 	grpcServ->start();
-
 #ifdef HAVE_VIA_WRAPPER
 	wrap = new ViaWrapper();
 #endif
@@ -92,11 +94,11 @@ SmartStreamer::SmartStreamer(QObject *parent)
 
 bool SmartStreamer::goToZeroPosition()
 {
-	int span = 9999;
-	span = (int) pt->getPanAngle();
+	float span = 360.0;
+	span = pt->getPanAngle();
 	QElapsedTimer elap;
 	elap.start();
-	while (span != 0) {
+	while (span < 359.89 && span > 0.1) {
 		pt->panTiltGoPos(0, 0);
 		sleep(3);
 		span = (int) pt->getPanAngle();
