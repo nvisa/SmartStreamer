@@ -633,11 +633,25 @@ grpc::Status SmartStreamer::GotoPanaromaPixel(grpc::ServerContext *context, cons
 	Q_UNUSED(context)
 	Q_UNUSED(request)
 	Q_UNUSED(response)
-	float point_x = (float)((int)((request->x() * 360 + 1) * 17777));
-	float theta = 6.5 * 576.0 / 720.0;
-	float point_y = - (((float)request->y() - 0.5) / 0.5 * theta / 2.0 * 17777.77);
-	pt->panTiltGoPos(point_x, point_y);
+	float shiftAmount = 5.5;
+	float angle = (request->x() * (360 + shiftAmount) + wrap->panaroma.panStartAngle);
+	if(angle > 360)
+		angle -= 360;
+	if(angle < 0)
+		angle += 360;
+	angle = angle / 360;
+	float point_x = angle;
 
+	float fovValue = 7.5;
+	float theta = fovValue * 576.0 / 720.0;
+
+	float point_y = wrap->panaroma.tiltStartAngle - ((((float)request->y() - 0.5) / 0.5) * theta / 2.0);
+	if (point_y > 45.0)
+		point_y = 45.0;
+	if (point_y < -45.0)
+		point_y = -45.0;
+	point_y = point_y / 45;
+	pt->panTiltGoPos(point_x, point_y);
 	return Status::OK;
 }
 
