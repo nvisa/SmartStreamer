@@ -121,6 +121,7 @@ protected:
 	bool goToZeroPosition();
 	bool startSpinnig(float sSpeed = 0);
 	void doPanaroma(const RawBuffer &buf);
+	void doCalibration(const RawBuffer &buf);
 	void doMotionDetection(const RawBuffer &buf);
 	QByteArray getImageFromFile(const QString &filename);
 	QByteArray convertImageToByteArray(const QString &filename);

@@ -164,6 +164,40 @@ void SmartStreamer::doPanaroma(const RawBuffer &buf)
 	}
 }
 
+void SmartStreamer::doCalibration(const RawBuffer &buf)
+{
+	if (wrap->calibration.stop)
+		return;
+	float pan = pt->getPanAngle();
+	float tilt = pt->getTiltAngle();
+	if (wrap->calibration.stateCalib == 0) {
+		if (!wrap->calibration.initializing) {
+			thermalCam->setProperty(2, 0x03);
+			goToZeroPosition();
+		}
+		wrap->calibration.stateCalib = wrap->viaCalibration(buf);
+		if (wrap->calibration.stateCalib == 0) {
+			pan = pan + 5.0;
+			pt->panTiltGoPos(pan, tilt);
+		}
+	} else if (wrap->calibration.stateCalib == 1) {
+		pan = pan + 5.0;
+		pt->panTiltGoPos(pan, tilt);
+		pan = pt->getPanAngle();
+		wrap->calibration.init = 0;
+		wrap->calibration.fovValue = 1;
+		wrap->calibration.stateCalib = wrap->viaCalibration(buf);
+		if (wrap->calibration.stateCalib == 0) {
+			wrap->calibration.init = 0;
+			wrap->calibration.fovValue = 0;
+		}
+	} else if(wrap->calibration.stateCalib == 3) {
+		pt->panTiltStop();
+		wrap->stopCalibration();
+	}
+	return;
+}
+
 void SmartStreamer::doMotionDetection(const RawBuffer &buf)
 {
 	if (wrap->motion.stop)
@@ -289,6 +323,7 @@ int SmartStreamer::processMainYUV(const RawBuffer &buf)
 #ifdef HAVE_VIA_WRAPPER
 	doPanaroma(buf);
 	doMotionDetection(buf);
+	doCalibration(buf);
 #endif
 	return 0;
 }
