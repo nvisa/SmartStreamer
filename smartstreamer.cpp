@@ -108,15 +108,21 @@ bool SmartStreamer::goToZeroPosition()
 			return false;
 		}
 	}
-	if (wrap)
-		wrap->panaroma.initStart = false;
+	if (wrap) {
+		if (wrap->mode == wrap->Panaroma) {
+			wrap->panaroma.initStart = false;
+			wrap->panaroma.tiltStartAngle = pt->getTiltAngle();
+			wrap->panaroma.panStartAngle = pt->getPanAngle();
+		} else if (wrap->mode == wrap->Calibration)
+			wrap->calibration.initializing = true;
+	}
 	return true;
 }
 
 bool SmartStreamer::startSpinnig(float sSpeed)
 {
 	if (sSpeed == 0)
-		sSpeed = 0.225;
+		sSpeed = 0.03;
 	pt->panTiltAbs(sSpeed, 0);
 	int span = 0;
 	span = (int) pt->getPanAngle();
@@ -145,10 +151,10 @@ void SmartStreamer::doPanaroma(const RawBuffer &buf)
 		zoom = thermalCam->getZoom();
 		pan = pt->getPanAngle();
 		tilt = pt->getTiltAngle();
-		mInfo("Panaroma doing, pan angle %f, Tilt angle %f, Zoom angle %d", pan, tilt, zoom);
-		pan_tilt_zoom_read[0] = (float) pan / 17777.777;
-		pan_tilt_zoom_read[1] = (float) tilt / 17777.777;
-		pan_tilt_zoom_read[2] = zoom;
+		ffDebug() << "Panaroma doing, pan angle %f, Tilt angle %f, Zoom angle %d"<<  pan << tilt <<  zoom;
+		pan_tilt_zoom_read[0] = pan;
+		pan_tilt_zoom_read[1] = tilt;
+		pan_tilt_zoom_read[2] = 120000;
 		wrap->viaPan(buf, pan_tilt_zoom_read, wrap->panaroma.initializing);
 		wrap->panaroma.initializing = 0;
 		if (wrap->meta[0] != 0) {
