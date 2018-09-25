@@ -85,6 +85,7 @@ SmartStreamer::SmartStreamer(QObject *parent)
 	arya->setTarget("50.23.169.213");
 	arya->startGrpcApi(50058);
 	pt = arya->getHead(0);
+	thermalCam = arya->getHead(1);
 	grpcServ = new GrpcThread(50059, this);
 	grpcServ->start();
 #ifdef HAVE_VIA_WRAPPER
@@ -98,7 +99,7 @@ bool SmartStreamer::goToZeroPosition()
 	span = pt->getPanAngle();
 	QElapsedTimer elap;
 	elap.start();
-	while (span < 359.89 && span > 0.1) {
+	while (span < 358.0 && span > 1.0) {
 		pt->panTiltGoPos(0, 0);
 		sleep(3);
 		span = (int) pt->getPanAngle();
@@ -133,6 +134,7 @@ void SmartStreamer::doPanaroma(const RawBuffer &buf)
 	if (wrap->panaroma.stop)
 		return;
 	if (wrap->panaroma.start) {
+		thermalCam->setProperty(2, 0x03);
 		if (wrap->panaroma.initStart)
 			if (!goToZeroPosition())
 				mDebug("Closing panaroma mode");
@@ -140,7 +142,7 @@ void SmartStreamer::doPanaroma(const RawBuffer &buf)
 			startSpinnig();
 		float pan_tilt_zoom_read[3];
 		float pan, tilt; int zoom;
-		zoom = pt->getZoom();
+		zoom = thermalCam->getZoom();
 		pan = pt->getPanAngle();
 		tilt = pt->getTiltAngle();
 		mInfo("Panaroma doing, pan angle %f, Tilt angle %f, Zoom angle %d", pan, tilt, zoom);

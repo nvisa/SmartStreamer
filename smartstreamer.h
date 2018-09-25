@@ -114,6 +114,7 @@ protected:
 	QByteArray screenSecShot;
 	AryaDriver *arya;
 	PtzpHead *pt;
+	PtzpHead *thermalCam;
 	int width;
 	int height;
 
