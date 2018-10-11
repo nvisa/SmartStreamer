@@ -95,19 +95,8 @@ SmartStreamer::SmartStreamer(QObject *parent)
 
 bool SmartStreamer::goToZeroPosition()
 {
-	float span = 360.0;
-	span = pt->getPanAngle();
-	QElapsedTimer elap;
-	elap.start();
-	while (span < 358.0 && span > 1.0) {
-		pt->panTiltGoPos(0, 0);
-		sleep(3);
-		span = (int) pt->getPanAngle();
-		if (elap.elapsed() > 30000) {
-			mDebug("I can't found  0,0 position on this device.. ");
-			return false;
-		}
-	}
+	pt->panTiltGoPos(0, 0);
+	sleep(3);
 	if (wrap) {
 		if (wrap->mode == wrap->Panaroma) {
 			wrap->panaroma.initStart = false;
@@ -686,7 +675,7 @@ grpc::Status SmartStreamer::GotoPanaromaPixel(grpc::ServerContext *context, cons
 	if (point_y < -45.0)
 		point_y = -45.0;
 	point_y = point_y / 45;
-	pt->panTiltGoPos(point_x, point_y);
+	pt->panTiltGoPos(point_x * 360, point_y);
 	return Status::OK;
 }
 
