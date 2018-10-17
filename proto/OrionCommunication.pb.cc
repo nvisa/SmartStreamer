@@ -577,7 +577,7 @@ void AddDescriptorsImpl() {
       "lFrames\020\001\"C\n\rPanoramaFrame\022\r\n\005valid\030\001 \001("
       "\010\022\020\n\010progress\030\002 \001(\002\022\021\n\tframeData\030\003 \001(\014\"\034"
       "\n\013ScreenFrame\022\r\n\005frame\030\001 \001(\014\"!\n\014SetSensi"
-      "vity\022\021\n\tsensivity\030\001 \001(\0052\340\014\n\tAppConfig\022a\n"
+      "vity\022\021\n\tsensivity\030\001 \001(\0052\223\016\n\tAppConfig\022a\n"
       "\025SetPanaromaParameters\022 .OrionCommunicat"
       "ion.PanoramaPars\032$.OrionCommunication.Ap"
       "pCommandResult\"\000\022Z\n\025GetPanaromaParameter"
@@ -609,19 +609,24 @@ void AddDescriptorsImpl() {
       "nCommunication.DummyInfo\032$.OrionCommunic"
       "ation.AppCommandResult\"\000\022U\n\014StopPanaroma"
       "\022\035.OrionCommunication.DummyInfo\032$.OrionC"
-      "ommunication.AppCommandResult\"\000\022U\n\021GetMa"
-      "inScreenShot\022\035.OrionCommunication.DummyI"
-      "nfo\032\037.OrionCommunication.ScreenFrame\"\000\022T"
-      "\n\020GetSecScreenShot\022\035.OrionCommunication."
-      "DummyInfo\032\037.OrionCommunication.ScreenFra"
-      "me\"\000\022W\n\021GotoPanaromaPixel\022\032.OrionCommuni"
-      "cation.TPoint\032$.OrionCommunication.AppCo"
-      "mmandResult\"\000\022S\n\024CurrentPanaromaPixel\022\035."
-      "OrionCommunication.DummyInfo\032\032.OrionComm"
-      "unication.TPoint\"\000b\006proto3"
+      "ommunication.AppCommandResult\"\000\022W\n\016RunCa"
+      "libration\022\035.OrionCommunication.DummyInfo"
+      "\032$.OrionCommunication.AppCommandResult\"\000"
+      "\022X\n\017StopCalibration\022\035.OrionCommunication"
+      ".DummyInfo\032$.OrionCommunication.AppComma"
+      "ndResult\"\000\022U\n\021GetMainScreenShot\022\035.OrionC"
+      "ommunication.DummyInfo\032\037.OrionCommunicat"
+      "ion.ScreenFrame\"\000\022T\n\020GetSecScreenShot\022\035."
+      "OrionCommunication.DummyInfo\032\037.OrionComm"
+      "unication.ScreenFrame\"\000\022W\n\021GotoPanaromaP"
+      "ixel\022\032.OrionCommunication.TPoint\032$.Orion"
+      "Communication.AppCommandResult\"\000\022S\n\024Curr"
+      "entPanaromaPixel\022\035.OrionCommunication.Du"
+      "mmyInfo\032\032.OrionCommunication.TPoint\"\000b\006p"
+      "roto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 2746);
+      descriptor, 2925);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "OrionCommunication.proto", &protobuf_RegisterTypes);
 }

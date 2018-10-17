@@ -30,6 +30,8 @@ service AppConfig {
     rpc RunPanaroma(DummyInfo) returns(AppCommandResult) {}
     rpc StopMotion(DummyInfo) returns(AppCommandResult) {}
     rpc StopPanaroma(DummyInfo) returns(AppCommandResult) {}
+    rpc RunCalibration(DummyInfo) returns(AppCommandResult) {}
+    rpc StopCalibration(DummyInfo) returns(AppCommandResult) {}
 
     rpc GetMainScreenShot(DummyInfo) returns(ScreenFrame) {}
     rpc GetSecScreenShot(DummyInfo) returns(ScreenFrame) {}

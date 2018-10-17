@@ -30,6 +30,8 @@ static const char* AppConfig_method_names[] = {
   "/OrionCommunication.AppConfig/RunPanaroma",
   "/OrionCommunication.AppConfig/StopMotion",
   "/OrionCommunication.AppConfig/StopPanaroma",
+  "/OrionCommunication.AppConfig/RunCalibration",
+  "/OrionCommunication.AppConfig/StopCalibration",
   "/OrionCommunication.AppConfig/GetMainScreenShot",
   "/OrionCommunication.AppConfig/GetSecScreenShot",
   "/OrionCommunication.AppConfig/GotoPanaromaPixel",
@@ -57,10 +59,12 @@ AppConfig::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   , rpcmethod_RunPanaroma_(AppConfig_method_names[11], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_StopMotion_(AppConfig_method_names[12], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_StopPanaroma_(AppConfig_method_names[13], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GetMainScreenShot_(AppConfig_method_names[14], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GetSecScreenShot_(AppConfig_method_names[15], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GotoPanaromaPixel_(AppConfig_method_names[16], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_CurrentPanaromaPixel_(AppConfig_method_names[17], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_RunCalibration_(AppConfig_method_names[14], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_StopCalibration_(AppConfig_method_names[15], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetMainScreenShot_(AppConfig_method_names[16], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetSecScreenShot_(AppConfig_method_names[17], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GotoPanaromaPixel_(AppConfig_method_names[18], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_CurrentPanaromaPixel_(AppConfig_method_names[19], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status AppConfig::Stub::SetPanaromaParameters(::grpc::ClientContext* context, const ::OrionCommunication::PanoramaPars& request, ::OrionCommunication::AppCommandResult* response) {
@@ -231,6 +235,30 @@ AppConfig::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_StopPanaroma_, context, request, false);
 }
 
+::grpc::Status AppConfig::Stub::RunCalibration(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::AppCommandResult* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_RunCalibration_, context, request, response);
+}
+
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::AsyncRunCalibrationRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_RunCalibration_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::PrepareAsyncRunCalibrationRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_RunCalibration_, context, request, false);
+}
+
+::grpc::Status AppConfig::Stub::StopCalibration(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::AppCommandResult* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_StopCalibration_, context, request, response);
+}
+
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::AsyncStopCalibrationRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_StopCalibration_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::PrepareAsyncStopCalibrationRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_StopCalibration_, context, request, false);
+}
+
 ::grpc::Status AppConfig::Stub::GetMainScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::ScreenFrame* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_GetMainScreenShot_, context, request, response);
 }
@@ -353,20 +381,30 @@ AppConfig::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       AppConfig_method_names[14],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&AppConfig::Service::RunCalibration), this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      AppConfig_method_names[15],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&AppConfig::Service::StopCalibration), this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      AppConfig_method_names[16],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::ScreenFrame>(
           std::mem_fn(&AppConfig::Service::GetMainScreenShot), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[15],
+      AppConfig_method_names[17],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::ScreenFrame>(
           std::mem_fn(&AppConfig::Service::GetSecScreenShot), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[16],
+      AppConfig_method_names[18],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::TPoint, ::OrionCommunication::AppCommandResult>(
           std::mem_fn(&AppConfig::Service::GotoPanaromaPixel), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[17],
+      AppConfig_method_names[19],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::TPoint>(
           std::mem_fn(&AppConfig::Service::CurrentPanaromaPixel), this)));
@@ -467,6 +505,20 @@ AppConfig::Service::~Service() {
 }
 
 ::grpc::Status AppConfig::Service::StopPanaroma(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status AppConfig::Service::RunCalibration(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status AppConfig::Service::StopCalibration(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response) {
   (void) context;
   (void) request;
   (void) response;

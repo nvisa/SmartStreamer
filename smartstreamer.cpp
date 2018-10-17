@@ -679,6 +679,37 @@ grpc::Status SmartStreamer::GotoPanaromaPixel(grpc::ServerContext *context, cons
 	return Status::OK;
 }
 
+grpc::Status SmartStreamer::RunCalibration(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response)
+{
+	Q_UNUSED(context)
+	Q_UNUSED(request)
+	Q_UNUSED(response)
+	if (!QFile::exists("pan_params.txt") || !QFile::exists("alg_parameters.txt")) {
+		mDebug("The .txt files can't found. This program cancelled.");
+		return Status::CANCELLED;
+	}
+	if (!wrap)
+		return Status::OK;
+	irdome->set("ptz.command.control", true);
+	pt->setTransportInterval(50);
+	wrap->startCalibration();
+	return Status::OK;
+}
+
+grpc::Status SmartStreamer::StopCalibration(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response)
+{
+	Q_UNUSED(context)
+	Q_UNUSED(request)
+	if (!wrap)
+		return Status::OK;
+	wrap->stopCalibration();
+	pt->panTiltStop();
+	pt->setTransportInterval(100);
+	irdome->set("ptz.command.control", false);
+	response->set_err(0);
+	return Status::OK;
+}
+
 void SmartStreamer::timeout()
 {
 	if (PRINT_CUDA) {
