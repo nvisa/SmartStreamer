@@ -15,6 +15,7 @@ class SeiInserter;
 class GrpcThread;
 class PtzpHead;
 class AryaDriver;
+class IRDomeDriver;
 class SmartStreamer : public BaseStreamer, public OrionCommunication::AppConfig::Service
 {
 	Q_OBJECT
@@ -22,12 +23,13 @@ public:
 	explicit SmartStreamer(QObject *parent = 0);
 
 	int setupRtspClient(const QString &rtspUrl);
+	void setupVideoAnalysis();
+	void setupPanTiltZoomDriver(const QString &target);
 
 	int processMainYUV(const RawBuffer &buf);
 	int processMainRGB(const RawBuffer &buf);
 	int processScaledRGB(const RawBuffer &buf);
 	int processScaledYUV(const RawBuffer &buf);
-    int processPanoramaImage(const RawBuffer &buf);
 	int checkPoint(const RawBuffer &buf);
 
 	grpc::Status SetCurrentMode(grpc::ServerContext *context, const OrionCommunication::SetModeQ *request, OrionCommunication::AppCommandResult *response);
@@ -62,7 +64,9 @@ public:
 			rtpBufferDuration = 0;
 			enableMoxaHacks = false;
 			decOutputInFps = 0;
-            decOutputOutFps = 0;
+			decOutputOutFps = 0;
+			ptzUrl = "eth;10.5.20.92:8998";
+			offline = 0;
 		}
 
 		enum EnabledElemenets {
@@ -75,6 +79,7 @@ public:
 			EL_MJPEG_OUTPUT = 1 << 6,
 		};
 
+		int offline;
 		bool enableMoxaHacks;
 		int decBufferCount;
 		int decWidth;
@@ -91,10 +96,11 @@ public:
 		QString rtspServerPass;
 		float decOutputInFps;
 		float decOutputOutFps;
+		QString ptzUrl;
 	};
 	Parameters pars;
 
-    QByteArray doScreenShot(const RawBuffer &buf);
+	QByteArray doScreenShot(const RawBuffer &buf);
 signals:
 
 public slots:
@@ -115,6 +121,7 @@ protected:
 	QByteArray screenMainShot;
 	QByteArray screenSecShot;
 	AryaDriver *arya;
+	IRDomeDriver *irdome;
 	PtzpHead *pt;
 	PtzpHead *thermalCam;
 	int width;
@@ -128,6 +135,8 @@ protected:
 	QByteArray getImageFromFile(const QString &filename);
 	QByteArray convertImageToByteArray(const QString &filename);
 	QMutex mutex;
+	bool startDriver(const QString &target);
+	bool ptzpStatus;
 };
 
 #endif // SMARTSTREAMER_H

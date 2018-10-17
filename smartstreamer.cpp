@@ -18,6 +18,7 @@
 
 #include <ecl/ptzp/ptzphead.h>
 #include <ecl/ptzp/aryadriver.h>
+#include <ecl/ptzp/irdomedriver.h>
 
 #ifdef HAVE_VIA_WRAPPER
 #include <ViaWrapper/viawrapper.h>
@@ -80,17 +81,34 @@ protected:
 SmartStreamer::SmartStreamer(QObject *parent)
 	: BaseStreamer(parent), OrionCommunication::AppConfig::Service()
 {
-	arya = new AryaDriver();
-	arya->startSocketApi(8945);
-	arya->setTarget("50.23.169.213");
-	arya->startGrpcApi(50058);
-	pt = arya->getHead(0);
-	thermalCam = arya->getHead(1);
+	wrap = NULL;
+	arya = NULL;
+	irdome = NULL;
+	ptzpStatus = true;
 	grpcServ = new GrpcThread(50059, this);
 	grpcServ->start();
-#ifdef HAVE_VIA_WRAPPER
-	wrap = new ViaWrapper();
-#endif
+}
+
+bool SmartStreamer::startDriver(const QString &target)
+{
+	if (target.contains("eth")) {
+		irdome = new IRDomeDriver();
+		if (irdome->setTarget(target) != 0)
+			return false;
+		irdome->startSocketApi(8945);
+		irdome->startGrpcApi(50058);
+		pt = irdome->getHead(1);
+		thermalCam = irdome->getHead(0);
+	} else {
+		arya = new AryaDriver();
+		if (arya->setTarget("50.23.169.213") != 0)
+			return false;
+		arya->startSocketApi(8945);
+		arya->startGrpcApi(50058);
+		pt = arya->getHead(0);
+		thermalCam = arya->getHead(1);
+	}
+	return true;
 }
 
 bool SmartStreamer::goToZeroPosition()
@@ -300,8 +318,21 @@ int SmartStreamer::setupRtspClient(const QString &rtspUrl)
 		rtspServer->setRtspAuthentication(BaseRtspServer::AUTH_SIMPLE);
 		rtspServer->setRtspAuthenticationCredentials(pars.rtspServerUser, pars.rtspServerPass);
 	}
-
 	return 0;
+}
+
+void SmartStreamer::setupVideoAnalysis()
+{
+#ifdef HAVE_VIA_WRAPPER
+	wrap = new ViaWrapper();
+#endif
+}
+
+void SmartStreamer::setupPanTiltZoomDriver(const QString &target)
+{
+	if (!startDriver(target))
+		ptzpStatus = false;
+	mDebug("PTZP driver connect state is : %s", ptzpStatus ? "true" : "false");
 }
 
 int SmartStreamer::processMainYUV(const RawBuffer &buf)
@@ -310,9 +341,11 @@ int SmartStreamer::processMainYUV(const RawBuffer &buf)
 		ffDebug() << buf.getMimeType() << buf.size() << FFmpegColorSpace::getName(buf.constPars()->avPixelFormat)
 				  << buf.constPars()->videoWidth << buf.constPars()->videoHeight;
 #ifdef HAVE_VIA_WRAPPER
+	if (!wrap)
+		return 0;
 	doPanaroma(buf);
 	doMotionDetection(buf);
-	doCalibration(buf);
+//	doCalibration(buf);
 #endif
 	return 0;
 }
@@ -385,7 +418,8 @@ grpc::Status SmartStreamer::GetCurrentMode(grpc::ServerContext *context, const O
 {
 	Q_UNUSED(context)
 	Q_UNUSED(request)
-
+	if (!wrap)
+		return Status::OK;
 	ViaWrapper::ModeState myMode = wrap->getMode();
 
 	if (ViaWrapper::Panaroma == myMode)
@@ -401,6 +435,8 @@ grpc::Status SmartStreamer::SetPanaromaParameters(grpc::ServerContext *context, 
 {
 	Q_UNUSED(context)
 	Q_UNUSED(response)
+	if (!wrap)
+		return Status::OK;
 	qDebug() << request->fov();
 	return grpc::Status::OK;
 }
@@ -408,6 +444,8 @@ grpc::Status SmartStreamer::SetPanaromaParameters(grpc::ServerContext *context, 
 grpc::Status SmartStreamer::GetPanaromaFrames(grpc::ServerContext *context, const OrionCommunication::GetFrames *request, ::grpc::ServerWriter<OrionCommunication::PanoramaFrame> *writer)
 {
 	Q_UNUSED(context)
+	if (!wrap)
+		return Status::OK;
 	if (wrap->getMode() != ViaWrapper::Panaroma)
 		return Status::CANCELLED;
 	bool lastFrame;
@@ -471,7 +509,14 @@ grpc::Status SmartStreamer::RunPanaroma(grpc::ServerContext *context, const Orio
 	Q_UNUSED(context)
 	Q_UNUSED(request)
 	Q_UNUSED(response)
+	if (!wrap)
+		return Status::OK;
+	if (!QFile::exists("pan_params.txt") || !QFile::exists("alg_parameters.txt")) {
+		mDebug("The .txt files cant found. This program cancelled.");
+		return Status::CANCELLED;
+	}
 	QProcess::execute("bash -c \"rm -f /home/ubuntu/Desktop/Pan_images/*\"");
+	irdome->set("ptz.command.control", true);
 	wrap->startPanaroma();
 	return Status::OK;
 }
@@ -480,6 +525,12 @@ grpc::Status SmartStreamer::RunMotion(grpc::ServerContext *context, const OrionC
 {
 	Q_UNUSED(context)
 	Q_UNUSED(request)
+	if (!wrap)
+		return Status::OK;
+	if (!QFile::exists("pan_params.txt") || !QFile::exists("alg_parameters.txt")) {
+		mDebug("The .txt files cant found. This program cancelled.");
+		return Status::CANCELLED;
+	}
 	wrap->startMotion();
 	response->set_err(0);
 	return Status::OK;
@@ -489,8 +540,12 @@ grpc::Status SmartStreamer::StopPanaroma(grpc::ServerContext *context, const Ori
 {
 	Q_UNUSED(context)
 	Q_UNUSED(request)
+	if (!wrap)
+		return Status::OK;
 	wrap->stopPanaroma();
 	pt->panTiltStop();
+	pt->setTransportInterval(100);
+	irdome->set("ptz.command.control", false);
 	response->set_err(0);
 	return Status::OK;
 }
@@ -499,6 +554,8 @@ grpc::Status SmartStreamer::StopMotion(grpc::ServerContext *context, const Orion
 {
 	Q_UNUSED(context)
 	Q_UNUSED(request)
+	if (!wrap)
+		return Status::OK;
 	wrap->stopMotion();
 	response->set_err(0);
 	return Status::OK;
@@ -638,6 +695,8 @@ grpc::Status SmartStreamer::GetSensivityParameter(grpc::ServerContext *context, 
 {
 	Q_UNUSED(context)
 	Q_UNUSED(request)
+	if (!wrap)
+		return Status::OK;
 	response->set_sensivity(wrap->motion.sensivity);
 	return Status::OK;
 }
@@ -646,7 +705,8 @@ grpc::Status SmartStreamer::SetSensivityParameter(grpc::ServerContext *context, 
 {
 	Q_UNUSED(context)
 	Q_UNUSED(response)
-
+	if (!wrap)
+		return Status::OK;
 	wrap->motion.sensivity = request->sensivity();
 	response->set_err(0);
 	return Status::OK;
@@ -657,6 +717,8 @@ grpc::Status SmartStreamer::GotoPanaromaPixel(grpc::ServerContext *context, cons
 	Q_UNUSED(context)
 	Q_UNUSED(request)
 	Q_UNUSED(response)
+	if (!wrap)
+		return Status::OK;
 	float shiftAmount = 5.5;
 	float angle = (request->x() * (360 + shiftAmount) + wrap->panaroma.panStartAngle);
 	if(angle > 360)
@@ -712,10 +774,12 @@ grpc::Status SmartStreamer::StopCalibration(grpc::ServerContext *context, const 
 
 void SmartStreamer::timeout()
 {
-	if (PRINT_CUDA) {
+	if (PRINT_CUDA && wrap) {
 		ffDebug() << "Motion State: " << "Stop state = " <<  wrap->motion.stop  << "Start state = " << wrap->motion.start;
 		ffDebug() << "Panaroma state: " << "Stop state = " <<  wrap->panaroma.stop  << "Start state = " << wrap->panaroma.start;
 	}
+	if (!ptzpStatus)
+		ffDebug() << "PTZP driver: Connection state halted" << pars.ptzUrl;
 	PipelineManager::timeout();
 }
 
@@ -741,6 +805,8 @@ void SmartStreamer::printParameters()
 	printPar(rtspClientPass);
 	printPar(rtspServerUser);
 	printPar(rtspServerPass);
+	printPar(ptzUrl);
+	printPar(offline);
 	foreach (QString line, lines)
 		qDebug("%s", qPrintable(line));
 }

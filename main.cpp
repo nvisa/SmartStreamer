@@ -130,10 +130,8 @@ int main(int argc, char *argv[])
 	LmmCommon::init();
 	ecl::initDebug();
 
-    installSignalHandlers();
+	installSignalHandlers();
 
-    //MoxaDriver m;
-	//m.setTarget("50.23.169.213");
 #if 1
 	SmartStreamer s;
 	SmartStreamer::Parameters pars;
@@ -153,6 +151,8 @@ int main(int argc, char *argv[])
 	getCmdParStr(pars.rtspServerPass, "--rtsp-server-pass", "RTSP server password, default 'none'");
 	getCmdParInt(pars.enableMoxaHacks, "--moxa-hacks", "Enable MOXA related various hacks, default '0'");
 	getCmdParInt(pars.pipelineFlags, "--pipeline-flags", "Pipeline customization flags, default 0xffffffff");
+	getCmdParStr(pars.ptzUrl, "--ptz-url", "System head remote target, ekinoks 'eth;10.5.20.92:8998', arya '50.23.169.213'");
+	getCmdParInt(pars.offline, "--offline", "This mode just use rtp, rtsp streaming flows.");
 	if (pars.pipelineFlags == 0)
 		pars.pipelineFlags = 0xffffffff; //hex fix
 	s.pars = pars;
@@ -167,6 +167,13 @@ int main(int argc, char *argv[])
 	//url = "rtsp://50.23.169.211/multicaststream_ch1_stream1";
 	if (url == "")
 		url = "rtsp://10.5.176.65/Streaming/Channels/1";
+
+	if (!pars.offline)
+		s.setupVideoAnalysis();
+
+	if (!pars.ptzUrl.isEmpty())
+		s.setupPanTiltZoomDriver(pars.ptzUrl);
+
 	if (!url.isEmpty())
 		s.setupRtspClient(url);
 
