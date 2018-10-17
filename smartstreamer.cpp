@@ -136,6 +136,7 @@ bool SmartStreamer::startSpinnig(float sSpeed)
 	while (span == 0)
 		span = (int) pt->getPanAngle();
 	if (span != 0) {
+		pt->setTransportInterval(50);
 		wrap->panaroma.startSpinnig = true;
 		wrap->panaroma.initializing = 1;
 	}
@@ -167,6 +168,7 @@ void SmartStreamer::doPanaroma(const RawBuffer &buf)
 		if (wrap->meta[0] != 0) {
 			pt->panTiltStop();
 			wrap->stopPanaroma();
+			pt->setTransportInterval(100);
 		}
 	}
 }
