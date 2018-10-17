@@ -19,4 +19,5 @@ LIBS += -lopencv_core \
     -lopencv_video \
 
 LIBS += -L/usr/local/lib -lprotobuf -lgrpc++
-DEFINES += HAVE_VIA_WRAPPER
+DEFINES += HAVE_VIA_WRAPPER HAVE_LIBYUV
+CONFIG += c++11
