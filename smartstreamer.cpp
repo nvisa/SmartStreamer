@@ -19,6 +19,7 @@
 #include <ecl/ptzp/ptzphead.h>
 #include <ecl/ptzp/aryadriver.h>
 #include <ecl/ptzp/irdomedriver.h>
+#include <ecl/net/networkaccessmanager.h>
 
 #ifdef HAVE_VIA_WRAPPER
 #include <ViaWrapper/viawrapper.h>
@@ -79,7 +80,7 @@ protected:
 };
 
 SmartStreamer::SmartStreamer(QObject *parent)
-	: BaseStreamer(parent), OrionCommunication::AppConfig::Service()
+	: BaseStreamer(parent), OrionCommunication::OrionCommunicationService::Service()
 {
 	wrap = NULL;
 	arya = NULL;
@@ -407,7 +408,7 @@ QByteArray SmartStreamer::doScreenShot(const RawBuffer &buf)
 	return ba;
 }
 
-grpc::Status SmartStreamer::SetCurrentMode(grpc::ServerContext *context, const OrionCommunication::SetModeQ *request, OrionCommunication::AppCommandResult *response)
+grpc::Status SmartStreamer::SetCurrentMode(grpc::ServerContext *context, const OrionCommunication::ModeQ *request, OrionCommunication::AppCommandResult *response)
 {
 	Q_UNUSED(context)
 	Q_UNUSED(request)
@@ -416,7 +417,7 @@ grpc::Status SmartStreamer::SetCurrentMode(grpc::ServerContext *context, const O
 	return grpc::Status::OK;
 }
 
-grpc::Status SmartStreamer::GetCurrentMode(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::SetModeQ *response)
+grpc::Status SmartStreamer::GetCurrentMode(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::ModeQ *response)
 {
 	Q_UNUSED(context)
 	Q_UNUSED(request)
@@ -433,6 +434,44 @@ grpc::Status SmartStreamer::GetCurrentMode(grpc::ServerContext *context, const O
 	return grpc::Status::OK;
 }
 
+grpc::Status SmartStreamer::SetVideoOverlay(grpc::ServerContext *context, const OrionCommunication::OverlayQ *request, OrionCommunication::AppCommandResult *response)
+{
+	Q_UNUSED(context)
+	QString config = QString("ctoken=osdcfg0%1&action=setconfig").arg(request->configno());
+	QString type = "type=0";
+	QString display = QString("display=%1").arg(request->display());
+	QString position;
+	// Todo position...
+	if (request->pos() == OrionCommunication::OverlayQ::Custom) {
+		position = QString("position=4&posx=%1&posy=%2").arg(request->posx()).arg(request->posy());
+	} else {
+		position = QString("position=%1&posx=0&posy=0").arg(request->pos());
+	}
+	QString bgspan = "bgspan=0";
+	QString textSize = QString("textsize=%1").arg(request->textsize());
+	QString dateTimeFormat = QString("datetimeformat=%1").arg(request->datetimeformat());
+	QString showDate = QString("showdate=%1").arg(request->displaydate());
+	QString showTime = QString("showtime=%1").arg(request->displaytime());
+	QString text = QString("text=%1").arg(QString::fromStdString(request->text()));
+	QString overlayData = config + "&"+
+			type + "&" +
+			display + "&" +
+			position + "&" +
+			bgspan + "&" +
+			textSize + "&" +
+			dateTimeFormat + "&" +
+			showDate + "&" +
+			showTime + "&" +
+			text;
+	NetworkAccessManager netman;
+	netman.setAuthenticationInfo("admin", "moxamoxa");
+	netman.setPath("/moxa-cgi/imageoverlay.cgi");
+	netman.setUrl("50.23.169.211");
+	netman.POST(overlayData);
+	response->set_err(0);
+	return Status::OK;
+}
+
 grpc::Status SmartStreamer::SetPanaromaParameters(grpc::ServerContext *context, const OrionCommunication::PanoramaPars *request, OrionCommunication::AppCommandResult *response)
 {
 	Q_UNUSED(context)
@@ -443,7 +482,7 @@ grpc::Status SmartStreamer::SetPanaromaParameters(grpc::ServerContext *context, 
 	return grpc::Status::OK;
 }
 
-grpc::Status SmartStreamer::GetPanaromaFrames(grpc::ServerContext *context, const OrionCommunication::GetFrames *request, ::grpc::ServerWriter<OrionCommunication::PanoramaFrame> *writer)
+grpc::Status SmartStreamer::GetPanaromaFrames(grpc::ServerContext *context, const OrionCommunication::FrameModeQ *request, ::grpc::ServerWriter<OrionCommunication::PanoramaFrame> *writer)
 {
 	Q_UNUSED(context)
 	if (!wrap)

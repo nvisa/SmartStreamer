@@ -45,11 +45,11 @@ class TRectangleDefaultTypeInternal {
   ::google::protobuf::internal::ExplicitlyConstructed<TRectangle>
       _instance;
 } _TRectangle_default_instance_;
-class SetModeQDefaultTypeInternal {
+class ModeQDefaultTypeInternal {
  public:
-  ::google::protobuf::internal::ExplicitlyConstructed<SetModeQ>
+  ::google::protobuf::internal::ExplicitlyConstructed<ModeQ>
       _instance;
-} _SetModeQ_default_instance_;
+} _ModeQ_default_instance_;
 class DummyInfoDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<DummyInfo>
@@ -70,11 +70,11 @@ class AryaParametersDefaultTypeInternal {
   ::google::protobuf::internal::ExplicitlyConstructed<AryaParameters>
       _instance;
 } _AryaParameters_default_instance_;
-class GetFramesDefaultTypeInternal {
+class FrameModeQDefaultTypeInternal {
  public:
-  ::google::protobuf::internal::ExplicitlyConstructed<GetFrames>
+  ::google::protobuf::internal::ExplicitlyConstructed<FrameModeQ>
       _instance;
-} _GetFrames_default_instance_;
+} _FrameModeQ_default_instance_;
 class PanoramaFrameDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<PanoramaFrame>
@@ -90,6 +90,11 @@ class SetSensivityDefaultTypeInternal {
   ::google::protobuf::internal::ExplicitlyConstructed<SetSensivity>
       _instance;
 } _SetSensivity_default_instance_;
+class OverlayQDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<OverlayQ>
+      _instance;
+} _OverlayQ_default_instance_;
 }  // namespace OrionCommunication
 namespace protobuf_OrionCommunication_2eproto {
 void InitDefaultsPanoramaParsImpl() {
@@ -201,7 +206,7 @@ void InitDefaultsTRectangle() {
   ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsTRectangleImpl);
 }
 
-void InitDefaultsSetModeQImpl() {
+void InitDefaultsModeQImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
 #ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
@@ -210,16 +215,16 @@ void InitDefaultsSetModeQImpl() {
   ::google::protobuf::internal::InitProtobufDefaults();
 #endif  // GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
   {
-    void* ptr = &::OrionCommunication::_SetModeQ_default_instance_;
-    new (ptr) ::OrionCommunication::SetModeQ();
+    void* ptr = &::OrionCommunication::_ModeQ_default_instance_;
+    new (ptr) ::OrionCommunication::ModeQ();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::OrionCommunication::SetModeQ::InitAsDefaultInstance();
+  ::OrionCommunication::ModeQ::InitAsDefaultInstance();
 }
 
-void InitDefaultsSetModeQ() {
+void InitDefaultsModeQ() {
   static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
-  ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsSetModeQImpl);
+  ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsModeQImpl);
 }
 
 void InitDefaultsDummyInfoImpl() {
@@ -306,7 +311,7 @@ void InitDefaultsAryaParameters() {
   ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsAryaParametersImpl);
 }
 
-void InitDefaultsGetFramesImpl() {
+void InitDefaultsFrameModeQImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
 #ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
@@ -315,16 +320,16 @@ void InitDefaultsGetFramesImpl() {
   ::google::protobuf::internal::InitProtobufDefaults();
 #endif  // GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
   {
-    void* ptr = &::OrionCommunication::_GetFrames_default_instance_;
-    new (ptr) ::OrionCommunication::GetFrames();
+    void* ptr = &::OrionCommunication::_FrameModeQ_default_instance_;
+    new (ptr) ::OrionCommunication::FrameModeQ();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::OrionCommunication::GetFrames::InitAsDefaultInstance();
+  ::OrionCommunication::FrameModeQ::InitAsDefaultInstance();
 }
 
-void InitDefaultsGetFrames() {
+void InitDefaultsFrameModeQ() {
   static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
-  ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsGetFramesImpl);
+  ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsFrameModeQImpl);
 }
 
 void InitDefaultsPanoramaFrameImpl() {
@@ -390,8 +395,29 @@ void InitDefaultsSetSensivity() {
   ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsSetSensivityImpl);
 }
 
-::google::protobuf::Metadata file_level_metadata[14];
-const ::google::protobuf::EnumDescriptor* file_level_enum_descriptors[2];
+void InitDefaultsOverlayQImpl() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+#ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
+  ::google::protobuf::internal::InitProtobufDefaultsForceUnique();
+#else
+  ::google::protobuf::internal::InitProtobufDefaults();
+#endif  // GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
+  {
+    void* ptr = &::OrionCommunication::_OverlayQ_default_instance_;
+    new (ptr) ::OrionCommunication::OverlayQ();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::OrionCommunication::OverlayQ::InitAsDefaultInstance();
+}
+
+void InitDefaultsOverlayQ() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsOverlayQImpl);
+}
+
+::google::protobuf::Metadata file_level_metadata[15];
+const ::google::protobuf::EnumDescriptor* file_level_enum_descriptors[4];
 
 const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
@@ -438,11 +464,11 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::TRectangle, upperleft_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::TRectangle, bottomright_),
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::SetModeQ, _internal_metadata_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::ModeQ, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::SetModeQ, mode_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::ModeQ, mode_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::DummyInfo, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -461,6 +487,7 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::AppCommandResult, err_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::AppCommandResult, response_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::AryaParameters, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -468,11 +495,11 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _weak_field_map_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::AryaParameters, panspeed_),
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::GetFrames, _internal_metadata_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::FrameModeQ, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::GetFrames, modeframe_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::FrameModeQ, mode_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::PanoramaFrame, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -493,6 +520,21 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::SetSensivity, sensivity_),
+  ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::OverlayQ, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::OverlayQ, configno_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::OverlayQ, pos_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::OverlayQ, posx_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::OverlayQ, posy_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::OverlayQ, text_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::OverlayQ, display_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::OverlayQ, textsize_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::OverlayQ, datetimeformat_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::OverlayQ, displaydate_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::OrionCommunication::OverlayQ, displaytime_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::OrionCommunication::PanoramaPars)},
@@ -500,15 +542,16 @@ static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROT
   { 22, -1, sizeof(::OrionCommunication::TPoint)},
   { 29, -1, sizeof(::OrionCommunication::TPolygon)},
   { 36, -1, sizeof(::OrionCommunication::TRectangle)},
-  { 43, -1, sizeof(::OrionCommunication::SetModeQ)},
+  { 43, -1, sizeof(::OrionCommunication::ModeQ)},
   { 49, -1, sizeof(::OrionCommunication::DummyInfo)},
   { 55, -1, sizeof(::OrionCommunication::MotionDetectionParameters)},
   { 61, -1, sizeof(::OrionCommunication::AppCommandResult)},
-  { 67, -1, sizeof(::OrionCommunication::AryaParameters)},
-  { 73, -1, sizeof(::OrionCommunication::GetFrames)},
-  { 79, -1, sizeof(::OrionCommunication::PanoramaFrame)},
-  { 87, -1, sizeof(::OrionCommunication::ScreenFrame)},
-  { 93, -1, sizeof(::OrionCommunication::SetSensivity)},
+  { 68, -1, sizeof(::OrionCommunication::AryaParameters)},
+  { 74, -1, sizeof(::OrionCommunication::FrameModeQ)},
+  { 80, -1, sizeof(::OrionCommunication::PanoramaFrame)},
+  { 88, -1, sizeof(::OrionCommunication::ScreenFrame)},
+  { 94, -1, sizeof(::OrionCommunication::SetSensivity)},
+  { 100, -1, sizeof(::OrionCommunication::OverlayQ)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
@@ -517,15 +560,16 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::google::protobuf::Message*>(&::OrionCommunication::_TPoint_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::OrionCommunication::_TPolygon_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::OrionCommunication::_TRectangle_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::OrionCommunication::_SetModeQ_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::OrionCommunication::_ModeQ_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::OrionCommunication::_DummyInfo_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::OrionCommunication::_MotionDetectionParameters_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::OrionCommunication::_AppCommandResult_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::OrionCommunication::_AryaParameters_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::OrionCommunication::_GetFrames_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::OrionCommunication::_FrameModeQ_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::OrionCommunication::_PanoramaFrame_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::OrionCommunication::_ScreenFrame_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::OrionCommunication::_SetSensivity_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::OrionCommunication::_OverlayQ_default_instance_),
 };
 
 void protobuf_AssignDescriptors() {
@@ -544,7 +588,7 @@ void protobuf_AssignDescriptorsOnce() {
 void protobuf_RegisterTypes(const ::std::string&) GOOGLE_PROTOBUF_ATTRIBUTE_COLD;
 void protobuf_RegisterTypes(const ::std::string&) {
   protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 14);
+  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 15);
 }
 
 void AddDescriptorsImpl() {
@@ -565,68 +609,81 @@ void AddDescriptorsImpl() {
       "_active\030\002 \001(\010\"l\n\nTRectangle\022-\n\tupperLeft"
       "\030\001 \001(\0132\032.OrionCommunication.TPoint\022/\n\013bo"
       "ttomRight\030\002 \001(\0132\032.OrionCommunication.TPo"
-      "int\"q\n\010SetModeQ\022/\n\004mode\030\001 \001(\0162!.OrionCom"
-      "munication.SetModeQ.Mode\"4\n\004Mode\022\010\n\004NONE"
-      "\020\000\022\014\n\010PANAROMA\020\001\022\024\n\020MOTION_DETECTION\020\002\"\032"
-      "\n\tDummyInfo\022\r\n\005dummy\030\001 \001(\005\"*\n\031MotionDete"
-      "ctionParameters\022\r\n\005dummy\030\001 \001(\005\"\037\n\020AppCom"
-      "mandResult\022\013\n\003err\030\001 \001(\005\"\"\n\016AryaParameter"
-      "s\022\020\n\010panSpeed\030\001 \001(\005\"l\n\tGetFrames\0227\n\tmode"
-      "Frame\030\001 \001(\0162$.OrionCommunication.GetFram"
-      "es.Frames\"&\n\006Frames\022\r\n\tLastFrame\020\000\022\r\n\tAl"
-      "lFrames\020\001\"C\n\rPanoramaFrame\022\r\n\005valid\030\001 \001("
-      "\010\022\020\n\010progress\030\002 \001(\002\022\021\n\tframeData\030\003 \001(\014\"\034"
-      "\n\013ScreenFrame\022\r\n\005frame\030\001 \001(\014\"!\n\014SetSensi"
-      "vity\022\021\n\tsensivity\030\001 \001(\0052\223\016\n\tAppConfig\022a\n"
-      "\025SetPanaromaParameters\022 .OrionCommunicat"
-      "ion.PanoramaPars\032$.OrionCommunication.Ap"
-      "pCommandResult\"\000\022Z\n\025GetPanaromaParameter"
-      "s\022\035.OrionCommunication.DummyInfo\032 .Orion"
-      "Communication.PanoramaPars\"\000\022`\n\034SetMotio"
-      "nDetectionParameters\022\030.OrionCommunicatio"
-      "n.TRoi\032$.OrionCommunication.AppCommandRe"
-      "sult\"\000\022Y\n\034GetMotionDetectionParameters\022\035"
-      ".OrionCommunication.DummyInfo\032\030.OrionCom"
-      "munication.TRoi\"\000\022Y\n\016SetCurrentMode\022\034.Or"
-      "ionCommunication.SetModeQ\032$.OrionCommuni"
-      "cation.AppCommandResult\"\003\210\002\001\022R\n\016GetCurre"
-      "ntMode\022\035.OrionCommunication.DummyInfo\032\034."
-      "OrionCommunication.SetModeQ\"\003\210\002\001\022a\n\025SetS"
-      "ensivityParameter\022 .OrionCommunication.S"
-      "etSensivity\032$.OrionCommunication.AppComm"
-      "andResult\"\000\022Z\n\025GetSensivityParameter\022\035.O"
-      "rionCommunication.DummyInfo\032 .OrionCommu"
-      "nication.SetSensivity\"\000\022]\n\024GetLastPanaro"
-      "maFrame\022\035.OrionCommunication.DummyInfo\032$"
-      ".OrionCommunication.AppCommandResult\"\000\022Y"
-      "\n\021GetPanaromaFrames\022\035.OrionCommunication"
-      ".GetFrames\032!.OrionCommunication.Panorama"
-      "Frame\"\0000\001\022R\n\tRunMotion\022\035.OrionCommunicat"
-      "ion.DummyInfo\032$.OrionCommunication.AppCo"
-      "mmandResult\"\000\022T\n\013RunPanaroma\022\035.OrionComm"
-      "unication.DummyInfo\032$.OrionCommunication"
-      ".AppCommandResult\"\000\022S\n\nStopMotion\022\035.Orio"
-      "nCommunication.DummyInfo\032$.OrionCommunic"
-      "ation.AppCommandResult\"\000\022U\n\014StopPanaroma"
-      "\022\035.OrionCommunication.DummyInfo\032$.OrionC"
-      "ommunication.AppCommandResult\"\000\022W\n\016RunCa"
-      "libration\022\035.OrionCommunication.DummyInfo"
-      "\032$.OrionCommunication.AppCommandResult\"\000"
-      "\022X\n\017StopCalibration\022\035.OrionCommunication"
+      "int\"k\n\005ModeQ\022,\n\004mode\030\001 \001(\0162\036.OrionCommun"
+      "ication.ModeQ.Mode\"4\n\004Mode\022\010\n\004NONE\020\000\022\014\n\010"
+      "PANAROMA\020\001\022\024\n\020MOTION_DETECTION\020\002\"\032\n\tDumm"
+      "yInfo\022\r\n\005dummy\030\001 \001(\005\"*\n\031MotionDetectionP"
+      "arameters\022\r\n\005dummy\030\001 \001(\005\"\223\001\n\020AppCommandR"
+      "esult\022\013\n\003err\030\001 \001(\005\022\?\n\010response\030\002 \001(\0162-.O"
+      "rionCommunication.AppCommandResult.Respo"
+      "nse\"1\n\010Response\022\016\n\nSUCCESSFUL\020\000\022\010\n\004FAIL\020"
+      "\001\022\013\n\007MISSING\020\002\"\"\n\016AryaParameters\022\020\n\010panS"
+      "peed\030\001 \001(\005\"o\n\nFrameModeQ\0226\n\004mode\030\001 \001(\0162("
+      ".OrionCommunication.FrameModeQ.FrameMode"
+      "\")\n\tFrameMode\022\r\n\tLastFrame\020\000\022\r\n\tAllFrame"
+      "s\020\001\"C\n\rPanoramaFrame\022\r\n\005valid\030\001 \001(\010\022\020\n\010p"
+      "rogress\030\002 \001(\002\022\021\n\tframeData\030\003 \001(\014\"\034\n\013Scre"
+      "enFrame\022\r\n\005frame\030\001 \001(\014\"!\n\014SetSensivity\022\021"
+      "\n\tsensivity\030\001 \001(\005\"\265\002\n\010OverlayQ\022\020\n\010config"
+      "No\030\001 \001(\005\0222\n\003pos\030\002 \001(\0162%.OrionCommunicati"
+      "on.OverlayQ.Position\022\014\n\004posx\030\003 \001(\005\022\014\n\004po"
+      "sy\030\004 \001(\005\022\014\n\004text\030\005 \001(\t\022\017\n\007display\030\006 \001(\005\022"
+      "\020\n\010textSize\030\007 \001(\005\022\026\n\016dateTimeFormat\030\010 \001("
+      "\005\022\023\n\013displayDate\030\t \001(\005\022\023\n\013displayTime\030\n "
+      "\001(\005\"T\n\010Position\022\r\n\tUpperLeft\020\000\022\016\n\nUpperR"
+      "ight\020\001\022\r\n\tLowerLeft\020\002\022\016\n\nLowerRight\020\003\022\n\n"
+      "\006Custom\020\0042\367\016\n\031OrionCommunicationService\022"
+      "a\n\025SetPanaromaParameters\022 .OrionCommunic"
+      "ation.PanoramaPars\032$.OrionCommunication."
+      "AppCommandResult\"\000\022Z\n\025GetPanaromaParamet"
+      "ers\022\035.OrionCommunication.DummyInfo\032 .Ori"
+      "onCommunication.PanoramaPars\"\000\022`\n\034SetMot"
+      "ionDetectionParameters\022\030.OrionCommunicat"
+      "ion.TRoi\032$.OrionCommunication.AppCommand"
+      "Result\"\000\022Y\n\034GetMotionDetectionParameters"
+      "\022\035.OrionCommunication.DummyInfo\032\030.OrionC"
+      "ommunication.TRoi\"\000\022V\n\016SetCurrentMode\022\031."
+      "OrionCommunication.ModeQ\032$.OrionCommunic"
+      "ation.AppCommandResult\"\003\210\002\001\022O\n\016GetCurren"
+      "tMode\022\035.OrionCommunication.DummyInfo\032\031.O"
+      "rionCommunication.ModeQ\"\003\210\002\001\022a\n\025SetSensi"
+      "vityParameter\022 .OrionCommunication.SetSe"
+      "nsivity\032$.OrionCommunication.AppCommandR"
+      "esult\"\000\022Z\n\025GetSensivityParameter\022\035.Orion"
+      "Communication.DummyInfo\032 .OrionCommunica"
+      "tion.SetSensivity\"\000\022]\n\024GetLastPanaromaFr"
+      "ame\022\035.OrionCommunication.DummyInfo\032$.Ori"
+      "onCommunication.AppCommandResult\"\000\022Z\n\021Ge"
+      "tPanaromaFrames\022\036.OrionCommunication.Fra"
+      "meModeQ\032!.OrionCommunication.PanoramaFra"
+      "me\"\0000\001\022R\n\tRunMotion\022\035.OrionCommunication"
       ".DummyInfo\032$.OrionCommunication.AppComma"
-      "ndResult\"\000\022U\n\021GetMainScreenShot\022\035.OrionC"
-      "ommunication.DummyInfo\032\037.OrionCommunicat"
-      "ion.ScreenFrame\"\000\022T\n\020GetSecScreenShot\022\035."
-      "OrionCommunication.DummyInfo\032\037.OrionComm"
-      "unication.ScreenFrame\"\000\022W\n\021GotoPanaromaP"
-      "ixel\022\032.OrionCommunication.TPoint\032$.Orion"
-      "Communication.AppCommandResult\"\000\022S\n\024Curr"
-      "entPanaromaPixel\022\035.OrionCommunication.Du"
-      "mmyInfo\032\032.OrionCommunication.TPoint\"\000b\006p"
-      "roto3"
+      "ndResult\"\000\022T\n\013RunPanaroma\022\035.OrionCommuni"
+      "cation.DummyInfo\032$.OrionCommunication.Ap"
+      "pCommandResult\"\000\022S\n\nStopMotion\022\035.OrionCo"
+      "mmunication.DummyInfo\032$.OrionCommunicati"
+      "on.AppCommandResult\"\000\022U\n\014StopPanaroma\022\035."
+      "OrionCommunication.DummyInfo\032$.OrionComm"
+      "unication.AppCommandResult\"\000\022W\n\016RunCalib"
+      "ration\022\035.OrionCommunication.DummyInfo\032$."
+      "OrionCommunication.AppCommandResult\"\000\022X\n"
+      "\017StopCalibration\022\035.OrionCommunication.Du"
+      "mmyInfo\032$.OrionCommunication.AppCommandR"
+      "esult\"\000\022U\n\021GetMainScreenShot\022\035.OrionComm"
+      "unication.DummyInfo\032\037.OrionCommunication"
+      ".ScreenFrame\"\000\022T\n\020GetSecScreenShot\022\035.Ori"
+      "onCommunication.DummyInfo\032\037.OrionCommuni"
+      "cation.ScreenFrame\"\000\022W\n\021GotoPanaromaPixe"
+      "l\022\032.OrionCommunication.TPoint\032$.OrionCom"
+      "munication.AppCommandResult\"\000\022S\n\024Current"
+      "PanaromaPixel\022\035.OrionCommunication.Dummy"
+      "Info\032\032.OrionCommunication.TPoint\"\000\022W\n\017Se"
+      "tVideoOverlay\022\034.OrionCommunication.Overl"
+      "ayQ\032$.OrionCommunication.AppCommandResul"
+      "t\"\000b\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 2925);
+      descriptor, 3451);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "OrionCommunication.proto", &protobuf_RegisterTypes);
 }
@@ -643,11 +700,11 @@ struct StaticDescriptorInitializer {
 } static_descriptor_initializer;
 }  // namespace protobuf_OrionCommunication_2eproto
 namespace OrionCommunication {
-const ::google::protobuf::EnumDescriptor* SetModeQ_Mode_descriptor() {
+const ::google::protobuf::EnumDescriptor* ModeQ_Mode_descriptor() {
   protobuf_OrionCommunication_2eproto::protobuf_AssignDescriptorsOnce();
   return protobuf_OrionCommunication_2eproto::file_level_enum_descriptors[0];
 }
-bool SetModeQ_Mode_IsValid(int value) {
+bool ModeQ_Mode_IsValid(int value) {
   switch (value) {
     case 0:
     case 1:
@@ -659,18 +716,41 @@ bool SetModeQ_Mode_IsValid(int value) {
 }
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const SetModeQ_Mode SetModeQ::NONE;
-const SetModeQ_Mode SetModeQ::PANAROMA;
-const SetModeQ_Mode SetModeQ::MOTION_DETECTION;
-const SetModeQ_Mode SetModeQ::Mode_MIN;
-const SetModeQ_Mode SetModeQ::Mode_MAX;
-const int SetModeQ::Mode_ARRAYSIZE;
+const ModeQ_Mode ModeQ::NONE;
+const ModeQ_Mode ModeQ::PANAROMA;
+const ModeQ_Mode ModeQ::MOTION_DETECTION;
+const ModeQ_Mode ModeQ::Mode_MIN;
+const ModeQ_Mode ModeQ::Mode_MAX;
+const int ModeQ::Mode_ARRAYSIZE;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-const ::google::protobuf::EnumDescriptor* GetFrames_Frames_descriptor() {
+const ::google::protobuf::EnumDescriptor* AppCommandResult_Response_descriptor() {
   protobuf_OrionCommunication_2eproto::protobuf_AssignDescriptorsOnce();
   return protobuf_OrionCommunication_2eproto::file_level_enum_descriptors[1];
 }
-bool GetFrames_Frames_IsValid(int value) {
+bool AppCommandResult_Response_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const AppCommandResult_Response AppCommandResult::SUCCESSFUL;
+const AppCommandResult_Response AppCommandResult::FAIL;
+const AppCommandResult_Response AppCommandResult::MISSING;
+const AppCommandResult_Response AppCommandResult::Response_MIN;
+const AppCommandResult_Response AppCommandResult::Response_MAX;
+const int AppCommandResult::Response_ARRAYSIZE;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+const ::google::protobuf::EnumDescriptor* FrameModeQ_FrameMode_descriptor() {
+  protobuf_OrionCommunication_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_OrionCommunication_2eproto::file_level_enum_descriptors[2];
+}
+bool FrameModeQ_FrameMode_IsValid(int value) {
   switch (value) {
     case 0:
     case 1:
@@ -681,11 +761,38 @@ bool GetFrames_Frames_IsValid(int value) {
 }
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const GetFrames_Frames GetFrames::LastFrame;
-const GetFrames_Frames GetFrames::AllFrames;
-const GetFrames_Frames GetFrames::Frames_MIN;
-const GetFrames_Frames GetFrames::Frames_MAX;
-const int GetFrames::Frames_ARRAYSIZE;
+const FrameModeQ_FrameMode FrameModeQ::LastFrame;
+const FrameModeQ_FrameMode FrameModeQ::AllFrames;
+const FrameModeQ_FrameMode FrameModeQ::FrameMode_MIN;
+const FrameModeQ_FrameMode FrameModeQ::FrameMode_MAX;
+const int FrameModeQ::FrameMode_ARRAYSIZE;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+const ::google::protobuf::EnumDescriptor* OverlayQ_Position_descriptor() {
+  protobuf_OrionCommunication_2eproto::protobuf_AssignDescriptorsOnce();
+  return protobuf_OrionCommunication_2eproto::file_level_enum_descriptors[3];
+}
+bool OverlayQ_Position_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const OverlayQ_Position OverlayQ::UpperLeft;
+const OverlayQ_Position OverlayQ::UpperRight;
+const OverlayQ_Position OverlayQ::LowerLeft;
+const OverlayQ_Position OverlayQ::LowerRight;
+const OverlayQ_Position OverlayQ::Custom;
+const OverlayQ_Position OverlayQ::Position_MIN;
+const OverlayQ_Position OverlayQ::Position_MAX;
+const int OverlayQ::Position_ARRAYSIZE;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 // ===================================================================
@@ -2414,67 +2521,67 @@ void TRectangle::InternalSwap(TRectangle* other) {
 
 // ===================================================================
 
-void SetModeQ::InitAsDefaultInstance() {
+void ModeQ::InitAsDefaultInstance() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int SetModeQ::kModeFieldNumber;
+const int ModeQ::kModeFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
-SetModeQ::SetModeQ()
+ModeQ::ModeQ()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
-    ::protobuf_OrionCommunication_2eproto::InitDefaultsSetModeQ();
+    ::protobuf_OrionCommunication_2eproto::InitDefaultsModeQ();
   }
   SharedCtor();
-  // @@protoc_insertion_point(constructor:OrionCommunication.SetModeQ)
+  // @@protoc_insertion_point(constructor:OrionCommunication.ModeQ)
 }
-SetModeQ::SetModeQ(const SetModeQ& from)
+ModeQ::ModeQ(const ModeQ& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   mode_ = from.mode_;
-  // @@protoc_insertion_point(copy_constructor:OrionCommunication.SetModeQ)
+  // @@protoc_insertion_point(copy_constructor:OrionCommunication.ModeQ)
 }
 
-void SetModeQ::SharedCtor() {
+void ModeQ::SharedCtor() {
   mode_ = 0;
   _cached_size_ = 0;
 }
 
-SetModeQ::~SetModeQ() {
-  // @@protoc_insertion_point(destructor:OrionCommunication.SetModeQ)
+ModeQ::~ModeQ() {
+  // @@protoc_insertion_point(destructor:OrionCommunication.ModeQ)
   SharedDtor();
 }
 
-void SetModeQ::SharedDtor() {
+void ModeQ::SharedDtor() {
 }
 
-void SetModeQ::SetCachedSize(int size) const {
+void ModeQ::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* SetModeQ::descriptor() {
+const ::google::protobuf::Descriptor* ModeQ::descriptor() {
   ::protobuf_OrionCommunication_2eproto::protobuf_AssignDescriptorsOnce();
   return ::protobuf_OrionCommunication_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
 }
 
-const SetModeQ& SetModeQ::default_instance() {
-  ::protobuf_OrionCommunication_2eproto::InitDefaultsSetModeQ();
+const ModeQ& ModeQ::default_instance() {
+  ::protobuf_OrionCommunication_2eproto::InitDefaultsModeQ();
   return *internal_default_instance();
 }
 
-SetModeQ* SetModeQ::New(::google::protobuf::Arena* arena) const {
-  SetModeQ* n = new SetModeQ;
+ModeQ* ModeQ::New(::google::protobuf::Arena* arena) const {
+  ModeQ* n = new ModeQ;
   if (arena != NULL) {
     arena->Own(n);
   }
   return n;
 }
 
-void SetModeQ::Clear() {
-// @@protoc_insertion_point(message_clear_start:OrionCommunication.SetModeQ)
+void ModeQ::Clear() {
+// @@protoc_insertion_point(message_clear_start:OrionCommunication.ModeQ)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -2483,17 +2590,17 @@ void SetModeQ::Clear() {
   _internal_metadata_.Clear();
 }
 
-bool SetModeQ::MergePartialFromCodedStream(
+bool ModeQ::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:OrionCommunication.SetModeQ)
+  // @@protoc_insertion_point(parse_start:OrionCommunication.ModeQ)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // .OrionCommunication.SetModeQ.Mode mode = 1;
+      // .OrionCommunication.ModeQ.Mode mode = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
@@ -2501,7 +2608,7 @@ bool SetModeQ::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
-          set_mode(static_cast< ::OrionCommunication::SetModeQ_Mode >(value));
+          set_mode(static_cast< ::OrionCommunication::ModeQ_Mode >(value));
         } else {
           goto handle_unusual;
         }
@@ -2520,21 +2627,21 @@ bool SetModeQ::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:OrionCommunication.SetModeQ)
+  // @@protoc_insertion_point(parse_success:OrionCommunication.ModeQ)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:OrionCommunication.SetModeQ)
+  // @@protoc_insertion_point(parse_failure:OrionCommunication.ModeQ)
   return false;
 #undef DO_
 }
 
-void SetModeQ::SerializeWithCachedSizes(
+void ModeQ::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:OrionCommunication.SetModeQ)
+  // @@protoc_insertion_point(serialize_start:OrionCommunication.ModeQ)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .OrionCommunication.SetModeQ.Mode mode = 1;
+  // .OrionCommunication.ModeQ.Mode mode = 1;
   if (this->mode() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       1, this->mode(), output);
@@ -2544,17 +2651,17 @@ void SetModeQ::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
   }
-  // @@protoc_insertion_point(serialize_end:OrionCommunication.SetModeQ)
+  // @@protoc_insertion_point(serialize_end:OrionCommunication.ModeQ)
 }
 
-::google::protobuf::uint8* SetModeQ::InternalSerializeWithCachedSizesToArray(
+::google::protobuf::uint8* ModeQ::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   (void)deterministic; // Unused
-  // @@protoc_insertion_point(serialize_to_array_start:OrionCommunication.SetModeQ)
+  // @@protoc_insertion_point(serialize_to_array_start:OrionCommunication.ModeQ)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .OrionCommunication.SetModeQ.Mode mode = 1;
+  // .OrionCommunication.ModeQ.Mode mode = 1;
   if (this->mode() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       1, this->mode(), target);
@@ -2564,12 +2671,12 @@ void SetModeQ::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:OrionCommunication.SetModeQ)
+  // @@protoc_insertion_point(serialize_to_array_end:OrionCommunication.ModeQ)
   return target;
 }
 
-size_t SetModeQ::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:OrionCommunication.SetModeQ)
+size_t ModeQ::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:OrionCommunication.ModeQ)
   size_t total_size = 0;
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -2577,7 +2684,7 @@ size_t SetModeQ::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
-  // .OrionCommunication.SetModeQ.Mode mode = 1;
+  // .OrionCommunication.ModeQ.Mode mode = 1;
   if (this->mode() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->mode());
@@ -2590,23 +2697,23 @@ size_t SetModeQ::ByteSizeLong() const {
   return total_size;
 }
 
-void SetModeQ::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:OrionCommunication.SetModeQ)
+void ModeQ::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:OrionCommunication.ModeQ)
   GOOGLE_DCHECK_NE(&from, this);
-  const SetModeQ* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const SetModeQ>(
+  const ModeQ* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const ModeQ>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:OrionCommunication.SetModeQ)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:OrionCommunication.ModeQ)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:OrionCommunication.SetModeQ)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:OrionCommunication.ModeQ)
     MergeFrom(*source);
   }
 }
 
-void SetModeQ::MergeFrom(const SetModeQ& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:OrionCommunication.SetModeQ)
+void ModeQ::MergeFrom(const ModeQ& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:OrionCommunication.ModeQ)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -2617,36 +2724,36 @@ void SetModeQ::MergeFrom(const SetModeQ& from) {
   }
 }
 
-void SetModeQ::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:OrionCommunication.SetModeQ)
+void ModeQ::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:OrionCommunication.ModeQ)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void SetModeQ::CopyFrom(const SetModeQ& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:OrionCommunication.SetModeQ)
+void ModeQ::CopyFrom(const ModeQ& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:OrionCommunication.ModeQ)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool SetModeQ::IsInitialized() const {
+bool ModeQ::IsInitialized() const {
   return true;
 }
 
-void SetModeQ::Swap(SetModeQ* other) {
+void ModeQ::Swap(ModeQ* other) {
   if (other == this) return;
   InternalSwap(other);
 }
-void SetModeQ::InternalSwap(SetModeQ* other) {
+void ModeQ::InternalSwap(ModeQ* other) {
   using std::swap;
   swap(mode_, other->mode_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata SetModeQ::GetMetadata() const {
+::google::protobuf::Metadata ModeQ::GetMetadata() const {
   protobuf_OrionCommunication_2eproto::protobuf_AssignDescriptorsOnce();
   return ::protobuf_OrionCommunication_2eproto::file_level_metadata[kIndexInFileMessages];
 }
@@ -3134,6 +3241,7 @@ void AppCommandResult::InitAsDefaultInstance() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int AppCommandResult::kErrFieldNumber;
+const int AppCommandResult::kResponseFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 AppCommandResult::AppCommandResult()
@@ -3149,12 +3257,16 @@ AppCommandResult::AppCommandResult(const AppCommandResult& from)
       _internal_metadata_(NULL),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  err_ = from.err_;
+  ::memcpy(&err_, &from.err_,
+    static_cast<size_t>(reinterpret_cast<char*>(&response_) -
+    reinterpret_cast<char*>(&err_)) + sizeof(response_));
   // @@protoc_insertion_point(copy_constructor:OrionCommunication.AppCommandResult)
 }
 
 void AppCommandResult::SharedCtor() {
-  err_ = 0;
+  ::memset(&err_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&response_) -
+      reinterpret_cast<char*>(&err_)) + sizeof(response_));
   _cached_size_ = 0;
 }
 
@@ -3195,7 +3307,9 @@ void AppCommandResult::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  err_ = 0;
+  ::memset(&err_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&response_) -
+      reinterpret_cast<char*>(&err_)) + sizeof(response_));
   _internal_metadata_.Clear();
 }
 
@@ -3217,6 +3331,21 @@ bool AppCommandResult::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &err_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .OrionCommunication.AppCommandResult.Response response = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_response(static_cast< ::OrionCommunication::AppCommandResult_Response >(value));
         } else {
           goto handle_unusual;
         }
@@ -3254,6 +3383,12 @@ void AppCommandResult::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->err(), output);
   }
 
+  // .OrionCommunication.AppCommandResult.Response response = 2;
+  if (this->response() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      2, this->response(), output);
+  }
+
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
@@ -3271,6 +3406,12 @@ void AppCommandResult::SerializeWithCachedSizes(
   // int32 err = 1;
   if (this->err() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->err(), target);
+  }
+
+  // .OrionCommunication.AppCommandResult.Response response = 2;
+  if (this->response() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      2, this->response(), target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -3295,6 +3436,12 @@ size_t AppCommandResult::ByteSizeLong() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int32Size(
         this->err());
+  }
+
+  // .OrionCommunication.AppCommandResult.Response response = 2;
+  if (this->response() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->response());
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -3329,6 +3476,9 @@ void AppCommandResult::MergeFrom(const AppCommandResult& from) {
   if (from.err() != 0) {
     set_err(from.err());
   }
+  if (from.response() != 0) {
+    set_response(from.response());
+  }
 }
 
 void AppCommandResult::CopyFrom(const ::google::protobuf::Message& from) {
@@ -3356,6 +3506,7 @@ void AppCommandResult::Swap(AppCommandResult* other) {
 void AppCommandResult::InternalSwap(AppCommandResult* other) {
   using std::swap;
   swap(err_, other->err_);
+  swap(response_, other->response_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   swap(_cached_size_, other->_cached_size_);
 }
@@ -3606,86 +3757,86 @@ void AryaParameters::InternalSwap(AryaParameters* other) {
 
 // ===================================================================
 
-void GetFrames::InitAsDefaultInstance() {
+void FrameModeQ::InitAsDefaultInstance() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int GetFrames::kModeFrameFieldNumber;
+const int FrameModeQ::kModeFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
-GetFrames::GetFrames()
+FrameModeQ::FrameModeQ()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
-    ::protobuf_OrionCommunication_2eproto::InitDefaultsGetFrames();
+    ::protobuf_OrionCommunication_2eproto::InitDefaultsFrameModeQ();
   }
   SharedCtor();
-  // @@protoc_insertion_point(constructor:OrionCommunication.GetFrames)
+  // @@protoc_insertion_point(constructor:OrionCommunication.FrameModeQ)
 }
-GetFrames::GetFrames(const GetFrames& from)
+FrameModeQ::FrameModeQ(const FrameModeQ& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  modeframe_ = from.modeframe_;
-  // @@protoc_insertion_point(copy_constructor:OrionCommunication.GetFrames)
+  mode_ = from.mode_;
+  // @@protoc_insertion_point(copy_constructor:OrionCommunication.FrameModeQ)
 }
 
-void GetFrames::SharedCtor() {
-  modeframe_ = 0;
+void FrameModeQ::SharedCtor() {
+  mode_ = 0;
   _cached_size_ = 0;
 }
 
-GetFrames::~GetFrames() {
-  // @@protoc_insertion_point(destructor:OrionCommunication.GetFrames)
+FrameModeQ::~FrameModeQ() {
+  // @@protoc_insertion_point(destructor:OrionCommunication.FrameModeQ)
   SharedDtor();
 }
 
-void GetFrames::SharedDtor() {
+void FrameModeQ::SharedDtor() {
 }
 
-void GetFrames::SetCachedSize(int size) const {
+void FrameModeQ::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* GetFrames::descriptor() {
+const ::google::protobuf::Descriptor* FrameModeQ::descriptor() {
   ::protobuf_OrionCommunication_2eproto::protobuf_AssignDescriptorsOnce();
   return ::protobuf_OrionCommunication_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
 }
 
-const GetFrames& GetFrames::default_instance() {
-  ::protobuf_OrionCommunication_2eproto::InitDefaultsGetFrames();
+const FrameModeQ& FrameModeQ::default_instance() {
+  ::protobuf_OrionCommunication_2eproto::InitDefaultsFrameModeQ();
   return *internal_default_instance();
 }
 
-GetFrames* GetFrames::New(::google::protobuf::Arena* arena) const {
-  GetFrames* n = new GetFrames;
+FrameModeQ* FrameModeQ::New(::google::protobuf::Arena* arena) const {
+  FrameModeQ* n = new FrameModeQ;
   if (arena != NULL) {
     arena->Own(n);
   }
   return n;
 }
 
-void GetFrames::Clear() {
-// @@protoc_insertion_point(message_clear_start:OrionCommunication.GetFrames)
+void FrameModeQ::Clear() {
+// @@protoc_insertion_point(message_clear_start:OrionCommunication.FrameModeQ)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  modeframe_ = 0;
+  mode_ = 0;
   _internal_metadata_.Clear();
 }
 
-bool GetFrames::MergePartialFromCodedStream(
+bool FrameModeQ::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:OrionCommunication.GetFrames)
+  // @@protoc_insertion_point(parse_start:OrionCommunication.FrameModeQ)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // .OrionCommunication.GetFrames.Frames modeFrame = 1;
+      // .OrionCommunication.FrameModeQ.FrameMode mode = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
@@ -3693,7 +3844,7 @@ bool GetFrames::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
-          set_modeframe(static_cast< ::OrionCommunication::GetFrames_Frames >(value));
+          set_mode(static_cast< ::OrionCommunication::FrameModeQ_FrameMode >(value));
         } else {
           goto handle_unusual;
         }
@@ -3712,56 +3863,56 @@ bool GetFrames::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:OrionCommunication.GetFrames)
+  // @@protoc_insertion_point(parse_success:OrionCommunication.FrameModeQ)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:OrionCommunication.GetFrames)
+  // @@protoc_insertion_point(parse_failure:OrionCommunication.FrameModeQ)
   return false;
 #undef DO_
 }
 
-void GetFrames::SerializeWithCachedSizes(
+void FrameModeQ::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:OrionCommunication.GetFrames)
+  // @@protoc_insertion_point(serialize_start:OrionCommunication.FrameModeQ)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .OrionCommunication.GetFrames.Frames modeFrame = 1;
-  if (this->modeframe() != 0) {
+  // .OrionCommunication.FrameModeQ.FrameMode mode = 1;
+  if (this->mode() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      1, this->modeframe(), output);
+      1, this->mode(), output);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
   }
-  // @@protoc_insertion_point(serialize_end:OrionCommunication.GetFrames)
+  // @@protoc_insertion_point(serialize_end:OrionCommunication.FrameModeQ)
 }
 
-::google::protobuf::uint8* GetFrames::InternalSerializeWithCachedSizesToArray(
+::google::protobuf::uint8* FrameModeQ::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   (void)deterministic; // Unused
-  // @@protoc_insertion_point(serialize_to_array_start:OrionCommunication.GetFrames)
+  // @@protoc_insertion_point(serialize_to_array_start:OrionCommunication.FrameModeQ)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .OrionCommunication.GetFrames.Frames modeFrame = 1;
-  if (this->modeframe() != 0) {
+  // .OrionCommunication.FrameModeQ.FrameMode mode = 1;
+  if (this->mode() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      1, this->modeframe(), target);
+      1, this->mode(), target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:OrionCommunication.GetFrames)
+  // @@protoc_insertion_point(serialize_to_array_end:OrionCommunication.FrameModeQ)
   return target;
 }
 
-size_t GetFrames::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:OrionCommunication.GetFrames)
+size_t FrameModeQ::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:OrionCommunication.FrameModeQ)
   size_t total_size = 0;
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -3769,10 +3920,10 @@ size_t GetFrames::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
-  // .OrionCommunication.GetFrames.Frames modeFrame = 1;
-  if (this->modeframe() != 0) {
+  // .OrionCommunication.FrameModeQ.FrameMode mode = 1;
+  if (this->mode() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->modeframe());
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->mode());
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -3782,63 +3933,63 @@ size_t GetFrames::ByteSizeLong() const {
   return total_size;
 }
 
-void GetFrames::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:OrionCommunication.GetFrames)
+void FrameModeQ::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:OrionCommunication.FrameModeQ)
   GOOGLE_DCHECK_NE(&from, this);
-  const GetFrames* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const GetFrames>(
+  const FrameModeQ* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const FrameModeQ>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:OrionCommunication.GetFrames)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:OrionCommunication.FrameModeQ)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:OrionCommunication.GetFrames)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:OrionCommunication.FrameModeQ)
     MergeFrom(*source);
   }
 }
 
-void GetFrames::MergeFrom(const GetFrames& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:OrionCommunication.GetFrames)
+void FrameModeQ::MergeFrom(const FrameModeQ& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:OrionCommunication.FrameModeQ)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.modeframe() != 0) {
-    set_modeframe(from.modeframe());
+  if (from.mode() != 0) {
+    set_mode(from.mode());
   }
 }
 
-void GetFrames::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:OrionCommunication.GetFrames)
+void FrameModeQ::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:OrionCommunication.FrameModeQ)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void GetFrames::CopyFrom(const GetFrames& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:OrionCommunication.GetFrames)
+void FrameModeQ::CopyFrom(const FrameModeQ& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:OrionCommunication.FrameModeQ)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool GetFrames::IsInitialized() const {
+bool FrameModeQ::IsInitialized() const {
   return true;
 }
 
-void GetFrames::Swap(GetFrames* other) {
+void FrameModeQ::Swap(FrameModeQ* other) {
   if (other == this) return;
   InternalSwap(other);
 }
-void GetFrames::InternalSwap(GetFrames* other) {
+void FrameModeQ::InternalSwap(FrameModeQ* other) {
   using std::swap;
-  swap(modeframe_, other->modeframe_);
+  swap(mode_, other->mode_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata GetFrames::GetMetadata() const {
+::google::protobuf::Metadata FrameModeQ::GetMetadata() const {
   protobuf_OrionCommunication_2eproto::protobuf_AssignDescriptorsOnce();
   return ::protobuf_OrionCommunication_2eproto::file_level_metadata[kIndexInFileMessages];
 }
@@ -4642,6 +4793,597 @@ void SetSensivity::InternalSwap(SetSensivity* other) {
 }
 
 ::google::protobuf::Metadata SetSensivity::GetMetadata() const {
+  protobuf_OrionCommunication_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_OrionCommunication_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+
+// ===================================================================
+
+void OverlayQ::InitAsDefaultInstance() {
+}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int OverlayQ::kConfigNoFieldNumber;
+const int OverlayQ::kPosFieldNumber;
+const int OverlayQ::kPosxFieldNumber;
+const int OverlayQ::kPosyFieldNumber;
+const int OverlayQ::kTextFieldNumber;
+const int OverlayQ::kDisplayFieldNumber;
+const int OverlayQ::kTextSizeFieldNumber;
+const int OverlayQ::kDateTimeFormatFieldNumber;
+const int OverlayQ::kDisplayDateFieldNumber;
+const int OverlayQ::kDisplayTimeFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+OverlayQ::OverlayQ()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    ::protobuf_OrionCommunication_2eproto::InitDefaultsOverlayQ();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:OrionCommunication.OverlayQ)
+}
+OverlayQ::OverlayQ(const OverlayQ& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  text_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.text().size() > 0) {
+    text_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.text_);
+  }
+  ::memcpy(&configno_, &from.configno_,
+    static_cast<size_t>(reinterpret_cast<char*>(&displaytime_) -
+    reinterpret_cast<char*>(&configno_)) + sizeof(displaytime_));
+  // @@protoc_insertion_point(copy_constructor:OrionCommunication.OverlayQ)
+}
+
+void OverlayQ::SharedCtor() {
+  text_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  ::memset(&configno_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&displaytime_) -
+      reinterpret_cast<char*>(&configno_)) + sizeof(displaytime_));
+  _cached_size_ = 0;
+}
+
+OverlayQ::~OverlayQ() {
+  // @@protoc_insertion_point(destructor:OrionCommunication.OverlayQ)
+  SharedDtor();
+}
+
+void OverlayQ::SharedDtor() {
+  text_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+void OverlayQ::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* OverlayQ::descriptor() {
+  ::protobuf_OrionCommunication_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_OrionCommunication_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const OverlayQ& OverlayQ::default_instance() {
+  ::protobuf_OrionCommunication_2eproto::InitDefaultsOverlayQ();
+  return *internal_default_instance();
+}
+
+OverlayQ* OverlayQ::New(::google::protobuf::Arena* arena) const {
+  OverlayQ* n = new OverlayQ;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void OverlayQ::Clear() {
+// @@protoc_insertion_point(message_clear_start:OrionCommunication.OverlayQ)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  text_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  ::memset(&configno_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&displaytime_) -
+      reinterpret_cast<char*>(&configno_)) + sizeof(displaytime_));
+  _internal_metadata_.Clear();
+}
+
+bool OverlayQ::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:OrionCommunication.OverlayQ)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // int32 configNo = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &configno_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .OrionCommunication.OverlayQ.Position pos = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_pos(static_cast< ::OrionCommunication::OverlayQ_Position >(value));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // int32 posx = 3;
+      case 3: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &posx_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // int32 posy = 4;
+      case 4: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(32u /* 32 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &posy_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // string text = 5;
+      case 5: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(42u /* 42 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_text()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->text().data(), static_cast<int>(this->text().length()),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "OrionCommunication.OverlayQ.text"));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // int32 display = 6;
+      case 6: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(48u /* 48 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &display_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // int32 textSize = 7;
+      case 7: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(56u /* 56 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &textsize_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // int32 dateTimeFormat = 8;
+      case 8: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(64u /* 64 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &datetimeformat_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // int32 displayDate = 9;
+      case 9: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(72u /* 72 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &displaydate_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // int32 displayTime = 10;
+      case 10: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(80u /* 80 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &displaytime_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:OrionCommunication.OverlayQ)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:OrionCommunication.OverlayQ)
+  return false;
+#undef DO_
+}
+
+void OverlayQ::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:OrionCommunication.OverlayQ)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int32 configNo = 1;
+  if (this->configno() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->configno(), output);
+  }
+
+  // .OrionCommunication.OverlayQ.Position pos = 2;
+  if (this->pos() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      2, this->pos(), output);
+  }
+
+  // int32 posx = 3;
+  if (this->posx() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->posx(), output);
+  }
+
+  // int32 posy = 4;
+  if (this->posy() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->posy(), output);
+  }
+
+  // string text = 5;
+  if (this->text().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->text().data(), static_cast<int>(this->text().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "OrionCommunication.OverlayQ.text");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      5, this->text(), output);
+  }
+
+  // int32 display = 6;
+  if (this->display() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(6, this->display(), output);
+  }
+
+  // int32 textSize = 7;
+  if (this->textsize() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(7, this->textsize(), output);
+  }
+
+  // int32 dateTimeFormat = 8;
+  if (this->datetimeformat() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(8, this->datetimeformat(), output);
+  }
+
+  // int32 displayDate = 9;
+  if (this->displaydate() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(9, this->displaydate(), output);
+  }
+
+  // int32 displayTime = 10;
+  if (this->displaytime() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(10, this->displaytime(), output);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:OrionCommunication.OverlayQ)
+}
+
+::google::protobuf::uint8* OverlayQ::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:OrionCommunication.OverlayQ)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int32 configNo = 1;
+  if (this->configno() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->configno(), target);
+  }
+
+  // .OrionCommunication.OverlayQ.Position pos = 2;
+  if (this->pos() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      2, this->pos(), target);
+  }
+
+  // int32 posx = 3;
+  if (this->posx() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(3, this->posx(), target);
+  }
+
+  // int32 posy = 4;
+  if (this->posy() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->posy(), target);
+  }
+
+  // string text = 5;
+  if (this->text().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->text().data(), static_cast<int>(this->text().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "OrionCommunication.OverlayQ.text");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        5, this->text(), target);
+  }
+
+  // int32 display = 6;
+  if (this->display() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(6, this->display(), target);
+  }
+
+  // int32 textSize = 7;
+  if (this->textsize() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(7, this->textsize(), target);
+  }
+
+  // int32 dateTimeFormat = 8;
+  if (this->datetimeformat() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(8, this->datetimeformat(), target);
+  }
+
+  // int32 displayDate = 9;
+  if (this->displaydate() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(9, this->displaydate(), target);
+  }
+
+  // int32 displayTime = 10;
+  if (this->displaytime() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(10, this->displaytime(), target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:OrionCommunication.OverlayQ)
+  return target;
+}
+
+size_t OverlayQ::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:OrionCommunication.OverlayQ)
+  size_t total_size = 0;
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+  }
+  // string text = 5;
+  if (this->text().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->text());
+  }
+
+  // int32 configNo = 1;
+  if (this->configno() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->configno());
+  }
+
+  // .OrionCommunication.OverlayQ.Position pos = 2;
+  if (this->pos() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->pos());
+  }
+
+  // int32 posx = 3;
+  if (this->posx() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->posx());
+  }
+
+  // int32 posy = 4;
+  if (this->posy() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->posy());
+  }
+
+  // int32 display = 6;
+  if (this->display() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->display());
+  }
+
+  // int32 textSize = 7;
+  if (this->textsize() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->textsize());
+  }
+
+  // int32 dateTimeFormat = 8;
+  if (this->datetimeformat() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->datetimeformat());
+  }
+
+  // int32 displayDate = 9;
+  if (this->displaydate() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->displaydate());
+  }
+
+  // int32 displayTime = 10;
+  if (this->displaytime() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->displaytime());
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void OverlayQ::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:OrionCommunication.OverlayQ)
+  GOOGLE_DCHECK_NE(&from, this);
+  const OverlayQ* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const OverlayQ>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:OrionCommunication.OverlayQ)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:OrionCommunication.OverlayQ)
+    MergeFrom(*source);
+  }
+}
+
+void OverlayQ::MergeFrom(const OverlayQ& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:OrionCommunication.OverlayQ)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.text().size() > 0) {
+
+    text_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.text_);
+  }
+  if (from.configno() != 0) {
+    set_configno(from.configno());
+  }
+  if (from.pos() != 0) {
+    set_pos(from.pos());
+  }
+  if (from.posx() != 0) {
+    set_posx(from.posx());
+  }
+  if (from.posy() != 0) {
+    set_posy(from.posy());
+  }
+  if (from.display() != 0) {
+    set_display(from.display());
+  }
+  if (from.textsize() != 0) {
+    set_textsize(from.textsize());
+  }
+  if (from.datetimeformat() != 0) {
+    set_datetimeformat(from.datetimeformat());
+  }
+  if (from.displaydate() != 0) {
+    set_displaydate(from.displaydate());
+  }
+  if (from.displaytime() != 0) {
+    set_displaytime(from.displaytime());
+  }
+}
+
+void OverlayQ::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:OrionCommunication.OverlayQ)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void OverlayQ::CopyFrom(const OverlayQ& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:OrionCommunication.OverlayQ)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool OverlayQ::IsInitialized() const {
+  return true;
+}
+
+void OverlayQ::Swap(OverlayQ* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void OverlayQ::InternalSwap(OverlayQ* other) {
+  using std::swap;
+  text_.Swap(&other->text_);
+  swap(configno_, other->configno_);
+  swap(pos_, other->pos_);
+  swap(posx_, other->posx_);
+  swap(posy_, other->posy_);
+  swap(display_, other->display_);
+  swap(textsize_, other->textsize_);
+  swap(datetimeformat_, other->datetimeformat_);
+  swap(displaydate_, other->displaydate_);
+  swap(displaytime_, other->displaytime_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata OverlayQ::GetMetadata() const {
   protobuf_OrionCommunication_2eproto::protobuf_AssignDescriptorsOnce();
   return ::protobuf_OrionCommunication_2eproto::file_level_metadata[kIndexInFileMessages];
 }

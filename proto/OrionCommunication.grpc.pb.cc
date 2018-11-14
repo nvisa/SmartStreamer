@@ -15,538 +15,564 @@
 #include <grpcpp/impl/codegen/sync_stream.h>
 namespace OrionCommunication {
 
-static const char* AppConfig_method_names[] = {
-  "/OrionCommunication.AppConfig/SetPanaromaParameters",
-  "/OrionCommunication.AppConfig/GetPanaromaParameters",
-  "/OrionCommunication.AppConfig/SetMotionDetectionParameters",
-  "/OrionCommunication.AppConfig/GetMotionDetectionParameters",
-  "/OrionCommunication.AppConfig/SetCurrentMode",
-  "/OrionCommunication.AppConfig/GetCurrentMode",
-  "/OrionCommunication.AppConfig/SetSensivityParameter",
-  "/OrionCommunication.AppConfig/GetSensivityParameter",
-  "/OrionCommunication.AppConfig/GetLastPanaromaFrame",
-  "/OrionCommunication.AppConfig/GetPanaromaFrames",
-  "/OrionCommunication.AppConfig/RunMotion",
-  "/OrionCommunication.AppConfig/RunPanaroma",
-  "/OrionCommunication.AppConfig/StopMotion",
-  "/OrionCommunication.AppConfig/StopPanaroma",
-  "/OrionCommunication.AppConfig/RunCalibration",
-  "/OrionCommunication.AppConfig/StopCalibration",
-  "/OrionCommunication.AppConfig/GetMainScreenShot",
-  "/OrionCommunication.AppConfig/GetSecScreenShot",
-  "/OrionCommunication.AppConfig/GotoPanaromaPixel",
-  "/OrionCommunication.AppConfig/CurrentPanaromaPixel",
+static const char* OrionCommunicationService_method_names[] = {
+  "/OrionCommunication.OrionCommunicationService/SetPanaromaParameters",
+  "/OrionCommunication.OrionCommunicationService/GetPanaromaParameters",
+  "/OrionCommunication.OrionCommunicationService/SetMotionDetectionParameters",
+  "/OrionCommunication.OrionCommunicationService/GetMotionDetectionParameters",
+  "/OrionCommunication.OrionCommunicationService/SetCurrentMode",
+  "/OrionCommunication.OrionCommunicationService/GetCurrentMode",
+  "/OrionCommunication.OrionCommunicationService/SetSensivityParameter",
+  "/OrionCommunication.OrionCommunicationService/GetSensivityParameter",
+  "/OrionCommunication.OrionCommunicationService/GetLastPanaromaFrame",
+  "/OrionCommunication.OrionCommunicationService/GetPanaromaFrames",
+  "/OrionCommunication.OrionCommunicationService/RunMotion",
+  "/OrionCommunication.OrionCommunicationService/RunPanaroma",
+  "/OrionCommunication.OrionCommunicationService/StopMotion",
+  "/OrionCommunication.OrionCommunicationService/StopPanaroma",
+  "/OrionCommunication.OrionCommunicationService/RunCalibration",
+  "/OrionCommunication.OrionCommunicationService/StopCalibration",
+  "/OrionCommunication.OrionCommunicationService/GetMainScreenShot",
+  "/OrionCommunication.OrionCommunicationService/GetSecScreenShot",
+  "/OrionCommunication.OrionCommunicationService/GotoPanaromaPixel",
+  "/OrionCommunication.OrionCommunicationService/CurrentPanaromaPixel",
+  "/OrionCommunication.OrionCommunicationService/SetVideoOverlay",
 };
 
-std::unique_ptr< AppConfig::Stub> AppConfig::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
+std::unique_ptr< OrionCommunicationService::Stub> OrionCommunicationService::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
   (void)options;
-  std::unique_ptr< AppConfig::Stub> stub(new AppConfig::Stub(channel));
+  std::unique_ptr< OrionCommunicationService::Stub> stub(new OrionCommunicationService::Stub(channel));
   return stub;
 }
 
-AppConfig::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
-  : channel_(channel), rpcmethod_SetPanaromaParameters_(AppConfig_method_names[0], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GetPanaromaParameters_(AppConfig_method_names[1], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_SetMotionDetectionParameters_(AppConfig_method_names[2], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GetMotionDetectionParameters_(AppConfig_method_names[3], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_SetCurrentMode_(AppConfig_method_names[4], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GetCurrentMode_(AppConfig_method_names[5], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_SetSensivityParameter_(AppConfig_method_names[6], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GetSensivityParameter_(AppConfig_method_names[7], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GetLastPanaromaFrame_(AppConfig_method_names[8], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GetPanaromaFrames_(AppConfig_method_names[9], ::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
-  , rpcmethod_RunMotion_(AppConfig_method_names[10], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_RunPanaroma_(AppConfig_method_names[11], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_StopMotion_(AppConfig_method_names[12], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_StopPanaroma_(AppConfig_method_names[13], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_RunCalibration_(AppConfig_method_names[14], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_StopCalibration_(AppConfig_method_names[15], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GetMainScreenShot_(AppConfig_method_names[16], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GetSecScreenShot_(AppConfig_method_names[17], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GotoPanaromaPixel_(AppConfig_method_names[18], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_CurrentPanaromaPixel_(AppConfig_method_names[19], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+OrionCommunicationService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
+  : channel_(channel), rpcmethod_SetPanaromaParameters_(OrionCommunicationService_method_names[0], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetPanaromaParameters_(OrionCommunicationService_method_names[1], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_SetMotionDetectionParameters_(OrionCommunicationService_method_names[2], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetMotionDetectionParameters_(OrionCommunicationService_method_names[3], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_SetCurrentMode_(OrionCommunicationService_method_names[4], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetCurrentMode_(OrionCommunicationService_method_names[5], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_SetSensivityParameter_(OrionCommunicationService_method_names[6], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetSensivityParameter_(OrionCommunicationService_method_names[7], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetLastPanaromaFrame_(OrionCommunicationService_method_names[8], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetPanaromaFrames_(OrionCommunicationService_method_names[9], ::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
+  , rpcmethod_RunMotion_(OrionCommunicationService_method_names[10], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_RunPanaroma_(OrionCommunicationService_method_names[11], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_StopMotion_(OrionCommunicationService_method_names[12], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_StopPanaroma_(OrionCommunicationService_method_names[13], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_RunCalibration_(OrionCommunicationService_method_names[14], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_StopCalibration_(OrionCommunicationService_method_names[15], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetMainScreenShot_(OrionCommunicationService_method_names[16], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetSecScreenShot_(OrionCommunicationService_method_names[17], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GotoPanaromaPixel_(OrionCommunicationService_method_names[18], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_CurrentPanaromaPixel_(OrionCommunicationService_method_names[19], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_SetVideoOverlay_(OrionCommunicationService_method_names[20], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
-::grpc::Status AppConfig::Stub::SetPanaromaParameters(::grpc::ClientContext* context, const ::OrionCommunication::PanoramaPars& request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Stub::SetPanaromaParameters(::grpc::ClientContext* context, const ::OrionCommunication::PanoramaPars& request, ::OrionCommunication::AppCommandResult* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_SetPanaromaParameters_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::AsyncSetPanaromaParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::PanoramaPars& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::AsyncSetPanaromaParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::PanoramaPars& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_SetPanaromaParameters_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::PrepareAsyncSetPanaromaParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::PanoramaPars& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::PrepareAsyncSetPanaromaParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::PanoramaPars& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_SetPanaromaParameters_, context, request, false);
 }
 
-::grpc::Status AppConfig::Stub::GetPanaromaParameters(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::PanoramaPars* response) {
+::grpc::Status OrionCommunicationService::Stub::GetPanaromaParameters(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::PanoramaPars* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_GetPanaromaParameters_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::PanoramaPars>* AppConfig::Stub::AsyncGetPanaromaParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::PanoramaPars>* OrionCommunicationService::Stub::AsyncGetPanaromaParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::PanoramaPars>::Create(channel_.get(), cq, rpcmethod_GetPanaromaParameters_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::PanoramaPars>* AppConfig::Stub::PrepareAsyncGetPanaromaParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::PanoramaPars>* OrionCommunicationService::Stub::PrepareAsyncGetPanaromaParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::PanoramaPars>::Create(channel_.get(), cq, rpcmethod_GetPanaromaParameters_, context, request, false);
 }
 
-::grpc::Status AppConfig::Stub::SetMotionDetectionParameters(::grpc::ClientContext* context, const ::OrionCommunication::TRoi& request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Stub::SetMotionDetectionParameters(::grpc::ClientContext* context, const ::OrionCommunication::TRoi& request, ::OrionCommunication::AppCommandResult* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_SetMotionDetectionParameters_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::AsyncSetMotionDetectionParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::TRoi& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::AsyncSetMotionDetectionParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::TRoi& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_SetMotionDetectionParameters_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::PrepareAsyncSetMotionDetectionParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::TRoi& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::PrepareAsyncSetMotionDetectionParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::TRoi& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_SetMotionDetectionParameters_, context, request, false);
 }
 
-::grpc::Status AppConfig::Stub::GetMotionDetectionParameters(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::TRoi* response) {
+::grpc::Status OrionCommunicationService::Stub::GetMotionDetectionParameters(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::TRoi* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_GetMotionDetectionParameters_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::TRoi>* AppConfig::Stub::AsyncGetMotionDetectionParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::TRoi>* OrionCommunicationService::Stub::AsyncGetMotionDetectionParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::TRoi>::Create(channel_.get(), cq, rpcmethod_GetMotionDetectionParameters_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::TRoi>* AppConfig::Stub::PrepareAsyncGetMotionDetectionParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::TRoi>* OrionCommunicationService::Stub::PrepareAsyncGetMotionDetectionParametersRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::TRoi>::Create(channel_.get(), cq, rpcmethod_GetMotionDetectionParameters_, context, request, false);
 }
 
-::grpc::Status AppConfig::Stub::SetCurrentMode(::grpc::ClientContext* context, const ::OrionCommunication::SetModeQ& request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Stub::SetCurrentMode(::grpc::ClientContext* context, const ::OrionCommunication::ModeQ& request, ::OrionCommunication::AppCommandResult* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_SetCurrentMode_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::AsyncSetCurrentModeRaw(::grpc::ClientContext* context, const ::OrionCommunication::SetModeQ& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::AsyncSetCurrentModeRaw(::grpc::ClientContext* context, const ::OrionCommunication::ModeQ& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_SetCurrentMode_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::PrepareAsyncSetCurrentModeRaw(::grpc::ClientContext* context, const ::OrionCommunication::SetModeQ& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::PrepareAsyncSetCurrentModeRaw(::grpc::ClientContext* context, const ::OrionCommunication::ModeQ& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_SetCurrentMode_, context, request, false);
 }
 
-::grpc::Status AppConfig::Stub::GetCurrentMode(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::SetModeQ* response) {
+::grpc::Status OrionCommunicationService::Stub::GetCurrentMode(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::ModeQ* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_GetCurrentMode_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::SetModeQ>* AppConfig::Stub::AsyncGetCurrentModeRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::SetModeQ>::Create(channel_.get(), cq, rpcmethod_GetCurrentMode_, context, request, true);
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::ModeQ>* OrionCommunicationService::Stub::AsyncGetCurrentModeRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::ModeQ>::Create(channel_.get(), cq, rpcmethod_GetCurrentMode_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::SetModeQ>* AppConfig::Stub::PrepareAsyncGetCurrentModeRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::SetModeQ>::Create(channel_.get(), cq, rpcmethod_GetCurrentMode_, context, request, false);
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::ModeQ>* OrionCommunicationService::Stub::PrepareAsyncGetCurrentModeRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::ModeQ>::Create(channel_.get(), cq, rpcmethod_GetCurrentMode_, context, request, false);
 }
 
-::grpc::Status AppConfig::Stub::SetSensivityParameter(::grpc::ClientContext* context, const ::OrionCommunication::SetSensivity& request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Stub::SetSensivityParameter(::grpc::ClientContext* context, const ::OrionCommunication::SetSensivity& request, ::OrionCommunication::AppCommandResult* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_SetSensivityParameter_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::AsyncSetSensivityParameterRaw(::grpc::ClientContext* context, const ::OrionCommunication::SetSensivity& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::AsyncSetSensivityParameterRaw(::grpc::ClientContext* context, const ::OrionCommunication::SetSensivity& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_SetSensivityParameter_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::PrepareAsyncSetSensivityParameterRaw(::grpc::ClientContext* context, const ::OrionCommunication::SetSensivity& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::PrepareAsyncSetSensivityParameterRaw(::grpc::ClientContext* context, const ::OrionCommunication::SetSensivity& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_SetSensivityParameter_, context, request, false);
 }
 
-::grpc::Status AppConfig::Stub::GetSensivityParameter(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::SetSensivity* response) {
+::grpc::Status OrionCommunicationService::Stub::GetSensivityParameter(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::SetSensivity* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_GetSensivityParameter_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::SetSensivity>* AppConfig::Stub::AsyncGetSensivityParameterRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::SetSensivity>* OrionCommunicationService::Stub::AsyncGetSensivityParameterRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::SetSensivity>::Create(channel_.get(), cq, rpcmethod_GetSensivityParameter_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::SetSensivity>* AppConfig::Stub::PrepareAsyncGetSensivityParameterRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::SetSensivity>* OrionCommunicationService::Stub::PrepareAsyncGetSensivityParameterRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::SetSensivity>::Create(channel_.get(), cq, rpcmethod_GetSensivityParameter_, context, request, false);
 }
 
-::grpc::Status AppConfig::Stub::GetLastPanaromaFrame(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Stub::GetLastPanaromaFrame(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::AppCommandResult* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_GetLastPanaromaFrame_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::AsyncGetLastPanaromaFrameRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::AsyncGetLastPanaromaFrameRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_GetLastPanaromaFrame_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::PrepareAsyncGetLastPanaromaFrameRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::PrepareAsyncGetLastPanaromaFrameRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_GetLastPanaromaFrame_, context, request, false);
 }
 
-::grpc::ClientReader< ::OrionCommunication::PanoramaFrame>* AppConfig::Stub::GetPanaromaFramesRaw(::grpc::ClientContext* context, const ::OrionCommunication::GetFrames& request) {
+::grpc::ClientReader< ::OrionCommunication::PanoramaFrame>* OrionCommunicationService::Stub::GetPanaromaFramesRaw(::grpc::ClientContext* context, const ::OrionCommunication::FrameModeQ& request) {
   return ::grpc::internal::ClientReaderFactory< ::OrionCommunication::PanoramaFrame>::Create(channel_.get(), rpcmethod_GetPanaromaFrames_, context, request);
 }
 
-::grpc::ClientAsyncReader< ::OrionCommunication::PanoramaFrame>* AppConfig::Stub::AsyncGetPanaromaFramesRaw(::grpc::ClientContext* context, const ::OrionCommunication::GetFrames& request, ::grpc::CompletionQueue* cq, void* tag) {
+::grpc::ClientAsyncReader< ::OrionCommunication::PanoramaFrame>* OrionCommunicationService::Stub::AsyncGetPanaromaFramesRaw(::grpc::ClientContext* context, const ::OrionCommunication::FrameModeQ& request, ::grpc::CompletionQueue* cq, void* tag) {
   return ::grpc::internal::ClientAsyncReaderFactory< ::OrionCommunication::PanoramaFrame>::Create(channel_.get(), cq, rpcmethod_GetPanaromaFrames_, context, request, true, tag);
 }
 
-::grpc::ClientAsyncReader< ::OrionCommunication::PanoramaFrame>* AppConfig::Stub::PrepareAsyncGetPanaromaFramesRaw(::grpc::ClientContext* context, const ::OrionCommunication::GetFrames& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncReader< ::OrionCommunication::PanoramaFrame>* OrionCommunicationService::Stub::PrepareAsyncGetPanaromaFramesRaw(::grpc::ClientContext* context, const ::OrionCommunication::FrameModeQ& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncReaderFactory< ::OrionCommunication::PanoramaFrame>::Create(channel_.get(), cq, rpcmethod_GetPanaromaFrames_, context, request, false, nullptr);
 }
 
-::grpc::Status AppConfig::Stub::RunMotion(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Stub::RunMotion(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::AppCommandResult* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_RunMotion_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::AsyncRunMotionRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::AsyncRunMotionRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_RunMotion_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::PrepareAsyncRunMotionRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::PrepareAsyncRunMotionRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_RunMotion_, context, request, false);
 }
 
-::grpc::Status AppConfig::Stub::RunPanaroma(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Stub::RunPanaroma(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::AppCommandResult* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_RunPanaroma_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::AsyncRunPanaromaRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::AsyncRunPanaromaRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_RunPanaroma_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::PrepareAsyncRunPanaromaRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::PrepareAsyncRunPanaromaRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_RunPanaroma_, context, request, false);
 }
 
-::grpc::Status AppConfig::Stub::StopMotion(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Stub::StopMotion(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::AppCommandResult* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_StopMotion_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::AsyncStopMotionRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::AsyncStopMotionRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_StopMotion_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::PrepareAsyncStopMotionRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::PrepareAsyncStopMotionRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_StopMotion_, context, request, false);
 }
 
-::grpc::Status AppConfig::Stub::StopPanaroma(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Stub::StopPanaroma(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::AppCommandResult* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_StopPanaroma_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::AsyncStopPanaromaRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::AsyncStopPanaromaRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_StopPanaroma_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::PrepareAsyncStopPanaromaRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::PrepareAsyncStopPanaromaRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_StopPanaroma_, context, request, false);
 }
 
-::grpc::Status AppConfig::Stub::RunCalibration(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Stub::RunCalibration(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::AppCommandResult* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_RunCalibration_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::AsyncRunCalibrationRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::AsyncRunCalibrationRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_RunCalibration_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::PrepareAsyncRunCalibrationRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::PrepareAsyncRunCalibrationRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_RunCalibration_, context, request, false);
 }
 
-::grpc::Status AppConfig::Stub::StopCalibration(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Stub::StopCalibration(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::AppCommandResult* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_StopCalibration_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::AsyncStopCalibrationRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::AsyncStopCalibrationRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_StopCalibration_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::PrepareAsyncStopCalibrationRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::PrepareAsyncStopCalibrationRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_StopCalibration_, context, request, false);
 }
 
-::grpc::Status AppConfig::Stub::GetMainScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::ScreenFrame* response) {
+::grpc::Status OrionCommunicationService::Stub::GetMainScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::ScreenFrame* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_GetMainScreenShot_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>* AppConfig::Stub::AsyncGetMainScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>* OrionCommunicationService::Stub::AsyncGetMainScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::ScreenFrame>::Create(channel_.get(), cq, rpcmethod_GetMainScreenShot_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>* AppConfig::Stub::PrepareAsyncGetMainScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>* OrionCommunicationService::Stub::PrepareAsyncGetMainScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::ScreenFrame>::Create(channel_.get(), cq, rpcmethod_GetMainScreenShot_, context, request, false);
 }
 
-::grpc::Status AppConfig::Stub::GetSecScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::ScreenFrame* response) {
+::grpc::Status OrionCommunicationService::Stub::GetSecScreenShot(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::ScreenFrame* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_GetSecScreenShot_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>* AppConfig::Stub::AsyncGetSecScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>* OrionCommunicationService::Stub::AsyncGetSecScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::ScreenFrame>::Create(channel_.get(), cq, rpcmethod_GetSecScreenShot_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>* AppConfig::Stub::PrepareAsyncGetSecScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::ScreenFrame>* OrionCommunicationService::Stub::PrepareAsyncGetSecScreenShotRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::ScreenFrame>::Create(channel_.get(), cq, rpcmethod_GetSecScreenShot_, context, request, false);
 }
 
-::grpc::Status AppConfig::Stub::GotoPanaromaPixel(::grpc::ClientContext* context, const ::OrionCommunication::TPoint& request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Stub::GotoPanaromaPixel(::grpc::ClientContext* context, const ::OrionCommunication::TPoint& request, ::OrionCommunication::AppCommandResult* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_GotoPanaromaPixel_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::AsyncGotoPanaromaPixelRaw(::grpc::ClientContext* context, const ::OrionCommunication::TPoint& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::AsyncGotoPanaromaPixelRaw(::grpc::ClientContext* context, const ::OrionCommunication::TPoint& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_GotoPanaromaPixel_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* AppConfig::Stub::PrepareAsyncGotoPanaromaPixelRaw(::grpc::ClientContext* context, const ::OrionCommunication::TPoint& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::PrepareAsyncGotoPanaromaPixelRaw(::grpc::ClientContext* context, const ::OrionCommunication::TPoint& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_GotoPanaromaPixel_, context, request, false);
 }
 
-::grpc::Status AppConfig::Stub::CurrentPanaromaPixel(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::TPoint* response) {
+::grpc::Status OrionCommunicationService::Stub::CurrentPanaromaPixel(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::OrionCommunication::TPoint* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_CurrentPanaromaPixel_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::TPoint>* AppConfig::Stub::AsyncCurrentPanaromaPixelRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::TPoint>* OrionCommunicationService::Stub::AsyncCurrentPanaromaPixelRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::TPoint>::Create(channel_.get(), cq, rpcmethod_CurrentPanaromaPixel_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::OrionCommunication::TPoint>* AppConfig::Stub::PrepareAsyncCurrentPanaromaPixelRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::TPoint>* OrionCommunicationService::Stub::PrepareAsyncCurrentPanaromaPixelRaw(::grpc::ClientContext* context, const ::OrionCommunication::DummyInfo& request, ::grpc::CompletionQueue* cq) {
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::TPoint>::Create(channel_.get(), cq, rpcmethod_CurrentPanaromaPixel_, context, request, false);
 }
 
-AppConfig::Service::Service() {
+::grpc::Status OrionCommunicationService::Stub::SetVideoOverlay(::grpc::ClientContext* context, const ::OrionCommunication::OverlayQ& request, ::OrionCommunication::AppCommandResult* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_SetVideoOverlay_, context, request, response);
+}
+
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::AsyncSetVideoOverlayRaw(::grpc::ClientContext* context, const ::OrionCommunication::OverlayQ& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_SetVideoOverlay_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::OrionCommunication::AppCommandResult>* OrionCommunicationService::Stub::PrepareAsyncSetVideoOverlayRaw(::grpc::ClientContext* context, const ::OrionCommunication::OverlayQ& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::OrionCommunication::AppCommandResult>::Create(channel_.get(), cq, rpcmethod_SetVideoOverlay_, context, request, false);
+}
+
+OrionCommunicationService::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[0],
+      OrionCommunicationService_method_names[0],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::PanoramaPars, ::OrionCommunication::AppCommandResult>(
-          std::mem_fn(&AppConfig::Service::SetPanaromaParameters), this)));
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::PanoramaPars, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&OrionCommunicationService::Service::SetPanaromaParameters), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[1],
+      OrionCommunicationService_method_names[1],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::PanoramaPars>(
-          std::mem_fn(&AppConfig::Service::GetPanaromaParameters), this)));
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::PanoramaPars>(
+          std::mem_fn(&OrionCommunicationService::Service::GetPanaromaParameters), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[2],
+      OrionCommunicationService_method_names[2],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::TRoi, ::OrionCommunication::AppCommandResult>(
-          std::mem_fn(&AppConfig::Service::SetMotionDetectionParameters), this)));
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::TRoi, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&OrionCommunicationService::Service::SetMotionDetectionParameters), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[3],
+      OrionCommunicationService_method_names[3],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::TRoi>(
-          std::mem_fn(&AppConfig::Service::GetMotionDetectionParameters), this)));
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::TRoi>(
+          std::mem_fn(&OrionCommunicationService::Service::GetMotionDetectionParameters), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[4],
+      OrionCommunicationService_method_names[4],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::SetModeQ, ::OrionCommunication::AppCommandResult>(
-          std::mem_fn(&AppConfig::Service::SetCurrentMode), this)));
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::ModeQ, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&OrionCommunicationService::Service::SetCurrentMode), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[5],
+      OrionCommunicationService_method_names[5],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::SetModeQ>(
-          std::mem_fn(&AppConfig::Service::GetCurrentMode), this)));
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::ModeQ>(
+          std::mem_fn(&OrionCommunicationService::Service::GetCurrentMode), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[6],
+      OrionCommunicationService_method_names[6],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::SetSensivity, ::OrionCommunication::AppCommandResult>(
-          std::mem_fn(&AppConfig::Service::SetSensivityParameter), this)));
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::SetSensivity, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&OrionCommunicationService::Service::SetSensivityParameter), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[7],
+      OrionCommunicationService_method_names[7],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::SetSensivity>(
-          std::mem_fn(&AppConfig::Service::GetSensivityParameter), this)));
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::SetSensivity>(
+          std::mem_fn(&OrionCommunicationService::Service::GetSensivityParameter), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[8],
+      OrionCommunicationService_method_names[8],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
-          std::mem_fn(&AppConfig::Service::GetLastPanaromaFrame), this)));
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&OrionCommunicationService::Service::GetLastPanaromaFrame), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[9],
+      OrionCommunicationService_method_names[9],
       ::grpc::internal::RpcMethod::SERVER_STREAMING,
-      new ::grpc::internal::ServerStreamingHandler< AppConfig::Service, ::OrionCommunication::GetFrames, ::OrionCommunication::PanoramaFrame>(
-          std::mem_fn(&AppConfig::Service::GetPanaromaFrames), this)));
+      new ::grpc::internal::ServerStreamingHandler< OrionCommunicationService::Service, ::OrionCommunication::FrameModeQ, ::OrionCommunication::PanoramaFrame>(
+          std::mem_fn(&OrionCommunicationService::Service::GetPanaromaFrames), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[10],
+      OrionCommunicationService_method_names[10],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
-          std::mem_fn(&AppConfig::Service::RunMotion), this)));
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&OrionCommunicationService::Service::RunMotion), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[11],
+      OrionCommunicationService_method_names[11],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
-          std::mem_fn(&AppConfig::Service::RunPanaroma), this)));
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&OrionCommunicationService::Service::RunPanaroma), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[12],
+      OrionCommunicationService_method_names[12],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
-          std::mem_fn(&AppConfig::Service::StopMotion), this)));
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&OrionCommunicationService::Service::StopMotion), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[13],
+      OrionCommunicationService_method_names[13],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
-          std::mem_fn(&AppConfig::Service::StopPanaroma), this)));
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&OrionCommunicationService::Service::StopPanaroma), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[14],
+      OrionCommunicationService_method_names[14],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
-          std::mem_fn(&AppConfig::Service::RunCalibration), this)));
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&OrionCommunicationService::Service::RunCalibration), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[15],
+      OrionCommunicationService_method_names[15],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
-          std::mem_fn(&AppConfig::Service::StopCalibration), this)));
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&OrionCommunicationService::Service::StopCalibration), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[16],
+      OrionCommunicationService_method_names[16],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::ScreenFrame>(
-          std::mem_fn(&AppConfig::Service::GetMainScreenShot), this)));
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::ScreenFrame>(
+          std::mem_fn(&OrionCommunicationService::Service::GetMainScreenShot), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[17],
+      OrionCommunicationService_method_names[17],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::ScreenFrame>(
-          std::mem_fn(&AppConfig::Service::GetSecScreenShot), this)));
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::ScreenFrame>(
+          std::mem_fn(&OrionCommunicationService::Service::GetSecScreenShot), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[18],
+      OrionCommunicationService_method_names[18],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::TPoint, ::OrionCommunication::AppCommandResult>(
-          std::mem_fn(&AppConfig::Service::GotoPanaromaPixel), this)));
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::TPoint, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&OrionCommunicationService::Service::GotoPanaromaPixel), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      AppConfig_method_names[19],
+      OrionCommunicationService_method_names[19],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< AppConfig::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::TPoint>(
-          std::mem_fn(&AppConfig::Service::CurrentPanaromaPixel), this)));
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::DummyInfo, ::OrionCommunication::TPoint>(
+          std::mem_fn(&OrionCommunicationService::Service::CurrentPanaromaPixel), this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      OrionCommunicationService_method_names[20],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< OrionCommunicationService::Service, ::OrionCommunication::OverlayQ, ::OrionCommunication::AppCommandResult>(
+          std::mem_fn(&OrionCommunicationService::Service::SetVideoOverlay), this)));
 }
 
-AppConfig::Service::~Service() {
+OrionCommunicationService::Service::~Service() {
 }
 
-::grpc::Status AppConfig::Service::SetPanaromaParameters(::grpc::ServerContext* context, const ::OrionCommunication::PanoramaPars* request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Service::SetPanaromaParameters(::grpc::ServerContext* context, const ::OrionCommunication::PanoramaPars* request, ::OrionCommunication::AppCommandResult* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status AppConfig::Service::GetPanaromaParameters(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::PanoramaPars* response) {
+::grpc::Status OrionCommunicationService::Service::GetPanaromaParameters(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::PanoramaPars* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status AppConfig::Service::SetMotionDetectionParameters(::grpc::ServerContext* context, const ::OrionCommunication::TRoi* request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Service::SetMotionDetectionParameters(::grpc::ServerContext* context, const ::OrionCommunication::TRoi* request, ::OrionCommunication::AppCommandResult* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status AppConfig::Service::GetMotionDetectionParameters(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::TRoi* response) {
+::grpc::Status OrionCommunicationService::Service::GetMotionDetectionParameters(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::TRoi* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status AppConfig::Service::SetCurrentMode(::grpc::ServerContext* context, const ::OrionCommunication::SetModeQ* request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Service::SetCurrentMode(::grpc::ServerContext* context, const ::OrionCommunication::ModeQ* request, ::OrionCommunication::AppCommandResult* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status AppConfig::Service::GetCurrentMode(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::SetModeQ* response) {
+::grpc::Status OrionCommunicationService::Service::GetCurrentMode(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::ModeQ* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status AppConfig::Service::SetSensivityParameter(::grpc::ServerContext* context, const ::OrionCommunication::SetSensivity* request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Service::SetSensivityParameter(::grpc::ServerContext* context, const ::OrionCommunication::SetSensivity* request, ::OrionCommunication::AppCommandResult* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status AppConfig::Service::GetSensivityParameter(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::SetSensivity* response) {
+::grpc::Status OrionCommunicationService::Service::GetSensivityParameter(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::SetSensivity* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status AppConfig::Service::GetLastPanaromaFrame(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Service::GetLastPanaromaFrame(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status AppConfig::Service::GetPanaromaFrames(::grpc::ServerContext* context, const ::OrionCommunication::GetFrames* request, ::grpc::ServerWriter< ::OrionCommunication::PanoramaFrame>* writer) {
+::grpc::Status OrionCommunicationService::Service::GetPanaromaFrames(::grpc::ServerContext* context, const ::OrionCommunication::FrameModeQ* request, ::grpc::ServerWriter< ::OrionCommunication::PanoramaFrame>* writer) {
   (void) context;
   (void) request;
   (void) writer;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status AppConfig::Service::RunMotion(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Service::RunMotion(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status AppConfig::Service::RunPanaroma(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Service::RunPanaroma(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status AppConfig::Service::StopMotion(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Service::StopMotion(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status AppConfig::Service::StopPanaroma(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Service::StopPanaroma(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status AppConfig::Service::RunCalibration(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Service::RunCalibration(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status AppConfig::Service::StopCalibration(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Service::StopCalibration(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::AppCommandResult* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status AppConfig::Service::GetMainScreenShot(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::ScreenFrame* response) {
+::grpc::Status OrionCommunicationService::Service::GetMainScreenShot(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::ScreenFrame* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status AppConfig::Service::GetSecScreenShot(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::ScreenFrame* response) {
+::grpc::Status OrionCommunicationService::Service::GetSecScreenShot(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::ScreenFrame* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status AppConfig::Service::GotoPanaromaPixel(::grpc::ServerContext* context, const ::OrionCommunication::TPoint* request, ::OrionCommunication::AppCommandResult* response) {
+::grpc::Status OrionCommunicationService::Service::GotoPanaromaPixel(::grpc::ServerContext* context, const ::OrionCommunication::TPoint* request, ::OrionCommunication::AppCommandResult* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status AppConfig::Service::CurrentPanaromaPixel(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::TPoint* response) {
+::grpc::Status OrionCommunicationService::Service::CurrentPanaromaPixel(::grpc::ServerContext* context, const ::OrionCommunication::DummyInfo* request, ::OrionCommunication::TPoint* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status OrionCommunicationService::Service::SetVideoOverlay(::grpc::ServerContext* context, const ::OrionCommunication::OverlayQ* request, ::OrionCommunication::AppCommandResult* response) {
   (void) context;
   (void) request;
   (void) response;

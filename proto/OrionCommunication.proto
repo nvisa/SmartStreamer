@@ -2,34 +2,30 @@ syntax="proto3";
 
 package OrionCommunication;
 
-/*
-        - all coordinates are in normalized points (0 -1 )
-        - we only support one ROI
-*/
-
-service AppConfig {
+service OrionCommunicationService {
     rpc SetPanaromaParameters(PanoramaPars) returns(AppCommandResult) {}
     rpc GetPanaromaParameters(DummyInfo) returns(PanoramaPars) {}
 
     rpc SetMotionDetectionParameters(TRoi) returns(AppCommandResult) {}
     rpc GetMotionDetectionParameters(DummyInfo) returns(TRoi) {}
 
-    rpc SetCurrentMode(SetModeQ) returns(AppCommandResult) {
+    rpc SetCurrentMode(ModeQ) returns(AppCommandResult) {
         option deprecated = true;
     }
-    rpc GetCurrentMode(DummyInfo) returns(SetModeQ) {
+    rpc GetCurrentMode(DummyInfo) returns(ModeQ) {
         option deprecated = true;
     }
 
     rpc SetSensivityParameter(SetSensivity) returns(AppCommandResult) {}
     rpc GetSensivityParameter(DummyInfo) returns(SetSensivity) {}
     rpc GetLastPanaromaFrame(DummyInfo) returns(AppCommandResult) {}
-    rpc GetPanaromaFrames(GetFrames) returns(stream PanoramaFrame) {}
+    rpc GetPanaromaFrames(FrameModeQ) returns(stream PanoramaFrame) {}
 
     rpc RunMotion(DummyInfo) returns(AppCommandResult) {}
     rpc RunPanaroma(DummyInfo) returns(AppCommandResult) {}
     rpc StopMotion(DummyInfo) returns(AppCommandResult) {}
     rpc StopPanaroma(DummyInfo) returns(AppCommandResult) {}
+
     rpc RunCalibration(DummyInfo) returns(AppCommandResult) {}
     rpc StopCalibration(DummyInfo) returns(AppCommandResult) {}
 
@@ -37,6 +33,8 @@ service AppConfig {
     rpc GetSecScreenShot(DummyInfo) returns(ScreenFrame) {}
     rpc GotoPanaromaPixel(TPoint) returns(AppCommandResult) {}
     rpc CurrentPanaromaPixel(DummyInfo) returns(TPoint) {}
+
+    rpc SetVideoOverlay(OverlayQ) returns(AppCommandResult) {}
 }
 
 message PanoramaPars {
@@ -72,7 +70,7 @@ message TRectangle {
     TPoint bottomRight = 2;
 }
 
-message SetModeQ {
+message ModeQ {
     enum Mode {
       NONE = 0;
       PANAROMA = 1;
@@ -90,19 +88,25 @@ message MotionDetectionParameters {
 }
 
 message AppCommandResult {
+    enum Response {
+        SUCCESSFUL = 0;
+        FAIL = 1;
+        MISSING = 2;
+    }
     int32 err = 1;
+    Response response = 2;
 }
 
 message AryaParameters {
     int32 panSpeed = 1;
 }
 
-message GetFrames {
-    enum Frames {
+message FrameModeQ {
+    enum FrameMode {
       LastFrame = 0;
       AllFrames = 1;
     }
-    Frames modeFrame = 1;
+    FrameMode mode = 1;
 }
 
 message PanoramaFrame {
@@ -116,4 +120,24 @@ message ScreenFrame {
 
 message SetSensivity {
     int32 sensivity = 1;
+}
+
+message OverlayQ {
+    enum Position {
+        UpperLeft = 0;
+        UpperRight = 1;
+        LowerLeft = 2;
+        LowerRight = 3;
+        Custom = 4;
+    }
+    int32 configNo = 1;
+    Position pos = 2;
+    int32 posx = 3;
+    int32 posy = 4;
+    string text = 5;
+    int32 display = 6;
+    int32 textSize = 7;
+    int32 dateTimeFormat = 8; // support two formats. YYYY/MM/DD HH:MM:SS or MM-DD-YY HH:MM:SS
+    int32 displayDate = 9;
+    int32 displayTime = 10;
 }

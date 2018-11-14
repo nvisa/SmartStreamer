@@ -37,7 +37,7 @@ namespace protobuf_OrionCommunication_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[14];
+  static const ::google::protobuf::internal::ParseTable schema[15];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
@@ -53,8 +53,8 @@ void InitDefaultsTPolygonImpl();
 void InitDefaultsTPolygon();
 void InitDefaultsTRectangleImpl();
 void InitDefaultsTRectangle();
-void InitDefaultsSetModeQImpl();
-void InitDefaultsSetModeQ();
+void InitDefaultsModeQImpl();
+void InitDefaultsModeQ();
 void InitDefaultsDummyInfoImpl();
 void InitDefaultsDummyInfo();
 void InitDefaultsMotionDetectionParametersImpl();
@@ -63,29 +63,32 @@ void InitDefaultsAppCommandResultImpl();
 void InitDefaultsAppCommandResult();
 void InitDefaultsAryaParametersImpl();
 void InitDefaultsAryaParameters();
-void InitDefaultsGetFramesImpl();
-void InitDefaultsGetFrames();
+void InitDefaultsFrameModeQImpl();
+void InitDefaultsFrameModeQ();
 void InitDefaultsPanoramaFrameImpl();
 void InitDefaultsPanoramaFrame();
 void InitDefaultsScreenFrameImpl();
 void InitDefaultsScreenFrame();
 void InitDefaultsSetSensivityImpl();
 void InitDefaultsSetSensivity();
+void InitDefaultsOverlayQImpl();
+void InitDefaultsOverlayQ();
 inline void InitDefaults() {
   InitDefaultsPanoramaPars();
   InitDefaultsTRoi();
   InitDefaultsTPoint();
   InitDefaultsTPolygon();
   InitDefaultsTRectangle();
-  InitDefaultsSetModeQ();
+  InitDefaultsModeQ();
   InitDefaultsDummyInfo();
   InitDefaultsMotionDetectionParameters();
   InitDefaultsAppCommandResult();
   InitDefaultsAryaParameters();
-  InitDefaultsGetFrames();
+  InitDefaultsFrameModeQ();
   InitDefaultsPanoramaFrame();
   InitDefaultsScreenFrame();
   InitDefaultsSetSensivity();
+  InitDefaultsOverlayQ();
 }
 }  // namespace protobuf_OrionCommunication_2eproto
 namespace OrionCommunication {
@@ -98,12 +101,18 @@ extern AryaParametersDefaultTypeInternal _AryaParameters_default_instance_;
 class DummyInfo;
 class DummyInfoDefaultTypeInternal;
 extern DummyInfoDefaultTypeInternal _DummyInfo_default_instance_;
-class GetFrames;
-class GetFramesDefaultTypeInternal;
-extern GetFramesDefaultTypeInternal _GetFrames_default_instance_;
+class FrameModeQ;
+class FrameModeQDefaultTypeInternal;
+extern FrameModeQDefaultTypeInternal _FrameModeQ_default_instance_;
+class ModeQ;
+class ModeQDefaultTypeInternal;
+extern ModeQDefaultTypeInternal _ModeQ_default_instance_;
 class MotionDetectionParameters;
 class MotionDetectionParametersDefaultTypeInternal;
 extern MotionDetectionParametersDefaultTypeInternal _MotionDetectionParameters_default_instance_;
+class OverlayQ;
+class OverlayQDefaultTypeInternal;
+extern OverlayQDefaultTypeInternal _OverlayQ_default_instance_;
 class PanoramaFrame;
 class PanoramaFrameDefaultTypeInternal;
 extern PanoramaFrameDefaultTypeInternal _PanoramaFrame_default_instance_;
@@ -113,9 +122,6 @@ extern PanoramaParsDefaultTypeInternal _PanoramaPars_default_instance_;
 class ScreenFrame;
 class ScreenFrameDefaultTypeInternal;
 extern ScreenFrameDefaultTypeInternal _ScreenFrame_default_instance_;
-class SetModeQ;
-class SetModeQDefaultTypeInternal;
-extern SetModeQDefaultTypeInternal _SetModeQ_default_instance_;
 class SetSensivity;
 class SetSensivityDefaultTypeInternal;
 extern SetSensivityDefaultTypeInternal _SetSensivity_default_instance_;
@@ -134,48 +140,94 @@ extern TRoiDefaultTypeInternal _TRoi_default_instance_;
 }  // namespace OrionCommunication
 namespace OrionCommunication {
 
-enum SetModeQ_Mode {
-  SetModeQ_Mode_NONE = 0,
-  SetModeQ_Mode_PANAROMA = 1,
-  SetModeQ_Mode_MOTION_DETECTION = 2,
-  SetModeQ_Mode_SetModeQ_Mode_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
-  SetModeQ_Mode_SetModeQ_Mode_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
+enum ModeQ_Mode {
+  ModeQ_Mode_NONE = 0,
+  ModeQ_Mode_PANAROMA = 1,
+  ModeQ_Mode_MOTION_DETECTION = 2,
+  ModeQ_Mode_ModeQ_Mode_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
+  ModeQ_Mode_ModeQ_Mode_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
 };
-bool SetModeQ_Mode_IsValid(int value);
-const SetModeQ_Mode SetModeQ_Mode_Mode_MIN = SetModeQ_Mode_NONE;
-const SetModeQ_Mode SetModeQ_Mode_Mode_MAX = SetModeQ_Mode_MOTION_DETECTION;
-const int SetModeQ_Mode_Mode_ARRAYSIZE = SetModeQ_Mode_Mode_MAX + 1;
+bool ModeQ_Mode_IsValid(int value);
+const ModeQ_Mode ModeQ_Mode_Mode_MIN = ModeQ_Mode_NONE;
+const ModeQ_Mode ModeQ_Mode_Mode_MAX = ModeQ_Mode_MOTION_DETECTION;
+const int ModeQ_Mode_Mode_ARRAYSIZE = ModeQ_Mode_Mode_MAX + 1;
 
-const ::google::protobuf::EnumDescriptor* SetModeQ_Mode_descriptor();
-inline const ::std::string& SetModeQ_Mode_Name(SetModeQ_Mode value) {
+const ::google::protobuf::EnumDescriptor* ModeQ_Mode_descriptor();
+inline const ::std::string& ModeQ_Mode_Name(ModeQ_Mode value) {
   return ::google::protobuf::internal::NameOfEnum(
-    SetModeQ_Mode_descriptor(), value);
+    ModeQ_Mode_descriptor(), value);
 }
-inline bool SetModeQ_Mode_Parse(
-    const ::std::string& name, SetModeQ_Mode* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<SetModeQ_Mode>(
-    SetModeQ_Mode_descriptor(), name, value);
+inline bool ModeQ_Mode_Parse(
+    const ::std::string& name, ModeQ_Mode* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<ModeQ_Mode>(
+    ModeQ_Mode_descriptor(), name, value);
 }
-enum GetFrames_Frames {
-  GetFrames_Frames_LastFrame = 0,
-  GetFrames_Frames_AllFrames = 1,
-  GetFrames_Frames_GetFrames_Frames_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
-  GetFrames_Frames_GetFrames_Frames_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
+enum AppCommandResult_Response {
+  AppCommandResult_Response_SUCCESSFUL = 0,
+  AppCommandResult_Response_FAIL = 1,
+  AppCommandResult_Response_MISSING = 2,
+  AppCommandResult_Response_AppCommandResult_Response_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
+  AppCommandResult_Response_AppCommandResult_Response_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
 };
-bool GetFrames_Frames_IsValid(int value);
-const GetFrames_Frames GetFrames_Frames_Frames_MIN = GetFrames_Frames_LastFrame;
-const GetFrames_Frames GetFrames_Frames_Frames_MAX = GetFrames_Frames_AllFrames;
-const int GetFrames_Frames_Frames_ARRAYSIZE = GetFrames_Frames_Frames_MAX + 1;
+bool AppCommandResult_Response_IsValid(int value);
+const AppCommandResult_Response AppCommandResult_Response_Response_MIN = AppCommandResult_Response_SUCCESSFUL;
+const AppCommandResult_Response AppCommandResult_Response_Response_MAX = AppCommandResult_Response_MISSING;
+const int AppCommandResult_Response_Response_ARRAYSIZE = AppCommandResult_Response_Response_MAX + 1;
 
-const ::google::protobuf::EnumDescriptor* GetFrames_Frames_descriptor();
-inline const ::std::string& GetFrames_Frames_Name(GetFrames_Frames value) {
+const ::google::protobuf::EnumDescriptor* AppCommandResult_Response_descriptor();
+inline const ::std::string& AppCommandResult_Response_Name(AppCommandResult_Response value) {
   return ::google::protobuf::internal::NameOfEnum(
-    GetFrames_Frames_descriptor(), value);
+    AppCommandResult_Response_descriptor(), value);
 }
-inline bool GetFrames_Frames_Parse(
-    const ::std::string& name, GetFrames_Frames* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<GetFrames_Frames>(
-    GetFrames_Frames_descriptor(), name, value);
+inline bool AppCommandResult_Response_Parse(
+    const ::std::string& name, AppCommandResult_Response* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<AppCommandResult_Response>(
+    AppCommandResult_Response_descriptor(), name, value);
+}
+enum FrameModeQ_FrameMode {
+  FrameModeQ_FrameMode_LastFrame = 0,
+  FrameModeQ_FrameMode_AllFrames = 1,
+  FrameModeQ_FrameMode_FrameModeQ_FrameMode_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
+  FrameModeQ_FrameMode_FrameModeQ_FrameMode_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
+};
+bool FrameModeQ_FrameMode_IsValid(int value);
+const FrameModeQ_FrameMode FrameModeQ_FrameMode_FrameMode_MIN = FrameModeQ_FrameMode_LastFrame;
+const FrameModeQ_FrameMode FrameModeQ_FrameMode_FrameMode_MAX = FrameModeQ_FrameMode_AllFrames;
+const int FrameModeQ_FrameMode_FrameMode_ARRAYSIZE = FrameModeQ_FrameMode_FrameMode_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* FrameModeQ_FrameMode_descriptor();
+inline const ::std::string& FrameModeQ_FrameMode_Name(FrameModeQ_FrameMode value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    FrameModeQ_FrameMode_descriptor(), value);
+}
+inline bool FrameModeQ_FrameMode_Parse(
+    const ::std::string& name, FrameModeQ_FrameMode* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<FrameModeQ_FrameMode>(
+    FrameModeQ_FrameMode_descriptor(), name, value);
+}
+enum OverlayQ_Position {
+  OverlayQ_Position_UpperLeft = 0,
+  OverlayQ_Position_UpperRight = 1,
+  OverlayQ_Position_LowerLeft = 2,
+  OverlayQ_Position_LowerRight = 3,
+  OverlayQ_Position_Custom = 4,
+  OverlayQ_Position_OverlayQ_Position_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
+  OverlayQ_Position_OverlayQ_Position_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
+};
+bool OverlayQ_Position_IsValid(int value);
+const OverlayQ_Position OverlayQ_Position_Position_MIN = OverlayQ_Position_UpperLeft;
+const OverlayQ_Position OverlayQ_Position_Position_MAX = OverlayQ_Position_Custom;
+const int OverlayQ_Position_Position_ARRAYSIZE = OverlayQ_Position_Position_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* OverlayQ_Position_descriptor();
+inline const ::std::string& OverlayQ_Position_Name(OverlayQ_Position value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    OverlayQ_Position_descriptor(), value);
+}
+inline bool OverlayQ_Position_Parse(
+    const ::std::string& name, OverlayQ_Position* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<OverlayQ_Position>(
+    OverlayQ_Position_descriptor(), name, value);
 }
 // ===================================================================
 
@@ -789,24 +841,24 @@ class TRectangle : public ::google::protobuf::Message /* @@protoc_insertion_poin
 };
 // -------------------------------------------------------------------
 
-class SetModeQ : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:OrionCommunication.SetModeQ) */ {
+class ModeQ : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:OrionCommunication.ModeQ) */ {
  public:
-  SetModeQ();
-  virtual ~SetModeQ();
+  ModeQ();
+  virtual ~ModeQ();
 
-  SetModeQ(const SetModeQ& from);
+  ModeQ(const ModeQ& from);
 
-  inline SetModeQ& operator=(const SetModeQ& from) {
+  inline ModeQ& operator=(const ModeQ& from) {
     CopyFrom(from);
     return *this;
   }
   #if LANG_CXX11
-  SetModeQ(SetModeQ&& from) noexcept
-    : SetModeQ() {
+  ModeQ(ModeQ&& from) noexcept
+    : ModeQ() {
     *this = ::std::move(from);
   }
 
-  inline SetModeQ& operator=(SetModeQ&& from) noexcept {
+  inline ModeQ& operator=(ModeQ&& from) noexcept {
     if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -816,30 +868,30 @@ class SetModeQ : public ::google::protobuf::Message /* @@protoc_insertion_point(
   }
   #endif
   static const ::google::protobuf::Descriptor* descriptor();
-  static const SetModeQ& default_instance();
+  static const ModeQ& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const SetModeQ* internal_default_instance() {
-    return reinterpret_cast<const SetModeQ*>(
-               &_SetModeQ_default_instance_);
+  static inline const ModeQ* internal_default_instance() {
+    return reinterpret_cast<const ModeQ*>(
+               &_ModeQ_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
     5;
 
-  void Swap(SetModeQ* other);
-  friend void swap(SetModeQ& a, SetModeQ& b) {
+  void Swap(ModeQ* other);
+  friend void swap(ModeQ& a, ModeQ& b) {
     a.Swap(&b);
   }
 
   // implements Message ----------------------------------------------
 
-  inline SetModeQ* New() const PROTOBUF_FINAL { return New(NULL); }
+  inline ModeQ* New() const PROTOBUF_FINAL { return New(NULL); }
 
-  SetModeQ* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  ModeQ* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
   void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
   void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void CopyFrom(const SetModeQ& from);
-  void MergeFrom(const SetModeQ& from);
+  void CopyFrom(const ModeQ& from);
+  void MergeFrom(const ModeQ& from);
   void Clear() PROTOBUF_FINAL;
   bool IsInitialized() const PROTOBUF_FINAL;
 
@@ -855,7 +907,7 @@ class SetModeQ : public ::google::protobuf::Message /* @@protoc_insertion_point(
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const PROTOBUF_FINAL;
-  void InternalSwap(SetModeQ* other);
+  void InternalSwap(ModeQ* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return NULL;
@@ -869,50 +921,50 @@ class SetModeQ : public ::google::protobuf::Message /* @@protoc_insertion_point(
 
   // nested types ----------------------------------------------------
 
-  typedef SetModeQ_Mode Mode;
+  typedef ModeQ_Mode Mode;
   static const Mode NONE =
-    SetModeQ_Mode_NONE;
+    ModeQ_Mode_NONE;
   static const Mode PANAROMA =
-    SetModeQ_Mode_PANAROMA;
+    ModeQ_Mode_PANAROMA;
   static const Mode MOTION_DETECTION =
-    SetModeQ_Mode_MOTION_DETECTION;
+    ModeQ_Mode_MOTION_DETECTION;
   static inline bool Mode_IsValid(int value) {
-    return SetModeQ_Mode_IsValid(value);
+    return ModeQ_Mode_IsValid(value);
   }
   static const Mode Mode_MIN =
-    SetModeQ_Mode_Mode_MIN;
+    ModeQ_Mode_Mode_MIN;
   static const Mode Mode_MAX =
-    SetModeQ_Mode_Mode_MAX;
+    ModeQ_Mode_Mode_MAX;
   static const int Mode_ARRAYSIZE =
-    SetModeQ_Mode_Mode_ARRAYSIZE;
+    ModeQ_Mode_Mode_ARRAYSIZE;
   static inline const ::google::protobuf::EnumDescriptor*
   Mode_descriptor() {
-    return SetModeQ_Mode_descriptor();
+    return ModeQ_Mode_descriptor();
   }
   static inline const ::std::string& Mode_Name(Mode value) {
-    return SetModeQ_Mode_Name(value);
+    return ModeQ_Mode_Name(value);
   }
   static inline bool Mode_Parse(const ::std::string& name,
       Mode* value) {
-    return SetModeQ_Mode_Parse(name, value);
+    return ModeQ_Mode_Parse(name, value);
   }
 
   // accessors -------------------------------------------------------
 
-  // .OrionCommunication.SetModeQ.Mode mode = 1;
+  // .OrionCommunication.ModeQ.Mode mode = 1;
   void clear_mode();
   static const int kModeFieldNumber = 1;
-  ::OrionCommunication::SetModeQ_Mode mode() const;
-  void set_mode(::OrionCommunication::SetModeQ_Mode value);
+  ::OrionCommunication::ModeQ_Mode mode() const;
+  void set_mode(::OrionCommunication::ModeQ_Mode value);
 
-  // @@protoc_insertion_point(class_scope:OrionCommunication.SetModeQ)
+  // @@protoc_insertion_point(class_scope:OrionCommunication.ModeQ)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   int mode_;
   mutable int _cached_size_;
   friend struct ::protobuf_OrionCommunication_2eproto::TableStruct;
-  friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsSetModeQImpl();
+  friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsModeQImpl();
 };
 // -------------------------------------------------------------------
 
@@ -1194,6 +1246,34 @@ class AppCommandResult : public ::google::protobuf::Message /* @@protoc_insertio
 
   // nested types ----------------------------------------------------
 
+  typedef AppCommandResult_Response Response;
+  static const Response SUCCESSFUL =
+    AppCommandResult_Response_SUCCESSFUL;
+  static const Response FAIL =
+    AppCommandResult_Response_FAIL;
+  static const Response MISSING =
+    AppCommandResult_Response_MISSING;
+  static inline bool Response_IsValid(int value) {
+    return AppCommandResult_Response_IsValid(value);
+  }
+  static const Response Response_MIN =
+    AppCommandResult_Response_Response_MIN;
+  static const Response Response_MAX =
+    AppCommandResult_Response_Response_MAX;
+  static const int Response_ARRAYSIZE =
+    AppCommandResult_Response_Response_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  Response_descriptor() {
+    return AppCommandResult_Response_descriptor();
+  }
+  static inline const ::std::string& Response_Name(Response value) {
+    return AppCommandResult_Response_Name(value);
+  }
+  static inline bool Response_Parse(const ::std::string& name,
+      Response* value) {
+    return AppCommandResult_Response_Parse(name, value);
+  }
+
   // accessors -------------------------------------------------------
 
   // int32 err = 1;
@@ -1202,11 +1282,18 @@ class AppCommandResult : public ::google::protobuf::Message /* @@protoc_insertio
   ::google::protobuf::int32 err() const;
   void set_err(::google::protobuf::int32 value);
 
+  // .OrionCommunication.AppCommandResult.Response response = 2;
+  void clear_response();
+  static const int kResponseFieldNumber = 2;
+  ::OrionCommunication::AppCommandResult_Response response() const;
+  void set_response(::OrionCommunication::AppCommandResult_Response value);
+
   // @@protoc_insertion_point(class_scope:OrionCommunication.AppCommandResult)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::int32 err_;
+  int response_;
   mutable int _cached_size_;
   friend struct ::protobuf_OrionCommunication_2eproto::TableStruct;
   friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsAppCommandResultImpl();
@@ -1312,24 +1399,24 @@ class AryaParameters : public ::google::protobuf::Message /* @@protoc_insertion_
 };
 // -------------------------------------------------------------------
 
-class GetFrames : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:OrionCommunication.GetFrames) */ {
+class FrameModeQ : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:OrionCommunication.FrameModeQ) */ {
  public:
-  GetFrames();
-  virtual ~GetFrames();
+  FrameModeQ();
+  virtual ~FrameModeQ();
 
-  GetFrames(const GetFrames& from);
+  FrameModeQ(const FrameModeQ& from);
 
-  inline GetFrames& operator=(const GetFrames& from) {
+  inline FrameModeQ& operator=(const FrameModeQ& from) {
     CopyFrom(from);
     return *this;
   }
   #if LANG_CXX11
-  GetFrames(GetFrames&& from) noexcept
-    : GetFrames() {
+  FrameModeQ(FrameModeQ&& from) noexcept
+    : FrameModeQ() {
     *this = ::std::move(from);
   }
 
-  inline GetFrames& operator=(GetFrames&& from) noexcept {
+  inline FrameModeQ& operator=(FrameModeQ&& from) noexcept {
     if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -1339,30 +1426,30 @@ class GetFrames : public ::google::protobuf::Message /* @@protoc_insertion_point
   }
   #endif
   static const ::google::protobuf::Descriptor* descriptor();
-  static const GetFrames& default_instance();
+  static const FrameModeQ& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const GetFrames* internal_default_instance() {
-    return reinterpret_cast<const GetFrames*>(
-               &_GetFrames_default_instance_);
+  static inline const FrameModeQ* internal_default_instance() {
+    return reinterpret_cast<const FrameModeQ*>(
+               &_FrameModeQ_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
     10;
 
-  void Swap(GetFrames* other);
-  friend void swap(GetFrames& a, GetFrames& b) {
+  void Swap(FrameModeQ* other);
+  friend void swap(FrameModeQ& a, FrameModeQ& b) {
     a.Swap(&b);
   }
 
   // implements Message ----------------------------------------------
 
-  inline GetFrames* New() const PROTOBUF_FINAL { return New(NULL); }
+  inline FrameModeQ* New() const PROTOBUF_FINAL { return New(NULL); }
 
-  GetFrames* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  FrameModeQ* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
   void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
   void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void CopyFrom(const GetFrames& from);
-  void MergeFrom(const GetFrames& from);
+  void CopyFrom(const FrameModeQ& from);
+  void MergeFrom(const FrameModeQ& from);
   void Clear() PROTOBUF_FINAL;
   bool IsInitialized() const PROTOBUF_FINAL;
 
@@ -1378,7 +1465,7 @@ class GetFrames : public ::google::protobuf::Message /* @@protoc_insertion_point
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const PROTOBUF_FINAL;
-  void InternalSwap(GetFrames* other);
+  void InternalSwap(FrameModeQ* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return NULL;
@@ -1392,48 +1479,48 @@ class GetFrames : public ::google::protobuf::Message /* @@protoc_insertion_point
 
   // nested types ----------------------------------------------------
 
-  typedef GetFrames_Frames Frames;
-  static const Frames LastFrame =
-    GetFrames_Frames_LastFrame;
-  static const Frames AllFrames =
-    GetFrames_Frames_AllFrames;
-  static inline bool Frames_IsValid(int value) {
-    return GetFrames_Frames_IsValid(value);
+  typedef FrameModeQ_FrameMode FrameMode;
+  static const FrameMode LastFrame =
+    FrameModeQ_FrameMode_LastFrame;
+  static const FrameMode AllFrames =
+    FrameModeQ_FrameMode_AllFrames;
+  static inline bool FrameMode_IsValid(int value) {
+    return FrameModeQ_FrameMode_IsValid(value);
   }
-  static const Frames Frames_MIN =
-    GetFrames_Frames_Frames_MIN;
-  static const Frames Frames_MAX =
-    GetFrames_Frames_Frames_MAX;
-  static const int Frames_ARRAYSIZE =
-    GetFrames_Frames_Frames_ARRAYSIZE;
+  static const FrameMode FrameMode_MIN =
+    FrameModeQ_FrameMode_FrameMode_MIN;
+  static const FrameMode FrameMode_MAX =
+    FrameModeQ_FrameMode_FrameMode_MAX;
+  static const int FrameMode_ARRAYSIZE =
+    FrameModeQ_FrameMode_FrameMode_ARRAYSIZE;
   static inline const ::google::protobuf::EnumDescriptor*
-  Frames_descriptor() {
-    return GetFrames_Frames_descriptor();
+  FrameMode_descriptor() {
+    return FrameModeQ_FrameMode_descriptor();
   }
-  static inline const ::std::string& Frames_Name(Frames value) {
-    return GetFrames_Frames_Name(value);
+  static inline const ::std::string& FrameMode_Name(FrameMode value) {
+    return FrameModeQ_FrameMode_Name(value);
   }
-  static inline bool Frames_Parse(const ::std::string& name,
-      Frames* value) {
-    return GetFrames_Frames_Parse(name, value);
+  static inline bool FrameMode_Parse(const ::std::string& name,
+      FrameMode* value) {
+    return FrameModeQ_FrameMode_Parse(name, value);
   }
 
   // accessors -------------------------------------------------------
 
-  // .OrionCommunication.GetFrames.Frames modeFrame = 1;
-  void clear_modeframe();
-  static const int kModeFrameFieldNumber = 1;
-  ::OrionCommunication::GetFrames_Frames modeframe() const;
-  void set_modeframe(::OrionCommunication::GetFrames_Frames value);
+  // .OrionCommunication.FrameModeQ.FrameMode mode = 1;
+  void clear_mode();
+  static const int kModeFieldNumber = 1;
+  ::OrionCommunication::FrameModeQ_FrameMode mode() const;
+  void set_mode(::OrionCommunication::FrameModeQ_FrameMode value);
 
-  // @@protoc_insertion_point(class_scope:OrionCommunication.GetFrames)
+  // @@protoc_insertion_point(class_scope:OrionCommunication.FrameModeQ)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  int modeframe_;
+  int mode_;
   mutable int _cached_size_;
   friend struct ::protobuf_OrionCommunication_2eproto::TableStruct;
-  friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsGetFramesImpl();
+  friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsFrameModeQImpl();
 };
 // -------------------------------------------------------------------
 
@@ -1761,6 +1848,208 @@ class SetSensivity : public ::google::protobuf::Message /* @@protoc_insertion_po
   mutable int _cached_size_;
   friend struct ::protobuf_OrionCommunication_2eproto::TableStruct;
   friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsSetSensivityImpl();
+};
+// -------------------------------------------------------------------
+
+class OverlayQ : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:OrionCommunication.OverlayQ) */ {
+ public:
+  OverlayQ();
+  virtual ~OverlayQ();
+
+  OverlayQ(const OverlayQ& from);
+
+  inline OverlayQ& operator=(const OverlayQ& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  OverlayQ(OverlayQ&& from) noexcept
+    : OverlayQ() {
+    *this = ::std::move(from);
+  }
+
+  inline OverlayQ& operator=(OverlayQ&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const OverlayQ& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const OverlayQ* internal_default_instance() {
+    return reinterpret_cast<const OverlayQ*>(
+               &_OverlayQ_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    14;
+
+  void Swap(OverlayQ* other);
+  friend void swap(OverlayQ& a, OverlayQ& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline OverlayQ* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  OverlayQ* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const OverlayQ& from);
+  void MergeFrom(const OverlayQ& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(OverlayQ* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  typedef OverlayQ_Position Position;
+  static const Position UpperLeft =
+    OverlayQ_Position_UpperLeft;
+  static const Position UpperRight =
+    OverlayQ_Position_UpperRight;
+  static const Position LowerLeft =
+    OverlayQ_Position_LowerLeft;
+  static const Position LowerRight =
+    OverlayQ_Position_LowerRight;
+  static const Position Custom =
+    OverlayQ_Position_Custom;
+  static inline bool Position_IsValid(int value) {
+    return OverlayQ_Position_IsValid(value);
+  }
+  static const Position Position_MIN =
+    OverlayQ_Position_Position_MIN;
+  static const Position Position_MAX =
+    OverlayQ_Position_Position_MAX;
+  static const int Position_ARRAYSIZE =
+    OverlayQ_Position_Position_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  Position_descriptor() {
+    return OverlayQ_Position_descriptor();
+  }
+  static inline const ::std::string& Position_Name(Position value) {
+    return OverlayQ_Position_Name(value);
+  }
+  static inline bool Position_Parse(const ::std::string& name,
+      Position* value) {
+    return OverlayQ_Position_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  // string text = 5;
+  void clear_text();
+  static const int kTextFieldNumber = 5;
+  const ::std::string& text() const;
+  void set_text(const ::std::string& value);
+  #if LANG_CXX11
+  void set_text(::std::string&& value);
+  #endif
+  void set_text(const char* value);
+  void set_text(const char* value, size_t size);
+  ::std::string* mutable_text();
+  ::std::string* release_text();
+  void set_allocated_text(::std::string* text);
+
+  // int32 configNo = 1;
+  void clear_configno();
+  static const int kConfigNoFieldNumber = 1;
+  ::google::protobuf::int32 configno() const;
+  void set_configno(::google::protobuf::int32 value);
+
+  // .OrionCommunication.OverlayQ.Position pos = 2;
+  void clear_pos();
+  static const int kPosFieldNumber = 2;
+  ::OrionCommunication::OverlayQ_Position pos() const;
+  void set_pos(::OrionCommunication::OverlayQ_Position value);
+
+  // int32 posx = 3;
+  void clear_posx();
+  static const int kPosxFieldNumber = 3;
+  ::google::protobuf::int32 posx() const;
+  void set_posx(::google::protobuf::int32 value);
+
+  // int32 posy = 4;
+  void clear_posy();
+  static const int kPosyFieldNumber = 4;
+  ::google::protobuf::int32 posy() const;
+  void set_posy(::google::protobuf::int32 value);
+
+  // int32 display = 6;
+  void clear_display();
+  static const int kDisplayFieldNumber = 6;
+  ::google::protobuf::int32 display() const;
+  void set_display(::google::protobuf::int32 value);
+
+  // int32 textSize = 7;
+  void clear_textsize();
+  static const int kTextSizeFieldNumber = 7;
+  ::google::protobuf::int32 textsize() const;
+  void set_textsize(::google::protobuf::int32 value);
+
+  // int32 dateTimeFormat = 8;
+  void clear_datetimeformat();
+  static const int kDateTimeFormatFieldNumber = 8;
+  ::google::protobuf::int32 datetimeformat() const;
+  void set_datetimeformat(::google::protobuf::int32 value);
+
+  // int32 displayDate = 9;
+  void clear_displaydate();
+  static const int kDisplayDateFieldNumber = 9;
+  ::google::protobuf::int32 displaydate() const;
+  void set_displaydate(::google::protobuf::int32 value);
+
+  // int32 displayTime = 10;
+  void clear_displaytime();
+  static const int kDisplayTimeFieldNumber = 10;
+  ::google::protobuf::int32 displaytime() const;
+  void set_displaytime(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:OrionCommunication.OverlayQ)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::ArenaStringPtr text_;
+  ::google::protobuf::int32 configno_;
+  int pos_;
+  ::google::protobuf::int32 posx_;
+  ::google::protobuf::int32 posy_;
+  ::google::protobuf::int32 display_;
+  ::google::protobuf::int32 textsize_;
+  ::google::protobuf::int32 datetimeformat_;
+  ::google::protobuf::int32 displaydate_;
+  ::google::protobuf::int32 displaytime_;
+  mutable int _cached_size_;
+  friend struct ::protobuf_OrionCommunication_2eproto::TableStruct;
+  friend void ::protobuf_OrionCommunication_2eproto::InitDefaultsOverlayQImpl();
 };
 // ===================================================================
 
@@ -2219,20 +2508,20 @@ inline void TRectangle::set_allocated_bottomright(::OrionCommunication::TPoint* 
 
 // -------------------------------------------------------------------
 
-// SetModeQ
+// ModeQ
 
-// .OrionCommunication.SetModeQ.Mode mode = 1;
-inline void SetModeQ::clear_mode() {
+// .OrionCommunication.ModeQ.Mode mode = 1;
+inline void ModeQ::clear_mode() {
   mode_ = 0;
 }
-inline ::OrionCommunication::SetModeQ_Mode SetModeQ::mode() const {
-  // @@protoc_insertion_point(field_get:OrionCommunication.SetModeQ.mode)
-  return static_cast< ::OrionCommunication::SetModeQ_Mode >(mode_);
+inline ::OrionCommunication::ModeQ_Mode ModeQ::mode() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.ModeQ.mode)
+  return static_cast< ::OrionCommunication::ModeQ_Mode >(mode_);
 }
-inline void SetModeQ::set_mode(::OrionCommunication::SetModeQ_Mode value) {
+inline void ModeQ::set_mode(::OrionCommunication::ModeQ_Mode value) {
   
   mode_ = value;
-  // @@protoc_insertion_point(field_set:OrionCommunication.SetModeQ.mode)
+  // @@protoc_insertion_point(field_set:OrionCommunication.ModeQ.mode)
 }
 
 // -------------------------------------------------------------------
@@ -2289,6 +2578,20 @@ inline void AppCommandResult::set_err(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:OrionCommunication.AppCommandResult.err)
 }
 
+// .OrionCommunication.AppCommandResult.Response response = 2;
+inline void AppCommandResult::clear_response() {
+  response_ = 0;
+}
+inline ::OrionCommunication::AppCommandResult_Response AppCommandResult::response() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.AppCommandResult.response)
+  return static_cast< ::OrionCommunication::AppCommandResult_Response >(response_);
+}
+inline void AppCommandResult::set_response(::OrionCommunication::AppCommandResult_Response value) {
+  
+  response_ = value;
+  // @@protoc_insertion_point(field_set:OrionCommunication.AppCommandResult.response)
+}
+
 // -------------------------------------------------------------------
 
 // AryaParameters
@@ -2309,20 +2612,20 @@ inline void AryaParameters::set_panspeed(::google::protobuf::int32 value) {
 
 // -------------------------------------------------------------------
 
-// GetFrames
+// FrameModeQ
 
-// .OrionCommunication.GetFrames.Frames modeFrame = 1;
-inline void GetFrames::clear_modeframe() {
-  modeframe_ = 0;
+// .OrionCommunication.FrameModeQ.FrameMode mode = 1;
+inline void FrameModeQ::clear_mode() {
+  mode_ = 0;
 }
-inline ::OrionCommunication::GetFrames_Frames GetFrames::modeframe() const {
-  // @@protoc_insertion_point(field_get:OrionCommunication.GetFrames.modeFrame)
-  return static_cast< ::OrionCommunication::GetFrames_Frames >(modeframe_);
+inline ::OrionCommunication::FrameModeQ_FrameMode FrameModeQ::mode() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.FrameModeQ.mode)
+  return static_cast< ::OrionCommunication::FrameModeQ_FrameMode >(mode_);
 }
-inline void GetFrames::set_modeframe(::OrionCommunication::GetFrames_Frames value) {
+inline void FrameModeQ::set_mode(::OrionCommunication::FrameModeQ_FrameMode value) {
   
-  modeframe_ = value;
-  // @@protoc_insertion_point(field_set:OrionCommunication.GetFrames.modeFrame)
+  mode_ = value;
+  // @@protoc_insertion_point(field_set:OrionCommunication.FrameModeQ.mode)
 }
 
 // -------------------------------------------------------------------
@@ -2485,9 +2788,194 @@ inline void SetSensivity::set_sensivity(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:OrionCommunication.SetSensivity.sensivity)
 }
 
+// -------------------------------------------------------------------
+
+// OverlayQ
+
+// int32 configNo = 1;
+inline void OverlayQ::clear_configno() {
+  configno_ = 0;
+}
+inline ::google::protobuf::int32 OverlayQ::configno() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.OverlayQ.configNo)
+  return configno_;
+}
+inline void OverlayQ::set_configno(::google::protobuf::int32 value) {
+  
+  configno_ = value;
+  // @@protoc_insertion_point(field_set:OrionCommunication.OverlayQ.configNo)
+}
+
+// .OrionCommunication.OverlayQ.Position pos = 2;
+inline void OverlayQ::clear_pos() {
+  pos_ = 0;
+}
+inline ::OrionCommunication::OverlayQ_Position OverlayQ::pos() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.OverlayQ.pos)
+  return static_cast< ::OrionCommunication::OverlayQ_Position >(pos_);
+}
+inline void OverlayQ::set_pos(::OrionCommunication::OverlayQ_Position value) {
+  
+  pos_ = value;
+  // @@protoc_insertion_point(field_set:OrionCommunication.OverlayQ.pos)
+}
+
+// int32 posx = 3;
+inline void OverlayQ::clear_posx() {
+  posx_ = 0;
+}
+inline ::google::protobuf::int32 OverlayQ::posx() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.OverlayQ.posx)
+  return posx_;
+}
+inline void OverlayQ::set_posx(::google::protobuf::int32 value) {
+  
+  posx_ = value;
+  // @@protoc_insertion_point(field_set:OrionCommunication.OverlayQ.posx)
+}
+
+// int32 posy = 4;
+inline void OverlayQ::clear_posy() {
+  posy_ = 0;
+}
+inline ::google::protobuf::int32 OverlayQ::posy() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.OverlayQ.posy)
+  return posy_;
+}
+inline void OverlayQ::set_posy(::google::protobuf::int32 value) {
+  
+  posy_ = value;
+  // @@protoc_insertion_point(field_set:OrionCommunication.OverlayQ.posy)
+}
+
+// string text = 5;
+inline void OverlayQ::clear_text() {
+  text_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& OverlayQ::text() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.OverlayQ.text)
+  return text_.GetNoArena();
+}
+inline void OverlayQ::set_text(const ::std::string& value) {
+  
+  text_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:OrionCommunication.OverlayQ.text)
+}
+#if LANG_CXX11
+inline void OverlayQ::set_text(::std::string&& value) {
+  
+  text_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:OrionCommunication.OverlayQ.text)
+}
+#endif
+inline void OverlayQ::set_text(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  
+  text_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:OrionCommunication.OverlayQ.text)
+}
+inline void OverlayQ::set_text(const char* value, size_t size) {
+  
+  text_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:OrionCommunication.OverlayQ.text)
+}
+inline ::std::string* OverlayQ::mutable_text() {
+  
+  // @@protoc_insertion_point(field_mutable:OrionCommunication.OverlayQ.text)
+  return text_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* OverlayQ::release_text() {
+  // @@protoc_insertion_point(field_release:OrionCommunication.OverlayQ.text)
+  
+  return text_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void OverlayQ::set_allocated_text(::std::string* text) {
+  if (text != NULL) {
+    
+  } else {
+    
+  }
+  text_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), text);
+  // @@protoc_insertion_point(field_set_allocated:OrionCommunication.OverlayQ.text)
+}
+
+// int32 display = 6;
+inline void OverlayQ::clear_display() {
+  display_ = 0;
+}
+inline ::google::protobuf::int32 OverlayQ::display() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.OverlayQ.display)
+  return display_;
+}
+inline void OverlayQ::set_display(::google::protobuf::int32 value) {
+  
+  display_ = value;
+  // @@protoc_insertion_point(field_set:OrionCommunication.OverlayQ.display)
+}
+
+// int32 textSize = 7;
+inline void OverlayQ::clear_textsize() {
+  textsize_ = 0;
+}
+inline ::google::protobuf::int32 OverlayQ::textsize() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.OverlayQ.textSize)
+  return textsize_;
+}
+inline void OverlayQ::set_textsize(::google::protobuf::int32 value) {
+  
+  textsize_ = value;
+  // @@protoc_insertion_point(field_set:OrionCommunication.OverlayQ.textSize)
+}
+
+// int32 dateTimeFormat = 8;
+inline void OverlayQ::clear_datetimeformat() {
+  datetimeformat_ = 0;
+}
+inline ::google::protobuf::int32 OverlayQ::datetimeformat() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.OverlayQ.dateTimeFormat)
+  return datetimeformat_;
+}
+inline void OverlayQ::set_datetimeformat(::google::protobuf::int32 value) {
+  
+  datetimeformat_ = value;
+  // @@protoc_insertion_point(field_set:OrionCommunication.OverlayQ.dateTimeFormat)
+}
+
+// int32 displayDate = 9;
+inline void OverlayQ::clear_displaydate() {
+  displaydate_ = 0;
+}
+inline ::google::protobuf::int32 OverlayQ::displaydate() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.OverlayQ.displayDate)
+  return displaydate_;
+}
+inline void OverlayQ::set_displaydate(::google::protobuf::int32 value) {
+  
+  displaydate_ = value;
+  // @@protoc_insertion_point(field_set:OrionCommunication.OverlayQ.displayDate)
+}
+
+// int32 displayTime = 10;
+inline void OverlayQ::clear_displaytime() {
+  displaytime_ = 0;
+}
+inline ::google::protobuf::int32 OverlayQ::displaytime() const {
+  // @@protoc_insertion_point(field_get:OrionCommunication.OverlayQ.displayTime)
+  return displaytime_;
+}
+inline void OverlayQ::set_displaytime(::google::protobuf::int32 value) {
+  
+  displaytime_ = value;
+  // @@protoc_insertion_point(field_set:OrionCommunication.OverlayQ.displayTime)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
@@ -2522,15 +3010,25 @@ inline void SetSensivity::set_sensivity(::google::protobuf::int32 value) {
 namespace google {
 namespace protobuf {
 
-template <> struct is_proto_enum< ::OrionCommunication::SetModeQ_Mode> : ::google::protobuf::internal::true_type {};
+template <> struct is_proto_enum< ::OrionCommunication::ModeQ_Mode> : ::google::protobuf::internal::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::OrionCommunication::SetModeQ_Mode>() {
-  return ::OrionCommunication::SetModeQ_Mode_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::OrionCommunication::ModeQ_Mode>() {
+  return ::OrionCommunication::ModeQ_Mode_descriptor();
 }
-template <> struct is_proto_enum< ::OrionCommunication::GetFrames_Frames> : ::google::protobuf::internal::true_type {};
+template <> struct is_proto_enum< ::OrionCommunication::AppCommandResult_Response> : ::google::protobuf::internal::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::OrionCommunication::GetFrames_Frames>() {
-  return ::OrionCommunication::GetFrames_Frames_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::OrionCommunication::AppCommandResult_Response>() {
+  return ::OrionCommunication::AppCommandResult_Response_descriptor();
+}
+template <> struct is_proto_enum< ::OrionCommunication::FrameModeQ_FrameMode> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::OrionCommunication::FrameModeQ_FrameMode>() {
+  return ::OrionCommunication::FrameModeQ_FrameMode_descriptor();
+}
+template <> struct is_proto_enum< ::OrionCommunication::OverlayQ_Position> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::OrionCommunication::OverlayQ_Position>() {
+  return ::OrionCommunication::OverlayQ_Position_descriptor();
 }
 
 }  // namespace protobuf
