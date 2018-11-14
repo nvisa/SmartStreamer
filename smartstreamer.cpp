@@ -167,6 +167,12 @@ void SmartStreamer::doPanaroma(const RawBuffer &buf)
 		wrap->viaPan(buf, pan_tilt_zoom_read, wrap->panaroma.initializing);
 		wrap->panaroma.initializing = 0;
 		if (wrap->meta[0] != 0) {
+			if (wrap->meta[3] == 1)
+				wrap->panaroma.panStartAngle = wrap->meta[1] + (float)(wrap->meta[2]) / 10.0;
+			else if (wrap->meta[3] == 2)
+				wrap->panaroma.panStartAngle = -(wrap->meta[1] + (float)(wrap->meta[2]) / 10.0);
+			else
+				wrap->panaroma.panStartAngle = 0;
 			pt->panTiltStop();
 			wrap->stopPanaroma();
 			pt->setTransportInterval(100);
@@ -760,7 +766,7 @@ grpc::Status SmartStreamer::GotoPanaromaPixel(grpc::ServerContext *context, cons
 	Q_UNUSED(response)
 	if (!wrap)
 		return Status::OK;
-	float shiftAmount = 5.5;
+	float shiftAmount = 4.5;
 	float angle = (request->x() * (360 + shiftAmount) + wrap->panaroma.panStartAngle);
 	if(angle > 360)
 		angle -= 360;
@@ -777,7 +783,7 @@ grpc::Status SmartStreamer::GotoPanaromaPixel(grpc::ServerContext *context, cons
 		point_y = 45.0;
 	if (point_y < -45.0)
 		point_y = -45.0;
-	point_y = point_y / 45;
+	point_y = point_y;
 	pt->panTiltGoPos(point_x * 360, point_y);
 	return Status::OK;
 }
