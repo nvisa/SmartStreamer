@@ -782,7 +782,9 @@ grpc::Status SmartStreamer::GotoPanaromaPixel(grpc::ServerContext *context, cons
 	Q_UNUSED(request)
 	Q_UNUSED(response)
 	if (!wrap)
-		return Status::OK;
+		return Status::CANCELLED;
+	if (wrap->mode != ViaWrapper::None)
+		return Status::CANCELLED;
 	float shiftAmount = 4.5;
 	float angle = (request->x() * (360 + shiftAmount) + wrap->panaroma.panStartAngle);
 	if(angle > 360)
