@@ -86,6 +86,7 @@ SmartStreamer::SmartStreamer(QObject *parent)
 	wrap = NULL;
 	ptzp = NULL;
 	ptzpStatus = true;
+	getScreenShot = false;
 	grpcServ = new GrpcThread(50059, this);
 	grpcServ->start();
 }
@@ -371,7 +372,7 @@ int SmartStreamer::processMainRGB(const RawBuffer &buf)
 		ffDebug() << buf.getMimeType() << buf.size() << FFmpegColorSpace::getName(buf.constPars()->avPixelFormat)
 				  << buf.constPars()->videoWidth << buf.constPars()->videoHeight;
 	mutex.lock();
-	screenMainShot = doScreenShot(buf);
+	screenBuf = buf;
 	mutex.unlock();
 	return 0;
 }
@@ -382,7 +383,7 @@ int SmartStreamer::processScaledRGB(const RawBuffer &buf)
 		ffDebug() << buf.getMimeType() << buf.size() << FFmpegColorSpace::getName(buf.constPars()->avPixelFormat)
 				  << buf.constPars()->videoWidth << buf.constPars()->videoHeight;
 	mutex.lock();
-	screenSecShot = doScreenShot(buf);
+	screenSecBuf = buf;
 	mutex.unlock();
 	return 0;
 }
@@ -621,10 +622,11 @@ grpc::Status SmartStreamer::GetSecScreenShot(grpc::ServerContext *context, const
 	Q_UNUSED(context)
 	Q_UNUSED(request)
 	Q_UNUSED(response)
-	if (screenSecShot.isEmpty())
-		return Status::CANCELLED;
 	mutex.lock();
-	response->set_frame(screenSecShot, screenSecShot.size());
+	QByteArray ss = doScreenShot(screenSecBuf);
+	if (ss.isEmpty())
+		return Status::CANCELLED;
+	response->set_frame(ss, ss.size());
 	mutex.unlock();
 	return Status::OK;
 }
@@ -634,10 +636,11 @@ grpc::Status SmartStreamer::GetMainScreenShot(grpc::ServerContext *context, cons
 	Q_UNUSED(context)
 	Q_UNUSED(request)
 	Q_UNUSED(response)
-	if (screenMainShot.isEmpty())
-		return Status::CANCELLED;
 	mutex.lock();
-	response->set_frame(screenMainShot, screenMainShot.size());
+	QByteArray ss = doScreenShot(screenBuf);
+	if (ss.isEmpty())
+		return Status::CANCELLED;
+	response->set_frame(ss, ss.size());
 	mutex.unlock();
 	return Status::OK;
 }

@@ -120,8 +120,8 @@ protected:
 	QtVideoOutput *vout;
 	SeiInserter *sei;
 	GrpcThread *grpcServ;
-	QByteArray screenMainShot;
-	QByteArray screenSecShot;
+	RawBuffer screenBuf;
+	RawBuffer screenSecBuf;
 	PtzpDriver *ptzp;
 	PtzpHead *pt;
 	PtzpHead *thermalCam;
@@ -138,6 +138,7 @@ protected:
 	QMutex mutex;
 	bool startDriver(const QString &target);
 	bool ptzpStatus;
+	bool getScreenShot;
 };
 
 #endif // SMARTSTREAMER_H
