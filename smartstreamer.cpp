@@ -19,6 +19,7 @@
 #include <ecl/ptzp/ptzphead.h>
 #include <ecl/ptzp/aryadriver.h>
 #include <ecl/ptzp/irdomedriver.h>
+#include <ecl/ptzp/ptzpdriver.h>
 #include <ecl/net/networkaccessmanager.h>
 
 #ifdef HAVE_VIA_WRAPPER
@@ -83,8 +84,7 @@ SmartStreamer::SmartStreamer(QObject *parent)
 	: BaseStreamer(parent), OrionCommunication::OrionCommunicationService::Service()
 {
 	wrap = NULL;
-	arya = NULL;
-	irdome = NULL;
+	ptzp = NULL;
 	ptzpStatus = true;
 	grpcServ = new GrpcThread(50059, this);
 	grpcServ->start();
@@ -93,21 +93,21 @@ SmartStreamer::SmartStreamer(QObject *parent)
 bool SmartStreamer::startDriver(const QString &target)
 {
 	if (target.contains("eth")) {
-		irdome = new IRDomeDriver();
-		if (irdome->setTarget(target) != 0)
+		ptzp = new IRDomeDriver();
+		if (ptzp->setTarget(target) != 0)
 			return false;
-		irdome->startSocketApi(8945);
-		irdome->startGrpcApi(50058);
-		pt = irdome->getHead(1);
-		thermalCam = irdome->getHead(0);
+		ptzp->startSocketApi(8945);
+		ptzp->startGrpcApi(50058);
+		pt = ptzp->getHead(1);
+		thermalCam = ptzp->getHead(0);
 	} else {
-		arya = new AryaDriver();
-		if (arya->setTarget("50.23.169.213") != 0)
+		ptzp = new AryaDriver();
+		if (ptzp->setTarget("50.23.169.213") != 0)
 			return false;
-		arya->startSocketApi(8945);
-		arya->startGrpcApi(50058);
-		pt = arya->getHead(0);
-		thermalCam = arya->getHead(1);
+		ptzp->startSocketApi(8945);
+		ptzp->startGrpcApi(50058);
+		pt = ptzp->getHead(0);
+		thermalCam = ptzp->getHead(1);
 	}
 	return true;
 }
@@ -502,7 +502,7 @@ grpc::Status SmartStreamer::GetPanaromaFrames(grpc::ServerContext *context, cons
 	if (wrap->getMode() != ViaWrapper::Panaroma)
 		return Status::CANCELLED;
 	bool lastFrame;
-	if (request->modeframe() == 0)
+	if (request->mode() == 0)
 		lastFrame = false;
 	else lastFrame = true;
 	QString next = "/home/ubuntu/Desktop/Pan_images/Pan%1.jpg";
@@ -569,7 +569,7 @@ grpc::Status SmartStreamer::RunPanaroma(grpc::ServerContext *context, const Orio
 		return Status::CANCELLED;
 	}
 	QProcess::execute("bash -c \"rm -f /home/ubuntu/Desktop/Pan_images/*\"");
-	irdome->set("ptz.command.control", true);
+	ptzp->set("ptz.command.control", true);
 	wrap->startPanaroma();
 	return Status::OK;
 }
@@ -598,7 +598,7 @@ grpc::Status SmartStreamer::StopPanaroma(grpc::ServerContext *context, const Ori
 	wrap->stopPanaroma();
 	pt->panTiltStop();
 	pt->setTransportInterval(100);
-	irdome->set("ptz.command.control", false);
+	ptzp->set("ptz.command.control", false);
 	response->set_err(0);
 	return Status::OK;
 }
@@ -807,7 +807,7 @@ grpc::Status SmartStreamer::RunCalibration(grpc::ServerContext *context, const O
 	}
 	if (!wrap)
 		return Status::OK;
-	irdome->set("ptz.command.control", true);
+	ptzp->set("ptz.command.control", true);
 	pt->setTransportInterval(50);
 	wrap->startCalibration();
 	return Status::OK;
@@ -822,7 +822,7 @@ grpc::Status SmartStreamer::StopCalibration(grpc::ServerContext *context, const 
 	wrap->stopCalibration();
 	pt->panTiltStop();
 	pt->setTransportInterval(100);
-	irdome->set("ptz.command.control", false);
+	ptzp->set("ptz.command.control", false);
 	response->set_err(0);
 	return Status::OK;
 }

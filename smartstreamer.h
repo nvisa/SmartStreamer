@@ -16,6 +16,7 @@ class GrpcThread;
 class PtzpHead;
 class AryaDriver;
 class IRDomeDriver;
+class PtzpDriver;
 class SmartStreamer : public BaseStreamer, public OrionCommunication::OrionCommunicationService::Service
 {
 	Q_OBJECT
@@ -121,8 +122,7 @@ protected:
 	GrpcThread *grpcServ;
 	QByteArray screenMainShot;
 	QByteArray screenSecShot;
-	AryaDriver *arya;
-	IRDomeDriver *irdome;
+	PtzpDriver *ptzp;
 	PtzpHead *pt;
 	PtzpHead *thermalCam;
 	int width;
