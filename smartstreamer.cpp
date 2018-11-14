@@ -115,8 +115,14 @@ bool SmartStreamer::startDriver(const QString &target)
 
 bool SmartStreamer::goToZeroPosition()
 {
+	float pan = pt->getPanAngle(); // every degree going to in about 4 milisecond for ARYA.
+	int time = 0;
+	if (pan >= 180)
+		time = (360 - pan) * 0.04 + 1;
+	else
+		time = (pan - 0) * 0.04 + 1;
 	pt->panTiltGoPos(0, 0);
-	sleep(3);
+	sleep(time);
 	if (wrap) {
 		if (wrap->mode == wrap->Panaroma) {
 			wrap->panaroma.initStart = false;
