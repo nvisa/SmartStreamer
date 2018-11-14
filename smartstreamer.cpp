@@ -146,6 +146,8 @@ bool SmartStreamer::startSpinnig(float sSpeed)
 
 void SmartStreamer::doPanaroma(const RawBuffer &buf)
 {
+	if (!ptzpStatus)
+		return;
 	if (wrap->panaroma.stop)
 		return;
 	if (wrap->panaroma.start) {
@@ -182,6 +184,8 @@ void SmartStreamer::doPanaroma(const RawBuffer &buf)
 
 void SmartStreamer::doCalibration(const RawBuffer &buf)
 {
+	if (!ptzpStatus)
+		return;
 	if (wrap->calibration.stop)
 		return;
 	float pan = pt->getPanAngle();
@@ -216,6 +220,8 @@ void SmartStreamer::doCalibration(const RawBuffer &buf)
 
 void SmartStreamer::doMotionDetection(const RawBuffer &buf)
 {
+	if (!ptzpStatus)
+		return;
 	if (wrap->motion.stop)
 		return;
 	if (wrap->motion.start) {
