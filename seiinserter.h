@@ -62,6 +62,7 @@ public:
 	int setAlarmTemplate(const QString &filename);
 	void processMessage(QByteArray datagram);
 	QByteArray createSEI(seiXmlData *xmlData, QByteArray in);
+	void clearLastSEIMessage();
 
 protected:
 	struct CurrentAlarmInfo {

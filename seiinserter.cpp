@@ -460,3 +460,9 @@ QByteArray SeiInserter::createSEI(seiXmlData *xmlData, QByteArray in)
 
 	return templ.arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz")).arg(textSei).arg(lineSei).arg(rectSei).arg(polySei).arg(circleSei).arg(alarmSei).toUtf8();
 }
+
+void SeiInserter::clearLastSEIMessage()
+{
+	seiAlarm.alarmType = ALARM_IDLE;
+	incomingSeiData.clear();
+}

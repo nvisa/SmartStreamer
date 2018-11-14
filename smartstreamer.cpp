@@ -610,6 +610,8 @@ grpc::Status SmartStreamer::StopMotion(grpc::ServerContext *context, const Orion
 	if (!wrap)
 		return Status::OK;
 	wrap->stopMotion();
+	if (sei)
+		sei->clearLastSEIMessage();
 	response->set_err(0);
 	return Status::OK;
 }
