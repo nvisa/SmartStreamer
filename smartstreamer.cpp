@@ -144,7 +144,7 @@ bool SmartStreamer::startSpinnig(float sSpeed)
 	while (span == 0)
 		span = (int) pt->getPanAngle();
 	if (span != 0) {
-		pt->setTransportInterval(50);
+		pt->setTransportInterval(25);
 		wrap->panaroma.startSpinnig = true;
 		wrap->panaroma.initializing = 1;
 	}
@@ -229,8 +229,10 @@ void SmartStreamer::doMotionDetection(const RawBuffer &buf)
 {
 	if (!ptzpStatus)
 		return;
-	if (wrap->motion.stop)
+	if (wrap->motion.stop) {
+		sei->clearLastSEIMessage();
 		return;
+	}
 	if (wrap->motion.start) {
 		wrap->viaBase(buf, wrap->motion.initializing);
 		wrap->motion.initializing = 0;
@@ -300,8 +302,8 @@ int SmartStreamer::setupRtspClient(const QString &rtspUrl)
 	p3->append(rgbConv2);
 	if (pars.pipelineFlags & Parameters::EL_RGB_PROCESS)
 		p3->append(newFunctionPipe(SmartStreamer, this, SmartStreamer::processMainRGB));
-	if (pars.pipelineFlags & Parameters::EL_QT_VOUT)
-		p3->append(vout);
+//	if (pars.pipelineFlags & Parameters::EL_QT_VOUT)
+//		p3->append(vout);
 	p3->append(rgbScaler);
 	if (pars.pipelineFlags & Parameters::EL_RGBS_PROCESS)
 		p3->append(newFunctionPipe(SmartStreamer, this, SmartStreamer::processScaledRGB));
