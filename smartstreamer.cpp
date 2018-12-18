@@ -125,6 +125,7 @@ bool SmartStreamer::goToZeroPosition()
 	sleep(time);
 	if (wrap) {
 		if (wrap->mode == wrap->Panaroma) {
+			thermalCam->setProperty(2, 0x03);
 			wrap->panaroma.initStart = false;
 			wrap->panaroma.tiltStartAngle = pt->getTiltAngle();
 			wrap->panaroma.panStartAngle = pt->getPanAngle();
@@ -158,7 +159,6 @@ void SmartStreamer::doPanaroma(const RawBuffer &buf)
 	if (wrap->panaroma.stop)
 		return;
 	if (wrap->panaroma.start) {
-		thermalCam->setProperty(2, 0x03);
 		if (wrap->panaroma.initStart)
 			if (!goToZeroPosition())
 				mDebug("Closing panaroma mode");
