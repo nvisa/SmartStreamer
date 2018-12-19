@@ -91,28 +91,6 @@ SmartStreamer::SmartStreamer(QObject *parent)
 	grpcServ->start();
 }
 
-bool SmartStreamer::startDriver(const QString &target)
-{
-	if (target.contains("eth")) {
-		ptzp = new IRDomeDriver();
-		if (ptzp->setTarget(target) != 0)
-			return false;
-		ptzp->startSocketApi(8945);
-		ptzp->startGrpcApi(50058);
-		pt = ptzp->getHead(1);
-		thermalCam = ptzp->getHead(0);
-	} else {
-		ptzp = new AryaDriver();
-		if (ptzp->setTarget("50.23.169.213") != 0)
-			return false;
-		ptzp->startSocketApi(8945);
-		ptzp->startGrpcApi(50058);
-		pt = ptzp->getHead(0);
-		thermalCam = ptzp->getHead(1);
-	}
-	return true;
-}
-
 bool SmartStreamer::goToZeroPosition()
 {
 	float pan = pt->getPanAngle(); // every degree going to in about 4 milisecond for ARYA.
@@ -354,9 +332,20 @@ void SmartStreamer::setupVideoAnalysis()
 
 void SmartStreamer::setupPanTiltZoomDriver(const QString &target)
 {
-	if (!startDriver(target))
+	ptzp = new AryaDriver();
+	if (ptzp->setTarget(target) != 0) {
 		ptzpStatus = false;
-	mDebug("PTZP driver connect state is : %s", ptzpStatus ? "true" : "false");
+		mDebug("PTZP driver connect state is : %s", ptzpStatus ? "true" : "false");
+	}
+	ptzp->startSocketApi(8945);
+	ptzp->startGrpcApi(50058);
+	ptzp->setVideoDeviceParams(pars.rtspUrl.split("//").last().split("/").first(), pars.rtspClientUser, pars.rtspClientPass);
+	pt = ptzp->getHead(0);
+	thermalCam = ptzp->getHead(1);
+
+	setupVideoAnalysis();
+
+	return;
 }
 
 int SmartStreamer::processMainYUV(const RawBuffer &buf)
@@ -462,7 +451,6 @@ grpc::Status SmartStreamer::SetVideoOverlay(grpc::ServerContext *context, const 
 	QString type = "type=0";
 	QString display = QString("display=%1").arg(request->display());
 	QString position;
-	// Todo position...
 	if (request->pos() == OrionCommunication::OverlayQ::Custom) {
 		position = QString("position=4&posx=%1&posy=%2").arg(request->posx()).arg(request->posy());
 	} else {
@@ -484,11 +472,7 @@ grpc::Status SmartStreamer::SetVideoOverlay(grpc::ServerContext *context, const 
 			showDate + "&" +
 			showTime + "&" +
 			text;
-	NetworkAccessManager netman;
-	netman.setAuthenticationInfo("admin", "moxamoxa");
-	netman.setPath("/moxa-cgi/imageoverlay.cgi");
-	netman.setUrl("50.23.169.211");
-	netman.POST(overlayData);
+	ptzp->setOverlay(overlayData);
 	response->set_err(0);
 	return Status::OK;
 }
@@ -578,7 +562,6 @@ grpc::Status SmartStreamer::RunPanaroma(grpc::ServerContext *context, const Orio
 		return Status::CANCELLED;
 	}
 	QProcess::execute("bash -c \"rm -f /home/ubuntu/Desktop/Pan_images/*\"");
-	ptzp->set("ptz.command.control", true);
 	wrap->startPanaroma();
 	return Status::OK;
 }
@@ -607,7 +590,6 @@ grpc::Status SmartStreamer::StopPanaroma(grpc::ServerContext *context, const Ori
 	wrap->stopPanaroma();
 	pt->panTiltStop();
 	pt->setTransportInterval(100);
-	ptzp->set("ptz.command.control", false);
 	response->set_err(0);
 	return Status::OK;
 }
@@ -820,7 +802,6 @@ grpc::Status SmartStreamer::RunCalibration(grpc::ServerContext *context, const O
 	}
 	if (!wrap)
 		return Status::OK;
-	ptzp->set("ptz.command.control", true);
 	pt->setTransportInterval(50);
 	wrap->startCalibration();
 	return Status::OK;
@@ -835,7 +816,6 @@ grpc::Status SmartStreamer::StopCalibration(grpc::ServerContext *context, const 
 	wrap->stopCalibration();
 	pt->panTiltStop();
 	pt->setTransportInterval(100);
-	ptzp->set("ptz.command.control", false);
 	response->set_err(0);
 	return Status::OK;
 }
@@ -874,7 +854,6 @@ void SmartStreamer::printParameters()
 	printPar(rtspServerUser);
 	printPar(rtspServerPass);
 	printPar(ptzUrl);
-	printPar(offline);
 	foreach (QString line, lines)
 		qDebug("%s", qPrintable(line));
 }

@@ -68,7 +68,6 @@ public:
 			decOutputInFps = 0;
 			decOutputOutFps = 0;
 			ptzUrl = "eth;10.5.20.92:8998";
-			offline = 0;
 		}
 
 		enum EnabledElemenets {
@@ -81,7 +80,6 @@ public:
 			EL_MJPEG_OUTPUT = 1 << 6,
 		};
 
-		int offline;
 		bool enableMoxaHacks;
 		int decBufferCount;
 		int decWidth;
@@ -99,6 +97,7 @@ public:
 		float decOutputInFps;
 		float decOutputOutFps;
 		QString ptzUrl;
+		QString rtspUrl;
 	};
 	Parameters pars;
 
@@ -122,7 +121,7 @@ protected:
 	GrpcThread *grpcServ;
 	RawBuffer screenBuf;
 	RawBuffer screenSecBuf;
-	PtzpDriver *ptzp;
+	AryaDriver *ptzp;
 	PtzpHead *pt;
 	PtzpHead *thermalCam;
 	int width;
@@ -136,7 +135,7 @@ protected:
 	QByteArray getImageFromFile(const QString &filename);
 	QByteArray convertImageToByteArray(const QString &filename);
 	QMutex mutex;
-	bool startDriver(const QString &target);
+
 	bool ptzpStatus;
 	bool getScreenShot;
 };

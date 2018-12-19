@@ -152,30 +152,27 @@ int main(int argc, char *argv[])
 	getCmdParInt(pars.enableMoxaHacks, "--moxa-hacks", "Enable MOXA related various hacks, default '0'");
 	getCmdParInt(pars.pipelineFlags, "--pipeline-flags", "Pipeline customization flags, default 0xffffffff");
 	getCmdParStr(pars.ptzUrl, "--ptz-url", "System head remote target, ekinoks 'eth;10.5.20.92:8998', arya '50.23.169.213'");
-	getCmdParInt(pars.offline, "--offline", "This mode just use rtp, rtsp streaming flows.");
 	if (pars.pipelineFlags == 0)
 		pars.pipelineFlags = 0xffffffff; //hex fix
 	s.pars = pars;
 
 	QString url = getCommandlineParameter("--rtsp-url", &a, "RTSP camera URL, default 'rtsp://10.5.176.65/Streaming/Channels/1'", "");
+	pars.rtspUrl = url;
 
 	if (a.arguments().contains("--help")) {
 		printHelp();
 		return 0;
 	}
 
-	//url = "rtsp://50.23.169.211/multicaststream_ch1_stream1";
-	if (url == "")
-		url = "rtsp://10.5.176.65/Streaming/Channels/1";
-
-	if (!pars.offline)
-		s.setupVideoAnalysis();
+	if (!url.isEmpty())
+		s.setupRtspClient(url);
+	else {
+		printHelp();
+		return 0;
+	}
 
 	if (!pars.ptzUrl.isEmpty())
 		s.setupPanTiltZoomDriver(pars.ptzUrl);
-
-	if (!url.isEmpty())
-		s.setupRtspClient(url);
 
 	s.start();
 #endif
