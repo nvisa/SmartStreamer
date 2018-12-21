@@ -339,7 +339,7 @@ void SmartStreamer::setupPanTiltZoomDriver(const QString &target)
 	}
 	ptzp->startSocketApi(8945);
 	ptzp->startGrpcApi(50058);
-	ptzp->setVideoDeviceParams(pars.rtspUrl.split("//").last().split("/").first(), pars.rtspClientUser, pars.rtspClientPass);
+//	ptzp->setVideoDeviceParams(pars.rtspUrl.split("//").last().split("/").first(), pars.rtspClientUser, pars.rtspClientPass);
 	pt = ptzp->getHead(0);
 	thermalCam = ptzp->getHead(1);
 
@@ -472,7 +472,7 @@ grpc::Status SmartStreamer::SetVideoOverlay(grpc::ServerContext *context, const 
 			showDate + "&" +
 			showTime + "&" +
 			text;
-	ptzp->setOverlay(overlayData);
+//	ptzp->setOverlay(overlayData);
 	response->set_err(0);
 	return Status::OK;
 }
