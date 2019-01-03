@@ -16,6 +16,10 @@
 #include <lmm/ffmpeg/ffmpegcolorspace.h>
 #include <lmm/pipeline/functionpipeelement.h>
 
+#include <lmm/tx1/tx1videoencoder.h>
+#include <lmm/v4l2output.h>
+#include <lmm/v4l2input.h>
+
 #include <ecl/ptzp/ptzphead.h>
 #include <ecl/ptzp/aryadriver.h>
 #include <ecl/ptzp/irdomedriver.h>
@@ -233,6 +237,7 @@ int SmartStreamer::setupRtspClient(const QString &rtspUrl)
 	/* queues will be used to de-multiplex streams */
 	BufferQueue *queue = new BufferQueue;
 	BufferQueue *queueScalerEngine = new BufferQueue;
+	BufferQueue *queueNv12 = new BufferQueue;
 
 	vout = new QtVideoOutput;
 	dec = new FFmpegDecoder;
@@ -246,6 +251,17 @@ int SmartStreamer::setupRtspClient(const QString &rtspUrl)
 	VideoScaler *yuvScaler = new VideoScaler;
 	yuvScaler->setOutputResolution(pars.secWidth, pars.secHeight);
 
+	VideoScaler *rgbConvNv12 = new VideoScaler;
+	rgbConvNv12->setOutputFormat(AV_PIX_FMT_NV12);
+	rgbConvNv12->setOutputResolution(768,432);
+	rgbConvNv12->setMode(1);
+
+	QString device = "/dev/video3";
+	V4l2Output *v4l2 = new V4l2Output();
+	v4l2->setParameter("videoWidth", 768);
+	v4l2->setParameter("videoHeight", 432);
+	v4l2->setParameter("device", device);
+
 	BaseLmmPipeline *p1 = addPipeline();
 	p1->append(rtp);
 	p1->append(queue);
@@ -254,6 +270,8 @@ int SmartStreamer::setupRtspClient(const QString &rtspUrl)
 	p1->append(queueScalerEngine);
 	if (pars.pipelineFlags & Parameters::EL_YUV_PROCESS)
 		p1->append(newFunctionPipe(SmartStreamer, this, SmartStreamer::processMainYUV));
+	p1->append(rgbConvNv12);
+	p1->append(v4l2);
 	p1->end();
 	if (pars.rtpBufferDuration) {
 		rtp->getOutputQueue(0)->setBufferDuration(pars.rtpBufferDuration);
@@ -263,6 +281,12 @@ int SmartStreamer::setupRtspClient(const QString &rtspUrl)
 		dec->getOutputQueue(0)->setRateReduction(pars.decOutputInFps, pars.decOutputOutFps);
 	}
 
+//	V4l2Input *v4l2Input = new V4l2Input();
+//	v4l2Input->setParameter("device", device);
+//	v4l2Input->setParameter("videoWidth", 768);
+//	v4l2Input->setParameter("videoHeight", 432);
+
+	TX1VideoEncoder *enc2 = new TX1VideoEncoder;
 	sei = new SeiInserter;
 	sei->setAlarmTemplate("sei_alarm_template.xml");
 	if (pars.pipelineFlags & Parameters::EL_RTP_OUTPUT) {
@@ -312,6 +336,7 @@ int SmartStreamer::setupRtspClient(const QString &rtspUrl)
 		rtsp->setMoxaHacks(true);
 
 	rtspServer = new BaseRtspServer(this, 8554);
+	rtspServer->setNetworkInterface("eth1");
 	rtspServer->addStream("stream1", false, rtpout);
 	rtspServer->addStream("stream1m",true, rtpout, 15678);
 	rtspServer->addMedia2Stream("videoTrack", "stream1", false, rtpout);

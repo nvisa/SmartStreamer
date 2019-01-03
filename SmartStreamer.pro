@@ -28,3 +28,8 @@ websockets {
 }
 
 include (build_config.pri)
+
+tx1 {
+    LIBS += -L/usr/local/cuda/lib64 -lcudart -lcufft
+    LIBS += -L/usr/lib/aarch64-linux-gnu/tegra/ -lv4l2 -lnvbuf_utils -lnvinfer -lnvparsers
+}
