@@ -34,6 +34,9 @@ service OrionCommunicationService {
     rpc GotoPanaromaPixel(TPoint) returns(AppCommandResult) {}
     rpc CurrentPanaromaPixel(DummyInfo) returns(TPoint) {}
 
+    rpc RunAutoTrack(AutoTrackQ) returns(AppCommandResult) {}
+    rpc StopAutoTrack(DummyInfo) returns(AppCommandResult) {}
+
     rpc SetVideoOverlay(OverlayQ) returns(AppCommandResult) {}
 }
 
@@ -140,4 +143,23 @@ message OverlayQ {
     int32 dateTimeFormat = 8; // support two formats. YYYY/MM/DD HH:MM:SS or MM-DD-YY HH:MM:SS
     int32 displayDate = 9;
     int32 displayTime = 10;
+}
+
+message TrackObjectQ {
+    float point_x = 1;
+    float point_y = 2;
+    float width = 3;
+    float height = 4;
+}
+
+message AutoTrackQ {
+    enum Mode {
+    DistanceToCenter = 0;
+    SizeOfObject = 1;
+    UserMode = 2;
+    }
+    Mode mode = 1;
+    float trackScore = 2;
+    int32 trackInterval = 3;
+    TrackObjectQ object = 4;
 }

@@ -24,6 +24,7 @@
 #include <ecl/ptzp/aryadriver.h>
 #include <ecl/ptzp/irdomedriver.h>
 #include <ecl/ptzp/ptzpdriver.h>
+#include <ecl/ptzp/tbgthdriver.h>
 #include <ecl/net/networkaccessmanager.h>
 
 #ifdef HAVE_VIA_WRAPPER
@@ -225,6 +226,41 @@ void SmartStreamer::doMotionDetection(const RawBuffer &buf)
 	}
 }
 
+void SmartStreamer::doDirectTrack(const RawBuffer &buf)
+{
+	if (wrap->track.stop)
+		return;
+	if (wrap->track.start) {
+		float panDegree = pt->getPanAngle();
+		float tiltDegree = pt->getTiltAngle();
+		if (wrap->track.init == 1) {
+			float pan_tilt_zoom_read[6];
+			pan_tilt_zoom_read[0] = panDegree;//irdome->getHead(1)->getPanAngle();
+			pan_tilt_zoom_read[1] = tiltDegree;//irdome->getHead(1)->getTiltAngle();
+			pan_tilt_zoom_read[2] = 0; // irdome->getHead(1)->getZoom();
+//			pan_tilt_zoom_read[3] = h_fov;
+//			pan_tilt_zoom_read[4] = v_fov;
+//			pan_tilt_zoom_read[5] = zoom_level;
+			wrap->viaTrack(buf);
+			wrap->track.init = 0;
+		}
+		else if (wrap->track.init == 0) {
+			float pan_tilt_zoom_read[6];
+			pan_tilt_zoom_read[0] = panDegree;
+			pan_tilt_zoom_read[1] = tiltDegree;
+			pan_tilt_zoom_read[2] = 0; // irdome->getHead(1)->getZoom();
+//			pan_tilt_zoom_read[3] = h_fov;
+//			pan_tilt_zoom_read[4] = v_fov;
+//			pan_tilt_zoom_read[5] = zoom_level;
+			//qDebug() << "Inside the wrap->track.init == 0";
+			wrap->viaTrack(buf);
+		}
+		period ++;
+		if(period % 10 == 0)
+			setPtz(wrap->meta);
+	}
+}
+
 int SmartStreamer::setupRtspClient(const QString &rtspUrl)
 {
 	printParameters();
@@ -357,16 +393,13 @@ void SmartStreamer::setupVideoAnalysis()
 
 void SmartStreamer::setupPanTiltZoomDriver(const QString &target)
 {
-	ptzp = new AryaDriver();
-	if (ptzp->setTarget(target) != 0) {
-		ptzpStatus = false;
-		mDebug("PTZP driver connect state is : %s", ptzpStatus ? "true" : "false");
-	}
-	ptzp->startSocketApi(8945);
+	ptzp = new TbgthDriver();
+	if (ptzp->setTarget(target) != 0)
+		return;
+//	ptzp->startSocketApi(8945);
 	ptzp->startGrpcApi(50058);
-//	ptzp->setVideoDeviceParams(pars.rtspUrl.split("//").last().split("/").first(), pars.rtspClientUser, pars.rtspClientPass);
-	pt = ptzp->getHead(0);
-	thermalCam = ptzp->getHead(1);
+	pt = ptzp->getHead(1);
+	thermalCam = ptzp->getHead(0);
 
 	setupVideoAnalysis();
 
@@ -417,6 +450,49 @@ int SmartStreamer::processScaledYUV(const RawBuffer &buf)
 				  << buf.constPars()->videoWidth << buf.constPars()->videoHeight;
 	return 0;
 }
+
+int SmartStreamer::setPtz(uchar meta[])
+{
+	int sei_direction = meta[10];
+	float pan_speed = ((float)meta[11]) / 63.0;
+	float tilt_speed = ((float)meta[12]) / 63.0;
+	if (pt == NULL)
+		return -1;
+	qDebug() << "PTZ command should be 1 " << sei_direction << ", " << meta[11] << ", " << meta[12] << pt;
+	if (sei_direction == 0) {
+		pt->panTiltStop();
+	} else if (sei_direction == 2)
+	{
+		pt->panRight(pan_speed);
+	} else if (sei_direction == 4) {
+		//pan_speed = -1 * pan_speed;
+		pt->panLeft(pan_speed);
+	} else if (sei_direction == 16) {
+		pt->tiltDown(tilt_speed);
+	} else if (sei_direction == 8) {
+		//tilt_speed = -1 * tilt_speed;
+		pt->tiltUp(0);
+	} else if (sei_direction == 18){
+		pt->panTiltAbs(pan_speed,tilt_speed);
+	} else if (sei_direction == 20){
+		pan_speed = -1 * pan_speed;
+		pt->panTiltAbs(pan_speed,tilt_speed);
+	} 	else if (sei_direction == 10){
+		tilt_speed = -1 * tilt_speed;
+		pt->panTiltAbs(pan_speed,tilt_speed);
+	}
+	else if (sei_direction == 12){
+		pan_speed = -1 * pan_speed;
+		tilt_speed = -1 * tilt_speed;
+		pt->panTiltAbs(pan_speed,tilt_speed);
+	}
+	else
+		pt->panTiltStop();
+
+	qDebug() << "PTZ command should be " << sei_direction << ", " << pan_speed << ", " << tilt_speed;
+	return 0;
+}
+
 
 int SmartStreamer::checkPoint(const RawBuffer &buf)
 {
@@ -843,6 +919,44 @@ grpc::Status SmartStreamer::StopCalibration(grpc::ServerContext *context, const 
 	pt->setTransportInterval(100);
 	response->set_err(0);
 	return Status::OK;
+}
+
+grpc::Status SmartStreamer::RunAutoTrack(grpc::ServerContext *context, const OrionCommunication::AutoTrackQ *request, OrionCommunication::AppCommandResult *response)
+{
+	Q_UNUSED(context)
+	if (!QFile::exists("track_alg_parameters.txt") || !QFile::exists("track_parameters.txt")) {
+		mDebug("The .txt files can't found. This program cancelled.");
+		return Status::CANCELLED;
+	}
+	if (!wrap) {
+		mDebug("Helper ViaWrapper class uninitalized.");
+		return Status::CANCELLED;
+	}
+	OrionCommunication::AutoTrackQ::Mode mode;
+	mode = request->mode();
+	wrap->track.score = request->trackscore();
+	wrap->track.interval = request->trackinterval();
+	if (mode == OrionCommunication::AutoTrackQ::DistanceToCenter) {
+		wrap->track.mode = STrack::Mode::DistanceToCenter;
+	} else if (mode == OrionCommunication::AutoTrackQ::SizeOfObject) {
+		wrap->track.mode = STrack::Mode::SizeOfObject;
+	} else if (mode == OrionCommunication::AutoTrackQ::UserMode) {
+		wrap->track.mode = STrack::Mode::UserMode;
+		wrap->track.objWidth = request->object().width();
+		wrap->track.objHeight = request->object().height();
+		wrap->track.objPointx = request->object().point_x();
+		wrap->track.objPointy = request->object().point_y();
+	} else {
+		mDebug("Mode request failed");
+		return Status::CANCELLED;
+	}
+	wrap->startTrack();
+}
+
+grpc::Status SmartStreamer::StopAutoTrack(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response)
+{
+	Q_UNUSED(context)
+	wrap->stopTrack();
 }
 
 void SmartStreamer::timeout()

@@ -17,6 +17,8 @@ class PtzpHead;
 class AryaDriver;
 class IRDomeDriver;
 class PtzpDriver;
+class TbgthDriver;
+class TX1VideoEncoder;
 class SmartStreamer : public BaseStreamer, public OrionCommunication::OrionCommunicationService::Service
 {
 	Q_OBJECT
@@ -51,6 +53,8 @@ public:
 	grpc::Status GotoPanaromaPixel(grpc::ServerContext *context, const OrionCommunication::TPoint *request, OrionCommunication::AppCommandResult *response);
 	grpc::Status RunCalibration(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response);
 	grpc::Status StopCalibration(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response);
+	grpc::Status RunAutoTrack(grpc::ServerContext *context, const OrionCommunication::AutoTrackQ *request, OrionCommunication::AppCommandResult *response);
+	grpc::Status StopAutoTrack(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response);
 	class Parameters {
 	public:
 		Parameters()
@@ -121,23 +125,26 @@ protected:
 	GrpcThread *grpcServ;
 	RawBuffer screenBuf;
 	RawBuffer screenSecBuf;
-	AryaDriver *ptzp;
+	TbgthDriver *ptzp;
 	PtzpHead *pt;
 	PtzpHead *thermalCam;
 	int width;
 	int height;
+	int period;
 
 	bool goToZeroPosition();
 	bool startSpinnig(float sSpeed = 0);
 	void doPanaroma(const RawBuffer &buf);
 	void doCalibration(const RawBuffer &buf);
 	void doMotionDetection(const RawBuffer &buf);
+	void doDirectTrack(const RawBuffer &buf);
 	QByteArray getImageFromFile(const QString &filename);
 	QByteArray convertImageToByteArray(const QString &filename);
 	QMutex mutex;
 
 	bool ptzpStatus;
 	bool getScreenShot;
+	int setPtz(uchar meta[]);
 };
 
 #endif // SMARTSTREAMER_H
