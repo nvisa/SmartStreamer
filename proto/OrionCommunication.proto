@@ -28,6 +28,16 @@ service OrionCommunicationService {
 
     rpc RunCalibration(DummyInfo) returns(AppCommandResult) {}
     rpc StopCalibration(DummyInfo) returns(AppCommandResult) {}
+	
+    rpc RunStabilization(DevicedBasedInfo) returns(AppCommandResult) {}
+    rpc StopStabilization(DevicedBasedInfo) returns(AppCommandResult) {}
+    rpc GetUptime(DevicedBasedInfo) returns(ReturnUptimeValue) {}
+    rpc GetFovValue(DevicedBasedInfo) returns(ReturnFOVValue) {}
+    rpc SetItemProperty(ItemProperty) returns(AppCommandResult) {}
+    rpc GetItemProperty(ItemProperty) returns(ItemProperty) {}
+    rpc SetBitrate(BitrateValue) returns(AppCommandResult) {}
+    rpc GetBitrate(DummyInfo) returns(BitrateValue) {}
+    rpc RunCIT(DummyInfo) returns(stream CitMessage) {}
 
     rpc GetMainScreenShot(DummyInfo) returns(ScreenFrame) {}
     rpc GetSecScreenShot(DummyInfo) returns(ScreenFrame) {}
@@ -78,6 +88,7 @@ message ModeQ {
       NONE = 0;
       PANAROMA = 1;
       MOTION_DETECTION = 2;
+      TRACK = 3;
     }
     Mode mode = 1;
 }
@@ -100,6 +111,35 @@ message AppCommandResult {
     Response response = 2;
 }
 
+message BitrateValue {
+	int32 bitrateValue = 1;
+}
+
+message ReturnUptimeValue {
+	int32 uptimeValue = 1;
+}
+
+message ReturnFOVValue {
+	float fovValue = 1;
+}
+
+message DevicedBasedInfo {
+    enum DeviceType {
+    TV = 0;
+    Thermal = 1;
+    }
+    DeviceType device = 1;
+}
+
+message ItemProperty {
+    enum ItemType {
+    Washer = 0;
+    Wiper  = 1;
+    }
+    ItemType itemType = 1; 
+    bool state = 2;
+}
+
 message AryaParameters {
     int32 panSpeed = 1;
 }
@@ -110,6 +150,15 @@ message FrameModeQ {
       AllFrames = 1;
     }
     FrameMode mode = 1;
+}
+
+message CitMessage {
+    int32 currentStep = 1;
+    int32 stepCount = 2;
+    int32 currentStepProgress = 3;
+    int32 currentStepProgressTotal = 4;
+    string msg = 5;
+    repeated string citResult = 6;
 }
 
 message PanoramaFrame {
@@ -158,8 +207,13 @@ message AutoTrackQ {
     SizeOfObject = 1;
     UserMode = 2;
     }
-    Mode mode = 1;
+    enum DeviceType {
+    TV= 0;
+    Thermal = 1;
+    }
+    Mode mode = 1; 
     float trackScore = 2;
     int32 trackInterval = 3;
     TrackObjectQ object = 4;
+    DeviceType device = 5;
 }
