@@ -31,12 +31,10 @@ static void printStackTrace(void)
 
 static void signalHandler(int signalNumber)
 {
-	static int once = 0;
-	if (once) {
-		exit(23);
+	if (signalNumber == SIGABRT) {
+		qDebug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! trying to continue");
 		return;
 	}
-	once = 1;
 	Qt::HANDLE id = QThread::currentThreadId();
 	qWarning("crash: Received signal %d, thread id is %p", signalNumber, id);
 	printStackTrace();
@@ -103,7 +101,7 @@ static bool hasArg(const QString &aname, QCoreApplication *a)
 }
 
 static QList<QPair<QString, QString> > help;
-static inline QString getCommandlineParameter(const QString &par, QApplication *a, const QString &desc, const QVariant &def)
+static inline QString getCommandlineParameter(const QString &par, QCoreApplication *a, const QString &desc, const QVariant &def)
 {
 	help << QPair<QString, QString>(par, desc);
 	if (hasArg(par, a))
@@ -124,12 +122,12 @@ static void printHelp()
 
 int main(int argc, char *argv[])
 {
-	QApplication a(argc, argv);
+	QCoreApplication a(argc, argv);
 	QDir::setCurrent(a.applicationDirPath());
 
 	LmmCommon::init();
 	ecl::initDebug();
-
+#if 1
 	installSignalHandlers();
 
 #if 1
@@ -154,18 +152,29 @@ int main(int argc, char *argv[])
 	getCmdParStr(pars.ptzUrl, "--ptz-url", "System head remote target, ekinoks 'eth;10.5.20.92:8998', arya '50.23.169.213'");
 	if (pars.pipelineFlags == 0)
 		pars.pipelineFlags = 0xffffffff; //hex fix
-	s.pars = pars;
 
-	QString url = getCommandlineParameter("--rtsp-url", &a, "RTSP camera URL, default 'rtsp://10.5.176.65/Streaming/Channels/1'", "");
+	//--rtsp-url=rtsp://192.168.1.2/?inst=2 --dec-width 1920 --dec-height 1080
+	QString url = getCommandlineParameter("--rtsp-url", &a, "RTSP camera URL, default 'rtsp://192.170.0.209/stream1'", "");
+	QString url2 = getCommandlineParameter("--rtsp-url2", &a, "RTSP camera URL, default 'rtsp://192.170.0.209/stream1'", "");
 	pars.rtspUrl = url;
+	pars.rtspClientUser = "aselsan";
+	pars.rtspClientPass = "aselsan";
 
 	if (a.arguments().contains("--help")) {
 		printHelp();
 		return 0;
 	}
 
+	s.pars = pars;
+	s.pars2 = pars;
+	s.pars2.decWidth = 720;
+	s.pars2.decHeight = 576;
+	s.pars2.rtspClientUser = "admin";
+	s.pars2.rtspClientPass = "moxamoxa";
+	s.pars2.enableMoxaHacks = true;
 	if (!url.isEmpty())
-		s.setupRtspClient(url);
+		//s.setupRtspClient(url);
+		s.setupTbgthCombined(url, url2);
 	else {
 		printHelp();
 		return 0;
@@ -175,6 +184,7 @@ int main(int argc, char *argv[])
 		s.setupPanTiltZoomDriver(pars.ptzUrl);
 
 	s.start();
+#endif
 #endif
 	return a.exec();
 }

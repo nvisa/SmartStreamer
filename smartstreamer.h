@@ -4,6 +4,8 @@
 #include "lmm/players/basestreamer.h"
 #include "proto/OrionCommunication.grpc.pb.h"
 
+#include <QJsonObject>
+
 class RtspClient;
 class RtpReceiver;
 class BaseRtspServer;
@@ -19,21 +21,29 @@ class IRDomeDriver;
 class PtzpDriver;
 class TbgthDriver;
 class TX1VideoEncoder;
+class TbgthData;
+class GpioController;
+
 class SmartStreamer : public BaseStreamer, public OrionCommunication::OrionCommunicationService::Service
 {
 	Q_OBJECT
 public:
 	explicit SmartStreamer(QObject *parent = 0);
 
+	void reboot(int seconds);
+	int setupTbgthCombined(const QString &rtspUrl1, const QString &rtspUrl2);
 	int setupRtspClient(const QString &rtspUrl);
 	void setupVideoAnalysis();
 	void setupPanTiltZoomDriver(const QString &target);
 
 	int processMainYUV(const RawBuffer &buf);
+	int processMainYUVThermal(const RawBuffer &buf);
 	int processMainRGB(const RawBuffer &buf);
 	int processScaledRGB(const RawBuffer &buf);
 	int processScaledYUV(const RawBuffer &buf);
 	int checkPoint(const RawBuffer &buf);
+
+	void ptzCommandRecved(int cmd);
 
 	grpc::Status SetCurrentMode(grpc::ServerContext *context, const OrionCommunication::ModeQ *request, OrionCommunication::AppCommandResult *response);
 	grpc::Status GetCurrentMode(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::ModeQ *response);
@@ -55,6 +65,16 @@ public:
 	grpc::Status StopCalibration(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response);
 	grpc::Status RunAutoTrack(grpc::ServerContext *context, const OrionCommunication::AutoTrackQ *request, OrionCommunication::AppCommandResult *response);
 	grpc::Status StopAutoTrack(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response);
+	grpc::Status RunStabilization(grpc::ServerContext *context, const OrionCommunication::DevicedBasedInfo *request, OrionCommunication::AppCommandResult *response);
+	grpc::Status StopStabilization(grpc::ServerContext *context, const OrionCommunication::DevicedBasedInfo *request, OrionCommunication::AppCommandResult *response);
+	grpc::Status GetUptime(grpc::ServerContext *context, const OrionCommunication::DevicedBasedInfo *request, OrionCommunication::ReturnUptimeValue *response);
+	grpc::Status GetFovValue(grpc::ServerContext *context, const OrionCommunication::DevicedBasedInfo *request, OrionCommunication::ReturnFOVValue *response);
+	grpc::Status SetItemProperty(grpc::ServerContext *context, const OrionCommunication::ItemProperty *request, OrionCommunication::AppCommandResult *response);
+	grpc::Status GetItemProperty(grpc::ServerContext *context, const OrionCommunication::ItemProperty *request, OrionCommunication::ItemProperty *response);
+	grpc::Status SetBitrate(grpc::ServerContext *context, const OrionCommunication::BitrateValue *request, OrionCommunication::AppCommandResult *response);
+	grpc::Status GetBitrate(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::BitrateValue *response);
+	grpc::Status RunCIT(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, ::grpc::ServerWriter<OrionCommunication::CitMessage> *writer);
+
 	class Parameters {
 	public:
 		Parameters()
@@ -104,13 +124,17 @@ public:
 		QString rtspUrl;
 	};
 	Parameters pars;
+	Parameters pars2;
+	QJsonObject sets;
 
 	QByteArray doScreenShot(const RawBuffer &buf);
 signals:
-
+	void rebootMe(int seconds);
 public slots:
+	void rebootSlot(int seconds);
 	virtual void timeout();
 protected:
+	void addRtspServer(RtpTransmitter *rtpout, RtpTransmitter *rtpoutvs, int sno);
 	void printParameters();
 	int pipelineOutput(BaseLmmPipeline *p, const RawBuffer &buf);
 
@@ -119,6 +143,8 @@ protected:
 	RtpTransmitter *rtpout;
 	BaseRtspServer *rtspServer;
 	ViaWrapper *wrap;
+	ViaWrapper *wrapThermal;
+	ViaWrapper *wrapDayTv;
 	FFmpegDecoder *dec;
 	QtVideoOutput *vout;
 	SeiInserter *sei;
@@ -131,20 +157,35 @@ protected:
 	int width;
 	int height;
 	int period;
-
+	bool enableVideoStabilization;
+	bool enableVideoTrack;
 	bool goToZeroPosition();
 	bool startSpinnig(float sSpeed = 0);
 	void doPanaroma(const RawBuffer &buf);
 	void doCalibration(const RawBuffer &buf);
 	void doMotionDetection(const RawBuffer &buf);
-	void doDirectTrack(const RawBuffer &buf);
+	void doDirectTrack(const RawBuffer &buf, ViaWrapper *wrap);
+	void doStabilization(const RawBuffer &buf, ViaWrapper *wrap);
 	QByteArray getImageFromFile(const QString &filename);
 	QByteArray convertImageToByteArray(const QString &filename);
 	QMutex mutex;
+	QMutex viaLock;
 
 	bool ptzpStatus;
 	bool getScreenShot;
-	int setPtz(uchar meta[]);
+	bool triggeredByTestAPI;
+	int setPtz(uchar meta[], ViaWrapper *wrap);
+	float previousPanValue;
+	float previousTiltValue;
+	float panValue;
+	float tiltValue;
+	int counterForStabil;
+
+	QElapsedTimer dayPipelineElapsed;
+	QElapsedTimer thPipelineElapsed;
+	GpioController *gpiocont;
+
+	friend class TbgthData;
 };
 
 #endif // SMARTSTREAMER_H
