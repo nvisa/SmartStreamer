@@ -1,6 +1,8 @@
 #include "smartstreamer.h"
 #include "mjpegserver.h"
 #include "seiinserter.h"
+#include "peercheck.h"
+#include "algorithmmanager.h"
 
 #include <lmm/debug.h>
 #include <lmm/bufferqueue.h>
@@ -133,16 +135,19 @@ static void saveSettings(const QString &filename, const QJsonObject &obj)
 SmartStreamer::SmartStreamer(QObject *parent)
 	: BaseStreamer(parent), OrionCommunication::OrionCommunicationService::Service()
 {
+	qDebug() << "aaaaaaaaaaaaaaaaaa";
+	if (PeerCheck::isAlive("192.168.1.34"))
+		PeerCheck::leaveEvpuAlone("192.168.1.34");
 	sets = loadSettings("settings.json");
 	if (!sets.contains("encoders")) {
 		/* default settings */
 		QJsonArray arr;
 		QJsonObject enc;
 		enc.insert("bitrate", 1000000);
-		arr << enc;
+		arr.append(enc);
 		enc = QJsonObject();
 		enc.insert("bitrate", 4000000);
-		arr << enc;
+		arr.append(enc);
 		sets.insert("encoders", arr);
 		saveSettings("settings.json", sets);
 	}
@@ -762,7 +767,7 @@ int SmartStreamer::setupRtspClient(const QString &rtspUrl)
 //	p1->append(rgbConvNv12);
 //	p1->append(v4l2);
 	RtpTransmitter *rtpout2 = NULL;
-	if (1) {
+	if (0) {
 		x264Encoder *enc = new x264Encoder;
 		enc->setVideoResolution(QSize(pars.decWidth, pars.decHeight));
 		enc->setBitrate(4000000);
@@ -902,6 +907,7 @@ void SmartStreamer::setupPanTiltZoomDriver(const QString &target)
 	ptzp->setSpeedRegulation(sreg);
 
 	ffDebug() << "going into setupVideoAnalysis";
+	//ptzp->enableDriver(false);
 	setupVideoAnalysis();
 	//thermalCam->setZoom(230);
 
@@ -910,6 +916,10 @@ void SmartStreamer::setupPanTiltZoomDriver(const QString &target)
 
 int SmartStreamer::processMainYUV(const RawBuffer &buf)
 {
+//	algMan->getBuffer(buf);
+	//qDebug() << "size of meta" << sizeof(algMan->algHandler.meta);
+	QByteArray ba = QByteArray((char *)algMan->algHandler.meta, 4096);
+	sei->processMessage(ba);
 	dayPipelineElapsed.restart();
 	if (PRINT_BUFS)
 		ffDebug() << buf.getMimeType() << buf.size() << FFmpegColorSpace::getName(buf.constPars()->avPixelFormat)
@@ -921,6 +931,7 @@ int SmartStreamer::processMainYUV(const RawBuffer &buf)
 
 	doStabilization(buf,wrapDayTv);
 	doDirectTrack(buf, wrapDayTv);
+
 #endif
 	return 0;
 }
@@ -1054,6 +1065,12 @@ void SmartStreamer::ptzCommandRecved(int cmd)
 			enableVideoTrack = false;
 		}
 	}
+}
+
+int SmartStreamer::setupAlgorithmManager()
+{
+	qDebug() << "Inside the setup Algorithm Manager";
+	algMan = new AlgorithmManager(this);
 }
 
 QByteArray SmartStreamer::doScreenShot(const RawBuffer &buf)
@@ -1304,6 +1321,8 @@ grpc::Status SmartStreamer::RunPanaroma(grpc::ServerContext *context, const Orio
 
 grpc::Status SmartStreamer::RunMotion(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::AppCommandResult *response)
 {
+	ptzp->enableDriver(false);
+	return Status::OK;
 	Q_UNUSED(context)
 	Q_UNUSED(request)
 	if (!wrap)
@@ -1764,8 +1783,8 @@ grpc::Status SmartStreamer::SetBitrate(grpc::ServerContext *context, const Orion
 	arr0["bitrate"] = brt * 1000;
 	arr1["bitrate"] = brd * 1000;
 	arr = QJsonArray();
-	arr << arr0;
-	arr << arr1;
+	arr.append(arr0);
+	arr.append(arr1);
 	sets["encoders"] = arr;
 	saveSettings("settings.json", sets);
 	ffDebug() << sets;
@@ -1876,13 +1895,13 @@ grpc::Status SmartStreamer::RunAutoTrack(grpc::ServerContext *context, const Ori
 		tarwrap = wrapDayTv;
 		if (0.02 > request->object().width() || 0.02 > request->object().height())
 			return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "region too small", "region too small");
-		if (0.3 < request->object().width() || 0.3 < request->object().height())
+		if (0.45 < request->object().width() || 0.45 < request->object().height())
 			return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "region too big", "region too big");
 	} else if (deviceType == OrionCommunication::AutoTrackQ::Thermal){
 		tarwrap = wrapThermal;
 		if (0.02 > request->object().width() || 0.02 > request->object().height())
 			return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "region too small", "region too small");
-		if (0.3 < request->object().width() || 0.3 < request->object().height())
+		if (0.45 < request->object().width() || 0.45 < request->object().height())
 			return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "region too small", "region too small");
 	} else {
 		return Status::CANCELLED;
@@ -1939,6 +1958,7 @@ void SmartStreamer::timeout()
 //	}
 //	if (!ptzpStatus)
 //		ffDebug() << "PTZP driver: Connection state halted" << pars.ptzUrl;
+
 #if 0
 	qDebug() << "CIIIIIIIIIIIIIIIIIIITTTTT"
 			 << ptzp->getHead(0)->communicationElapsed()

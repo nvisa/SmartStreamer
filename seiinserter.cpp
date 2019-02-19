@@ -278,9 +278,9 @@ void SeiInserter::processMessage(QByteArray datagram)
 {
 	int ind = 0;
 	int datasize = getUInt8LE(datagram.constData() + ind, ind);
-	ffDebug() << "size of datagram is " << datasize;
 	if (datasize <= 2) {
-		ffDebug() << "sei is empty";
+		//ffDebug() << "size of datagram is " << datasize;
+		//ffDebug() << "sei is empty";
 		return;
 	}
 	int trackmode = getUInt8LE(datagram.constData() + ind, ind);

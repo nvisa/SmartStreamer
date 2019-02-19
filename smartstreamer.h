@@ -23,6 +23,7 @@ class TbgthDriver;
 class TX1VideoEncoder;
 class TbgthData;
 class GpioController;
+class AlgorithmManager;
 
 class SmartStreamer : public BaseStreamer, public OrionCommunication::OrionCommunicationService::Service
 {
@@ -44,6 +45,8 @@ public:
 	int checkPoint(const RawBuffer &buf);
 
 	void ptzCommandRecved(int cmd);
+
+	int setupAlgorithmManager();
 
 	grpc::Status SetCurrentMode(grpc::ServerContext *context, const OrionCommunication::ModeQ *request, OrionCommunication::AppCommandResult *response);
 	grpc::Status GetCurrentMode(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, OrionCommunication::ModeQ *response);
@@ -154,6 +157,8 @@ protected:
 	TbgthDriver *ptzp;
 	PtzpHead *pt;
 	PtzpHead *thermalCam;
+	AlgorithmManager *algMan;
+
 	int width;
 	int height;
 	int period;

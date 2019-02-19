@@ -12,7 +12,13 @@ SOURCES += main.cpp \
     mjpegserver.cpp \
     seiinserter.cpp \
     proto/OrionCommunication.grpc.pb.cc \
-    proto/OrionCommunication.pb.cc
+    proto/OrionCommunication.pb.cc \
+    proto/AlgorithmCommunication.grpc.pb.cc \
+    proto/AlgorithmCommunication.pb.cc \
+    peercheck.cpp \
+    algorithmmanager.cpp \
+    ipstreamer.cpp \
+    algorithmelement.cpp
 
 HEADERS += \
     smartstreamer.h \
@@ -20,7 +26,14 @@ HEADERS += \
     mjpegserver.h \
     seiinserter.h \
     proto/OrionCommunication.grpc.pb.h \
-    proto/OrionCommunication.pb.h
+    proto/OrionCommunication.pb.h \
+    proto/AlgorithmCommunication.grpc.pb.h \
+    proto/AlgorithmCommunication.pb.h \
+    peercheck.h \
+    algorithmmanager.h \
+    algorithmfunctions.h \
+    ipstreamer.h \
+    algorithmelement.h
 
 websockets {
     SOURCES += websocketstreamer.cpp

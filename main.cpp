@@ -10,6 +10,7 @@
 
 #include "smartstreamer.h"
 #include "moxadriver.h"
+#include "ipstreamer.h"
 
 static void printStackTrace(void)
 {
@@ -120,6 +121,51 @@ static void printHelp()
 #define getCmdParInt(_x, _str, _desc) _x = getCommandlineParameter(_str, &a, _desc, _x).toInt(0, 0)
 #define getCmdParStr(_x, _str, _desc) _x = getCommandlineParameter(_str, &a, _desc, _x)
 
+#include <grpc/grpc.h>
+#include <grpc++/server.h>
+#include <grpc++/channel.h>
+#include <grpc++/create_channel.h>
+#include <grpc++/client_context.h>
+#include <grpc++/server_builder.h>
+#include <grpc++/server_context.h>
+#include <grpc++/security/credentials.h>
+#include <grpc++/security/server_credentials.h>
+
+#include "proto/AlgorithmCommunication.grpc.pb.h"
+static int testGrpc(const QString &action)
+{
+	QString ep = QString("127.0.0.1:50059");
+	std::shared_ptr<grpc::Channel> chn = grpc::CreateChannel(ep.toStdString(), grpc::InsecureChannelCredentials());
+	std::shared_ptr<AlgorithmCommunication::AlgorithmService::Stub> stub = AlgorithmCommunication::AlgorithmService::NewStub(chn);
+	grpc::ClientContext ctx;
+
+	::grpc::Status status;
+	if (action == "run") {
+		AlgorithmCommunication::RequestForAlgorithm req;
+		req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm_Algorithm_MOTION);
+		AlgorithmCommunication::MotionParameters *params = new AlgorithmCommunication::MotionParameters;
+		params->set_settingchoice(AlgorithmCommunication::MotionParameters_Settings_SENSITIVITY);
+		params->set_sensitivity(60);
+		req.set_allocated_motionparam(params);
+		AlgorithmCommunication::ResponseOfRequests resp;
+		status = stub->RunAlgorithm(&ctx, req, &resp);
+	} else if (action == "stop") {
+		AlgorithmCommunication::RequestForAlgorithm req;
+		req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm_Algorithm_MOTION);
+		AlgorithmCommunication::ResponseOfRequests resp;
+		status = stub->StopAlgorithm(&ctx, req, &resp);
+	}
+
+	if (status.error_code() != grpc::OK) {
+		qDebug("error '%d' in grpc call", status.error_code());
+		return -1;
+	}
+
+	qDebug() << "done grpc";
+
+	return 0;
+}
+
 int main(int argc, char *argv[])
 {
 	QCoreApplication a(argc, argv);
@@ -131,7 +177,11 @@ int main(int argc, char *argv[])
 	installSignalHandlers();
 
 #if 1
-	SmartStreamer s;
+	if (QString(argv[0]).contains("grpctest"))
+		return testGrpc(argv[1]);
+
+	//SmartStreamer s;
+	IpStreamer ipStr;
 	SmartStreamer::Parameters pars;
 	getCmdParInt(pars.decWidth, "--dec-width", "Incoming RTSP video width, default automatic");
 	getCmdParInt(pars.decHeight, "--dec-height", "Incoming RTSP video height, default automatic");
@@ -159,19 +209,28 @@ int main(int argc, char *argv[])
 	pars.rtspUrl = url;
 	pars.rtspClientUser = "aselsan";
 	pars.rtspClientPass = "aselsan";
+	qDebug() << "woowowowowo12";
 
 	if (a.arguments().contains("--help")) {
 		printHelp();
 		return 0;
 	}
 
-	s.pars = pars;
-	s.pars2 = pars;
-	s.pars2.decWidth = 720;
-	s.pars2.decHeight = 576;
-	s.pars2.rtspClientUser = "admin";
-	s.pars2.rtspClientPass = "moxamoxa";
-	s.pars2.enableMoxaHacks = true;
+//	s.pars = pars;
+//	s.pars2 = pars;
+//	s.pars2.decWidth = 720;
+//	s.pars2.decHeight = 576;
+//	s.pars2.rtspClientUser = "admin";
+//	s.pars2.rtspClientPass = "moxamoxa";
+//	s.pars2.enableMoxaHacks = true;
+	url = "rtsp://10.5.177.49/stream1";
+	//s.setupAlgorithmManager();
+	//s.setupRtspClient(url);
+	//ipStr.setupAlgorithmManager();
+	qDebug() << "woowowowowo";
+	ipStr.generatePipelineForOneSource(url);
+	ipStr.start();
+	/*
 	if (!url.isEmpty())
 		//s.setupRtspClient(url);
 		s.setupTbgthCombined(url, url2);
@@ -182,8 +241,8 @@ int main(int argc, char *argv[])
 
 	if (!pars.ptzUrl.isEmpty())
 		s.setupPanTiltZoomDriver(pars.ptzUrl);
-
-	s.start();
+	*/
+	//s.start();
 #endif
 #endif
 	return a.exec();
