@@ -99,26 +99,26 @@ grpc::Status AlgorithmManager::RunAlgorithm(grpc::ServerContext *context, const 
 	////////////////////////////
 	//Insert a control mechanism to prevent same algorithm is initialized again
 	////////////////////////////
-//	while (hi.hasNext()) {
-//		hi.next();
-//		if (hi.value().first()->isPassThru()) {
-//			qDebug() << "the element requested is pass-through" << hi.value().first();
-//			continue;
-//		}
-//		activeEl = hi.value().first();
-//		activeAlg = hi.key();
-//		break;
-//	}
-//	if (activeEl) {
-////		//asdasd
-//	}
+	//	while (hi.hasNext()) {
+	//		hi.next();
+	//		if (hi.value().first()->isPassThru()) {
+	//			qDebug() << "the element requested is pass-through" << hi.value().first();
+	//			continue;
+	//		}
+	//		activeEl = hi.value().first();
+	//		activeAlg = hi.key();
+	//		break;
+	//	}
+	//	if (activeEl) {
+	////		//asdasd
+	//	}
 
 	if(deviceType == AlgorithmCommunication::RequestForAlgorithm::TV) {
 		confUnit.param.stabilization = 1;
 	} else if (deviceType == AlgorithmCommunication::RequestForAlgorithm::THERMAL)
 	{
 		confUnit.param.stabilization = 2;
-	}    
+	}
 	AlgorithmElement *el = NULL;
 	if(AlgorithmCommunication::RequestForAlgorithm::MOTION == algorithmType)
 	{
@@ -397,9 +397,9 @@ grpc::Status AlgorithmManager::RunAlgorithm(grpc::ServerContext *context, const 
 		algHandler.stateOfAlg = NOT_INIT;
 	} else if (AlgorithmCommunication::RequestForAlgorithm::FACE_DETECTION == algorithmType)
 	{
-        qDebug() << "~~~~~~~~~~~~~~~~~~GRPC~~~~~~~~~~~~~~~~~~~~~~~~~~FACE~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
-        alg = AlgorithmElement::Algorithm::FACE_DETECTION;
-        el = algoElements[FACE_DETECTION].first();
+		qDebug() << "~~~~~~~~~~~~~~~~~~GRPC~~~~~~~~~~~~~~~~~~~~~~~~~~FACE~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
+		alg = AlgorithmElement::Algorithm::FACE_DETECTION;
+		el = algoElements[FACE_DETECTION].first();
 	} else {
 		response->set_response(AlgorithmCommunication::ResponseOfRequests::FAIL);
 		response->set_err(1);
@@ -442,9 +442,9 @@ grpc::Status AlgorithmManager::StopAlgorithm(grpc::ServerContext *context, const
 		//For panaroma specific parameters, this scope is created
 	} else if (AlgorithmCommunication::RequestForAlgorithm::FACE_DETECTION == algorithmType)
 	{
-        qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~GRPC FACE STOP~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
-        el = algoElements[FACE_DETECTION].first();
-        el->clean();
+		qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~GRPC FACE STOP~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
+		el = algoElements[FACE_DETECTION].first();
+		el->clean();
 		//For face detection specific parameters, this scope is created
 	} else {
 		response->set_response(AlgorithmCommunication::ResponseOfRequests::NOT_APPLICABLE);
@@ -728,9 +728,9 @@ int AlgorithmManager::openAlgRelatedJson()
 	QJsonObject obj_info = doc.object();
 
 	//Device related properties like fps,resolution are obtained with the following lines
-    QJsonValue source = obj_info.value(QString("source"));
-    QJsonObject cam_ip = source.toObject()["IP"].toObject();
-    confUnit.devProp.cameraIp = cam_ip["address"].toString();
+	QJsonValue source = obj_info.value(QString("source"));
+	QJsonObject cam_ip = source.toObject()["IP"].toObject();
+	confUnit.devProp.cameraIp = cam_ip["address"].toString();
 
 	QJsonValue sec_device = obj_info.value(QString("device"));
 	QJsonObject itemized_sec_device = sec_device.toObject();
@@ -774,14 +774,14 @@ int AlgorithmManager::openAlgRelatedJson()
 		availableAlgList.insert(indexForAlgList,Algorithm::MOTION);
 		indexForAlgList++;
 		algHandler.motionA.sensitivity = motion["sensitivity"].toInt();
-        algHandler.motionA.classification = motion["classification"].toInt();
-        algHandler.motionA.classification_ = motion["classification"].toBool();
-        availableAlgortihms.insert(Algorithm::MOTION,true);
+		algHandler.motionA.classification = motion["classification"].toInt();
+		algHandler.motionA.classification_ = motion["classification"].toBool();
+		availableAlgortihms.insert(Algorithm::MOTION,true);
 	}
 	if (stab["enabled"].toBool() == true) {
 		availableAlgList.insert(indexForAlgList,Algorithm::STABILIZATION);
 		indexForAlgList++;
-        availableAlgortihms.insert(Algorithm::STABILIZATION,true);
+		availableAlgortihms.insert(Algorithm::STABILIZATION,true);
 	}
 	if (track["enabled"].toBool() == true) {
 		availableAlgList.insert(indexForAlgList,Algorithm::TRACKING);
@@ -827,31 +827,31 @@ int AlgorithmManager::openAlgRelatedJson()
 		} else {
 			//Multiple tracking type is selected
 		}
-        availableAlgortihms.insert(Algorithm::TRACKING,true);
+		availableAlgortihms.insert(Algorithm::TRACKING,true);
 	}
 	if (panaroma["enabled"].toBool())
 	{
 		availableAlgList.insert(indexForAlgList,Algorithm::PANAROMA);
 		indexForAlgList++;
-        availableAlgortihms.insert(Algorithm::PANAROMA,true);
+		availableAlgortihms.insert(Algorithm::PANAROMA,true);
 	}
 	if (face["enabled"].toBool())
 	{
 		availableAlgList.insert(indexForAlgList,Algorithm::FACE_DETECTION);
-        algHandler.faceA.isTileOn = face["isTileOn"].toBool();
-        algHandler.faceA.xTile = face["xTile"].toInt();
-        algHandler.faceA.yTile = face["yTile"].toInt();
-        algHandler.faceA.mode = face["mode"].toInt();
-        algHandler.faceA.isAlignmentOn = face["isAlignmentOn"].toBool();
-//        AlgorithmElement::Algorithm alg;
-//        AlgorithmElement *el = NULL;
-//        alg = AlgorithmElement::Algorithm::FACE_DETECTION;
-//        el = algoElements[FACE_DETECTION].first();
-//        el->updateAlgorithmParametersFromManager(algHandler,alg);
+		algHandler.faceA.isTileOn = face["isTileOn"].toBool();
+		algHandler.faceA.xTile = face["xTile"].toInt();
+		algHandler.faceA.yTile = face["yTile"].toInt();
+		algHandler.faceA.mode = face["mode"].toInt();
+		algHandler.faceA.isAlignmentOn = face["isAlignmentOn"].toBool();
+		//        AlgorithmElement::Algorithm alg;
+		//        AlgorithmElement *el = NULL;
+		//        alg = AlgorithmElement::Algorithm::FACE_DETECTION;
+		//        el = algoElements[FACE_DETECTION].first();
+		//        el->updateAlgorithmParametersFromManager(algHandler,alg);
 
-        indexForAlgList++;
-        qDebug() << "Face algorithm is available";
-        availableAlgortihms.insert(Algorithm::FACE_DETECTION,true);
+		indexForAlgList++;
+		qDebug() << "Face algorithm is available";
+		availableAlgortihms.insert(Algorithm::FACE_DETECTION,true);
 	}
 	algHandler.confUnit = confUnit;
 	QJsonValue project_info = obj_info.value(QString("projects"));
@@ -922,28 +922,28 @@ void AlgorithmManager::registerAlgorithm(AlgorithmManager::Algorithm alg, Algori
 
 bool AlgorithmManager::checkSystemParameters()
 {
-    if(availableAlgortihms.value(Algorithm::MOTION)) {
-        if (!QFile::exists("points.txt") && !QFile::exists("System_parameters.txt")) {
-            return false;
-        }
-    } else if(availableAlgortihms.value(Algorithm::STABILIZATION)) {
-        if (!QFile::exists("stabilization_parameters.txt") || !QFile::exists("stabilization_parameters_Thermal.txt")) {
-            return false;
-        }
-    } else if(availableAlgortihms.value(Algorithm::TRACKING)) {
-        if (!QFile::exists("track_alg_parameters.txt") && !QFile::exists("track_parameters.txt")) {
-            return false;
-        }
-    } else if(availableAlgortihms.value(Algorithm::PANAROMA)) {
-        if (!QFile::exists("pan_params.txt") && !QFile::exists("pan_shift_parameters.txt") && !QFile::exists("panchange_parameters.txt")) {
-            return false;
-        }
-    }
-    else if(availableAlgortihms.value(Algorithm::FACE_DETECTION)) {
-            if (!QFile::exists("face.txt") && !QFile::exists("face_parameters.txt")) {
-                return false;
-            }
-        }
+	if(availableAlgortihms.value(Algorithm::MOTION)) {
+		if (!QFile::exists("points.txt") && !QFile::exists("System_parameters.txt")) {
+			return false;
+		}
+	} else if(availableAlgortihms.value(Algorithm::STABILIZATION)) {
+		if (!QFile::exists("stabilization_parameters.txt") || !QFile::exists("stabilization_parameters_Thermal.txt")) {
+			return false;
+		}
+	} else if(availableAlgortihms.value(Algorithm::TRACKING)) {
+		if (!QFile::exists("track_alg_parameters.txt") && !QFile::exists("track_parameters.txt")) {
+			return false;
+		}
+	} else if(availableAlgortihms.value(Algorithm::PANAROMA)) {
+		if (!QFile::exists("pan_params.txt") && !QFile::exists("pan_shift_parameters.txt") && !QFile::exists("panchange_parameters.txt")) {
+			return false;
+		}
+	}
+	else if(availableAlgortihms.value(Algorithm::FACE_DETECTION)) {
+		if (!QFile::exists("face.txt") && !QFile::exists("face_parameters.txt")) {
+			return false;
+		}
+	}
 }
 
 void AlgorithmManager::startGrpc()

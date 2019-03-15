@@ -24,11 +24,6 @@
 #include <lmm/x264encoder.h>
 #include <lmm/ffmpeg/baselmmdemux.h>
 
-extern "C" {
-#include <libavformat/avformat.h>
-}
-
-
 IpStreamer::IpStreamer(QObject *parent): BaseStreamer(parent){
 	qDebug() << "Info is read";
 	readSourceInformation();
@@ -56,52 +51,28 @@ int IpStreamer::generatePipelineForOneSource(const QString &Url)
 	if (pars.decWidth)
 		dec->setVideoResolution(decWidth, decHeight); //352x290
 
-//	AlgorithmElement *motionAlg = new AlgorithmElement(this);
-//	motionAlg->setCurrentActiveAlgorithm(AlgorithmElement::MOTION);
-//	motionAlg->setConfigurationElement(algMan->getAlgHandlerFor(0));
-//	algMan->registerAlgorithm(AlgorithmManager::MOTION, motionAlg);
-
-    AlgorithmElement *faceAlg = new AlgorithmElement(this);
-    faceAlg->setCurrentActiveAlgorithm(AlgorithmElement::FACE_DETECTION);
-    algMan->registerAlgorithm(AlgorithmManager::FACE_DETECTION, faceAlg);
-    faceAlg->enableAlg(true);
-    faceAlg->setConfigurationElement(algMan->getAlgHandlerFor(0));
-
+	AlgorithmElement *motionAlg = new AlgorithmElement(this);
+	motionAlg->setCurrentActiveAlgorithm(AlgorithmElement::MOTION);
+	motionAlg->setConfigurationElement(algMan->getAlgHandlerFor(0));
+	algMan->registerAlgorithm(AlgorithmManager::MOTION, motionAlg);
 	BaseLmmPipeline *p1 = addPipeline();
 	p1->append(rtp);
 	p1->append(queue);
 	p1->append(dec);
-    //p1->append(queueScalerEngine);
-
-    VideoScaler *downs = new VideoScaler;
-    downs->setOutputResolution(1920, 1080);
-    downs->setMode(0);
-    p1->append(downs);
-
-    FFmpegColorSpace *rgbConv3 = new  FFmpegColorSpace;
-    rgbConv3->setOutputFormat(AV_PIX_FMT_RGB24);
-    //rgbConv3->setMode(1);
-    p1->append(rgbConv3);
-    //p1->append(motionAlg);
-
-    p1->append(faceAlg);
-    p1->append(newFunctionPipe(IpStreamer, this, IpStreamer::PerformAlgorithmForYUV));
-    //VideoScaler *yuvConv4 = new VideoScaler;
-    //FFmpegColorSpace *yuvConv4 = new FFmpegColorSpace;
-    //yuvConv4->setOutputFormat(AV_PIX_FMT_YUV420P);
-    //yuvConv4->setMode(1);
-    //p1->append(yuvConv4);
+	p1->append(queueScalerEngine);
+	p1->append(motionAlg);
+	p1->append(newFunctionPipe(IpStreamer, this, IpStreamer::PerformAlgorithmForYUV));
 	RtpTransmitter *rtpout2 = NULL;
-    if (1) {
-//		x264Encoder *enc = new x264Encoder;
-//		enc->setVideoResolution(QSize(decWidth, decHeight));
-//		enc->setBitrate(4000000);
-//		enc->setThreadCount(2);
-//		enc->setPreset("faster");
+	if (0) {
+		x264Encoder *enc = new x264Encoder;
+		enc->setVideoResolution(QSize(decWidth, decHeight));
+		enc->setBitrate(4000000);
+		enc->setThreadCount(2);
+		enc->setPreset("faster");
 		//p1->append(enc);
 
 		TX1VideoEncoder *enc2 = new TX1VideoEncoder;
-        //p1->append(enc2);
+		p1->append(enc2);
 
 		rtpout2 = new RtpTransmitter(this);
 		rtpout2->forwardRtpTs(false);
@@ -109,8 +80,8 @@ int IpStreamer::generatePipelineForOneSource(const QString &Url)
 		rtpout2->setH264SEIInsertion(false);
 		rtpout2->useIncomingTimestamp(false);
 		rtpout2->setUseAbsoluteTimestamp(false);
-        rtpout2->setFrameRate(25);
-        //p1->append(rtpout2);
+		rtpout2->setFrameRate(25);
+		p1->append(rtpout2);
 	}
 	p1->end();
 	if (rtpBufferDuration) {
@@ -272,10 +243,10 @@ int IpStreamer::generatePipelineForMultipleSource(const QStringList &Url)
 	MultiSource *src1 = new MultiSource;
 	src1->daytv.pars = pars;
 	src1->daytv.setup(this, Url.at(0), 15, newFunctionPipe(IpStreamer, this, IpStreamer::PerformAlgorithmForYUV), false,
-					   enc_bitrate_set.value(0));
+					  enc_bitrate_set.value(0));
 	src1->thermal.pars = pars;
 	src1->thermal.setup(this, Url.at(1), 25, newFunctionPipe(IpStreamer, this, IpStreamer::PerformAlgorithmForYUV), true,
-						 enc_bitrate_set.value(1));
+						enc_bitrate_set.value(1));
 
 	rtspServer = new BaseRtspServer(this, 8554);
 	addRtspServer(src1->daytv.rtpout, src1->daytv.rtpoutvs, 1);

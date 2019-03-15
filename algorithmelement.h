@@ -34,9 +34,9 @@ public:
 
 	struct MotionAlg {
 		int sensitivity;
-        bool classification_;
+		bool classification_;
 		bool alarmFlag;
-        int classification;
+		int classification;
 	};
 
 	struct Stabilization {
@@ -68,13 +68,13 @@ public:
 	};
 
 	struct FaceDetection {
-        int dummy;
-        bool isTileOn;
-        int xTile;
-        int yTile;
-        int mode; // 0:rectangle, 1:privacy, else:imagecroplist
-        bool isAlignmentOn;
-    };
+		int dummy;
+		bool isTileOn;
+		int xTile;
+		int yTile;
+		int mode; // 0:rectangle, 1:privacy, else:imagecroplist
+		bool isAlignmentOn;
+	};
 
 	struct AlgorithmHandler {
 		MotionAlg motionA;
@@ -96,7 +96,7 @@ public:
 	bool setCurrentActiveAlgorithm(Algorithm alg);
 	AlgorithmManager::PTZinformation forwardPTZaction(uchar meta[]);
 	void updateAlgorithmParameters(AlgorithmHandler algHand, Algorithm alg);
-    void updateAlgorithmParametersFromManager(AlgorithmManager::AlgorithmHandler algHand, Algorithm alg);
+	void updateAlgorithmParametersFromManager(AlgorithmManager::AlgorithmHandler algHand, Algorithm alg);
 	int bufsize;
 	// BaseLmmElement interface
 
@@ -108,7 +108,7 @@ protected:
 	int reinit();
 	int processBuffer(const RawBuffer &buf);
 	int processAlgorithm(const RawBuffer &buf);
-    int counter;
+	int counter;
 
 };
 

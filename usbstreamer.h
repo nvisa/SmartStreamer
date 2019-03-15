@@ -9,7 +9,7 @@ class BaseRtspServer;
 
 class UsbStreamer : public BaseStreamer
 {
-Q_OBJECT
+	Q_OBJECT
 public:
 	explicit UsbStreamer(QObject *parent = 0);
 	int generatePipelineForOneSource(const QString &sourceUrl);

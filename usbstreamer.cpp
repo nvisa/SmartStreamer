@@ -40,72 +40,72 @@ int UsbStreamer::generatePipelineForOneSource(const QString &sourceUrl)
 	BufferQueue* queueSource = new BufferQueue;
 
 	VideoScaler* rgbConv1 = new VideoScaler;
-    rgbConv1->setOutputFormat(AV_PIX_FMT_YUV420P);
+	rgbConv1->setOutputFormat(AV_PIX_FMT_YUV420P);
 	rgbConv1->setMode(1);
 
-    AlgorithmElement *faceAlg = new AlgorithmElement(this);
-    if(algMan->availableAlgortihms.value(AlgorithmManager::MOTION)) {
-        qDebug() << "MOTION";
-        //	AlgorithmElement *motionAlg = new AlgorithmElement(this);
-        //	motionAlg->setConfigurationElement(algMan->getAlgHandlerFor(0));
-        //	motionAlg->setCurrentActiveAlgorithm(AlgorithmElement::MOTION);
-        //	algMan->registerAlgorithm(AlgorithmManager::MOTION, motionAlg);
-    } else if (algMan->availableAlgortihms.value(AlgorithmManager::TRACKING)) {
-        qDebug() << "TRACKING";
-        //	AlgorithmElement *trackAlg = new AlgorithmElement(this);
-        //	trackAlg->setConfigurationElement(algMan->getAlgHandlerFor(0));
-        //	trackAlg->setCurrentActiveAlgorithm(AlgorithmElement::TRACKING);
-        //	algMan->registerAlgorithm(AlgorithmManager::TRACKING, trackAlg);
-    } else if (algMan->availableAlgortihms.value(AlgorithmManager::STABILIZATION)) {
-        qDebug() << "STABILIZATION";
-        //	AlgorithmElement *stabilAlg = new AlgorithmElement(this);
-        //	stabilAlg->setConfigurationElement(algMan->getAlgHandlerFor(0));
-        //	stabilAlg->setCurrentActiveAlgorithm(AlgorithmElement::STABILIZATION);
-        //	algMan->registerAlgorithm(AlgorithmManager::STABILIZATION, stabilAlg);
-    } else if (algMan->availableAlgortihms.value(AlgorithmManager::FACE_DETECTION)) {
-        qDebug() << "FACE_DETECTION";
+	AlgorithmElement *faceAlg = new AlgorithmElement(this);
+	if(algMan->availableAlgortihms.value(AlgorithmManager::MOTION)) {
+		qDebug() << "MOTION";
+		//	AlgorithmElement *motionAlg = new AlgorithmElement(this);
+		//	motionAlg->setConfigurationElement(algMan->getAlgHandlerFor(0));
+		//	motionAlg->setCurrentActiveAlgorithm(AlgorithmElement::MOTION);
+		//	algMan->registerAlgorithm(AlgorithmManager::MOTION, motionAlg);
+	} else if (algMan->availableAlgortihms.value(AlgorithmManager::TRACKING)) {
+		qDebug() << "TRACKING";
+		//	AlgorithmElement *trackAlg = new AlgorithmElement(this);
+		//	trackAlg->setConfigurationElement(algMan->getAlgHandlerFor(0));
+		//	trackAlg->setCurrentActiveAlgorithm(AlgorithmElement::TRACKING);
+		//	algMan->registerAlgorithm(AlgorithmManager::TRACKING, trackAlg);
+	} else if (algMan->availableAlgortihms.value(AlgorithmManager::STABILIZATION)) {
+		qDebug() << "STABILIZATION";
+		//	AlgorithmElement *stabilAlg = new AlgorithmElement(this);
+		//	stabilAlg->setConfigurationElement(algMan->getAlgHandlerFor(0));
+		//	stabilAlg->setCurrentActiveAlgorithm(AlgorithmElement::STABILIZATION);
+		//	algMan->registerAlgorithm(AlgorithmManager::STABILIZATION, stabilAlg);
+	} else if (algMan->availableAlgortihms.value(AlgorithmManager::FACE_DETECTION)) {
+		qDebug() << "FACE_DETECTION";
 
-        faceAlg->setCurrentActiveAlgorithm(AlgorithmElement::FACE_DETECTION);
-        algMan->registerAlgorithm(AlgorithmManager::FACE_DETECTION, faceAlg);
-        faceAlg->enableAlg(true);
-        faceAlg->setConfigurationElement(algMan->getAlgHandlerFor(0));
-    }
+		faceAlg->setCurrentActiveAlgorithm(AlgorithmElement::FACE_DETECTION);
+		algMan->registerAlgorithm(AlgorithmManager::FACE_DETECTION, faceAlg);
+		faceAlg->enableAlg(true);
+		faceAlg->setConfigurationElement(algMan->getAlgHandlerFor(0));
+	}
 
 
 	BaseLmmPipeline *p1 = addPipeline();
 	p1->append(v4l2);
 	p1->append(queueSource);
-    p1->append(rgbConv1);
-    p1->append(queue);
+	p1->append(rgbConv1);
+	p1->append(queue);
 
 
-//    VideoScaler *downs = new VideoScaler;
-//    downs->setOutputResolution(640, 360);
-//    downs->setMode(0);
-//    p1->append(downs);
+	//VideoScaler *downs = new VideoScaler;
+	//downs->setOutputResolution(640, 360);
+	//downs->setMode(0);
+	//p1->append(downs);
 
-    FFmpegColorSpace *rgbConv3 = new  FFmpegColorSpace;
-    rgbConv3->setOutputFormat(AV_PIX_FMT_RGB24);
-    p1->append(rgbConv3);
-    p1->append(faceAlg);
-    p1->append(newFunctionPipe(UsbStreamer, this, UsbStreamer::PerformAlgorithmForYUV));
-    p1->end();
+	FFmpegColorSpace *rgbConv3 = new  FFmpegColorSpace;
+	rgbConv3->setOutputFormat(AV_PIX_FMT_RGB24);
+	p1->append(rgbConv3);
+	p1->append(faceAlg);
+	p1->append(newFunctionPipe(UsbStreamer, this, UsbStreamer::PerformAlgorithmForYUV));
+	p1->end();
 
 	VideoScaler* rgbConv2 = new VideoScaler;
 	rgbConv2->setOutputFormat(AV_PIX_FMT_NV12);
 	rgbConv2->setMode(1);
-    BaseLmmPipeline *p2 = addPipeline();
+	BaseLmmPipeline *p2 = addPipeline();
 	p2->append(queueSource);
 	p2->append(rgbConv2);
-    TX1VideoEncoder *enc = new TX1VideoEncoder;
-    enc->setBitrate(4000000);
-    enc->setFps(25.0);
-    p2->append(enc);
+	TX1VideoEncoder *enc = new TX1VideoEncoder;
+	enc->setBitrate(4000000);
+	enc->setFps(25.0);
+	p2->append(enc);
 
-    //sei = new SeiInserter;
-    //sei->setAlarmTemplate("sei_alarm_template.xml");
+	//sei = new SeiInserter;
+	//sei->setAlarmTemplate("sei_alarm_template.xml");
 
-    //p2->append(sei);
+	//p2->append(sei);
 
 	rtpout = new RtpTransmitter(this);
 	rtpout->forwardRtpTs(false);
@@ -113,23 +113,23 @@ int UsbStreamer::generatePipelineForOneSource(const QString &sourceUrl)
 	rtpout->setH264SEIInsertion(true);
 	rtpout->useIncomingTimestamp(false);
 
-    p2->append(rtpout);
-    p2->end();
+	p2->append(rtpout);
+	p2->end();
 
 
-//	VideoScaler *rgbConv3 = new VideoScaler;
-//	rgbConv3->setOutputFormat(AV_PIX_FMT_ARGB);
-//	rgbConv3->setMode(1);
+	//	VideoScaler *rgbConv3 = new VideoScaler;
+	//	rgbConv3->setOutputFormat(AV_PIX_FMT_ARGB);
+	//	rgbConv3->setMode(1);
 
-//	MjpegElement *mjpeg = new MjpegElement(4571);
-//	BaseLmmPipeline *p3 = addPipeline();
-//	VideoScaler *rgbScaler = new VideoScaler;
-//	rgbScaler->setOutputResolution(720, 576);
-//	p3->append(queue);
-//	p3->append(rgbConv3);
-//	//	p3->append(newFunctionPipe(SmartStreamer, this, SmartStreamer::processMainRGB));
-//	p3->append(mjpeg);
-//	p3->end();
+	//	MjpegElement *mjpeg = new MjpegElement(4571);
+	//	BaseLmmPipeline *p3 = addPipeline();
+	//	VideoScaler *rgbScaler = new VideoScaler;
+	//	rgbScaler->setOutputResolution(720, 576);
+	//	p3->append(queue);
+	//	p3->append(rgbConv3);
+	//	//	p3->append(newFunctionPipe(SmartStreamer, this, SmartStreamer::processMainRGB));
+	//	p3->append(mjpeg);
+	//	p3->end();
 
 
 	rtspServer = new BaseRtspServer(this, 8554);
@@ -153,8 +153,8 @@ int UsbStreamer::PerformAlgorithmForYUV(const RawBuffer &buf)
 		QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
 		QByteArray sei_data = hash["motion_results"].toByteArray();
 		sei->processMessage(sei_data);
-//		if (sei_data.size() == 0)
-//			sei->clearLastSEIMessage();
+		//	if (sei_data.size() == 0)
+		//		sei->clearLastSEIMessage();
 	}
 	return 0;
 }

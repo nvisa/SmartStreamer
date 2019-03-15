@@ -106,8 +106,8 @@ public:
 	};
 
 	struct deviceProperties {
-        QString cameraIp;
-        int width;
+		QString cameraIp;
+		int width;
 		int height;
 		int fps;
 		int frameSize;
@@ -130,9 +130,9 @@ public:
 
 	struct MotionAlg {
 		int sensitivity;
-        bool classification_;
+		bool classification_;
 		bool alarmFlag;
-        int classification;
+		int classification;
 	};
 
 	struct Stabilization {
@@ -165,12 +165,12 @@ public:
 
 	struct FaceDetection {
 		int dummy;
-        bool isTileOn;
-        int xTile;
-        int yTile;
-        int mode; // 0:rectangle, 1:privacy, else:imagecroplist
-        bool isAlignmentOn;
-    };
+		bool isTileOn;
+		int xTile;
+		int yTile;
+		int mode; // 0:rectangle, 1:privacy, else:imagecroplist
+		bool isAlignmentOn;
+	};
 
 	struct PanTiltZoomInfo {
 		float pan;
@@ -203,7 +203,7 @@ protected:
 
 	// PtzpHead interface
 public:
-    QMap<Algorithm,bool> availableAlgortihms;
+	QMap<Algorithm,bool> availableAlgortihms;
 protected:
 	//Algorithm state related functions
 
