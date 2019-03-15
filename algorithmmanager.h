@@ -76,7 +76,8 @@ public:
 	};
 
 	enum System {
-		BOTAS,
+		BOTAS_FIX,
+		BOTAS_DOME,
 		TBGTH,
 		ARYA,
 		TEST,

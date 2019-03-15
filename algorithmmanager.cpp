@@ -856,16 +856,19 @@ int AlgorithmManager::openAlgRelatedJson()
 	algHandler.confUnit = confUnit;
 	QJsonValue project_info = obj_info.value(QString("projects"));
 	QJsonObject itemized_project_info = project_info.toObject();
-	bool botas = itemized_project_info["botas"].toBool();
+	bool botas_fix = itemized_project_info["botas_fix"].toBool();
+	bool botas_dome = itemized_project_info["botas_dome"].toBool();
 	bool tbgth = itemized_project_info["tbgth"].toBool();
 	bool arya  = itemized_project_info["arya"].toBool();
-	qDebug() << "botas,tbgth,arya " << botas << tbgth << arya;
+	qDebug() << "botas_fix, botas_dome, tbgth,arya " << botas_fix << botas_dome << tbgth << arya;
 
-	if (botas && !tbgth && !arya)
-		deviceInfo = "botas";
-	else if (tbgth && !botas && !arya)
+	if (botas_fix && !botas_dome && !tbgth && !arya)
+		deviceInfo = "botas_fix";
+	else if (botas_dome && !botas_fix && !tbgth && !arya)
+		deviceInfo = "botas_dome";
+	else if (tbgth && !botas_fix && !botas_dome && !arya)
 		deviceInfo = "tbgth";
-	else if (arya && !tbgth && !botas)
+	else if (arya && !tbgth && !botas_fix && !botas_dome)
 		deviceInfo = "arya";
 	else
 		deviceInfo = "";
@@ -878,29 +881,30 @@ int AlgorithmManager::openAlgRelatedJson()
 
 int AlgorithmManager::setupDeviceController(const QString &deviceInfo)
 {
-	if (deviceInfo.contains("botas")) {
+	if (deviceInfo.contains("botas_fix")) {
 		botas = new IRDomeDriver();
 		botas->startGrpcApi(50058);
-		botas->setTarget("ttyS0?baud=9600");
-		algHandler.systemHandler = BOTAS;
+		botas->setTarget("ttyS0?baud=9600;null");
+		algHandler.systemHandler = BOTAS_FIX;
 		ptzp = botas;
-	}
-	else if (deviceInfo.contains("tbgth"))
-	{
+	} else if (deviceInfo.contains("botas_dome")) {
+		botas = new IRDomeDriver();
+		botas->startGrpcApi(50058);
+		botas->setTarget("ttyS0?baud=9600;ttyTHS1?baud=9600");
+		algHandler.systemHandler = BOTAS_DOME;
+		ptzp = botas;
+	} else if (deviceInfo.contains("tbgth")) {
 		tbgth = new TbgthDriver(true);
 		algHandler.systemHandler = TBGTH;
 		ptzp = tbgth;
-	}
-	else if (deviceInfo.contains("arya"))
-	{
+	} else if (deviceInfo.contains("arya")) {
 		arya = new AryaDriver();
 		algHandler.systemHandler = ARYA;
 		ptzp = arya;
-	}
-	else if (deviceInfo.contains("test"))
-	{
+	} else if (deviceInfo.contains("test")) {
 		//For test usage, it will be implemented later
 	}
+	return 0;
 }
 
 AlgorithmManager::AlgorithmHandler AlgorithmManager::getAlgHandlerFor(int index)
