@@ -37,6 +37,7 @@ int UsbStreamer::generatePipelineForOneSource(const QString &sourceUrl)
 	v4l2->setParameter("device", sourceUrl);
 
 	BufferQueue* queue = new BufferQueue;
+	BufferQueue* queueSource = new BufferQueue;
 
 	VideoScaler* rgbConv1 = new VideoScaler;
     rgbConv1->setOutputFormat(AV_PIX_FMT_YUV420P);
@@ -73,6 +74,7 @@ int UsbStreamer::generatePipelineForOneSource(const QString &sourceUrl)
 
 	BaseLmmPipeline *p1 = addPipeline();
 	p1->append(v4l2);
+	p1->append(queueSource);
     p1->append(rgbConv1);
     p1->append(queue);
 
@@ -89,9 +91,12 @@ int UsbStreamer::generatePipelineForOneSource(const QString &sourceUrl)
     p1->append(newFunctionPipe(UsbStreamer, this, UsbStreamer::PerformAlgorithmForYUV));
     p1->end();
 
-
+	VideoScaler* rgbConv2 = new VideoScaler;
+	rgbConv2->setOutputFormat(AV_PIX_FMT_NV12);
+	rgbConv2->setMode(1);
     BaseLmmPipeline *p2 = addPipeline();
-    p2->append(queue);
+	p2->append(queueSource);
+	p2->append(rgbConv2);
     TX1VideoEncoder *enc = new TX1VideoEncoder;
     enc->setBitrate(4000000);
     enc->setFps(25.0);
