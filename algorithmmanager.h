@@ -3,6 +3,7 @@
 
 
 #include "lmm/baselmmelement.h"
+
 #include "ecl/ptzp/ptzphead.h"
 #include "proto/AlgorithmCommunication.grpc.pb.h"
 
@@ -11,6 +12,10 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 
+#include <vector>
+#include <iostream>
+using namespace std;
+
 class TbgthDriver;
 class AryaDriver;
 class IRDomeDriver;
@@ -18,7 +23,7 @@ class IRDomeDriver;
 class RawBuffer;
 class PtzpHead;
 class PtzpDriver;
-
+class AlgorithmElement;
 
 class AlgorithmManager : public AlgorithmCommunication::AlgorithmService::Service
 {
@@ -100,7 +105,8 @@ public:
 	};
 
 	struct deviceProperties {
-		int width;
+        QString cameraIp;
+        int width;
 		int height;
 		int fps;
 		int frameSize;
@@ -123,9 +129,9 @@ public:
 
 	struct MotionAlg {
 		int sensitivity;
-		bool classification;
+        bool classification_;
 		bool alarmFlag;
-		int dummy;
+        int classification;
 	};
 
 	struct Stabilization {
@@ -158,7 +164,12 @@ public:
 
 	struct FaceDetection {
 		int dummy;
-	};
+        bool isTileOn;
+        int xTile;
+        int yTile;
+        int mode; // 0:rectangle, 1:privacy, else:imagecroplist
+        bool isAlignmentOn;
+    };
 
 	struct PanTiltZoomInfo {
 		float pan;
@@ -185,13 +196,13 @@ public:
 	AlgorithmHandler algHandler;
 
 	AlgorithmHandler getAlgHandlerFor(int index);
-	void registerAlgorithm(Algorithm alg, BaseLmmElement *el);
+	void registerAlgorithm(Algorithm alg, AlgorithmElement *el);
 	// BaseLmmElement interface
 protected:
 
 	// PtzpHead interface
 public:
-
+    QMap<Algorithm,bool> availableAlgortihms;
 protected:
 	//Algorithm state related functions
 
@@ -200,17 +211,21 @@ protected:
 	configurationUnit confUnit;
 	QMap<int,Algorithm> availableAlgList;
 	int bufsize;
-	QHash<Algorithm, QList<BaseLmmElement *> > algoElements;
+	QHash<Algorithm, QList<AlgorithmElement *> > algoElements;
 	//Fov okuma ve interpolasyonla ilgili fonksiyonlar da eklenecek
 	//GRPCleri buraya taşımamız mantıklı olacak
 
 	//Algorithm manager instance
 
+	//algorithm helpers
+	void RunMotion(const MotionAlg &mParams);
+	void RunStab();
 
 
 	float pan_tilt_zoom_read[];
 
 	//System Drivers and functions
+	QString deviceInfo;
 	PtzpHead *pt;
 	TbgthDriver *tbgth;
 	AryaDriver *arya;

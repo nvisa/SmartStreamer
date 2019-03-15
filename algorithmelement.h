@@ -4,6 +4,13 @@
 #include "lmm/baselmmelement.h"
 #include "algorithmmanager.h"
 
+#include <iostream>
+#include <vector>
+using namespace std;
+
+#include <sstream>
+#include <iomanip>
+
 class AlgorithmElement : public BaseLmmElement
 {
 	Q_OBJECT
@@ -27,9 +34,9 @@ public:
 
 	struct MotionAlg {
 		int sensitivity;
-		bool classification;
+        bool classification_;
 		bool alarmFlag;
-		int dummy;
+        int classification;
 	};
 
 	struct Stabilization {
@@ -61,8 +68,13 @@ public:
 	};
 
 	struct FaceDetection {
-		int dummy;
-	};
+        int dummy;
+        bool isTileOn;
+        int xTile;
+        int yTile;
+        int mode; // 0:rectangle, 1:privacy, else:imagecroplist
+        bool isAlignmentOn;
+    };
 
 	struct AlgorithmHandler {
 		MotionAlg motionA;
@@ -83,11 +95,20 @@ public:
 	bool setConfigurationElement(AlgorithmManager::AlgorithmHandler algHandler);
 	bool setCurrentActiveAlgorithm(Algorithm alg);
 	AlgorithmManager::PTZinformation forwardPTZaction(uchar meta[]);
+	void updateAlgorithmParameters(AlgorithmHandler algHand, Algorithm alg);
+    void updateAlgorithmParametersFromManager(AlgorithmManager::AlgorithmHandler algHand, Algorithm alg);
 	int bufsize;
 	// BaseLmmElement interface
+
+	int init();
+	int clean();
+	int enableAlg(bool on);
+
 protected:
+	int reinit();
 	int processBuffer(const RawBuffer &buf);
 	int processAlgorithm(const RawBuffer &buf);
+    int counter;
 
 };
 

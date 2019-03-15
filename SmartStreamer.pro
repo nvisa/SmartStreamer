@@ -7,7 +7,6 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    smartstreamer.cpp \
     moxadriver.cpp \
     mjpegserver.cpp \
     seiinserter.cpp \
@@ -18,10 +17,10 @@ SOURCES += main.cpp \
     peercheck.cpp \
     algorithmmanager.cpp \
     ipstreamer.cpp \
-    algorithmelement.cpp
+    algorithmelement.cpp \
+    usbstreamer.cpp
 
 HEADERS += \
-    smartstreamer.h \
     moxadriver.h \
     mjpegserver.h \
     seiinserter.h \
@@ -33,7 +32,8 @@ HEADERS += \
     algorithmmanager.h \
     algorithmfunctions.h \
     ipstreamer.h \
-    algorithmelement.h
+    algorithmelement.h \
+    usbstreamer.h
 
 websockets {
     SOURCES += websocketstreamer.cpp

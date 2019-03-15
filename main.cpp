@@ -11,7 +11,11 @@
 #include "smartstreamer.h"
 #include "moxadriver.h"
 #include "ipstreamer.h"
+#include "usbstreamer.h"
 
+#define GRPC_TEST 0
+#define IP_STREAMER 0
+#define USB_STREAMER 1
 static void printStackTrace(void)
 {
 	void *array[25];
@@ -131,6 +135,7 @@ static void printHelp()
 #include <grpc++/security/credentials.h>
 #include <grpc++/security/server_credentials.h>
 
+#if GRPC_TEST
 #include "proto/AlgorithmCommunication.grpc.pb.h"
 static int testGrpc(const QString &action)
 {
@@ -165,6 +170,7 @@ static int testGrpc(const QString &action)
 
 	return 0;
 }
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -173,78 +179,25 @@ int main(int argc, char *argv[])
 
 	LmmCommon::init();
 	ecl::initDebug();
-#if 1
 	installSignalHandlers();
 
-#if 1
+#if GRPC_TEST
 	if (QString(argv[0]).contains("grpctest"))
 		return testGrpc(argv[1]);
+#endif
 
-	//SmartStreamer s;
+#if IP_STREAMER
 	IpStreamer ipStr;
-	SmartStreamer::Parameters pars;
-	getCmdParInt(pars.decWidth, "--dec-width", "Incoming RTSP video width, default automatic");
-	getCmdParInt(pars.decHeight, "--dec-height", "Incoming RTSP video height, default automatic");
-	getCmdParInt(pars.decBufferCount, "--dec-buffer-count", "Soft decoder buffer count, default 60");
-	getCmdParInt(pars.decOutputInFps, "--dec-out-infps", "Soft decoder output rate reduction input fps, default 0");
-	getCmdParInt(pars.decOutputOutFps, "--dec-out-outfps", "Soft decoder output rate reduction output fps, default 0");
-	getCmdParInt(pars.secWidth, "--second-stream-width", "Secondary output resolution width, default 0");
-	getCmdParInt(pars.secHeight, "--second-stream-height", "Secondary output resolution height, default 0");
-	getCmdParInt(pars.rgbMainWidth, "--rgb-stream-width", "RGB analytics stream resolution width, default 640");
-	getCmdParInt(pars.rgbMainHeight, "--rgb-stream-height", "RGB analytics stream resolution height, default 360");
-	getCmdParInt(pars.rtpBufferDuration, "--rtp-buffer-duration", "Incoming RTP buffer duration in miliseconds, default automatic");
-	getCmdParStr(pars.rtspClientUser, "--rtsp-client-user", "RTSP client username, default 'none'");
-	getCmdParStr(pars.rtspClientPass, "--rtsp-client-pass", "RTSP client password, default 'none'");
-	getCmdParStr(pars.rtspServerUser, "--rtsp-server-user", "RTSP server username, default 'none'");
-	getCmdParStr(pars.rtspServerPass, "--rtsp-server-pass", "RTSP server password, default 'none'");
-	getCmdParInt(pars.enableMoxaHacks, "--moxa-hacks", "Enable MOXA related various hacks, default '0'");
-	getCmdParInt(pars.pipelineFlags, "--pipeline-flags", "Pipeline customization flags, default 0xffffffff");
-	getCmdParStr(pars.ptzUrl, "--ptz-url", "System head remote target, ekinoks 'eth;10.5.20.92:8998', arya '50.23.169.213'");
-	if (pars.pipelineFlags == 0)
-		pars.pipelineFlags = 0xffffffff; //hex fix
-
-	//--rtsp-url=rtsp://192.168.1.2/?inst=2 --dec-width 1920 --dec-height 1080
-	QString url = getCommandlineParameter("--rtsp-url", &a, "RTSP camera URL, default 'rtsp://192.170.0.209/stream1'", "");
-	QString url2 = getCommandlineParameter("--rtsp-url2", &a, "RTSP camera URL, default 'rtsp://192.170.0.209/stream1'", "");
-	pars.rtspUrl = url;
-	pars.rtspClientUser = "aselsan";
-	pars.rtspClientPass = "aselsan";
-	qDebug() << "woowowowowo12";
-
-	if (a.arguments().contains("--help")) {
-		printHelp();
-		return 0;
-	}
-
-//	s.pars = pars;
-//	s.pars2 = pars;
-//	s.pars2.decWidth = 720;
-//	s.pars2.decHeight = 576;
-//	s.pars2.rtspClientUser = "admin";
-//	s.pars2.rtspClientPass = "moxamoxa";
-//	s.pars2.enableMoxaHacks = true;
-	url = "rtsp://10.5.177.49/stream1";
-	//s.setupAlgorithmManager();
-	//s.setupRtspClient(url);
-	//ipStr.setupAlgorithmManager();
-	qDebug() << "woowowowowo";
 	ipStr.generatePipelineForOneSource(url);
 	ipStr.start();
-	/*
-	if (!url.isEmpty())
-		//s.setupRtspClient(url);
-		s.setupTbgthCombined(url, url2);
-	else {
-		printHelp();
-		return 0;
-	}
+#endif
 
-	if (!pars.ptzUrl.isEmpty())
-		s.setupPanTiltZoomDriver(pars.ptzUrl);
-	*/
-	//s.start();
+#if USB_STREAMER
+	UsbStreamer usbStr;
+	usbStr.generatePipelineForOneSource("/dev/video0");
+	usbStr.start();
 #endif
-#endif
+
 	return a.exec();
 }
 

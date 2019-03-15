@@ -8,6 +8,7 @@
 
 #include "QFile"
 #include "ecl/debug.h"
+#include "algorithmelement.h"
 
 #include <QThread>
 
@@ -27,6 +28,7 @@ using grpc::ServerContext;
 using grpc::ServerReader;
 using grpc::ServerWriter;
 using grpc::Status;
+using grpc::StatusCode;
 using namespace std;
 
 class GrpcThreadAlg : public QThread
@@ -70,44 +72,93 @@ protected:
 ///
 ///
 
+//grpc::Status AlgorithmManager::RunAlgorithm()
+//{
+//	if(AlgorithmCommunication::RequestForAlgorithm::MOTION == algorithmType)
+//		return RunMotion();
+
+//	if (AlgorithmCommunication::RequestForAlgorithm::STABILIZATION == algorithmType)
+//		return RunStab();
+
+//	return grpc::Status(grpc::StatusCode::NOT_FOUND, "no such algoritm");
+//}
+
 grpc::Status AlgorithmManager::RunAlgorithm(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfRequests *response)
 {
 	Q_UNUSED(context);
 	AlgorithmCommunication::RequestForAlgorithm::DeviceType deviceType;
 	AlgorithmCommunication::RequestForAlgorithm::Algorithm algorithmType;
-
 	deviceType = request->device();
 	algorithmType = request->algorithmtype();
+	qDebug() << "run algorithm is triggered with " << algorithmType;
+	BaseLmmElement *activeEl = NULL;
+	Algorithm activeAlg;
+	QHashIterator<Algorithm, QList<AlgorithmElement*>> hi(algoElements);
+	AlgorithmElement::AlgorithmHandler algHandlerEl;
+	AlgorithmElement::Algorithm alg;
+	////////////////////////////
+	//Insert a control mechanism to prevent same algorithm is initialized again
+	////////////////////////////
+//	while (hi.hasNext()) {
+//		hi.next();
+//		if (hi.value().first()->isPassThru()) {
+//			qDebug() << "the element requested is pass-through" << hi.value().first();
+//			continue;
+//		}
+//		activeEl = hi.value().first();
+//		activeAlg = hi.key();
+//		break;
+//	}
+//	if (activeEl) {
+////		//asdasd
+//	}
+
 	if(deviceType == AlgorithmCommunication::RequestForAlgorithm::TV) {
 		confUnit.param.stabilization = 1;
 	} else if (deviceType == AlgorithmCommunication::RequestForAlgorithm::THERMAL)
 	{
 		confUnit.param.stabilization = 2;
-	}
-	BaseLmmElement *el = NULL;
+	}    
+	AlgorithmElement *el = NULL;
 	if(AlgorithmCommunication::RequestForAlgorithm::MOTION == algorithmType)
 	{
+		qDebug() << "MOTION is triggered from outside" ;
+		alg = AlgorithmElement::Algorithm::MOTION;
 		el = algoElements[MOTION].first();
 		AlgorithmCommunication::MotionParameters::Settings settings;
 		settings = request->motionparam().settingchoice();
 		qDebug() << "WTF !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << settings << request->motionparam().sensitivity();
 		if (settings == AlgorithmCommunication::MotionParameters::SENSITIVITY) {
 			if (request->motionparam().sensitivity() == NULL) {
-				response->set_err(5);
-				response->set_response(AlgorithmCommunication::ResponseOfRequests::MISSING_PARAMETER);
-				return grpc::Status::CANCELLED;
+				if (algHandler.motionA.sensitivity == 0 || algHandler.motionA.sensitivity == NULL) {
+					response->set_err(5);
+					response->set_response(AlgorithmCommunication::ResponseOfRequests::MISSING_PARAMETER);
+					return grpc::Status::CANCELLED;
+				}
 			} else if (request->motionparam().sensitivity() == 0)
 			{
-				response->set_err(5);
-				response->set_response(AlgorithmCommunication::ResponseOfRequests::NOT_APPLICABLE);
-				return grpc::Status::CANCELLED;
+				if (algHandler.motionA.sensitivity == 0 || algHandler.motionA.sensitivity == NULL) {
+					response->set_err(5);
+					response->set_response(AlgorithmCommunication::ResponseOfRequests::NOT_APPLICABLE);
+					return grpc::Status::CANCELLED;
+				}
+			} else if (request->motionparam().sensitivity() != 0 && request->motionparam().sensitivity() != NULL) {
+				algHandler.motionA.sensitivity = request->motionparam().sensitivity();
+				algHandlerEl.motionA.sensitivity = request->motionparam().sensitivity();
+				response->set_err(0);
+				response->set_response(AlgorithmCommunication::ResponseOfRequests::SUCCESSFUL);
 			}
-			algHandler.motionA.sensitivity = request->motionparam().sensitivity();
 		} else if (settings == AlgorithmCommunication::MotionParameters::ROI) {
 			if (request->motionparam().roilist().polygon().size() < 1) {
-				response->set_err(1);
-				response->set_response(AlgorithmCommunication::ResponseOfRequests::FAIL);
-				return grpc::Status::CANCELLED;
+				if (!QFile("points.txt").exists()) {
+					response->set_err(1);
+					response->set_response(AlgorithmCommunication::ResponseOfRequests::FAIL);
+					return grpc::Status::CANCELLED;
+				} else {
+					response->set_err(0);
+					response->set_response(AlgorithmCommunication::ResponseOfRequests::MISSING_PARAMETER);
+					return grpc::Status::CANCELLED;
+				}
 			}
 			QFile f("points.txt");
 			if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -149,27 +200,41 @@ grpc::Status AlgorithmManager::RunAlgorithm(grpc::ServerContext *context, const 
 			out << request->motionparam().roilist().rect2().bottomright().x() << "\n";
 			out << request->motionparam().roilist().rect2().bottomright().y() << "\n";
 			f.close();
-			return grpc::Status::OK;
 		} else if (settings == AlgorithmCommunication::MotionParameters::BOTH) {
 			AlgorithmCommunication::MotionParameters::Settings settings;
 			settings = request->motionparam().settingchoice();
 			if (settings == AlgorithmCommunication::MotionParameters::SENSITIVITY) {
 				if (request->motionparam().sensitivity() == NULL) {
-					response->set_err(5);
-					response->set_response(AlgorithmCommunication::ResponseOfRequests::MISSING_PARAMETER);
-					return grpc::Status::CANCELLED;
+					if (algHandler.motionA.sensitivity == 0 || algHandler.motionA.sensitivity == NULL) {
+						response->set_err(5);
+						response->set_response(AlgorithmCommunication::ResponseOfRequests::MISSING_PARAMETER);
+						return grpc::Status::CANCELLED;
+					}
 				} else if (request->motionparam().sensitivity() == 0)
 				{
-					response->set_err(5);
-					response->set_response(AlgorithmCommunication::ResponseOfRequests::NOT_APPLICABLE);
-					return grpc::Status::CANCELLED;
+					if (algHandler.motionA.sensitivity == 0 || algHandler.motionA.sensitivity == NULL) {
+						response->set_err(5);
+						response->set_response(AlgorithmCommunication::ResponseOfRequests::NOT_APPLICABLE);
+						return grpc::Status::CANCELLED;
+					}
 				}
-				algHandler.motionA.sensitivity = request->motionparam().sensitivity();
+				else if (request->motionparam().sensitivity() != 0 && request->motionparam().sensitivity() != NULL) {
+					algHandler.motionA.sensitivity = request->motionparam().sensitivity();
+					algHandlerEl.motionA.sensitivity = request->motionparam().sensitivity();
+					response->set_err(0);
+					response->set_response(AlgorithmCommunication::ResponseOfRequests::SUCCESSFUL);
+				}
 			} else if (settings == AlgorithmCommunication::MotionParameters::ROI) {
 				if (request->motionparam().roilist().polygon().size() < 1) {
-					response->set_err(1);
-					response->set_response(AlgorithmCommunication::ResponseOfRequests::FAIL);
-					return grpc::Status::CANCELLED;
+					if (!QFile("points.txt").exists()) {
+						response->set_err(1);
+						response->set_response(AlgorithmCommunication::ResponseOfRequests::FAIL);
+						return grpc::Status::CANCELLED;
+					} else {
+						response->set_err(0);
+						response->set_response(AlgorithmCommunication::ResponseOfRequests::MISSING_PARAMETER);
+						return grpc::Status::CANCELLED;
+					}
 				}
 				QFile f("points.txt");
 				if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -217,13 +282,16 @@ grpc::Status AlgorithmManager::RunAlgorithm(grpc::ServerContext *context, const 
 				response->set_err(2);
 				return grpc::Status::CANCELLED;
 			}
+
+			response->set_response(AlgorithmCommunication::ResponseOfRequests::SUCCESSFUL);
+			response->set_err(0);
+			algHandler.currentActiveAlg = MOTION;
+			algHandler.stateOfAlg = NOT_INIT;
+			algHandlerEl.currentActiveAlg = AlgorithmElement::Algorithm::MOTION;
 		}
-		response->set_response(AlgorithmCommunication::ResponseOfRequests::SUCCESSFUL);
-		response->set_err(0);
-		algHandler.currentActiveAlg = MOTION;
-		algHandler.stateOfAlg = NOT_INIT;
 	} else if (AlgorithmCommunication::RequestForAlgorithm::STABILIZATION == algorithmType)
 	{
+		alg = AlgorithmElement::Algorithm::STABILIZATION;
 		if (request->stabilizationparam().sensitivity() == NULL) {
 			response->set_err(5);
 			response->set_response(AlgorithmCommunication::ResponseOfRequests::MISSING_PARAMETER);
@@ -235,18 +303,20 @@ grpc::Status AlgorithmManager::RunAlgorithm(grpc::ServerContext *context, const 
 			return grpc::Status::CANCELLED;
 		}
 		algHandler.stabilA.sensitivity = request->stabilizationparam().sensitivity();
+		algHandlerEl.stabilA.sensitivity = request->stabilizationparam().sensitivity();
 		response->set_response(AlgorithmCommunication::ResponseOfRequests::SUCCESSFUL);
 		response->set_err(0);
 		algHandler.currentActiveAlg = STABILIZATION;
 		algHandler.stateOfAlg = NOT_INIT;
-		return grpc::Status::OK;
 	} else if (AlgorithmCommunication::RequestForAlgorithm::TRACKING == algorithmType)
 	{
+		alg = AlgorithmElement::Algorithm::TRACKING;
+		el = algoElements[TRACKING].first();
 		AlgorithmCommunication::TrackParameters::TrackType trackType;
 		trackType = request->trackparam().tracktype();
 		if (trackType == AlgorithmCommunication::TrackParameters::AUTO)
 		{
-			if(!algHandler.trackA.enabledModes.key(TrackMode::AUTO))
+			if(!algHandler.trackA.enabledModes.contains(algHandler.trackA.enabledModes.value(TrackMode::AUTO)))
 			{
 				response->set_err(8);
 				response->set_response(AlgorithmCommunication::ResponseOfRequests::NOT_APPLICABLE);
@@ -254,7 +324,7 @@ grpc::Status AlgorithmManager::RunAlgorithm(grpc::ServerContext *context, const 
 			}
 		} else if (trackType == AlgorithmCommunication::TrackParameters::SEMI_AUTO)
 		{
-			if(!algHandler.trackA.enabledModes.key(TrackMode::SEMI_AUTO))
+			if(!algHandler.trackA.enabledModes.contains(algHandler.trackA.enabledModes.value(TrackMode::SEMI_AUTO)))
 			{
 				response->set_err(8);
 				response->set_response(AlgorithmCommunication::ResponseOfRequests::NOT_APPLICABLE);
@@ -262,7 +332,7 @@ grpc::Status AlgorithmManager::RunAlgorithm(grpc::ServerContext *context, const 
 			}
 		} else if (trackType == AlgorithmCommunication::TrackParameters::MANUAL)
 		{
-			if(!algHandler.trackA.enabledModes.key(TrackMode::MANUAL))
+			if(!algHandler.trackA.enabledModes.contains(algHandler.trackA.enabledModes.value(TrackMode::MANUAL)))
 			{
 				response->set_err(8);
 				response->set_response(AlgorithmCommunication::ResponseOfRequests::NOT_APPLICABLE);
@@ -272,45 +342,75 @@ grpc::Status AlgorithmManager::RunAlgorithm(grpc::ServerContext *context, const 
 		if (request->trackparam().trackinterval() != NULL || request->trackparam().trackinterval() != 0)
 		{
 			algHandler.trackA.trackDuration = request->trackparam().trackinterval();
+			algHandlerEl.trackA.trackDuration = request->trackparam().trackinterval();
 		} else {
-			response->set_err(12);
-			response->set_response(AlgorithmCommunication::ResponseOfRequests::MISSING_PARAMETER);
-			return grpc::Status::CANCELLED;
+			if (!algHandler.trackA.trackDuration)
+			{
+				response->set_err(12);
+				response->set_response(AlgorithmCommunication::ResponseOfRequests::MISSING_PARAMETER);
+				return grpc::Status::CANCELLED;
+			}
 		}
 		if (request->trackparam().trackscore() != NULL || request->trackparam().trackscore() != 0)
 		{
 			algHandler.trackA.trackScore = request->trackparam().trackscore();
+			algHandlerEl.trackA.trackScore = request->trackparam().trackscore();
 		} else {
-			response->set_err(12);
-			response->set_response(AlgorithmCommunication::ResponseOfRequests::MISSING_PARAMETER);
-			return grpc::Status::CANCELLED;
+			if (!algHandler.trackA.trackScore)
+			{
+				response->set_err(12);
+				response->set_response(AlgorithmCommunication::ResponseOfRequests::MISSING_PARAMETER);
+				return grpc::Status::CANCELLED;
+			}
 		}
+		qDebug() << "target width and height is " << request->trackparam().target().width() << " & " << request->trackparam().target().height();
+		qDebug() << "predefined target sizes are " << algHandler.trackA.objHeight << ", " << algHandler.trackA.objWidth;
 		if (0.02 > request->trackparam().target().width() || 0.02 > request->trackparam().target().height())
-			return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "region too small", "region too small");
+		{
+			if (!algHandler.trackA.objHeight || !algHandler.trackA.objHeight)
+				return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "region too small", "region too small");
+		}
 		if (0.45 < request->trackparam().target().width() || 0.45 < request->trackparam().target().height())
-			return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "region too big", "region too big");
-		algHandler.trackA.objWidth = request->trackparam().target().width();
-		algHandler.trackA.objHeight = request->trackparam().target().height();
+		{
+			if (!algHandler.trackA.objHeight || !algHandler.trackA.objHeight)
+				return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "region too big", "region too big");
+		}
+		if (request->trackparam().target().width() != 0 && request->trackparam().target().width() != NULL) {
+			algHandler.trackA.objWidth = request->trackparam().target().width();
+			algHandlerEl.trackA.objWidth = request->trackparam().target().width();
+		}
+		if (request->trackparam().target().height() != 0 && request->trackparam().target().height() != NULL) {
+			algHandler.trackA.objHeight = request->trackparam().target().height();
+			algHandlerEl.trackA.objHeight = request->trackparam().target().width();
+		}
 		algHandler.trackA.objPointX = request->trackparam().target().point_x();
 		algHandler.trackA.objPointY = request->trackparam().target().point_y();
 		algHandler.currentActiveAlg = TRACKING;
 		algHandler.stateOfAlg = NOT_INIT;
+		algHandlerEl.trackA.objPointX = request->trackparam().target().point_x();
+		algHandlerEl.trackA.objPointY = request->trackparam().target().point_y();
+		algHandlerEl.currentActiveAlg = AlgorithmElement::Algorithm::TRACKING;
 	} else if (AlgorithmCommunication::RequestForAlgorithm::PANAROMA == algorithmType)
 	{
+		alg = AlgorithmElement::Algorithm::PANAROMA;
 		algHandler.currentActiveAlg = PANAROMA;
 		algHandler.stateOfAlg = NOT_INIT;
 	} else if (AlgorithmCommunication::RequestForAlgorithm::FACE_DETECTION == algorithmType)
 	{
-
+        qDebug() << "~~~~~~~~~~~~~~~~~~GRPC~~~~~~~~~~~~~~~~~~~~~~~~~~FACE~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
+        alg = AlgorithmElement::Algorithm::FACE_DETECTION;
+        el = algoElements[FACE_DETECTION].first();
 	} else {
 		response->set_response(AlgorithmCommunication::ResponseOfRequests::FAIL);
 		response->set_err(1);
 	}
 
 	qDebug() << "-------------------------------------" << el;
-	if (el)
-		el->setPassThru(false);
-
+	el->updateAlgorithmParameters(algHandlerEl,alg);
+	if (el) {
+		qDebug() << "algorithm element " << el << "will be activated";
+		el->enableAlg(true);
+	}
 	return grpc::Status::OK;
 
 }
@@ -324,22 +424,27 @@ grpc::Status AlgorithmManager::StopAlgorithm(grpc::ServerContext *context, const
 
 	deviceType = request->device();
 	algorithmType = request->algorithmtype();
-	BaseLmmElement *el = NULL;
+	AlgorithmElement *el = NULL;
 	if (AlgorithmCommunication::RequestForAlgorithm::MOTION == algorithmType)
 	{
 		el = algoElements[MOTION].first();
+		el->clean();
 		//For motion specific parameters, this scope is created
 	} else if (AlgorithmCommunication::RequestForAlgorithm::STABILIZATION == algorithmType)
 	{
 		//For stabilization specific parameters, this scope is created
 	} else if (AlgorithmCommunication::RequestForAlgorithm::TRACKING == algorithmType)
 	{
+		el = algoElements[TRACKING].first();
 		//For tracking specific parameters, this scope is created
 	} else if (AlgorithmCommunication::RequestForAlgorithm::PANAROMA == algorithmType)
 	{
 		//For panaroma specific parameters, this scope is created
 	} else if (AlgorithmCommunication::RequestForAlgorithm::FACE_DETECTION == algorithmType)
 	{
+        qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~GRPC FACE STOP~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
+        el = algoElements[FACE_DETECTION].first();
+        el->clean();
 		//For face detection specific parameters, this scope is created
 	} else {
 		response->set_response(AlgorithmCommunication::ResponseOfRequests::NOT_APPLICABLE);
@@ -349,7 +454,7 @@ grpc::Status AlgorithmManager::StopAlgorithm(grpc::ServerContext *context, const
 	response->set_err(0);
 	algHandler.stateOfAlg = TERMINATED;
 	if (el)
-		el->setPassThru(true);
+		el->enableAlg(false);
 	return grpc::Status::OK;
 }
 
@@ -579,10 +684,19 @@ grpc::Status AlgorithmManager::GetSystemFeatures(grpc::ServerContext *context, c
 	}
 }
 
+
+
+void AlgorithmManager::RunMotion(const AlgorithmManager::MotionAlg &mParams)
+{
+
+}
+
+
+
 AlgorithmManager::AlgorithmManager(QObject *parent)
 	: AlgorithmCommunication::AlgorithmService::Service()
 {
-	algHandler.currentActiveAlg = MOTION;
+	//algHandler.currentActiveAlg = MOTION;
 	algHandler.stateOfAlg = NOT_INIT;
 	algHandler.systemHandler = EMPTY_SYSTEM;
 	pt = NULL;
@@ -614,11 +728,16 @@ int AlgorithmManager::openAlgRelatedJson()
 	QJsonObject obj_info = doc.object();
 
 	//Device related properties like fps,resolution are obtained with the following lines
+    QJsonValue source = obj_info.value(QString("source"));
+    QJsonObject cam_ip = source.toObject()["IP"].toObject();
+    confUnit.devProp.cameraIp = cam_ip["address"].toString();
+
 	QJsonValue sec_device = obj_info.value(QString("device"));
 	QJsonObject itemized_sec_device = sec_device.toObject();
 	QJsonObject dev_resol = itemized_sec_device["resolution"].toObject();
 	confUnit.devProp.width = dev_resol["width"].toInt();
 	confUnit.devProp.height = dev_resol["height"].toInt();
+
 	if (confUnit.devProp.height == 1080) {
 		deviceType = 1;
 	} else if (confUnit.devProp.height == 576) {
@@ -655,21 +774,29 @@ int AlgorithmManager::openAlgRelatedJson()
 		availableAlgList.insert(indexForAlgList,Algorithm::MOTION);
 		indexForAlgList++;
 		algHandler.motionA.sensitivity = motion["sensitivity"].toInt();
-		algHandler.motionA.classification = motion["classification"].toBool();
+        algHandler.motionA.classification = motion["classification"].toInt();
+        algHandler.motionA.classification_ = motion["classification"].toBool();
+        availableAlgortihms.insert(Algorithm::MOTION,true);
 	}
 	if (stab["enabled"].toBool() == true) {
 		availableAlgList.insert(indexForAlgList,Algorithm::STABILIZATION);
 		indexForAlgList++;
+        availableAlgortihms.insert(Algorithm::STABILIZATION,true);
 	}
 	if (track["enabled"].toBool() == true) {
 		availableAlgList.insert(indexForAlgList,Algorithm::TRACKING);
 		indexForAlgList++;
 		algHandler.trackA.trackScore = (float) track["track_score"].toDouble();
 		algHandler.trackA.trackDuration = track["track_duration"].toInt();
+		algHandler.trackA.objHeight = 100;
+		algHandler.trackA.objWidth = 100;
+		algHandler.trackA.objPointX = 100;
+		algHandler.trackA.objPointY = 100;
 		QJsonObject type = track["track_types"].toObject();
 		int counter = 0;
 		if (type["auto"].toBool())
 		{
+			qDebug() << "auto track mode is inserted";
 			algHandler.trackA.enabledModes.insert(counter,TrackMode::AUTO);
 			counter++;
 		}
@@ -700,28 +827,61 @@ int AlgorithmManager::openAlgRelatedJson()
 		} else {
 			//Multiple tracking type is selected
 		}
+        availableAlgortihms.insert(Algorithm::TRACKING,true);
 	}
 	if (panaroma["enabled"].toBool())
 	{
 		availableAlgList.insert(indexForAlgList,Algorithm::PANAROMA);
 		indexForAlgList++;
+        availableAlgortihms.insert(Algorithm::PANAROMA,true);
 	}
 	if (face["enabled"].toBool())
 	{
 		availableAlgList.insert(indexForAlgList,Algorithm::FACE_DETECTION);
-		indexForAlgList++;
+        algHandler.faceA.isTileOn = face["isTileOn"].toBool();
+        algHandler.faceA.xTile = face["xTile"].toInt();
+        algHandler.faceA.yTile = face["yTile"].toInt();
+        algHandler.faceA.mode = face["mode"].toInt();
+        algHandler.faceA.isAlignmentOn = face["isAlignmentOn"].toBool();
+//        AlgorithmElement::Algorithm alg;
+//        AlgorithmElement *el = NULL;
+//        alg = AlgorithmElement::Algorithm::FACE_DETECTION;
+//        el = algoElements[FACE_DETECTION].first();
+//        el->updateAlgorithmParametersFromManager(algHandler,alg);
+
+        indexForAlgList++;
+        qDebug() << "Face algorithm is available";
+        availableAlgortihms.insert(Algorithm::FACE_DETECTION,true);
 	}
 	algHandler.confUnit = confUnit;
+	QJsonValue project_info = obj_info.value(QString("projects"));
+	QJsonObject itemized_project_info = project_info.toObject();
+	bool botas = itemized_project_info["botas"].toBool();
+	bool tbgth = itemized_project_info["tbgth"].toBool();
+	bool arya  = itemized_project_info["arya"].toBool();
+	qDebug() << "botas,tbgth,arya " << botas << tbgth << arya;
+
+	if (botas && !tbgth && !arya)
+		deviceInfo = "botas";
+	else if (tbgth && !botas && !arya)
+		deviceInfo = "tbgth";
+	else if (arya && !tbgth && !botas)
+		deviceInfo = "arya";
+	else
+		deviceInfo = "";
+	setupDeviceController(deviceInfo);
 	qDebug() << confUnit.devProp.width << confUnit.devProp.height << confUnit.param.rgb <<
-			confUnit.param.record <<  confUnit.param.shadow << confUnit.param.ill << confUnit.param.debug;
+				confUnit.param.record <<  confUnit.param.shadow << confUnit.param.ill << confUnit.param.debug;
 	qDebug() << confUnit.param.stabilization << confUnit.param.privacy <<
-			algHandler.meta << pan_tilt_zoom_read << algHandler.motionA.alarmFlag << algHandler.initialize << algHandler.motionA.sensitivity;
+				algHandler.meta << pan_tilt_zoom_read << algHandler.motionA.alarmFlag << algHandler.initialize << algHandler.motionA.sensitivity;
 }
 
 int AlgorithmManager::setupDeviceController(const QString &deviceInfo)
 {
 	if (deviceInfo.contains("botas")) {
 		botas = new IRDomeDriver();
+		botas->startGrpcApi(50058);
+		botas->setTarget("ttyS0?baud=9600");
 		algHandler.systemHandler = BOTAS;
 		ptzp = botas;
 	}
@@ -749,46 +909,42 @@ AlgorithmManager::AlgorithmHandler AlgorithmManager::getAlgHandlerFor(int index)
 	return algHandler;
 }
 
-void AlgorithmManager::registerAlgorithm(AlgorithmManager::Algorithm alg, BaseLmmElement *el)
+void AlgorithmManager::registerAlgorithm(AlgorithmManager::Algorithm alg, AlgorithmElement *el)
 {
 	algoElements[alg] << el;
+	el->enableAlg(false);
+	qDebug() << "algorithm element id is " << el;
 }
 
 bool AlgorithmManager::checkSystemParameters()
 {
-	switch(algHandler.currentActiveAlg) {
-	case MOTION:
-		if (!QFile::exists("points.txt") && !QFile::exists("System_parameters.txt")) {
-			return false;
-		}
-		break;
-	case STABILIZATION:
-		if (!QFile::exists("stabilization_parameters.txt") || !QFile::exists("stabilization_parameters_Thermal.txt")) {
-			return false;
-		}
-		break;
-
-	case TRACKING:
-		if (!QFile::exists("track_alg_parameters.txt") && !QFile::exists("track_parameters.txt")) {
-			return false;
-		}
-		break;
-
-	case PANAROMA:
-		if (!QFile::exists("pan_params.txt") && !QFile::exists("pan_shift_parameters.txt") && !QFile::exists("panchange_parameters.txt")) {
-			return false;
-		}
-		break;
-	case FACE_DETECTION:
-		break;
-	case NONE:
-		return true;
-		break;
-	}
+    if(availableAlgortihms.value(Algorithm::MOTION)) {
+        if (!QFile::exists("points.txt") && !QFile::exists("System_parameters.txt")) {
+            return false;
+        }
+    } else if(availableAlgortihms.value(Algorithm::STABILIZATION)) {
+        if (!QFile::exists("stabilization_parameters.txt") || !QFile::exists("stabilization_parameters_Thermal.txt")) {
+            return false;
+        }
+    } else if(availableAlgortihms.value(Algorithm::TRACKING)) {
+        if (!QFile::exists("track_alg_parameters.txt") && !QFile::exists("track_parameters.txt")) {
+            return false;
+        }
+    } else if(availableAlgortihms.value(Algorithm::PANAROMA)) {
+        if (!QFile::exists("pan_params.txt") && !QFile::exists("pan_shift_parameters.txt") && !QFile::exists("panchange_parameters.txt")) {
+            return false;
+        }
+    }
+    else if(availableAlgortihms.value(Algorithm::FACE_DETECTION)) {
+            if (!QFile::exists("face.txt") && !QFile::exists("face_parameters.txt")) {
+                return false;
+            }
+        }
 }
 
 void AlgorithmManager::startGrpc()
 {
+	qDebug() << "GRPC is initialized";
 	GrpcThreadAlg *grpcServ = new GrpcThreadAlg(50059, this);
 	grpcServ->start();
 }
@@ -859,4 +1015,3 @@ int AlgorithmManager::setZoom(uint pos)
 	ptzp->getHead(0)->setZoom(pos);
 	return 0;
 }
-
