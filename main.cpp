@@ -12,6 +12,7 @@
 #include "moxadriver.h"
 #include "ipstreamer.h"
 #include "usbstreamer.h"
+#include "version.h"
 
 #define GRPC_TEST 0
 #define IP_STREAMER 0
@@ -176,6 +177,11 @@ int main(int argc, char *argv[])
 {
 	QCoreApplication a(argc, argv);
 	QDir::setCurrent(a.applicationDirPath());
+
+	if (a.arguments()[1] == "--version") {
+		qDebug() << VERSION_INFO;
+		return 0;
+	}
 
 	LmmCommon::init();
 	ecl::initDebug();
