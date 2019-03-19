@@ -46,3 +46,10 @@ tx1 {
     LIBS += -L/usr/local/cuda/lib64 -lcudart -lcufft
     LIBS += -L/usr/lib/aarch64-linux-gnu/tegra/ -lv4l2 -lnvbuf_utils -lnvinfer -lnvparsers
 }
+
+#Add make targets for checking version info
+VersionCheck.commands = @$$PWD/checkversion.sh $$PWD
+VersionCheck.depends = FORCE
+VersionCheck.target = version.h
+QMAKE_EXTRA_TARGETS += VersionCheck
+PRE_TARGETDEPS += version.h
