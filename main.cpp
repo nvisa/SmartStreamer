@@ -144,31 +144,92 @@ static int testGrpc(const QString &action)
 	std::shared_ptr<grpc::Channel> chn = grpc::CreateChannel(ep.toStdString(), grpc::InsecureChannelCredentials());
 	std::shared_ptr<AlgorithmCommunication::AlgorithmService::Stub> stub = AlgorithmCommunication::AlgorithmService::NewStub(chn);
 	grpc::ClientContext ctx;
-
 	::grpc::Status status;
-	if (action == "run") {
+	if (action == "run_motion_roi") {
+		qDebug() << "1";
+		AlgorithmCommunication::RequestForAlgorithm req;
+		req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm_Algorithm_MOTION);
+		AlgorithmCommunication::MotionParameters *params = new AlgorithmCommunication::MotionParameters;
+		AlgorithmCommunication::TRoi *Roi = new AlgorithmCommunication::TRoi;
+		float points[16]{50,50,450,50,450,900,50,900,600,50,1800,50,1800,900,600,900};
+		int polyCounter = 0;
+		for (int i = 0; i < 2 ; ++i)
+		{
+			AlgorithmCommunication::TPolygon *Poly = Roi->add_polygon();
+			Poly->set_is_active(true);
+			for (int j = 0; j < 8; j += 2)
+			{
+				AlgorithmCommunication::TPoint *Point = Poly->add_points();
+				Point->set_x(points[j + polyCounter]);
+				Point->set_y(points[j + 1 + polyCounter]);
+			}
+			polyCounter = polyCounter + 4 * 2;
+		}
+		AlgorithmCommunication::TRectangle *myRect1 = Roi->mutable_rect1();
+		AlgorithmCommunication::TRectangle *myRect2 = Roi->mutable_rect2();
+		myRect1->mutable_upperleft()->set_x(100);
+		myRect1->mutable_upperleft()->set_y(100);
+		myRect1->mutable_bottomright()->set_x(200);
+		myRect1->mutable_bottomright()->set_y(200);
+		myRect2->mutable_upperleft()->set_x(300);
+		myRect2->mutable_upperleft()->set_y(300);
+		myRect2->mutable_bottomright()->set_x(500);
+		myRect2->mutable_bottomright()->set_y(500);
+		params->set_allocated_roilist(Roi);
+		params->set_settingchoice(AlgorithmCommunication::MotionParameters_Settings_ROI);
+		int a = qrand() % 100;
+		params->set_sensitivity(a);
+		req.set_allocated_motionparam(params);
+		AlgorithmCommunication::ResponseOfRequests resp;
+		status = stub->RunAlgorithm(&ctx, req, &resp);
+	} if (action == "run_motion_sens") {
 		AlgorithmCommunication::RequestForAlgorithm req;
 		req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm_Algorithm_MOTION);
 		AlgorithmCommunication::MotionParameters *params = new AlgorithmCommunication::MotionParameters;
 		params->set_settingchoice(AlgorithmCommunication::MotionParameters_Settings_SENSITIVITY);
-		params->set_sensitivity(60);
+		int a = qrand() % 100;
+		params->set_sensitivity(a);
 		req.set_allocated_motionparam(params);
 		AlgorithmCommunication::ResponseOfRequests resp;
 		status = stub->RunAlgorithm(&ctx, req, &resp);
-	} else if (action == "stop") {
+	} else if (action == "run_track"){
+		AlgorithmCommunication::RequestForAlgorithm req;
+		req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm_Algorithm_TRACKING);
+		AlgorithmCommunication::TrackParameters *params = new AlgorithmCommunication::TrackParameters;
+		params->set_tracktype(AlgorithmCommunication::TrackParameters_TrackType_AUTO);
+		//		::AlgorithmCommunication::TrackObject* target;
+		//		target->set_point_x(0.5);
+		//		target->set_point_y(0.5);
+		//		params->set_allocated_target(target);
+		req.set_allocated_trackparam(params);
+		AlgorithmCommunication::ResponseOfRequests resp;
+		status = stub->RunAlgorithm(&ctx, req, &resp);
+	} else if (action == "run_face") {
+		AlgorithmCommunication::RequestForAlgorithm req;
+		req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm_Algorithm_FACE_DETECTION);
+		AlgorithmCommunication::FaceDetectionParameters *params = new AlgorithmCommunication::FaceDetectionParameters;
+		AlgorithmCommunication::ResponseOfRequests resp;
+		status = stub->RunAlgorithm(&ctx, req, &resp);
+	} else if (action == "stop_motion") {
 		AlgorithmCommunication::RequestForAlgorithm req;
 		req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm_Algorithm_MOTION);
 		AlgorithmCommunication::ResponseOfRequests resp;
 		status = stub->StopAlgorithm(&ctx, req, &resp);
+	} else if (action == "stop_track") {
+		AlgorithmCommunication::RequestForAlgorithm req;
+		req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm_Algorithm_TRACKING);
+		AlgorithmCommunication::ResponseOfRequests resp;
+		status = stub->StopAlgorithm(&ctx, req, &resp);
+	} else if (action == "stop_face") {
+		AlgorithmCommunication::RequestForAlgorithm req;
+		req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm_Algorithm_FACE_DETECTION);
+		AlgorithmCommunication::ResponseOfRequests resp;
+		status = stub->StopAlgorithm(&ctx, req, &resp);
 	}
-
 	if (status.error_code() != grpc::OK) {
 		qDebug("error '%d' in grpc call", status.error_code());
 		return -1;
 	}
-
-	qDebug() << "done grpc";
-
 	return 0;
 }
 #endif
