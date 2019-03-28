@@ -1,0 +1,92 @@
+{
+	"source": {
+		"IP": {
+			"enabled": false,
+			"address": "192.170.0.61"
+		},
+		"USB": {
+			"enabled": true,
+			"address": "/dev/video0"
+		},
+		"ANALOG": {
+			"enabled": false,
+            		"address": "/dev/video0"
+		}
+	},
+	"device": {
+		"resolution": {
+			"width": 1920,
+			"height": 1080
+		},
+        "fps": 12.5,
+        "in_fps": 12.5,
+        "out_fps": 12.5
+	},
+	"credentials": {
+		"user_name": "aselsan",
+		"user_passwd": "aselsan"
+	},
+	"parameters": {
+		"rgb": 1,
+		"ill": 1,
+		"debug": 0,
+		"shadow": 0,
+		"record": 0,
+		"privacy": 0,
+		"stabilization": 0
+	},
+	"algorithms": {
+		"motion_detection": {
+			"enabled": true,
+			"sensitivity": 44,
+			"classification": false
+		},
+		"stabilization": {
+			"enabled": false
+		},
+		"tracking": {
+			"enabled": true,
+			"multiple_track_type_enabled": true,
+			"track_types": {
+				"auto": true,
+				"semi_auto": false,
+				"manual": false
+			},
+			"track_score": 0.45,
+			"track_duration": 30
+		},
+		"panaroma": {
+			"enabled": false
+		},
+		"face_detection": {
+			"enabled": false,
+			"isTileOn": false,
+			"xTile": 2,
+			"yTile": 1,
+			"mode" : 2,
+			"isAlignmentOn": true,
+			"skipFrame": 15
+		}
+	},
+	"projects": {
+		"botas_fix": true,
+ 		"botas_dome": false,
+		"tbgth": false,
+		"arya" : false 
+	},
+	"alarmInfo": {
+		"baseId": 1,
+	        "stationId": 2,
+	        "deviceId": 3,
+		"unitType": 4
+	},
+	"encoders": [
+        {
+            "bitrate": 1000000
+        },
+        {
+            "bitrate": 5000000
+        }
+    ]
+}
+
