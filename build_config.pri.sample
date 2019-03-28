@@ -6,14 +6,14 @@ LIBS += $$INSTALL_PREFIX/usr/local/lib/liblmm.a
 PRE_TARGETDEPS += $$INSTALL_PREFIX/usr/local/lib/liblmm.a
 LIBS += $$INSTALL_PREFIX/usr/local/lib/libEncoderCommonLibrary.a
 PRE_TARGETDEPS += $$INSTALL_PREFIX/usr/local/lib/libEncoderCommonLibrary.a
-#LIBS += $$INSTALL_PREFIX/usr/local/lib/libgpu.a
+LIBS += $$INSTALL_PREFIX/usr/local/lib/libgpu.a
 
-LIBS += -L/home/nvidia/workspace/xDNN/Release/libxDNN.so
+LIBS += -L/home/nvidia/workspace/xDNN/Release -lxDNN
 LIBS += -lx264
 LIBS += -L$$INSTALL_PREFIX/usr/local/lib/ -lavformat -lswscale -lavcodec -lavutil -lswresample
 LIBS += -lgstreamer-1.0 -lgobject-2.0 -lglib-2.0 -lgstbase-1.0 -lgstapp-1.0 -lz -llzma -lva
 LIBS += -lyuv
-#LIBS += -lViaWrapper -lgpu
+LIBS += -lViaWrapper -lgpu
 LIBS += -L/usr/local/cuda/lib -lcudart -lcufft
 
 INCLUDEPATH += /home/nvidia/workspace/xDNN
