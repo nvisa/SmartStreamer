@@ -33,7 +33,8 @@ HEADERS += \
     algorithmfunctions.h \
     ipstreamer.h \
     algorithmelement.h \
-    usbstreamer.h
+    usbstreamer.h \
+    commoninformationinterface.h
 
 websockets {
     SOURCES += websocketstreamer.cpp

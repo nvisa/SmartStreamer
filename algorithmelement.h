@@ -2,7 +2,14 @@
 #define ALGORITHMELEMENT_H
 
 #include "lmm/baselmmelement.h"
-#include "algorithmmanager.h"
+#include "commoninformationinterface.h"
+#include <iostream>
+#include <sstream>
+#include <iomanip>
+#include <QDebug>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QJsonArray>
 
 #include <iostream>
 #include <vector>
@@ -10,13 +17,11 @@ using namespace std;
 
 #include <sstream>
 #include <iomanip>
-
+class AlgorithmManager;
 class AlgorithmElement : public BaseLmmElement
 {
 	Q_OBJECT
 public:
-	AlgorithmElement(QObject *parent = 0);
-
 	enum Algorithm {
 		MOTION,
 		STABILIZATION,
@@ -60,6 +65,7 @@ public:
 		float objHeight;
 		float objPointX;
 		float objPointY;
+		TrackMode trackMode;
 		int dummy;
 	};
 
@@ -76,40 +82,63 @@ public:
 		bool isAlignmentOn;
 	};
 
-	struct AlgorithmHandler {
+	struct parameters {
+		int rgb;
+		int ill;
+		int debug;
+		int shadow;
+		int record;
+		int privacy;
+		int stabilization;
+	};
+
+	struct deviceProperties {
+		QString cameraIp;
+		int width;
+		int height;
+		float fps;
+		int frameSize;
+	};
+
+	struct configurationUnit {
+		parameters param;
+		deviceProperties devProp;
+	};
+
+	struct AlgorithmElementHandler {
+		configurationUnit confUnit;
+		deviceProperties devProp;
+		bool systemParameters;
+		Algorithm currentActiveAlg = NONE;
 		MotionAlg motionA;
 		Stabilization stabilA;
 		Tracking trackA;
 		Panaroma panaromA;
 		FaceDetection faceA;
-		Algorithm currentActiveAlg;
 		int initialize;
 		uchar meta[4096];
-		bool systemParameters;
 	};
 
-	AlgorithmManager::AlgorithmHandler algHandler;
-	AlgorithmManager::configurationUnit confUnit;
-	AlgorithmManager::PTZinformation ptzInfo;
-
-	bool setConfigurationElement(AlgorithmManager::AlgorithmHandler algHandler);
+	AlgorithmElementHandler algHandlerEl;
+	AlgorithmElement(QObject *parent = 0);
+	PTZinformation ptzInfo;
+	PTZinformation forwardPTZaction(uchar meta[]);
+	bool setConfigurationElement(AlgorithmElement::AlgorithmElementHandler algHandler,AlgorithmElement::Algorithm alg);
 	bool setCurrentActiveAlgorithm(Algorithm alg);
-	AlgorithmManager::PTZinformation forwardPTZaction(uchar meta[]);
-	void updateAlgorithmParameters(AlgorithmHandler algHand, Algorithm alg);
-	void updateAlgorithmParametersFromManager(AlgorithmManager::AlgorithmHandler algHand, Algorithm alg);
+	void updateAlgorithmParameters(AlgorithmElementHandler algHand, Algorithm alg);
+	void setAlgorithmManager(AlgorithmManager *algMan);
 	int bufsize;
-	// BaseLmmElement interface
-
 	int init();
 	int clean();
 	int enableAlg(bool on);
-
+	bool isPassThru;
 protected:
 	int reinit();
 	int processBuffer(const RawBuffer &buf);
 	int processAlgorithm(const RawBuffer &buf);
 	int counter;
-
+	int skipFrameRate();
+	AlgorithmManager *ptManager;
 };
 
 #endif // ALGORITHMELEMENT_H

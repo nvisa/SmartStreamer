@@ -1,43 +1,31 @@
 #ifndef ALGORITHMMANAGER_H
 #define ALGORITHMMANAGER_H
 
-
 #include "lmm/baselmmelement.h"
 
 #include "ecl/ptzp/ptzphead.h"
-#include "proto/AlgorithmCommunication.grpc.pb.h"
-
 #include "ecl/debug.h"
+#include "algorithmelement.h"
+#include "commoninformationinterface.h"
+#include "proto/AlgorithmCommunication.grpc.pb.h"
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QFileSystemWatcher>
 
-#include <vector>
-#include <iostream>
-using namespace std;
-
+class QTimer;
 class TbgthDriver;
 class AryaDriver;
 class IRDomeDriver;
-
 class RawBuffer;
 class PtzpHead;
 class PtzpDriver;
+class GrpcThread;
 class AlgorithmElement;
 
 class AlgorithmManager : public AlgorithmCommunication::AlgorithmService::Service
 {
-	//Q_OBJECT
 public:
-	explicit AlgorithmManager(QObject *parent);
-	~AlgorithmManager();
-	int openAlgRelatedJson();
-	int setupDeviceController(const QString &deviceInfo);
-	bool checkSystemParameters();
-
-	void startGrpc();
-
-
 	//GRPC related functions
 	grpc::Status RunAlgorithm(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfRequests *response);
 	grpc::Status StopAlgorithm(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfRequests *response);
@@ -45,20 +33,7 @@ public:
 	grpc::Status GetAlgorithmParameters(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfParameterRequests *response);
 	grpc::Status SetSystemFeatures(grpc::ServerContext *context, const AlgorithmCommunication::RequestForSystemFeatures *request, AlgorithmCommunication::ResponseOfSystemFeatures *response);
 	grpc::Status GetSystemFeatures(grpc::ServerContext *context, const AlgorithmCommunication::RequestForSystemFeatures *request, AlgorithmCommunication::ResponseOfSystemFeatures *response);
-
-	//grpc::Status SetCurrentMode(grpc::ServerContext *context, const OrionCommunication::ModeQ *request, OrionCommunication::AppCommandResult *response);
-
-
-	enum AlgorithmState {
-		NOT_INIT = 0,
-		INIT,
-		RE_INIT,
-		ON_THE_RUN,
-		IDLE,
-		HOLD,
-		TERMINATED,
-		WOW,
-	};
+	grpc::Status SendInformation(::grpc::ServerContext* context, const ::AlgorithmCommunication::WhichInfo* request, ::grpc::ServerWriter< ::AlgorithmCommunication::GeneralInfo>* writer);
 
 	enum Algorithm {
 		MOTION,
@@ -68,13 +43,6 @@ public:
 		FACE_DETECTION,
 		NONE,
 	};
-
-	enum TrackMode {
-		AUTO,
-		SEMI_AUTO,
-		MANUAL,
-	};
-
 	enum System {
 		BOTAS_FIX,
 		BOTAS_DOME,
@@ -84,158 +52,56 @@ public:
 		EMPTY_SYSTEM,
 	};
 
-	enum PTZactions {
-		PAN_STOP,
-		PAN_RIGHT,
-		PAN_LEFT,
-		TILT_UP,
-		TILT_DOWN,
-		TILT_STOP,
-		PAN_RIGHT_TILT_UP,
-		PAN_RIGHT_TILT_DOWN,
-		PAN_LEFT_TILT_UP,
-		PAN_LEFT_TILT_DOWN,
-		PAN_TILT_POS,
-	};
-
-	struct PTZinformation {
-		PTZactions action;
-		float pan;
-		float tilt;
-		float zoom;
-	};
-
-	struct deviceProperties {
-		QString cameraIp;
-		int width;
-		int height;
-		int fps;
-		int frameSize;
-	};
-
-	struct parameters {
-		int rgb;
-		int ill;
-		int debug;
-		int shadow;
-		int record;
-		int privacy;
-		int stabilization;
-	};
-
-	struct configurationUnit {
-		parameters param;
-		deviceProperties devProp;
-	};
-
-	struct MotionAlg {
-		int sensitivity;
-		bool classification_;
-		bool alarmFlag;
-		int classification;
-	};
-
-	struct Stabilization {
-		int sensitivity;
-		int dummy;
-	};
-
-	struct TrackedObjects {
-		float objWidth;
-		float objHeight;
-		float objPointX;
-		float objPointY;
-	};
-
-	struct Tracking {
-		float trackScore;
-		int trackDuration;
-		QMap<int,TrackMode> enabledModes;
-		QMap<int, TrackedObjects> objects;
-		float objWidth;
-		float objHeight;
-		float objPointX;
-		float objPointY;
-		int dummy;
-	};
-
-	struct Panaroma {
-		int dummy;
-	};
-
-	struct FaceDetection {
-		int dummy;
-		bool isTileOn;
-		int xTile;
-		int yTile;
-		int mode; // 0:rectangle, 1:privacy, else:imagecroplist
-		bool isAlignmentOn;
-	};
-
-	struct PanTiltZoomInfo {
-		float pan;
-		float tilt;
-		float zoom;
-	};
-
-	struct AlgorithmHandler {
-		MotionAlg motionA;
-		Stabilization stabilA;
-		Tracking trackA;
-		Panaroma panaromA;
-		FaceDetection faceA;
-		AlgorithmState stateOfAlg;
-		Algorithm currentActiveAlg;
-		int initialize;
-		uchar meta[4096];
-		System systemHandler;
-		PanTiltZoomInfo locationInfo;
-		bool systemParameters;
-		configurationUnit confUnit;
-		PTZinformation infoAboutPTZ;
-	};
-	AlgorithmHandler algHandler;
-
-	AlgorithmHandler getAlgHandlerFor(int index);
-	void registerAlgorithm(Algorithm alg, AlgorithmElement *el);
-	// BaseLmmElement interface
-protected:
-
-	// PtzpHead interface
-public:
+	explicit AlgorithmManager(QObject *parent);
+	~AlgorithmManager();
+	void startGrpc();
 	QMap<Algorithm,bool> availableAlgortihms;
-protected:
-	//Algorithm state related functions
+	AlgorithmElement::AlgorithmElementHandler algHandlerEl;
+	AlgorithmElement::AlgorithmElementHandler getAlgHandlerFor(int index);
+	void registerAlgorithm(Algorithm alg, AlgorithmElement *el);
+	const AlgorithmElement * getAlgorithmElement(Algorithm);
+	int addAlarm(const AlgorithmCommunication::AlarmInfo &info);
+	AlarmInfo getAlarmElement(){return alarmInfo;}
+	void updatePTInfo();
+	int setPT(PTZinformation info);
+	int setZoom(uint pos);
+private:
+	int openAlgRelatedJson();
+	int updateParametersFromJson();
+	bool checkSystemParameters();
 
-
-	//System&buffer related params
-	configurationUnit confUnit;
-	QMap<int,Algorithm> availableAlgList;
+	//GRPC Handler Function Return Structure
+	struct GRPCSetReturn {
+		AlgorithmElement *el;
+		AlgorithmCommunication::ResponseOfRequests *response;
+		grpc::StatusCode status;
+	};
+	GRPCSetReturn gsr;
+	//GRPC Handler Functions
+	GRPCSetReturn handleMotionDetection(AlgorithmElement *, const AlgorithmCommunication::MotionParameters::Settings, AlgorithmCommunication::ResponseOfRequests *response, const ::AlgorithmCommunication::TRoi, int sensitivity = 0);
+	GRPCSetReturn handleTracking(AlgorithmElement *, const AlgorithmCommunication::TrackParameters::TrackType, const AlgorithmCommunication::TrackParameters::Mode, AlgorithmCommunication::ResponseOfRequests *response, const ::AlgorithmCommunication::TrackObject, float trackScore = 0.5, int trackInterval = 30);
+	GRPCSetReturn handleStabilization(AlgorithmElement *, const AlgorithmCommunication::StabilizationParameters, AlgorithmCommunication::ResponseOfRequests *response, int sensitivity = 0);
+	GRPCSetReturn handlePanaroma(AlgorithmElement *, const AlgorithmCommunication::PanaromaParameters, AlgorithmCommunication::ResponseOfRequests *response);
+	GRPCSetReturn handleFaceDetection(AlgorithmElement *, const AlgorithmCommunication::FaceDetectionParameters, AlgorithmCommunication::ResponseOfRequests *response);
 	int bufsize;
 	QHash<Algorithm, QList<AlgorithmElement *> > algoElements;
-	//Fov okuma ve interpolasyonla ilgili fonksiyonlar da eklenecek
-	//GRPCleri buraya taşımamız mantıklı olacak
-
-	//Algorithm manager instance
-
-	//algorithm helpers
-	void RunMotion(const MotionAlg &mParams);
-	void RunStab();
-
-
-	float pan_tilt_zoom_read[];
-
-	//System Drivers and functions
-	QString deviceInfo;
+	//Service Related Part
+	GrpcThread *grpcServ;
+	QFileSystemWatcher * watcher;
+	//Driver Related Part
 	PtzpHead *pt;
 	TbgthDriver *tbgth;
 	AryaDriver *arya;
 	IRDomeDriver *botas;
 	PtzpDriver *ptzp;
-	int setPT(PTZinformation info);
-	int setZoom(uint pos);
+	System systemHandler;
+	PTZinformation ptzInfo;
+	AlarmInfo alarmInfo;
+	int setupDeviceController(const System systemInfo);
 	void getPTZ();
-
+	QTimer *timer;
+	QList<AlgorithmCommunication::AlarmInfo> alarmQueue;
+	QMutex alarmQueueLock;
 };
 
 #endif // ALGORITHMMANAGER_H

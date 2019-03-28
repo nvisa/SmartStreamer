@@ -1,123 +1,116 @@
 #include "algorithmelement.h"
 #include "algorithmfunctions.h"
+#include "QFile"
+
+#include <QImage>
+#include "algorithmmanager.h"
 
 AlgorithmElement::AlgorithmElement(QObject *parent)
 	: BaseLmmElement(parent)
 {
-	algHandler.currentActiveAlg = AlgorithmManager::Algorithm::NONE;
+	algHandlerEl.currentActiveAlg = AlgorithmElement::NONE;
 	counter = 0;
+	ptManager = NULL;
+}
+
+bool AlgorithmElement::setConfigurationElement(AlgorithmElement::AlgorithmElementHandler algHandler,AlgorithmElement::Algorithm alg)
+{
+	this->algHandlerEl = algHandler;
+	this->algHandlerEl.confUnit = algHandler.confUnit;
+	return true;
 }
 
 bool AlgorithmElement::setCurrentActiveAlgorithm(AlgorithmElement::Algorithm alg)
 {
-	algHandler.currentActiveAlg = (AlgorithmManager::Algorithm)alg;
-	qDebug() << "algHandler.currentActiveAlg is " << algHandler.currentActiveAlg;
+	algHandlerEl.currentActiveAlg = alg;
+	this->algHandlerEl.initialize = 1;
 	return true;
 }
 
-AlgorithmManager::PTZinformation AlgorithmElement::forwardPTZaction(uchar meta[])
+PTZinformation AlgorithmElement::forwardPTZaction(uchar meta[])
 {
-	int   sei_direction = meta[10];
+	int sei_direction = meta[10];
 	ptzInfo.pan  = (float)meta[11];
 	ptzInfo.tilt = (float)meta[12];
+	ptzInfo.zoom = 0;
 	if (sei_direction == 0) {
-		ptzInfo.action = AlgorithmManager::PAN_STOP;
+		ptzInfo.action = PAN_STOP;
 	} else if (sei_direction == 2)
 	{
-		ptzInfo.action = AlgorithmManager::PAN_RIGHT;
+		ptzInfo.action = PAN_RIGHT;
 	} else if (sei_direction == 4) {
-		ptzInfo.action = AlgorithmManager::PAN_LEFT;
+		ptzInfo.action = PAN_LEFT;
 	} else if (sei_direction == 16) {
-		ptzInfo.action = AlgorithmManager::TILT_UP;
+		ptzInfo.action = TILT_UP;
 	} else if (sei_direction == 8) {
-		ptzInfo.action = AlgorithmManager::TILT_DOWN;
+		ptzInfo.action = TILT_DOWN;
 	} else if (sei_direction == 18){
-		ptzInfo.action = AlgorithmManager::PAN_RIGHT_TILT_UP;
+		ptzInfo.action = PAN_RIGHT_TILT_UP;
 	} else if (sei_direction == 20){
-		ptzInfo.action = AlgorithmManager::PAN_RIGHT_TILT_DOWN;
+		ptzInfo.action = PAN_RIGHT_TILT_DOWN;
 	} 	else if (sei_direction == 10){
-		ptzInfo.action = AlgorithmManager::PAN_LEFT_TILT_UP;
+		ptzInfo.action = PAN_LEFT_TILT_UP;
 	} else if (sei_direction == 12){
-		ptzInfo.action = AlgorithmManager::PAN_LEFT_TILT_DOWN;
+		ptzInfo.action = PAN_LEFT_TILT_DOWN;
 	} else
-		ptzInfo.action = AlgorithmManager::PAN_TILT_POS;
+		ptzInfo.action = PAN_TILT_POS;
 	return ptzInfo;
 }
 
-void AlgorithmElement::updateAlgorithmParameters(AlgorithmElement::AlgorithmHandler algHand, AlgorithmElement::Algorithm alg)
+void AlgorithmElement::updateAlgorithmParameters(AlgorithmElementHandler algHand, AlgorithmElement::Algorithm alg)
 {
-	qDebug() << "Algorithm is " << alg;
 	if (alg == Algorithm::MOTION)
 	{
 		if (algHand.motionA.sensitivity)
-			algHandler.motionA.sensitivity	 = algHand.motionA.sensitivity;
+			algHandlerEl.motionA.sensitivity = algHand.motionA.sensitivity;
 	}
 	else if (alg == Algorithm::STABILIZATION)
 	{
 		if (algHand.stabilA.sensitivity)
-			algHandler.stabilA.sensitivity = algHand.stabilA.sensitivity;
+			algHandlerEl.stabilA.sensitivity = algHand.stabilA.sensitivity;
 	}
 	else if (alg == Algorithm::TRACKING)
 	{
 		if (algHand.trackA.trackDuration)
-			algHandler.trackA.trackDuration = algHand.trackA.trackDuration;
+			algHandlerEl.trackA.trackDuration = algHand.trackA.trackDuration;
 		if (algHand.trackA.trackScore)
-			algHandler.trackA.trackScore = algHand.trackA.trackScore;
+			algHandlerEl.trackA.trackScore = algHand.trackA.trackScore;
 	}
-	return ;
+	else if (alg == Algorithm::FACE_DETECTION)
+	{
+		algHandlerEl.faceA.isTileOn = algHand.faceA.isTileOn;
+		algHandlerEl.faceA.mode = algHand.faceA.mode;
+		algHandlerEl.faceA.xTile = algHand.faceA.xTile;
+		algHandlerEl.faceA.yTile = algHand.faceA.yTile;
+		algHandlerEl.faceA.isAlignmentOn = algHand.faceA.isAlignmentOn;
+	}
+	return;
 }
 
-void AlgorithmElement::updateAlgorithmParametersFromManager(AlgorithmManager::AlgorithmHandler algHand, AlgorithmElement::Algorithm alg)
+void AlgorithmElement::setAlgorithmManager(AlgorithmManager *algMan)
 {
-	qDebug() << "Algorithm is " << alg;
-	if (alg == Algorithm::MOTION)
-	{
-		if (algHand.motionA.sensitivity)
-			algHandler.motionA.sensitivity	 = algHand.motionA.sensitivity;
-	}
-	else if (alg == Algorithm::STABILIZATION)
-	{
-		if (algHand.stabilA.sensitivity)
-			algHandler.stabilA.sensitivity = algHand.stabilA.sensitivity;
-	}
-	else if (alg == Algorithm::TRACKING)
-	{
-		if (algHand.trackA.trackDuration)
-			algHandler.trackA.trackDuration = algHand.trackA.trackDuration;
-		if (algHand.trackA.trackScore)
-			algHandler.trackA.trackScore = algHand.trackA.trackScore;
-	} else if (alg == Algorithm::FACE_DETECTION)
-	{
-		algHandler.faceA.isTileOn = algHand.faceA.isTileOn;
-		algHandler.faceA.mode = algHand.faceA.mode;
-		algHandler.faceA.xTile = algHand.faceA.xTile;
-		algHandler.faceA.yTile = algHand.faceA.yTile;
-		algHandler.faceA.isAlignmentOn = algHand.faceA.isAlignmentOn;
-	}
-	return ;
+	ptManager = algMan;
 }
 
 int AlgorithmElement::init()
 {
-	algHandler.initialize = 1;
+	algHandlerEl.initialize = 1;
 	return 0;
 }
 
 int AlgorithmElement::clean()
 {
-	qDebug() << "clean is triggered";
-# if 0
-	if (algHandler.currentActiveAlg == MOTION)
+	if (algHandlerEl.currentActiveAlg == MOTION)
 		asel_via_base_release();
-	else if (algHandler.currentActiveAlg == STABILIZATION)
-		qDebug() << "....................."; 		//asel_bypass_release(1);
-	else if (algHandler.currentActiveAlg == TRACKING)
+	else if (algHandlerEl.currentActiveAlg == STABILIZATION)
+		qDebug() << " " ; //asel_bypass_release(1);
+	else if (algHandlerEl.currentActiveAlg == TRACKING)
 		asel_direct_track_release();
-	else if (algHandler.currentActiveAlg == PANAROMA)
+	else if (algHandlerEl.currentActiveAlg == PANAROMA)
 		asel_pan_release();
-	else if (algHandler.currentActiveAlg == FACE_DETECTION)
+	else if (algHandlerEl.currentActiveAlg == FACE_DETECTION)
 		asel_face_release();
-#endif
+	algHandlerEl.initialize = 1;
 	return 0;
 }
 
@@ -131,103 +124,109 @@ int AlgorithmElement::enableAlg(bool on)
 
 int AlgorithmElement::reinit()
 {
-	algHandler.initialize = 1;
 	return 0;
 }
 
-bool AlgorithmElement::setConfigurationElement(AlgorithmManager::AlgorithmHandler algHandler)
+int AlgorithmElement::skipFrameRate()
 {
-	qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << algHandler.currentActiveAlg;
-	qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << this->algHandler.currentActiveAlg;
+	QString info;
+	QFile file;
+	file.setFileName("algorithm.json");
+	if (file.exists()) {
+		file.open(QIODevice::ReadOnly | QIODevice::Text);
+	} else {
+		//		mDebug("Algorithm.json file is not found");
+		return -1;
+	}
+	info = file.readAll();
+	file.close();
 
-	//this->algHandler = algHandler;
-	confUnit = algHandler.confUnit;
-	this->algHandler.initialize = 1;
-	qDebug() << "algHandler.currentActiveAlg is " << algHandler.currentActiveAlg;
-	return true;
+	QJsonDocument doc = QJsonDocument::fromJson(info.toUtf8());
+	QJsonObject obj_info = doc.object();
+
+	QJsonValue sec_alg = obj_info.value(QString("algorithms"));
+	QJsonObject itemized_sec_alg = sec_alg.toObject();
+	QJsonObject face_params = itemized_sec_alg["face_detection"].toObject();
+	int skipFrame = face_params["skipFrame"].toInt();
+	return skipFrame;
 }
 
 int AlgorithmElement::processBuffer(const RawBuffer &buf)
 {
-	if (counter % 15 == 0) {
+	if (algHandlerEl.currentActiveAlg == FACE_DETECTION)
+	{
+		int skipFrame = skipFrameRate();
+		if (counter % skipFrame == 0)
+		{
+			processAlgorithm(buf);
+		}
+		counter ++;
+	} else
+	{
 		processAlgorithm(buf);
 	}
-	counter ++;
 	return newOutputBuffer(0, buf);
 }
-#include <QImage>
+
 int AlgorithmElement::processAlgorithm(const RawBuffer &buf)
 {
-	qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Inside the process algorithm";
-	qDebug() << "active alg is " << algHandler.currentActiveAlg;
-	//qDebug() << "algHandler.initialize is " << algHandler.initialize << " and active algorithm is " << algHandler.currentActiveAlg;
 	QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
 	float z = hash["current_zoom"].toFloat();
 	float *pan_tilt_zoom_read = &z;
-	if (algHandler.currentActiveAlg == MOTION) {
-		//int bufsize = 1920 * 1080;
-		qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << algHandler.motionA.sensitivity;
-		/*asel_via_base((uchar *)buf.constData(), confUnit.devProp.frameSize, confUnit.devProp.width , confUnit.devProp.height, confUnit.param.rgb,
-					  confUnit.param.record, confUnit.param.shadow,confUnit.param.ill, confUnit.param.debug, confUnit.param.stabilization,confUnit.param.privacy,
-					  algHandler.meta,pan_tilt_zoom_read,algHandler.motionA.alarmFlag,algHandler.initialize,algHandler.motionA.sensitivity,algHandler.motionA.classification);
-		algHandler.initialize = 0;
-		QByteArray ba = QByteArray((char *)algHandler.meta, 4096);
+	if (algHandlerEl.currentActiveAlg == MOTION) {
+		asel_via_base((uchar *)buf.constData(), algHandlerEl.confUnit.devProp.frameSize, algHandlerEl.confUnit.devProp.width , algHandlerEl.confUnit.devProp.height, algHandlerEl.confUnit.param.rgb,
+					  algHandlerEl.confUnit.param.record, algHandlerEl.confUnit.param.shadow,algHandlerEl.confUnit.param.ill, algHandlerEl.confUnit.param.debug, algHandlerEl.confUnit.param.stabilization,algHandlerEl.confUnit.param.privacy,
+					  algHandlerEl.meta,pan_tilt_zoom_read,algHandlerEl.motionA.alarmFlag,algHandlerEl.initialize,algHandlerEl.motionA.sensitivity);
+		algHandlerEl.initialize = 0;
+		QByteArray ba = QByteArray((char *)algHandlerEl.meta, 4096);
 		hash.insert("motion_results", ba);
-		((RawBuffer *)&buf)->pars()->metaData = RawBuffer::serializeMetadata(hash);*/
+		((RawBuffer *)&buf)->pars()->metaData = RawBuffer::serializeMetadata(hash);
 		return 0;
 	}
-	if (algHandler.currentActiveAlg == STABILIZATION) {
-		/*asel_bypass((uchar *)buf.constData(), buf.size(), confUnit.devProp.width, confUnit.devProp.height, confUnit.param.debug,
-					confUnit.param.stabilization,confUnit.param.privacy,algHandler.initialize,algHandler.stabilA.sensitivity); // 1 device type olarak girdim
-		algHandler.initialize = 0;
-*/
+	if (algHandlerEl.currentActiveAlg == STABILIZATION) {
+		asel_bypass((uchar *)buf.constData(), buf.size(), algHandlerEl.confUnit.devProp.width, algHandlerEl.confUnit.devProp.height, algHandlerEl.confUnit.param.debug,
+					algHandlerEl.confUnit.param.stabilization,algHandlerEl.confUnit.param.privacy,algHandlerEl.initialize,algHandlerEl.stabilA.sensitivity); // 1 device type olarak girdim
+		algHandlerEl.initialize = 0;
 		return 0;
 	}
-	if (algHandler.currentActiveAlg == TRACKING) {
-		/*
+	if (algHandlerEl.currentActiveAlg == TRACKING) {
 		float objProp[4];
-		objProp[0] = algHandler.trackA.objPointX;
-		objProp[1] = algHandler.trackA.objPointY;
-		objProp[2] = algHandler.trackA.objWidth;
-		objProp[3] = algHandler.trackA.objHeight;
-		asel_direct_track((uchar *)buf.constData(), buf.size(), confUnit.devProp.width , confUnit.devProp.height, confUnit.param.record,
-						  confUnit.param.debug, algHandler.meta, 1,pan_tilt_zoom_read,objProp,algHandler.initialize);
-		algHandler.initialize = 0;
-		QByteArray ba = QByteArray((char *)algHandler.meta, 4096);
+		objProp[0] = algHandlerEl.trackA.objPointX;
+		objProp[1] = algHandlerEl.trackA.objPointY;
+		objProp[2] = algHandlerEl.trackA.objWidth;
+		objProp[3] = algHandlerEl.trackA.objHeight;
+		asel_direct_track((uchar *)buf.constData(), buf.size(), algHandlerEl.confUnit.devProp.width , algHandlerEl.confUnit.devProp.height, algHandlerEl.confUnit.param.record,
+						  algHandlerEl.confUnit.param.debug, algHandlerEl.meta,pan_tilt_zoom_read,objProp,algHandlerEl.initialize);
+		algHandlerEl.initialize = 0;
+		QByteArray ba = QByteArray((char *)algHandlerEl.meta, 4096);
 		hash.insert("track_results", ba);
 		((RawBuffer *)&buf)->pars()->metaData = RawBuffer::serializeMetadata(hash);
-		forwardPTZaction(algHandler.meta);
-*/
+
+		PTZinformation ptinfo = forwardPTZaction(algHandlerEl.meta);
+		if (ptManager) {
+			ptManager->setPT(ptinfo);
+			ptManager->setZoom(ptinfo.zoom);
+		}
 		return 0;
 	}
-	if (algHandler.currentActiveAlg == PANAROMA) {
+	if (algHandlerEl.currentActiveAlg == PANAROMA) {
 		int pan;
 		int tilt;
-		/*
-		asel_pan((uchar *)buf.constData(), buf.size(), confUnit.devProp.width , confUnit.devProp.height, confUnit.param.rgb,
-				 confUnit.param.record, confUnit.param.shadow,confUnit.param.ill, confUnit.param.debug, algHandler.meta, pan, tilt);
-		algHandler.initialize = 0;
-		*/
+		asel_pan((uchar *)buf.constData(), buf.size(), algHandlerEl.confUnit.devProp.width , algHandlerEl.confUnit.devProp.height, algHandlerEl.confUnit.param.rgb,
+				 algHandlerEl.confUnit.param.record, algHandlerEl.confUnit.param.shadow,algHandlerEl.confUnit.param.ill, algHandlerEl.confUnit.param.debug, algHandlerEl.meta, pan, tilt);
+		algHandlerEl.initialize = 0;
 		return 0;
 	}
-	if (algHandler.currentActiveAlg == FACE_DETECTION) {
-		confUnit.param.debug = 1;
-		qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Face detection is triggered" << confUnit.param.debug;
-		qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << buf.size();
+	if (algHandlerEl.currentActiveAlg == FACE_DETECTION) {
+		algHandlerEl.confUnit.param.debug = 1;
 		int numFace = 0;
-		qDebug() << confUnit.devProp.cameraIp;
-		int camId = confUnit.devProp.cameraIp.split(".")[3].toInt();
-//		qDebug() << "isTileOn: " << algHandler.faceA.isTileOn;
-//		qDebug() << "xTile: " << algHandler.faceA.xTile;
-//		qDebug() << "yTile: " << algHandler.faceA.yTile;
-//		qDebug() << "mode: " << algHandler.faceA.mode;
-//		qDebug() << "isAlignmentOn: " << algHandler.faceA.isAlignmentOn;
-//		asel_face((uchar *)buf.constData(), numFace, confUnit.param.debug,algHandler.meta,algHandler.initialize, camId);
-		algHandler.initialize = 0;
-
+		int camId = algHandlerEl.confUnit.devProp.cameraIp.split(".")[3].toInt();
+		asel_face((uchar *)buf.constData(), numFace, algHandlerEl.confUnit.param.debug,algHandlerEl.meta,algHandlerEl.initialize, camId);
+		algHandlerEl.initialize = 0;
 		return 0;
 	}
-	if (algHandler.currentActiveAlg == NONE)
+	if (algHandlerEl.currentActiveAlg == NONE)
 		return 3;
 	return 0;
 }
+
