@@ -1,0 +1,214 @@
+syntax="proto3";
+
+package AlgorithmCommunication;
+
+service AlgorithmService {
+
+	rpc RunAlgorithm(RequestForAlgorithm) returns(ResponseOfRequests) {}
+	rpc StopAlgorithm(RequestForAlgorithm) returns(ResponseOfRequests) {}
+
+	rpc SetAlgorithmParameters(RequestForAlgorithm) returns(ResponseOfRequests) {}
+	rpc GetAlgorithmParameters(RequestForAlgorithm) returns(ResponseOfParameterRequests) {}
+
+	rpc GetSystemFeatures(RequestForSystemFeatures) returns(ResponseOfSystemFeatures) {}
+	rpc SetSystemFeatures(RequestForSystemFeatures) returns(ResponseOfSystemFeatures) {}
+	rpc SendInformation(WhichInfo) returns(stream GeneralInfo){}
+}
+	
+
+//service ekleyebilirsin 2. servicisi 
+
+
+message AlarmInfo {
+	int32 baseId = 1;
+	int32 stationId = 2;
+	int32 deviceId = 3;
+	int32 unitType = 4;
+	string date = 5;
+	bool alarmFlag = 6;
+}
+
+message GeneralInfo {
+	AlarmInfo alarmInfo = 1;
+}
+
+message WhichInfo {
+	enum InfoOfContent {
+		ALARM = 0;
+		OTHER = 1;
+	}
+	InfoOfContent content = 1;
+}
+
+message ResponseOfRequests {
+	enum Response {
+		SUCCESSFUL = 0;
+		FAIL = 1;
+		MISSING_PARAMETER = 2;
+		NOT_APPLICABLE = 3;		
+	}
+	int32 err = 1;
+	Response response = 2;
+}
+
+message ResponseOfParameterRequests {
+	enum Response {
+		SUCCESSFUL = 0;
+		FAIL = 1;
+		MISSING_PARAMETER = 2;
+		NOT_APPLICABLE = 3;		
+	}
+	enum Algorithm {
+		MOTION = 0;
+		STABILIZATION = 1;
+		TRACKING = 2;
+		PANAROMA = 3;
+		FACE_DETECTION = 4;
+		NONE = 5;
+	}
+	Algorithm algorithmType = 1;
+	int32 error = 2;
+	Response response = 3;
+	MotionParameters motionParam = 4;
+	TrackParameters trackParam = 5;
+	StabilizationParameters stabilizationParam = 6;
+	PanaromaParameters panaromaParam = 7;
+	FaceDetectionParameters faceDetectionParam = 8;
+}
+
+message RequestForAlgorithm {
+	enum DeviceType {
+		TV = 0;
+		THERMAL = 1;
+	}
+	enum Algorithm {
+		MOTION = 0;
+		STABILIZATION = 1;
+		TRACKING = 2;
+		PANAROMA = 3;
+		FACE_DETECTION = 4;
+		NONE = 5;
+	}
+	Algorithm algorithmType = 1;
+	MotionParameters motionParam = 2;
+	TrackParameters trackParam = 3;
+	StabilizationParameters stabilizationParam = 4;
+	PanaromaParameters panaromaParam = 5;
+	FaceDetectionParameters faceDetectionParam = 6;
+	DeviceType device=7;
+}
+
+message RequestForSystemFeatures {
+	enum Features {
+		UPTIME = 0;
+		LIFETIME = 1;
+		FOV_VALUE = 2;
+		GPIO = 3;
+		BITRATE = 4;
+		GENERIC = 5;	
+	}
+	enum DeviceType {
+		TV = 0;
+		THERMAL = 1;
+	}
+	DeviceType device = 1;
+	Features feature = 2;
+	int32 whichGPIO = 3;
+	int32 valueForFeature = 4;
+	float valueForFeatureFloat = 5;
+	bool valueForFeatureBool = 6;
+	string valueForGenericKey = 7;
+	string valueForGenericValue = 8;
+}
+
+message ResponseOfSystemFeatures {
+	enum Features {
+		UPTIME = 0;
+		LIFETIME = 1;
+		FOV_VALUE = 2;
+		GPIO = 3;
+		BITRATE = 4;
+		GENERIC = 5;
+	}
+	enum DeviceType {
+	TV = 0;
+	THERMAL = 1;
+	}
+	DeviceType device = 1;
+	Features feature = 2;
+	int32 whichGPIO = 3;
+	int32 valueForFeature = 4;
+	float valueForFeatureFloat = 5;
+	bool valueForFeatureBool = 6;
+	string valueForGenericKey = 7;
+	string valueForGenericValue = 8;
+}
+
+message MotionParameters {
+	enum Settings {
+		SENSITIVITY = 0;
+		ROI = 1;
+		BOTH = 2;
+	}
+	Settings settingChoice = 1;
+	int32 sensitivity = 2;
+	TRoi ROIlist = 3; 
+}
+
+message TRoi {
+    repeated TPolygon polygon = 1;
+    TRectangle rect1 = 2;
+    TRectangle rect2 = 3;
+}
+
+message TPoint{
+    float x = 1;
+    float y = 2;
+}
+
+message TPolygon {
+    repeated TPoint points = 1;
+    bool is_active = 2;
+}
+
+message TRectangle {
+    TPoint upperLeft = 1;
+    TPoint bottomRight = 2;
+}
+
+message TrackParameters {
+		enum TrackType {
+		AUTO = 0;
+		SEMI_AUTO = 1;
+		MANUAL = 2;
+	}	
+	enum Mode {
+		DistanceToCenter = 0;
+		SizeOfObject = 1;
+		UserMode = 2;
+	}
+	TrackType trackType = 1;
+	Mode mode = 2;
+	float trackScore = 3;
+	int32 trackInterval = 4;
+	TrackObject target = 5;
+}
+
+message TrackObject {
+	float point_x = 1;
+	float point_y = 2;
+	float width = 3;
+	float height = 4;
+}
+
+message StabilizationParameters {
+	int32 sensitivity = 1;
+}
+
+message PanaromaParameters {
+	int32 dummy = 1;
+}
+
+message FaceDetectionParameters {
+	int32 dummy = 1;
+}
