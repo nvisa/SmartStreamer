@@ -105,12 +105,40 @@ int UsbStreamer::generatePipelineForOneSource(const QString &SourceUrl)
 	p2->append(rtpout);
 	p2->end();
 
+	VideoScaler* downScalar = new VideoScaler;
+	downScalar->setOutputResolution(640,480);
+	downScalar->setOutputFormat(AV_PIX_FMT_NV12);
+
+	BaseLmmPipeline *p3 = addPipeline();
+	p3->append(queue);
+	p3->append(downScalar);
+
+	TX1VideoEncoder *enc2 = new TX1VideoEncoder;
+	enc2->setBitrate(4000000);
+	enc2->setFps(25.0);
+	enc2->setOutputResolution(640,480);
+	p3->append(enc2);
+
+	rtpout2 = new RtpTransmitter(this);
+	rtpout2->forwardRtpTs(false);
+	rtpout2->setRtcp(false);
+	rtpout2->setH264SEIInsertion(true);
+	rtpout2->useIncomingTimestamp(false);
+
+	p3->append(rtpout2);
+	p3->end();
+
 	rtspServer = new BaseRtspServer(this, 8554);
 	rtspServer->addStream("stream1", false, rtpout);
 	rtspServer->addStream("stream1m",true, rtpout, 15678);
 	rtspServer->addMedia2Stream("videoTrack", "stream1", false, rtpout);
 	rtspServer->addMedia2Stream("videoTrack", "stream1m", true, rtpout);
+	rtspServer->addStream("stream2",false, rtpout2);
+	rtspServer->addStream("stream2m",true, rtpout, 15679);
+	rtspServer->addMedia2Stream("videoTrack", "stream2", false, rtpout2);
+	rtspServer->addMedia2Stream("videoTrack", "stream2m", true, rtpout2);
 	algMan->startGrpc();
+
 	return 0;
 }
 
@@ -127,19 +155,24 @@ int UsbStreamer::PerformAlgorithmForYUV(const RawBuffer &buf)
 		sei->processMessage(sei_data);
 		if (sei_data.size() == 0)
 			sei->clearLastSEIMessage();
-
-		AlgorithmCommunication::AlarmInfo alarm;
+		else {
+			AlgorithmCommunication::AlarmInfo alarm;
 			alarm.set_baseid(algMan->getAlarmElement().baseId);
 			alarm.set_stationid(algMan->getAlarmElement().stationId);
 			alarm.set_deviceid(algMan->getAlarmElement().deviceId);
 			alarm.set_unittype(algMan->getAlarmElement().unitType);
-		if (algMan->getAlgorithmElement(AlgorithmManager::MOTION)->algHandlerEl.meta[0] != 0)
-			alarm.set_alarmflag(true);
-		else
-			alarm.set_alarmflag(false);
-
-		algMan->addAlarm(alarm);
-		//algMan->triggerSendInformationGRPCMethod(algMan->getAlgorithmElement(AlgorithmManager::MOTION)->algHandlerEl.meta);
+			if (algMan->getAlgorithmElement(AlgorithmManager::MOTION)->algHandlerEl.meta[0] != 0)
+				alarm.set_alarmflag(true);
+			else
+				alarm.set_alarmflag(false);
+			algMan->addAlarm(alarm);
+		}
+	} else if (algMan->availableAlgortihms.value(AlgorithmManager::TRACKING)) {
+		QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
+		QByteArray track_data = hash["track_results"].toByteArray();
+		PTZinformation ptzInfo = algMan->getAlgorithmElement(AlgorithmManager::TRACKING)->forwardPTZaction(track_data);
+		algMan->setPT(ptzInfo);
+		algMan->setZoom(ptzInfo.zoom);
 	}
 	return 0;
 }

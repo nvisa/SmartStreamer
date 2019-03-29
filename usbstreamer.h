@@ -19,6 +19,7 @@ public:
 
 protected:
 	RtpTransmitter *rtpout;
+	RtpTransmitter *rtpout2;
 	SeiInserter *sei;
 	BaseRtspServer *rtspServer;
 	AlgorithmManager *algMan;
