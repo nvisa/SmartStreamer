@@ -1073,6 +1073,12 @@ int AlgorithmManager::setupDeviceController(const System systemInfo)
 			botas->setTarget("ttyS0?baud=9600;null");
 			ptzp = botas;
 			qDebug() << "botas is initialized";
+		} else if (systemInfo == BOTAS_DOME) {
+					botas = new IRDomeDriver();
+			botas->startGrpcApi(50058);
+			botas->setTarget("ttyS0?baud=9600;ttyUSB0?baud=9600");
+			ptzp = botas;
+			qDebug() << "botas is initialized";
 		}
 		else if (systemInfo == TBGTH)
 		{

@@ -123,10 +123,11 @@ public:
 	AlgorithmElement(QObject *parent = 0);
 	PTZinformation ptzInfo;
 	PTZinformation forwardPTZaction(uchar meta[]);
+	void setPTZInformation(uchar meta[]);
+	PTZinformation forwardPTZaction(const QByteArray meta) const;
 	bool setConfigurationElement(AlgorithmElement::AlgorithmElementHandler algHandler,AlgorithmElement::Algorithm alg);
 	bool setCurrentActiveAlgorithm(Algorithm alg);
 	void updateAlgorithmParameters(AlgorithmElementHandler algHand, Algorithm alg);
-	void setAlgorithmManager(AlgorithmManager *algMan);
 	int bufsize;
 	int init();
 	int clean();
@@ -138,7 +139,6 @@ protected:
 	int processAlgorithm(const RawBuffer &buf);
 	int counter;
 	int skipFrameRate();
-	AlgorithmManager *ptManager;
 };
 
 #endif // ALGORITHMELEMENT_H

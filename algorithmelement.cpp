@@ -10,7 +10,6 @@ AlgorithmElement::AlgorithmElement(QObject *parent)
 {
 	algHandlerEl.currentActiveAlg = AlgorithmElement::NONE;
 	counter = 0;
-	ptManager = NULL;
 }
 
 bool AlgorithmElement::setConfigurationElement(AlgorithmElement::AlgorithmElementHandler algHandler,AlgorithmElement::Algorithm alg)
@@ -57,6 +56,11 @@ PTZinformation AlgorithmElement::forwardPTZaction(uchar meta[])
 	return ptzInfo;
 }
 
+PTZinformation AlgorithmElement::forwardPTZaction(QByteArray meta) const
+{
+	return ptzInfo;
+}
+
 void AlgorithmElement::updateAlgorithmParameters(AlgorithmElementHandler algHand, AlgorithmElement::Algorithm alg)
 {
 	if (alg == Algorithm::MOTION)
@@ -85,11 +89,6 @@ void AlgorithmElement::updateAlgorithmParameters(AlgorithmElementHandler algHand
 		algHandlerEl.faceA.isAlignmentOn = algHand.faceA.isAlignmentOn;
 	}
 	return;
-}
-
-void AlgorithmElement::setAlgorithmManager(AlgorithmManager *algMan)
-{
-	ptManager = algMan;
 }
 
 int AlgorithmElement::init()
@@ -199,14 +198,9 @@ int AlgorithmElement::processAlgorithm(const RawBuffer &buf)
 						  algHandlerEl.confUnit.param.debug, algHandlerEl.meta,pan_tilt_zoom_read,objProp,algHandlerEl.initialize);
 		algHandlerEl.initialize = 0;
 		QByteArray ba = QByteArray((char *)algHandlerEl.meta, 4096);
+		setPTZInformation(algHandlerEl.meta);
 		hash.insert("track_results", ba);
 		((RawBuffer *)&buf)->pars()->metaData = RawBuffer::serializeMetadata(hash);
-
-		PTZinformation ptinfo = forwardPTZaction(algHandlerEl.meta);
-		if (ptManager) {
-			ptManager->setPT(ptinfo);
-			ptManager->setZoom(ptinfo.zoom);
-		}
 		return 0;
 	}
 	if (algHandlerEl.currentActiveAlg == PANAROMA) {
@@ -230,3 +224,30 @@ int AlgorithmElement::processAlgorithm(const RawBuffer &buf)
 	return 0;
 }
 
+void AlgorithmElement::setPTZInformation(uchar meta[]){
+	int sei_direction = meta[10];
+	ptzInfo.pan  = (float)meta[11];
+	ptzInfo.tilt = (float)meta[12];
+	ptzInfo.zoom = 0;
+	if (sei_direction == 0) {
+		ptzInfo.action = PAN_STOP;
+	} else if (sei_direction == 2)
+	{
+		ptzInfo.action = PAN_RIGHT;
+	} else if (sei_direction == 4) {
+		ptzInfo.action = PAN_LEFT;
+	} else if (sei_direction == 16) {
+		ptzInfo.action = TILT_UP;
+	} else if (sei_direction == 8) {
+		ptzInfo.action = TILT_DOWN;
+	} else if (sei_direction == 18){
+		ptzInfo.action = PAN_RIGHT_TILT_UP;
+	} else if (sei_direction == 20){
+		ptzInfo.action = PAN_RIGHT_TILT_DOWN;
+	} 	else if (sei_direction == 10){
+		ptzInfo.action = PAN_LEFT_TILT_UP;
+	} else if (sei_direction == 12){
+		ptzInfo.action = PAN_LEFT_TILT_DOWN;
+	} else
+		ptzInfo.action = PAN_TILT_POS;
+}
