@@ -239,11 +239,15 @@ int main(int argc, char *argv[])
 	QCoreApplication a(argc, argv);
 	QDir::setCurrent(a.applicationDirPath());
 
-	if (a.arguments().size() > 1)
-		if (a.arguments()[1] == "--version") {
+	if (a.arguments().size() > 1) {
+		if (a.arguments()[1] == "--version")
 			qDebug() << VERSION_INFO;
-			return 0;
-		}
+		else if (a.arguments()[1] == "--lmm-version")
+			qDebug() << LmmCommon::getLibraryVersion();
+		else if (a.arguments()[1] == "--ecl-version")
+			qDebug() << ecl::getLibraryVersion();
+		return 0;
+	}
 
 	LmmCommon::init();
 	ecl::initDebug();
