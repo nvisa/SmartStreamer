@@ -122,7 +122,7 @@ int UsbStreamer::generatePipelineForOneSource(const QString &SourceUrl)
 	rtpout2 = new RtpTransmitter(this);
 	rtpout2->forwardRtpTs(false);
 	rtpout2->setRtcp(false);
-	rtpout2->setH264SEIInsertion(true);
+	rtpout2->setH264SEIInsertion(false);
 	rtpout2->useIncomingTimestamp(false);
 
 	p3->append(rtpout2);
@@ -134,7 +134,7 @@ int UsbStreamer::generatePipelineForOneSource(const QString &SourceUrl)
 	rtspServer->addMedia2Stream("videoTrack", "stream1", false, rtpout);
 	rtspServer->addMedia2Stream("videoTrack", "stream1m", true, rtpout);
 	rtspServer->addStream("stream2",false, rtpout2);
-	rtspServer->addStream("stream2m",true, rtpout, 15679);
+	rtspServer->addStream("stream2m",true, rtpout2, 15680);
 	rtspServer->addMedia2Stream("videoTrack", "stream2", false, rtpout2);
 	rtspServer->addMedia2Stream("videoTrack", "stream2m", true, rtpout2);
 	algMan->startGrpc();
