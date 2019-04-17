@@ -1008,12 +1008,13 @@ int AlgorithmManager::openAlgRelatedJson()
 		availableAlgortihms.insert(Algorithm::FACE_DETECTION,true);
 	}
 
-	QJsonValue alarm_info = obj_info.value(QString("alarmInfo"));
-	QJsonObject itemized_alarm_info = alarm_info.toObject();
-	alarmInfo.baseId = itemized_alarm_info["baseId"].toInt();
-	alarmInfo.stationId = itemized_alarm_info["stationId"].toInt();
-	alarmInfo.deviceId = itemized_alarm_info["deviceId"].toInt();
-	alarmInfo.unitType = itemized_alarm_info["unitType"].toInt();
+	QJsonObject itemized_alarm_info = obj_info.value(QString("alarmInfo")).toObject();
+	if (!itemized_alarm_info.isEmpty()) {
+		alarmInfo.baseId = itemized_alarm_info["baseId"].toInt();
+		alarmInfo.stationId = itemized_alarm_info["stationId"].toInt();
+		alarmInfo.deviceId = itemized_alarm_info["deviceId"].toInt();
+		alarmInfo.unitType = itemized_alarm_info["unitType"].toInt();
+	}
 
 	QJsonValue project_info = obj_info.value(QString("projects"));
 	QJsonObject itemized_project_info = project_info.toObject();
