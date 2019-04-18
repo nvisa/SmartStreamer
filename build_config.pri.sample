@@ -20,4 +20,5 @@ LIBS += -lopencv_core \
 
 DEFINES += HAVE_VIA_WRAPPER HAVE_LIBYUV
 
+LIBS += -lboost_system -lboost_filesystem
 CONFIG += c++11 tx1 smart-grpc third-party
