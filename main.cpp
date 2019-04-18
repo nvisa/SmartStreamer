@@ -14,9 +14,6 @@
 #include "usbstreamer.h"
 #include "version.h"
 
-#define GRPC_TEST 0
-#define IP_STREAMER 0
-#define USB_STREAMER 1
 static void printStackTrace(void)
 {
 	void *array[25];
@@ -135,9 +132,8 @@ static void printHelp()
 #include <grpc++/server_context.h>
 #include <grpc++/security/credentials.h>
 #include <grpc++/security/server_credentials.h>
-
-#if GRPC_TEST
 #include "proto/AlgorithmCommunication.grpc.pb.h"
+
 static int testGrpc(const QString &action)
 {
 	QString ep = QString("127.0.0.1:50059");
@@ -232,7 +228,25 @@ static int testGrpc(const QString &action)
 	}
 	return 0;
 }
-#endif
+
+QJsonObject static runApplication(const QString &filename)
+{
+	QJsonObject obj;
+	if (!QFile::exists(filename)) {
+		obj.insert("usbstreamer", true);
+		return obj;
+	}
+	QFile file(filename);
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		qDebug() << "File opening error but starting usbstreamer application..." << filename;
+		obj.insert("usbstreamer", true);
+		return obj;
+	}
+	QString info = file.readAll();
+	file.close();
+	QJsonDocument doc = QJsonDocument::fromJson(info.toUtf8());
+	return doc.object();
+}
 
 int main(int argc, char *argv[])
 {
@@ -253,23 +267,25 @@ int main(int argc, char *argv[])
 	ecl::initDebug();
 	installSignalHandlers();
 
-#if GRPC_TEST
-	if (QString(argv[0]).contains("grpctest"))
+	QJsonObject obj = runApplication("smartconfig.json");
+	if (obj.value("ipstreamer").toBool()) {
+		qDebug() << "starting ip stramer";
+		IpStreamer ipStr;
+		ipStr.generatePipelineForOneSource("");
+		ipStr.start();
+		return a.exec();
+	} else if (obj.value("analogstreamer").toBool()) {
+		qDebug() << "starting analog streamer";
+		return a.exec();
+	} else if (obj.value("grpctest").toBool()) {
+		qDebug() << "starting grpctest";
 		return testGrpc(argv[1]);
-#endif
-
-#if IP_STREAMER
-	IpStreamer ipStr;
-	ipStr.generatePipelineForOneSource(url);
-	ipStr.start();
-#endif
-
-#if USB_STREAMER
-	UsbStreamer usbStr;
-	usbStr.generatePipelineForOneSource("/dev/video0");
-	usbStr.start();
-#endif
-
+	} else  {
+		qDebug() << "starting usb streamer";
+		UsbStreamer usbStr;
+		usbStr.generatePipelineForOneSource("/dev/video0");
+		usbStr.start();
+		return a.exec();
+	}
 	return a.exec();
 }
-
