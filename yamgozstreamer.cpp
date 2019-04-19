@@ -1,4 +1,5 @@
 #include "yamgozstreamer.h"
+#include "streamercommon.h"
 
 #include <lmm/debug.h>
 #include <lmm/v4l2input.h>
@@ -6,6 +7,7 @@
 #include <lmm/qtvideooutput.h>
 #include <lmm/baselmmpipeline.h>
 #include <lmm/multibuffersource.h>
+#include <lmm/tx1/tx1videoencoder.h>
 #include <lmm/pipeline/functionpipeelement.h>
 
 extern "C" {
@@ -124,12 +126,58 @@ YamgozStreamer::YamgozStreamer(const QJsonObject &config, QObject *parent)
 	toRgb->setOutputFormat(AV_PIX_FMT_ARGB);
 	toRgb->setMode(1);
 
-	BaseLmmPipeline *p = addPipeline();
-	p->append(multisrc, -1);
-	p->append(newFunctionPipe(YamgozStreamer, this, YamgozStreamer::stichFrames));
-	p->append(toRgb);
-	p->append(new QtVideoOutput);
-	p->end();
+	VideoScaler *to420 = new VideoScaler;
+	to420->setOutputFormat(AV_PIX_FMT_YUV420P);
+	to420->setMode(1);
+
+	TX1VideoEncoder *enc = new TX1VideoEncoder;
+	enc->setBitrate(4000000);
+	enc->setFps(25.0);
+	QSize sz = getStichSize();
+	mDebug("Output resolution will be %dx%d", sz.width(), sz.height());
+	enc->setOutputResolution(sz.width(), sz.height());
+
+	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(25);
+
+	if (config["out_mode"].toString() == "vout_only") {
+		BaseLmmPipeline *p = addPipeline();
+		p->append(multisrc, -1);
+		p->append(newFunctionPipe(YamgozStreamer, this, YamgozStreamer::stichFrames));
+		p->append(toRgb);
+		p->append(new QtVideoOutput);
+		p->end();
+	} else {
+		BaseLmmPipeline *p = addPipeline();
+		p->append(multisrc, -1);
+		p->append(newFunctionPipe(YamgozStreamer, this, YamgozStreamer::stichFrames));
+		p->append(to420);
+		p->append(enc);
+		p->append(rtpout);
+		p->end();
+	}
+
+	StreamerCommon::createRtspServer(rtpout);
+}
+
+QSize YamgozStreamer::getStichSize()
+{
+	VideoRect r0;
+	r0.w = 720;
+	r0.h = 576;
+	if (priv->stichRects[0].isValid())
+		r0 = r0.crop(priv->stichRects[0]);
+	VideoRect r1;
+	r1.w = 720;
+	r1.h = 576;
+	if (priv->stichRects[1].isValid())
+		r1 = r1.crop(priv->stichRects[1]);
+	VideoRect r2;
+	r2.w = 720;
+	r2.h = 576;
+	r2.pitch = r2.w * 2;
+	if (priv->stichRects[2].isValid())
+		r2 = r2.crop(priv->stichRects[2]);
+	return QSize(r0.w + r1.w + r2.w, r0.h);
 }
 
 int YamgozStreamer::stichFrames(const RawBuffer &buf)

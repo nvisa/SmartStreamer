@@ -1,4 +1,5 @@
 #include "analogstreamer.h"
+#include "streamercommon.h"
 
 #include <lmm/debug.h>
 #include <lmm/v4l2input.h>
@@ -6,6 +7,8 @@
 #include <lmm/qtvideooutput.h>
 #include <lmm/baselmmpipeline.h>
 #include <lmm/multibuffersource.h>
+#include <lmm/rtsp/basertspserver.h>
+#include <lmm/tx1/tx1videoencoder.h>
 #include <lmm/pipeline/functionpipeelement.h>
 
 extern "C" {
@@ -27,10 +30,32 @@ AnalogStreamer::AnalogStreamer(const QJsonObject &config, QObject *parent)
 	toRgb->setOutputFormat(AV_PIX_FMT_ARGB);
 	toRgb->setMode(1);
 
-	BaseLmmPipeline *p = addPipeline();
-	p->append(v4l2);
-	p->append(toRgb);
-	p->append(new QtVideoOutput);
-	p->end();
+	VideoScaler *to420 = new VideoScaler;
+	to420->setOutputFormat(AV_PIX_FMT_YUV420P);
+	to420->setMode(1);
+
+	TX1VideoEncoder *enc = new TX1VideoEncoder;
+	enc->setBitrate(4000000);
+	enc->setFps(25.0);
+	enc->setOutputResolution(720, 576);
+
+	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(25);
+
+	if (config["out_mode"].toString() == "vout_only") {
+		BaseLmmPipeline *p = addPipeline();
+		p->append(v4l2);
+		p->append(toRgb);
+		p->append(new QtVideoOutput);
+		p->end();
+	} else {
+		BaseLmmPipeline *p = addPipeline();
+		p->append(v4l2);
+		p->append(to420);
+		p->append(enc);
+		p->append(rtpout);
+		p->end();
+	}
+
+	StreamerCommon::createRtspServer(rtpout);
 }
 

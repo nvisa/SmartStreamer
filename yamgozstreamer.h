@@ -14,6 +14,7 @@ public:
 	explicit YamgozStreamer(const QJsonObject &config = QJsonObject(), QObject *parent = 0);
 
 protected:
+	QSize getStichSize();
 	int stichFrames(const RawBuffer &buf);
 
 	YamgozStreamerPriv *priv;
