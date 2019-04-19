@@ -48,6 +48,7 @@ tx1 {
 third-party {
     LIBS += -L/home/nvidia/workspace/xDNN/Release -lxDNN
     LIBS += -L/opt/caffe-dev/lib -lcaffe
+    LIBS += -lboost_system -lboost_filesystem
 }
 
 #Add make targets for checking version info
