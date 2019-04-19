@@ -57,3 +57,6 @@ VersionCheck.depends = FORCE
 VersionCheck.target = version.h
 QMAKE_EXTRA_TARGETS += VersionCheck
 PRE_TARGETDEPS += version.h
+
+target.path = /usr/local/bin/
+INSTALLS += target
