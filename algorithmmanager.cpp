@@ -5,6 +5,7 @@
 #include <ecl/ptzp/irdomedriver.h>
 #include <ecl/ptzp/ptzpdriver.h>
 #include <ecl/ptzp/tbgthdriver.h>
+#include <ecl/ptzp/kayidriver.h>
 
 #include "QFile"
 #include "ecl/debug.h"
@@ -1031,9 +1032,10 @@ int AlgorithmManager::openAlgRelatedJson()
 		systemHandler = TBGTH;
 	else if (arya && !tbgth && !botas_fix && !botas_dome)
 		systemHandler = ARYA;
+	else if (itemized_project_info["kayi"].toBool())
+		systemHandler = KAYI;
 	else
 		systemHandler = EMPTY_SYSTEM;
-	setupDeviceController(systemHandler);
 //	qDebug() << confUnit.devProp.width << confUnit.devProp.height << confUnit.param.rgb <<
 //				confUnit.param.record <<  confUnit.param.shadow << confUnit.param.ill << confUnit.param.debug;
 //	qDebug() << confUnit.param.stabilization << confUnit.param.privacy <<
@@ -1077,22 +1079,20 @@ int AlgorithmManager::setupDeviceController(const System systemInfo)
 		} else if (systemInfo == BOTAS_DOME) {
 					botas = new IRDomeDriver();
 			botas->startGrpcApi(50058);
-			botas->setTarget("ttyS0?baud=9600;ttyUSB0?baud=9600");
+			botas->setTarget("ttyS0?baud=9600;ttyTHS2?baud=9600");
 			ptzp = botas;
 			qDebug() << "botas is initialized";
-		}
-		else if (systemInfo == TBGTH)
-		{
+		} else if (systemInfo == TBGTH) {
 			tbgth = new TbgthDriver(true);
 			ptzp = tbgth;
-		}
-		else if (systemInfo == ARYA)
-		{
+		} else if (systemInfo == ARYA) {
 			arya = new AryaDriver();
 			ptzp = arya;
-		}
-		else if (systemInfo == EMPTY_SYSTEM)
-		{
+		} else if (systemInfo == KAYI) {
+			kayi = new KayiDriver;
+			kayi->startGrpcApi(50058);
+			kayi->setTarget("ttyXRUSB0?baud=9600?protocol=422;ttyXRUSB1?baud=19200?protocol=422?parity=1?databits=7?stopbits=1");
+		} else if (systemInfo == EMPTY_SYSTEM) {
 			//For test usage, it will be implemented later
 		}
 	}

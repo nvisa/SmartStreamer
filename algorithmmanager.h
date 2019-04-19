@@ -19,6 +19,7 @@ class AryaDriver;
 class IRDomeDriver;
 class RawBuffer;
 class PtzpHead;
+class KayiDriver;
 class PtzpDriver;
 class GrpcThread;
 class AlgorithmElement;
@@ -48,6 +49,7 @@ public:
 		BOTAS_DOME,
 		TBGTH,
 		ARYA,
+		KAYI,
 		TEST,
 		EMPTY_SYSTEM,
 	};
@@ -97,6 +99,7 @@ private:
 	System systemHandler;
 	PTZinformation ptzInfo;
 	AlarmInfo alarmInfo;
+	KayiDriver *kayi;
 	int setupDeviceController(const System systemInfo);
 	void getPTZ();
 	QTimer *timer;
