@@ -14,7 +14,9 @@ SOURCES += main.cpp \
     algorithmmanager.cpp \
     ipstreamer.cpp \
     algorithmelement.cpp \
-    usbstreamer.cpp
+    usbstreamer.cpp \
+    yamgozstreamer.cpp \
+    analogstreamer.cpp
 
 HEADERS += \
     moxadriver.h \
@@ -26,7 +28,9 @@ HEADERS += \
     ipstreamer.h \
     algorithmelement.h \
     usbstreamer.h \
-    commoninformationinterface.h
+    commoninformationinterface.h \
+    yamgozstreamer.h \
+    analogstreamer.h
 
 websockets {
     SOURCES += websocketstreamer.cpp
