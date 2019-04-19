@@ -13,6 +13,9 @@
 #include "ipstreamer.h"
 #include "usbstreamer.h"
 #include "version.h"
+#include "yamgozstreamer.h"
+#include "analogstreamer.h"
+#include "algorithmmanager.h"
 
 static void printStackTrace(void)
 {
@@ -250,7 +253,7 @@ QJsonObject static runApplication(const QString &filename)
 
 int main(int argc, char *argv[])
 {
-	QCoreApplication a(argc, argv);
+	QApplication a(argc, argv);
 	QDir::setCurrent(a.applicationDirPath());
 
 	if (a.arguments().size() > 1) {
@@ -267,25 +270,32 @@ int main(int argc, char *argv[])
 	ecl::initDebug();
 	installSignalHandlers();
 
+	BaseStreamer *streamer = NULL;
+
 	QJsonObject obj = runApplication("smartconfig.json");
 	if (obj.value("ipstreamer").toBool()) {
 		qDebug() << "starting ip stramer";
-		IpStreamer ipStr;
-		ipStr.generatePipelineForOneSource("");
-		ipStr.start();
-		return a.exec();
+		IpStreamer *ipStr = new IpStreamer;
+		ipStr->generatePipelineForOneSource("");
+		streamer = ipStr;
 	} else if (obj.value("analogstreamer").toBool()) {
 		qDebug() << "starting analog streamer";
-		return a.exec();
+		new AlgorithmManager(NULL);
+		streamer = new AnalogStreamer(obj["analog_config"].toObject());
+	} else if (obj.value("yamgozstreamer").toBool()) {
+		streamer = new YamgozStreamer(obj["yamgoz_config"].toObject());
 	} else if (obj.value("grpctest").toBool()) {
 		qDebug() << "starting grpctest";
 		return testGrpc(argv[1]);
 	} else  {
 		qDebug() << "starting usb streamer";
-		UsbStreamer usbStr;
-		usbStr.generatePipelineForOneSource("/dev/video0");
-		usbStr.start();
-		return a.exec();
+		UsbStreamer *usbStr = new UsbStreamer;
+		usbStr->generatePipelineForOneSource("/dev/video0");
+		streamer = usbStr;
 	}
+
+	if (streamer)
+		streamer->start();
+
 	return a.exec();
 }
