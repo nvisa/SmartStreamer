@@ -1,6 +1,6 @@
 #include "algorithmgrpcserver.h"
 
-#include <QDebug>
+#include <lmm/debug.h>
 
 #include <grpc/grpc.h>
 #include <grpc++/server.h>
@@ -24,6 +24,7 @@ using namespace std;
 #include <QThread>
 #include "proto/AlgorithmWorks.grpc.pb.h"
 #include "proto/AlgorithmWorks.pb.h"
+#include "algorithm/basealgorithmcommon.h"
 
 class GrpcThreadAlg : public QThread
 {
@@ -92,6 +93,19 @@ grpc::Status AlgorithmGrpcServer::GetMotionState(grpc::ServerContext *context, c
 	aw::AlgoResponse::AlgoState state;
 	state = static_cast<aw::AlgoResponse::AlgoState>(motionEl->getState());
 	response->set_state(state);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::SetMotionRoi(grpc::ServerContext *context, const aw::RoiQ *request, aw::GeneralResponse *response)
+{
+	BaseAlgorithmCommon *baseAlgo = BaseAlgorithmCommon::instance();
+	int err = baseAlgo->saveRoiPoints(*request);
+	if (err) {
+		response->set_response(aw::GeneralResponse::FAIL);
+		response->set_error_code(err);
+		return grpc::Status::CANCELLED;
+	}
+	response->set_response(aw::GeneralResponse::SUCCESS);
 	return grpc::Status::OK;
 }
 

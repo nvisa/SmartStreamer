@@ -7,18 +7,49 @@ service AlgorithmWorks {
     rpc StopMotion(Empty) returns (RunStopResponse) {}
     rpc ReleaseMotion(Empty) returns (RunStopResponse) {}
     rpc GetMotionState(Empty) returns (AlgoResponse) {}
+    rpc SetMotionRoi(RoiQ) returns(GeneralResponse) {}
 }
 
 message Empty {
 
 }
 
-message RunStopResponse {
-    enum GeneralResponse {
+message TPoint{
+    float x = 1;
+    float y = 2;
+}
+
+message TPolygon {
+    repeated TPoint points = 1;
+    bool is_active = 2;
+}
+
+message TRectangle {
+    TPoint upperLeft = 1;
+    TPoint bottomRight = 2;
+}
+
+message RoiQ {
+    repeated TPolygon polygon = 1;
+    TRectangle rect1 = 2;
+    TRectangle rect2 = 3;
+}
+
+message GeneralResponse {
+    enum BaseResponse {
         SUCCESS  = 0;
         FAIL = 1;
     }
-    GeneralResponse response = 1;
+    BaseResponse response = 1;
+    int32 error_code = 2;
+}
+
+message RunStopResponse {
+    enum BaseResponse {
+        SUCCESS  = 0;
+        FAIL = 1;
+    }
+    BaseResponse response = 1;
 }
 
 message AlgoResponse {
