@@ -29,6 +29,8 @@ public:
 	virtual int reallocate();
 	virtual int stopAlgo();
 	virtual int release();
+	int setState(AlgoState state) { algoState = state; }
+	int getState() { return algoState; }
 protected:
 	int processBuffer(const RawBuffer &buf);
 	AlgoState algoState;
