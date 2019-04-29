@@ -13,6 +13,7 @@ public:
 	int reallocate();
 	int processAlgo(const RawBuffer &buf);
 	int baseAlgorithmProcess(const RawBuffer &buf);
+	int release();
 	struct MotionControl {
 		uchar meta[4096];
 		float *panTiltZoomRead;
@@ -22,7 +23,6 @@ public:
 		bool classification;
 	};
 
-	void setState(BaseAlgorithmElement::AlgoState state);
 protected:
 	BaseAlgorithmCommon::BaseVariables v;
 	MotionControl control;

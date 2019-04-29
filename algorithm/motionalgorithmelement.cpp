@@ -25,6 +25,7 @@ int MotionAlgorithmElement::reallocate()
 
 int MotionAlgorithmElement::processAlgo(const RawBuffer &buf)
 {
+	mDebug("Processing Algorithm %d", buf.constPars()->videoHeight);
 	QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
 
 	int width = buf.constPars()->videoWidth;
@@ -54,8 +55,10 @@ int MotionAlgorithmElement::baseAlgorithmProcess(const RawBuffer &buf)
 		break;
 	case PROCESS:
 		processAlgo(buf);
+		return 0;
 		break;
 	case STOPALGO:
+		mDebug("Stopping Algorithm");
 		stopAlgo();
 		break;
 	case RELEASE:
@@ -67,8 +70,8 @@ int MotionAlgorithmElement::baseAlgorithmProcess(const RawBuffer &buf)
 	return newOutputBuffer(buf);
 }
 
-void MotionAlgorithmElement::setState(BaseAlgorithmElement::AlgoState state)
+int MotionAlgorithmElement::release()
 {
-	algoState = state;
+	asel_via_base_release();
+	return 0;
 }
-
