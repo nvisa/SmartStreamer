@@ -76,11 +76,22 @@ grpc::Status AlgorithmGrpcServer::StopMotion(grpc::ServerContext *context, const
 
 grpc::Status AlgorithmGrpcServer::ReleaseMotion(grpc::ServerContext *context, const aw::Empty *request, aw::RunStopResponse *response)
 {
-
+	if (!motionEl) {
+		response->set_response(aw::RunStopResponse::FAIL);
+		return grpc::Status::OK;
+	}
+	motionEl->setState(BaseAlgorithmElement::RELEASE);
+	response->set_response(aw::RunStopResponse::SUCCESS);
+	return grpc::Status::OK;
 }
 
 grpc::Status AlgorithmGrpcServer::GetMotionState(grpc::ServerContext *context, const aw::Empty *request, aw::AlgoResponse *response)
 {
-
+	if (!motionEl)
+		return grpc::Status::CANCELLED;
+	aw::AlgoResponse::AlgoState state;
+	state = static_cast<aw::AlgoResponse::AlgoState>(motionEl->getState());
+	response->set_state(state);
+	return grpc::Status::OK;
 }
 
