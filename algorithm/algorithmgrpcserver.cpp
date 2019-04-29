@@ -109,3 +109,16 @@ grpc::Status AlgorithmGrpcServer::SetMotionRoi(grpc::ServerContext *context, con
 	return grpc::Status::OK;
 }
 
+grpc::Status AlgorithmGrpcServer::SetSensitivity(grpc::ServerContext *context, const aw::Sensitivity *request, aw::GeneralResponse *response)
+{
+	BaseAlgorithmCommon *baseAlgo = BaseAlgorithmCommon::instance();
+	int err = baseAlgo->setSensitivity(request->sensitivity());
+	if (err) {
+		response->set_response(aw::GeneralResponse::FAIL);
+		response->set_error_code(err);
+		return grpc::Status::CANCELLED;
+	}
+	response->set_response(aw::GeneralResponse::SUCCESS);
+	return grpc::Status::OK;
+}
+

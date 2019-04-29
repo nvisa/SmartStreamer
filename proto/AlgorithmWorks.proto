@@ -8,10 +8,15 @@ service AlgorithmWorks {
     rpc ReleaseMotion(Empty) returns (RunStopResponse) {}
     rpc GetMotionState(Empty) returns (AlgoResponse) {}
     rpc SetMotionRoi(RoiQ) returns(GeneralResponse) {}
+    rpc SetSensitivity(Sensitivity) returns(GeneralResponse) {}
 }
 
 message Empty {
 
+}
+
+message Sensitivity {
+    int32 sensitivity = 1;
 }
 
 message TPoint{
