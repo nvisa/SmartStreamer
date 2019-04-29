@@ -5,6 +5,7 @@ smart-grpc {
     GRPC_CPP_PLUGIN = grpc_cpp_plugin
     GRPC_CPP_PLUGIN_PATH = `which $(EXPORT_GRPC_CPP_PLUGIN)`
 
+    PROTOS += proto/AlgorithmWorks.proto
     PROTOS += proto/AlgorithmCommunication.proto
     PROTOS += proto/OrionCommunication.proto
 

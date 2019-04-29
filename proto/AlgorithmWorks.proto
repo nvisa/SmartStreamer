@@ -1,0 +1,37 @@
+syntax="proto3";
+
+package aw;
+
+service AlgorithmWorks {
+    rpc RunMotion(Empty) returns(RunStopResponse) {}
+    rpc StopMotion(Empty) returns (RunStopResponse) {}
+    rpc ReleaseMotion(Empty) returns (RunStopResponse) {}
+    rpc GetMotionState(Empty) returns (AlgoResponse) {}
+}
+
+message Empty {
+
+}
+
+message RunStopResponse {
+    enum GeneralResponse {
+        SUCCESS  = 0;
+        FAIL = 1;
+    }
+    GeneralResponse response = 1;
+}
+
+message AlgoResponse {
+    enum AlgoState{
+        INVALID = 0;
+        INIT = 1;
+        GPUINIT = 2;
+        REINIT = 4;
+        PROCESS = 8;
+        REALLOCATE = 16;
+        STOPALGO = 32;
+        RELEASE = 64;
+        UNKNOWN = 255;
+    };
+    AlgoState state = 1;
+}
