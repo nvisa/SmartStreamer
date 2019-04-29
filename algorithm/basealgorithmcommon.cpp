@@ -21,6 +21,18 @@ static QJsonObject readJson(const QString &filename)
 	return obj;
 }
 
+static int writeJson(const QString &filename, QJsonObject obj)
+{
+	QFile f(filename);
+	if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+		qDebug() << "File opening error: " << errno << filename;
+		return errno;
+	}
+	f.write(QJsonDocument(obj).toJson());
+	f.close();
+	return 0;
+}
+
 BaseAlgorithmCommon::BaseVariables BaseAlgorithmCommon::getAlgoParameters()
 {
 	BaseVariables v;
@@ -102,6 +114,20 @@ int BaseAlgorithmCommon::saveRoiPoints(aw::RoiQ troi)
 	out << troi.rect2().bottomright().y() << "\n";
 	f.close();
 	return 0;
+}
+
+int BaseAlgorithmCommon::setSensitivity(int sensitivity)
+{
+	QJsonObject mainObj = readJson("algorithm_new.json");
+	if (!mainObj.contains("motion_detection")) {
+		qDebug() << "json file doesn't `motion_detection` object ";
+		return -ENODATA;
+	}
+	QJsonObject motionObj = mainObj.value("motion_detection").toObject();
+	motionObj.insert("sensitivity", sensitivity);
+	mainObj.insert("motion_detection", motionObj);
+
+	return writeJson("algorithm_new.json", mainObj);
 }
 
 BaseAlgorithmCommon::BaseAlgorithmCommon()

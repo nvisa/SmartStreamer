@@ -30,6 +30,7 @@ public:
 	static int getMotionSensitivity();
 	static bool getMotionClassification();
 	static int saveRoiPoints(aw::RoiQ troi);
+	static int setSensitivity(int sensitivity);
 protected:
 	BaseAlgorithmCommon();
 };
