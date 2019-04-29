@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QJsonObject>
+#include "proto/AlgorithmWorks.grpc.pb.h"
 
 class BaseAlgorithmCommon
 {
@@ -28,6 +29,7 @@ public:
 	static BaseVariables getAlgoParameters();
 	static int getMotionSensitivity();
 	static bool getMotionClassification();
+	static int saveRoiPoints(aw::RoiQ troi);
 protected:
 	BaseAlgorithmCommon();
 };

@@ -64,6 +64,46 @@ bool BaseAlgorithmCommon::getMotionClassification()
 	return classification;
 }
 
+int BaseAlgorithmCommon::saveRoiPoints(aw::RoiQ troi)
+{
+	QFile f("points.txt");
+	if (!f.open(QIODevice::WriteOnly | QIODevice::Text))
+		return -errno;
+	QTextStream out(&f);
+	out << troi.polygon().size() << "\n";
+	for (int i = 0; i < troi.polygon().size(); i++) {
+		aw::TPolygon myPoly = troi.polygon(i);
+		out << myPoly.points_size() << "\n";
+	}
+	for (int i = 0; i < troi.polygon().size(); i++) {
+		aw::TPolygon myPoly = troi.polygon(i);
+		int state = (myPoly.is_active() == true) ? 1 : 0;
+		out << state << "\n";
+	}
+
+	for (int i = 0; i < troi.polygon().size(); i++) {
+		aw::TPolygon myPoly = troi.polygon(i);
+		for (int k = 0; k < myPoly.points_size(); k++) {
+			out << myPoly.points(k).x() << "\n";
+			out << myPoly.points(k).y() << "\n";
+		}
+	}
+
+	// rect1
+	out << troi.rect1().upperleft().x() << "\n";
+	out << troi.rect1().upperleft().y() << "\n";
+	out << troi.rect1().bottomright().x() << "\n";
+	out << troi.rect1().bottomright().y() << "\n";
+
+	// rect2
+	out << troi.rect2().upperleft().x() << "\n";
+	out << troi.rect2().upperleft().y() << "\n";
+	out << troi.rect2().bottomright().x() << "\n";
+	out << troi.rect2().bottomright().y() << "\n";
+	f.close();
+	return 0;
+}
+
 BaseAlgorithmCommon::BaseAlgorithmCommon()
 {
 }
