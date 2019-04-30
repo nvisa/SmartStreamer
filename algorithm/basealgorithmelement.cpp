@@ -83,7 +83,6 @@ int BaseAlgorithmElement::release()
 
 int BaseAlgorithmElement::processBuffer(const RawBuffer &buf)
 {
-	qDebug() << "Process Buffer in basealgo element";
 	return baseAlgorithmProcess(buf);
 }
 

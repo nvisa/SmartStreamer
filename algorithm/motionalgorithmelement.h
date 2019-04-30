@@ -4,7 +4,6 @@
 #include "basealgorithmcommon.h"
 #include "basealgorithmelement.h"
 
-class MotionAlgorithmPriv;
 class MotionAlgorithmElement: public BaseAlgorithmElement
 {
 public:

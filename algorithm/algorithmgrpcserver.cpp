@@ -162,7 +162,7 @@ grpc::Status AlgorithmGrpcServer::GetStabilizationState(grpc::ServerContext *con
 grpc::Status AlgorithmGrpcServer::SetSensitivity(grpc::ServerContext *context, const aw::Sensitivity *request, aw::GeneralResponse *response)
 {
 	BaseAlgorithmCommon *baseAlgo = BaseAlgorithmCommon::instance();
-	int err = 0;
+	int err = -1;
 	if (request->type() == aw::Sensitivity::MOTION)
 		err = baseAlgo->setSensitivity("motion_detection", request->sensitivity());
 	else if (request->type() == aw::Sensitivity::STABILIZATION)
