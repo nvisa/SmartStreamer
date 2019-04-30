@@ -6,6 +6,8 @@
 
 #include <lmm/debug.h>
 
+#define FILENAME "algorithm_new.json"
+
 static QJsonObject readJson(const QString &filename)
 {
 	QJsonObject obj;
@@ -36,7 +38,7 @@ static int writeJson(const QString &filename, QJsonObject obj)
 BaseAlgorithmCommon::BaseVariables BaseAlgorithmCommon::getAlgoParameters()
 {
 	BaseVariables v;
-	QJsonObject mainObj = readJson("algorithm_new.json");
+	QJsonObject mainObj = readJson(FILENAME);
 	qDebug() << mainObj;
 	if (!mainObj.contains("parameters")) {
 		qDebug() << "json file doesn't `parameters` object ";
@@ -53,21 +55,21 @@ BaseAlgorithmCommon::BaseVariables BaseAlgorithmCommon::getAlgoParameters()
 	return v;
 }
 
-int BaseAlgorithmCommon::getMotionSensitivity()
+int BaseAlgorithmCommon::getSensitivity(const QString &objName)
 {
-	QJsonObject mainObj = readJson("algorithm_new.json");
+	QJsonObject mainObj = readJson(FILENAME);
 	qDebug() << mainObj;
-	if (!mainObj.contains("motion_detection")) {
-		qDebug() << "json file doesn't `motion_detection` object ";
+	if (!mainObj.contains(objName)) {
+//		mDebug("json file doesn't `%s` object ", qPrintable(objName));
 		return -ENODATA;
 	}
-	int sens = mainObj.value("motion_detection").toObject().value("sensitivity").toInt();
+	int sens = mainObj.value(objName).toObject().value("sensitivity").toInt();
 	return sens;
 }
 
 bool BaseAlgorithmCommon::getMotionClassification()
 {
-	QJsonObject mainObj = readJson("algorithm_new.json");
+	QJsonObject mainObj = readJson(FILENAME);
 	if (!mainObj.contains("motion_detection")) {
 		qDebug() << "json file doesn't `motion_detection` object ";
 		return -ENODATA;
@@ -116,18 +118,18 @@ int BaseAlgorithmCommon::saveRoiPoints(aw::RoiQ troi)
 	return 0;
 }
 
-int BaseAlgorithmCommon::setSensitivity(int sensitivity)
+int BaseAlgorithmCommon::setSensitivity(const QString objName, int sensitivity)
 {
-	QJsonObject mainObj = readJson("algorithm_new.json");
-	if (!mainObj.contains("motion_detection")) {
-		qDebug() << "json file doesn't `motion_detection` object ";
+	QJsonObject mainObj = readJson(FILENAME);
+	if (!mainObj.contains(objName)) {
+//		mDebug("json file doesn't `%s` object ", qPrintable(objName));
 		return -ENODATA;
 	}
-	QJsonObject motionObj = mainObj.value("motion_detection").toObject();
-	motionObj.insert("sensitivity", sensitivity);
-	mainObj.insert("motion_detection", motionObj);
+	QJsonObject subObj = mainObj.value(objName).toObject();
+	subObj.insert("sensitivity", sensitivity);
+	mainObj.insert(objName, subObj);
 
-	return writeJson("algorithm_new.json", mainObj);
+	return writeJson(FILENAME, mainObj);
 }
 
 BaseAlgorithmCommon::BaseAlgorithmCommon()

@@ -27,10 +27,10 @@ public:
 	};
 
 	static BaseVariables getAlgoParameters();
-	static int getMotionSensitivity();
+	static int getSensitivity(const QString &objName);
 	static bool getMotionClassification();
 	static int saveRoiPoints(aw::RoiQ troi);
-	static int setSensitivity(int sensitivity);
+	static int setSensitivity(const QString objName, int sensitivity);
 protected:
 	BaseAlgorithmCommon();
 };
