@@ -27,6 +27,7 @@ message DiagnosticQ {
 message Element {
 	int32 inputQueueCount = 1;
 	int32 outputQueueCount = 2;
+	string name = 3;
 }
 
 message ElementQueue {
