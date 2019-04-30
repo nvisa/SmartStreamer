@@ -132,6 +132,72 @@ int BaseAlgorithmCommon::setSensitivity(const QString objName, int sensitivity)
 	return writeJson(FILENAME, mainObj);
 }
 
+QJsonObject BaseAlgorithmCommon::getSubObj(const QString &objName)
+{
+	QJsonObject mainObj = readJson(FILENAME);
+	if (!mainObj.contains(objName)) {
+//		mDebug("json file doesn't `%s` object ", qPrintable(objName));
+		return QJsonObject();
+	}
+	return mainObj.value(objName).toObject();
+}
+
+int BaseAlgorithmCommon::getFaceCamID()
+{
+	QJsonObject subObj = getSubObj("face");
+	if (!subObj.contains("cam_id"))
+		return -ENODATA;
+	return subObj.value("cam_id").toInt();
+}
+
+int BaseAlgorithmCommon::getFaceFrameRate()
+{
+	QJsonObject subObj = getSubObj("face");
+	if (!subObj.contains("frame_rate"))
+		return -ENODATA;
+	return subObj.value("frame_rate").toInt();
+}
+
+bool BaseAlgorithmCommon::isTrackingAuto()
+{
+	QJsonObject subObj = getSubObj("tracking");
+	if (!subObj.contains("auto"))
+		return false;
+	return subObj.value("auto").toBool();
+}
+
+bool BaseAlgorithmCommon::isTrackingSemiAuto()
+{
+	QJsonObject subObj = getSubObj("tracking");
+	if (!subObj.contains("semi_auto"))
+		return false;
+	return subObj.value("semi_auto").toBool();
+}
+
+bool BaseAlgorithmCommon::isTrackingManual()
+{
+	QJsonObject subObj = getSubObj("tracking");
+	if (!subObj.contains("manual"))
+		return false;
+	return subObj.value("manual").toBool();
+}
+
+float BaseAlgorithmCommon::getTrackingScore()
+{
+	QJsonObject subObj = getSubObj("tracking");
+	if (!subObj.contains("score"))
+		return false;
+	return subObj.value("score").toDouble();
+}
+
+int BaseAlgorithmCommon::getTrackingDuration()
+{
+	QJsonObject subObj = getSubObj("tracking");
+	if (!subObj.contains("duration"))
+		return false;
+	return subObj.value("duration").toInt();
+}
+
 BaseAlgorithmCommon::BaseAlgorithmCommon()
 {
 }

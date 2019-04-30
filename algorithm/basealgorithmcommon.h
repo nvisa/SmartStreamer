@@ -31,6 +31,15 @@ public:
 	static bool getMotionClassification();
 	static int saveRoiPoints(aw::RoiQ troi);
 	static int setSensitivity(const QString objName, int sensitivity);
+	static int getFaceCamID();
+	static int getFaceFrameRate();
+	static bool isTrackingManual();
+	static bool isTrackingSemiAuto();
+	static bool isTrackingAuto();
+	static float getTrackingScore();
+	static int getTrackingDuration();
+protected:
+	static QJsonObject getSubObj(const QString &objName);
 protected:
 	BaseAlgorithmCommon();
 };
