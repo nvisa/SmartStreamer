@@ -3,12 +3,22 @@ syntax="proto3";
 package aw;
 
 service AlgorithmWorks {
+    // Motion Works
     rpc RunMotion(Empty) returns(RunStopResponse) {}
     rpc StopMotion(Empty) returns (RunStopResponse) {}
     rpc ReleaseMotion(Empty) returns (RunStopResponse) {}
     rpc GetMotionState(Empty) returns (AlgoResponse) {}
     rpc SetMotionRoi(RoiQ) returns(GeneralResponse) {}
+
+    // General Works
     rpc SetSensitivity(Sensitivity) returns(GeneralResponse) {}
+    rpc GetSensitivity(Sensitivity) returns(Sensitivity) {}
+
+    // Stabilization Works
+    rpc RunStabilization(Empty) returns(RunStopResponse) {}
+    rpc StopStabilization(Empty) returns (RunStopResponse) {}
+    rpc ReleaseStabilization(Empty) returns (RunStopResponse) {}
+    rpc GetStabilizationState(Empty) returns (AlgoResponse) {}
 }
 
 message Empty {
@@ -16,7 +26,12 @@ message Empty {
 }
 
 message Sensitivity {
+    enum AlgorithmType {
+        MOTION = 0;
+        STABILIZATION = 1;
+    }
     int32 sensitivity = 1;
+    AlgorithmType type = 2;
 }
 
 message TPoint{
