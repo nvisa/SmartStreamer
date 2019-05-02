@@ -4,25 +4,78 @@ package aw;
 
 service AlgorithmWorks {
     // Motion Works
-    rpc RunMotion(Empty) returns(RunStopResponse) {}
+    rpc RunMotion(Empty) returns (RunStopResponse) {}
     rpc StopMotion(Empty) returns (RunStopResponse) {}
     rpc ReleaseMotion(Empty) returns (RunStopResponse) {}
     rpc GetMotionState(Empty) returns (AlgoResponse) {}
-    rpc SetMotionRoi(RoiQ) returns(GeneralResponse) {}
+    rpc SetMotionRoi(RoiQ) returns (GeneralResponse) {}
 
     // General Works
-    rpc SetSensitivity(Sensitivity) returns(GeneralResponse) {}
-    rpc GetSensitivity(Sensitivity) returns(Sensitivity) {}
+    rpc SetSensitivity(Sensitivity) returns (GeneralResponse) {}
+    rpc GetSensitivity(Sensitivity) returns (Sensitivity) {}
 
     // Stabilization Works
-    rpc RunStabilization(Empty) returns(RunStopResponse) {}
+    rpc RunStabilization(Empty) returns (RunStopResponse) {}
     rpc StopStabilization(Empty) returns (RunStopResponse) {}
     rpc ReleaseStabilization(Empty) returns (RunStopResponse) {}
     rpc GetStabilizationState(Empty) returns (AlgoResponse) {}
+
+    // Tracking Works
+    rpc RunTracking(Empty) returns (RunStopResponse) {}
+    rpc StopTracking(Empty) returns (RunStopResponse) {}
+    rpc ReleaseTracking(Empty) returns (RunStopResponse) {}
+    rpc SetTrackingObjInfo(TrackObjectInfoQ) returns (GeneralResponse) {}
+    rpc SetTrackingDuration(TrackDurationQ) returns (GeneralResponse) {}
+    rpc SetTrackingScore(TrackScoreQ) returns (GeneralResponse) {}
+    rpc SetTrackingMultipleMode(TrackMultipleQ) returns (GeneralResponse) {}
+    rpc GetTrackingDuration(Empty) returns (TrackDurationQ) {}
+    rpc GetTrackingScore(Empty) returns (TrackScoreQ) {}
+    rpc GetTrackingMultipleMode(Empty) returns(TrackMultipleQ) {}
+
+    // Face Works
+    rpc RunFace(Empty) returns (RunStopResponse) {}
+    rpc StopFace(Empty) returns (RunStopResponse) {}
+    rpc ReleaseFace(Empty) returns (RunStopResponse) {}
+    rpc SetFaceCamID(FaceCamIDQ) returns (GeneralResponse) {}
+    rpc SetFaceFrameRate(FaceFrameRateQ) returns (GeneralResponse) {}
+    rpc GetFaceFrameRate(Empty) returns (FaceFrameRateQ) {}
+    rpc GetFaceCamID(Empty) returns (FaceCamIDQ) {}
+
+    // Panaroma Works
+    rpc RunPanaroma(Empty) returns (RunStopResponse) {}
+    rpc StopPanaroma(Empty) returns (RunStopResponse) {}
+    rpc ReleasePanaroma(Empty) returns (RunStopResponse) {}
 }
 
 message Empty {
 
+}
+
+message FaceFrameRateQ {
+    int32 frame_rate = 1;
+}
+
+message FaceCamIDQ {
+    int32  camid = 1;
+}
+
+message TrackMultipleQ {
+    bool multiple = 1;
+}
+
+message TrackScoreQ {
+    int32 score = 1;
+}
+
+message TrackDurationQ {
+    int32 duration = 1;
+}
+
+message TrackObjectInfoQ {
+    float point_x = 1;
+    float point_y = 2;
+    float width = 3;
+    float height = 4;
 }
 
 message Sensitivity {
