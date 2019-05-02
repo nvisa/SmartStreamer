@@ -54,8 +54,12 @@ protected:
 AlgorithmGrpcServer::AlgorithmGrpcServer(QObject *parent)
 	: aw::AlgorithmWorks::Service()
 {
+	faceEl = NULL;
+	trackEl = NULL;
 	motionEl = NULL;
+	panaromaEl = NULL;
 	stabilizationEl = NULL;
+
 	GrpcThreadAlg *grpcServ = new GrpcThreadAlg(50059, this);
 	grpcServ->start();
 }
@@ -187,6 +191,222 @@ grpc::Status AlgorithmGrpcServer::GetSensitivity(grpc::ServerContext *context, c
 	if (ret < 0)
 		return grpc::Status::CANCELLED;
 	response->set_sensitivity(ret);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::RunTracking(grpc::ServerContext *context, const aw::Empty *request, aw::RunStopResponse *response)
+{
+	if (trackEl) {
+		trackEl->setState(BaseAlgorithmElement::INIT);
+		response->set_response(aw::RunStopResponse::SUCCESS);
+	} else
+		response->set_response(aw::RunStopResponse::FAIL);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::StopTracking(grpc::ServerContext *context, const aw::Empty *request, aw::RunStopResponse *response)
+{
+	if (trackEl) {
+		if (trackEl->getState() == BaseAlgorithmElement::STOPALGO)
+			trackEl->setState(BaseAlgorithmElement::PROCESS);
+		else
+			trackEl->setState(BaseAlgorithmElement::STOPALGO);
+		response->set_response(aw::RunStopResponse::SUCCESS);
+	} else
+		response->set_response(aw::RunStopResponse::FAIL);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::ReleaseTracking(grpc::ServerContext *context, const aw::Empty *request, aw::RunStopResponse *response)
+{
+	if (trackEl) {
+		trackEl->setState(BaseAlgorithmElement::RELEASE);
+		response->set_response(aw::RunStopResponse::SUCCESS);
+	} else
+		response->set_response(aw::RunStopResponse::FAIL);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::SetTrackingObjInfo(grpc::ServerContext *context, const aw::TrackObjectInfoQ *request, aw::GeneralResponse *response)
+{
+	if (!trackEl) {
+		response->set_response(aw::GeneralResponse::FAIL);
+		response->set_error_code(19);
+		return grpc::Status::OK;
+	}
+	trackEl->setTrackObjInfo(request->point_x(), request->point_y(), request->width(), request->height());
+	response->set_response(aw::GeneralResponse::SUCCESS);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::SetTrackingDuration(grpc::ServerContext *context, const aw::TrackDurationQ *request, aw::GeneralResponse *response)
+{
+	int ret = 0;
+	BaseAlgorithmCommon *baseAlgo = BaseAlgorithmCommon::instance();
+	ret = baseAlgo->setTrackingDuration(request->duration());
+	if (ret)
+		response->set_response(aw::GeneralResponse::FAIL);
+	else
+		response->set_response(aw::GeneralResponse::SUCCESS);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::SetTrackingScore(grpc::ServerContext *context, const aw::TrackScoreQ *request, aw::GeneralResponse *response)
+{
+	int ret = 0;
+	BaseAlgorithmCommon *baseAlgo = BaseAlgorithmCommon::instance();
+	ret = baseAlgo->setTrackingScore(request->score());
+	if (ret)
+		response->set_response(aw::GeneralResponse::FAIL);
+	else
+		response->set_response(aw::GeneralResponse::SUCCESS);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::SetTrackingMultipleMode(grpc::ServerContext *context, const aw::TrackMultipleQ *request, aw::GeneralResponse *response)
+{
+	int ret = 0;
+	BaseAlgorithmCommon *baseAlgo = BaseAlgorithmCommon::instance();
+	ret = baseAlgo->setTrackingMultiple(request->multiple());
+	if (ret)
+		response->set_response(aw::GeneralResponse::FAIL);
+	else
+		response->set_response(aw::GeneralResponse::SUCCESS);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::GetTrackingDuration(grpc::ServerContext *context, const aw::Empty *request, aw::TrackDurationQ *response)
+{
+	int ret = -1;
+	BaseAlgorithmCommon *baseAlgo = BaseAlgorithmCommon::instance();
+	ret = baseAlgo->getTrackingDuration();
+	response->set_duration(ret);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::GetTrackingScore(grpc::ServerContext *context, const aw::Empty *request, aw::TrackScoreQ *response)
+{
+	int ret = -1;
+	BaseAlgorithmCommon *baseAlgo = BaseAlgorithmCommon::instance();
+	ret = baseAlgo->getTrackingScore();
+	response->set_score(ret);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::GetTrackingMultipleMode(grpc::ServerContext *context, const aw::Empty *request, aw::TrackMultipleQ *response)
+{
+	int ret = -1;
+	BaseAlgorithmCommon *baseAlgo = BaseAlgorithmCommon::instance();
+	ret = baseAlgo->getTrackingMultiple();
+	response->set_multiple(ret);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::RunFace(grpc::ServerContext *context, const aw::Empty *request, aw::RunStopResponse *response)
+{
+	if (faceEl) {
+		faceEl->setState(BaseAlgorithmElement::INIT);
+		response->set_response(aw::RunStopResponse::SUCCESS);
+	} else
+		response->set_response(aw::RunStopResponse::FAIL);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::StopFace(grpc::ServerContext *context, const aw::Empty *request, aw::RunStopResponse *response)
+{
+	if (faceEl) {
+		if (faceEl->getState() == BaseAlgorithmElement::STOPALGO)
+			faceEl->setState(BaseAlgorithmElement::PROCESS);
+		else
+			faceEl->setState(BaseAlgorithmElement::STOPALGO);
+		response->set_response(aw::RunStopResponse::SUCCESS);
+	} else
+		response->set_response(aw::RunStopResponse::FAIL);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::ReleaseFace(grpc::ServerContext *context, const aw::Empty *request, aw::RunStopResponse *response)
+{
+	if (faceEl) {
+		faceEl->setState(BaseAlgorithmElement::RELEASE);
+		response->set_response(aw::RunStopResponse::SUCCESS);
+	} else
+		response->set_response(aw::RunStopResponse::FAIL);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::SetFaceCamID(grpc::ServerContext *context, const aw::FaceCamIDQ *request, aw::GeneralResponse *response)
+{
+	int ret = 0;
+	BaseAlgorithmCommon *baseAlgo = BaseAlgorithmCommon::instance();
+	ret = baseAlgo->setFaceCamID(request->camid());
+	if (ret)
+		response->set_response(aw::GeneralResponse::FAIL);
+	else
+		response->set_response(aw::GeneralResponse::SUCCESS);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::SetFaceFrameRate(grpc::ServerContext *context, const aw::FaceFrameRateQ *request, aw::GeneralResponse *response)
+{
+	int ret = 0;
+	BaseAlgorithmCommon *baseAlgo = BaseAlgorithmCommon::instance();
+	ret = baseAlgo->setFaceFrameRate(request->frame_rate());
+	if (ret)
+		response->set_response(aw::GeneralResponse::FAIL);
+	else
+		response->set_response(aw::GeneralResponse::SUCCESS);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::GetFaceCamID(grpc::ServerContext *context, const aw::Empty *request, aw::FaceCamIDQ *response)
+{
+	int ret = -1;
+	BaseAlgorithmCommon *baseAlgo = BaseAlgorithmCommon::instance();
+	ret = baseAlgo->getFaceCamID();
+	response->set_camid(ret);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::GetFaceFrameRate(grpc::ServerContext *context, const aw::Empty *request, aw::FaceFrameRateQ *response)
+{
+	int ret = -1;
+	BaseAlgorithmCommon *baseAlgo = BaseAlgorithmCommon::instance();
+	ret = baseAlgo->getFaceFrameRate();
+	response->set_frame_rate(ret);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::RunPanaroma(grpc::ServerContext *context, const aw::Empty *request, aw::RunStopResponse *response)
+{
+	if (panaromaEl) {
+		panaromaEl->setState(BaseAlgorithmElement::INIT);
+		response->set_response(aw::RunStopResponse::SUCCESS);
+	} else
+		response->set_response(aw::RunStopResponse::FAIL);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::StopPanaroma(grpc::ServerContext *context, const aw::Empty *request, aw::RunStopResponse *response)
+{
+	if (panaromaEl) {
+		if (panaromaEl->getState() == BaseAlgorithmElement::STOPALGO)
+			panaromaEl->setState(BaseAlgorithmElement::PROCESS);
+		else
+			panaromaEl->setState(BaseAlgorithmElement::STOPALGO);
+		response->set_response(aw::RunStopResponse::SUCCESS);
+	} else
+		response->set_response(aw::RunStopResponse::FAIL);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::ReleasePanaroma(grpc::ServerContext *context, const aw::Empty *request, aw::RunStopResponse *response)
+{
+	if (panaromaEl) {
+		panaromaEl->setState(BaseAlgorithmElement::RELEASE);
+		response->set_response(aw::RunStopResponse::SUCCESS);
+	} else
+		response->set_response(aw::RunStopResponse::FAIL);
 	return grpc::Status::OK;
 }
 
