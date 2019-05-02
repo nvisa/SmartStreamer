@@ -44,6 +44,10 @@ static AlgorithmCommunication::DiagnosticInfo* createResponse(BaseStreamer *stre
 
 	if (streamer->getPipelineCount() > 0) {
 		BaseLmmPipeline *p = streamer->getPipeline(0);
+		response->set_latency(p->getLatency());
+		// TODO: Api çağrıldığında kitleniyor
+		//response->set_totalusememory(p->getTotalMemoryUsage());
+
 		for (int i = 0; i < p->getPipeCount(); i++) {
 			BaseLmmElement *pipe = p->getPipe(i);
 
@@ -66,6 +70,7 @@ static AlgorithmCommunication::DiagnosticInfo* createResponse(BaseStreamer *stre
 				q->set_fps(eq->getFps());
 				q->set_receivedcount(eq->getReceivedCount());
 				q->set_sendcount(eq->getSentCount());
+				q->set_totalsize(eq->getTotalSize());
 
 				auto nodeQueue = response->add_nodes();
 				nodeQueue->set_type(AlgorithmCommunication::Node_NodeType_QUEUE);

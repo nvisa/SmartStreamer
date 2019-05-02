@@ -37,6 +37,7 @@ message ElementQueue {
 	int64 elapsedTime = 4;
 	int32 bufferCount = 5;
 	int32 receivedCount = 6;
+	int64 totalSize = 7;
 }
 
 message Node {
@@ -52,6 +53,8 @@ message Node {
 
 message DiagnosticInfo {
 	repeated Node nodes = 1;
+	int64 latency = 2;
+	int64 totalUseMemory = 3;
 }
 
 //service ekleyebilirsin 2. servicisi 
