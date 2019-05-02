@@ -60,7 +60,7 @@ int BaseAlgorithmCommon::getSensitivity(const QString &objName)
 	QJsonObject mainObj = readJson(FILENAME);
 	qDebug() << mainObj;
 	if (!mainObj.contains(objName)) {
-//		mDebug("json file doesn't `%s` object ", qPrintable(objName));
+		qDebug() << "json file doesn't object " << objName;
 		return -ENODATA;
 	}
 	int sens = mainObj.value(objName).toObject().value("sensitivity").toInt();
@@ -122,7 +122,7 @@ int BaseAlgorithmCommon::setSensitivity(const QString objName, int sensitivity)
 {
 	QJsonObject mainObj = readJson(FILENAME);
 	if (!mainObj.contains(objName)) {
-//		mDebug("json file doesn't `%s` object ", qPrintable(objName));
+		qDebug() << "json file doesn't object " << objName;
 		return -ENODATA;
 	}
 	QJsonObject subObj = mainObj.value(objName).toObject();
@@ -136,7 +136,7 @@ QJsonObject BaseAlgorithmCommon::getSubObj(const QString &objName)
 {
 	QJsonObject mainObj = readJson(FILENAME);
 	if (!mainObj.contains(objName)) {
-//		mDebug("json file doesn't `%s` object ", qPrintable(objName));
+		qDebug() << "json file doesn't object " << objName;
 		return QJsonObject();
 	}
 	return mainObj.value(objName).toObject();
@@ -156,6 +156,28 @@ int BaseAlgorithmCommon::getFaceFrameRate()
 	if (!subObj.contains("frame_rate"))
 		return -ENODATA;
 	return subObj.value("frame_rate").toInt();
+}
+
+int BaseAlgorithmCommon::setFaceCamID(int v)
+{
+	QJsonObject mainObj = readJson(FILENAME);
+	if (!mainObj.contains("face"))
+		return -ENODATA;
+	QJsonObject subObj = mainObj.value("face").toObject();
+	subObj.insert("cam_id", v);
+	mainObj.insert("face", subObj);
+	return writeJson(FILENAME, mainObj);
+}
+
+int BaseAlgorithmCommon::setFaceFrameRate(int v)
+{
+	QJsonObject mainObj = readJson(FILENAME);
+	if (!mainObj.contains("face"))
+		return -ENODATA;
+	QJsonObject subObj = mainObj.value("face").toObject();
+	subObj.insert("frame_rate", v);
+	mainObj.insert("face", subObj);
+	return writeJson(FILENAME, mainObj);
 }
 
 bool BaseAlgorithmCommon::isTrackingAuto()
@@ -196,6 +218,47 @@ int BaseAlgorithmCommon::getTrackingDuration()
 	if (!subObj.contains("duration"))
 		return false;
 	return subObj.value("duration").toInt();
+}
+
+bool BaseAlgorithmCommon::getTrackingMultiple()
+{
+	QJsonObject subObj = getSubObj("tracking");
+	if (!subObj.contains("multiple_track"))
+		return false;
+	return subObj.value("multiple_track").toBool();
+}
+
+int BaseAlgorithmCommon::setTrackingScore(float v)
+{
+	QJsonObject mainObj = readJson(FILENAME);
+	if (!mainObj.contains("tracking"))
+		return -ENODATA;
+	QJsonObject subObj = mainObj.value("tracking").toObject();
+	subObj.insert("score", v);
+	mainObj.insert("tracking", subObj);
+	return writeJson(FILENAME, mainObj);
+}
+
+int BaseAlgorithmCommon::setTrackingDuration(int v)
+{
+	QJsonObject mainObj = readJson(FILENAME);
+	if (!mainObj.contains("tracking"))
+		return -ENODATA;
+	QJsonObject subObj = mainObj.value("tracking").toObject();
+	subObj.insert("duration", v);
+	mainObj.insert("tracking", subObj);
+	return writeJson(FILENAME, mainObj);
+}
+
+int BaseAlgorithmCommon::setTrackingMultiple(bool v)
+{
+	QJsonObject mainObj = readJson(FILENAME);
+	if (!mainObj.contains("tracking"))
+		return -ENODATA;
+	QJsonObject subObj = mainObj.value("tracking").toObject();
+	subObj.insert("multiple_track", v);
+	mainObj.insert("tracking", subObj);
+	return writeJson(FILENAME, mainObj);
 }
 
 BaseAlgorithmCommon::BaseAlgorithmCommon()

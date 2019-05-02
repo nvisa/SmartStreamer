@@ -33,11 +33,17 @@ public:
 	static int setSensitivity(const QString objName, int sensitivity);
 	static int getFaceCamID();
 	static int getFaceFrameRate();
+	static int setFaceCamID(int v);
+	static int setFaceFrameRate(int v);
 	static bool isTrackingManual();
 	static bool isTrackingSemiAuto();
 	static bool isTrackingAuto();
 	static float getTrackingScore();
 	static int getTrackingDuration();
+	static bool getTrackingMultiple();
+	static int setTrackingScore(float v);
+	static int setTrackingDuration(int v);
+	static int setTrackingMultiple(bool v);
 protected:
 	static QJsonObject getSubObj(const QString &objName);
 protected:
