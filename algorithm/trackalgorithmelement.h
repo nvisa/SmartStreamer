@@ -20,6 +20,13 @@ public:
 		MANUAL
 	};
 
+	struct TrackObjInfo {
+		float point_x;
+		float point_y;
+		float width;
+		float height;
+	};
+
 	struct TrackControl {
 		uchar meta[4096];
 		float *panTiltZoomRead;
@@ -27,8 +34,10 @@ public:
 		int initialize;
 		int sensitivity;
 		bool classification;
+		TrackObjInfo obj;
 	};
 
+	int setTrackObjInfo(float x, float y, float w, float h);
 protected:
 	BaseAlgorithmCommon::BaseVariables v;
 	TrackMode mode;
@@ -36,6 +45,7 @@ protected:
 	int autoTrack(const RawBuffer &buf);
 	int semiAutoTrack(const RawBuffer &buf);
 	int manualTrack(const RawBuffer &buf);
+	float objProp[4];
 };
 
 #endif // TRACKALGORITHMELEMENT_H
