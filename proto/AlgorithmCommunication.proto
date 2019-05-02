@@ -28,6 +28,8 @@ message Element {
 	int32 inputQueueCount = 1;
 	int32 outputQueueCount = 2;
 	string name = 3;
+	int64 latency = 4;
+	int64 totalUseMemory = 5;
 }
 
 message ElementQueue {

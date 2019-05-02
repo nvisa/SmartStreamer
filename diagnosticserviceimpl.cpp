@@ -55,6 +55,8 @@ static AlgorithmCommunication::DiagnosticInfo* createResponse(BaseStreamer *stre
 			e->set_inputqueuecount(pipe->getInputQueueCount());
 			e->set_outputqueuecount(pipe->getOutputQueueCount());
 			e->set_name(pipe->objectName().toStdString());
+			e->set_latency(pipe->getLatency());
+			e->set_totalusememory(pipe->getTotalMemoryUsage());
 
 			auto nodeElement = response->add_nodes();
 			nodeElement->set_type(AlgorithmCommunication::Node_NodeType_ELEMENT);
