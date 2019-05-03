@@ -5,10 +5,11 @@
 #include "algorithm/algorithmgrpcserver.h"
 #include "algorithm/motionalgorithmelement.h"
 
+#include <ecl/ptzp/irdomedriver.h>
+
 class RtpTransmitter;
 class SeiInserter;
 class BaseRtspServer;
-
 class UsbStreamer : public BaseStreamer
 {
 Q_OBJECT
@@ -16,6 +17,7 @@ public:
 	explicit UsbStreamer(QObject *parent = 0);
 	int generatePipelineForOneSource();
 	int PerformAlgorithmForYUV(const RawBuffer &buf);
+	int startPt(const QString &address);
 
 protected:
 	SeiInserter *sei;
@@ -26,6 +28,7 @@ protected:
 
 	MotionAlgorithmElement *motion;
 	AlgorithmGrpcServer *grpcserv;
+	IRDomeDriver *botas;
 };
 
 #endif // USBSTREAMER_H
