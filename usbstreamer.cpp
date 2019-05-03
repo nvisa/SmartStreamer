@@ -30,7 +30,6 @@ UsbStreamer::UsbStreamer(QObject *parent)
 
 int UsbStreamer::generatePipelineForOneSource(const QString &SourceUrl)
 {
-	setupAlgorithmManager();
 	V4l2Input* v4l2 = new V4l2Input;
 	v4l2->setParameter("videoWidth",1920);
 	v4l2->setParameter("videoHeight",1080);
@@ -44,11 +43,6 @@ int UsbStreamer::generatePipelineForOneSource(const QString &SourceUrl)
 	rgbConv1->setOutputFormat(AV_PIX_FMT_YUV420P);
 	rgbConv1->setMode(1);
 
-	AlgorithmElement *motionAlg = new AlgorithmElement(this);
-	AlgorithmElement *trackAlg  = new AlgorithmElement(this);
-	AlgorithmElement *faceAlg   = new AlgorithmElement(this);
-	AlgorithmElement *stabilAlg = new AlgorithmElement(this);
-
 	BaseLmmPipeline *p1 = addPipeline();
 	p1->setQuitOnThreadError(true);
 	p1->append(v4l2);
@@ -58,30 +52,6 @@ int UsbStreamer::generatePipelineForOneSource(const QString &SourceUrl)
 	FFmpegColorSpace *rgbConv3 = new  FFmpegColorSpace;
 	rgbConv3->setOutputFormat(AV_PIX_FMT_RGB24);
 	p1->append(rgbConv3);
-	if(algMan->availableAlgortihms.value(AlgorithmManager::MOTION)) {
-		motionAlg->setConfigurationElement(algMan->getAlgHandlerFor(0),AlgorithmElement::Algorithm::MOTION);
-		motionAlg->setCurrentActiveAlgorithm(AlgorithmElement::MOTION);
-		algMan->registerAlgorithm(AlgorithmManager::MOTION, motionAlg);
-		p1->append(motionAlg);
-	}
-	if (algMan->availableAlgortihms.value(AlgorithmManager::TRACKING)) {
-		trackAlg->setConfigurationElement(algMan->getAlgHandlerFor(0),AlgorithmElement::Algorithm::TRACKING);
-		trackAlg->setCurrentActiveAlgorithm(AlgorithmElement::TRACKING);
-		algMan->registerAlgorithm(AlgorithmManager::TRACKING, trackAlg);
-		p1->append(trackAlg);
-	}
-	if (algMan->availableAlgortihms.value(AlgorithmManager::STABILIZATION)) {
-		stabilAlg->setConfigurationElement(algMan->getAlgHandlerFor(0),AlgorithmElement::Algorithm::STABILIZATION);
-		stabilAlg->setCurrentActiveAlgorithm(AlgorithmElement::STABILIZATION);
-		algMan->registerAlgorithm(AlgorithmManager::STABILIZATION, stabilAlg);
-		p1->append(stabilAlg);
-	}
-	if (algMan->availableAlgortihms.value(AlgorithmManager::FACE_DETECTION)) {
-		faceAlg->setConfigurationElement(algMan->getAlgHandlerFor(0),AlgorithmElement::Algorithm::FACE_DETECTION);
-		faceAlg->setCurrentActiveAlgorithm(AlgorithmElement::FACE_DETECTION);
-		algMan->registerAlgorithm(AlgorithmManager::FACE_DETECTION, faceAlg);
-		p1->append(faceAlg);
-	}
 	p1->append(newFunctionPipe(UsbStreamer, this, UsbStreamer::PerformAlgorithmForYUV));
 	p1->end();
 
@@ -142,38 +112,8 @@ int UsbStreamer::generatePipelineForOneSource(const QString &SourceUrl)
 	return 0;
 }
 
-int UsbStreamer::setupAlgorithmManager()
-{
-	algMan = new AlgorithmManager(this);
-}
-
 int UsbStreamer::PerformAlgorithmForYUV(const RawBuffer &buf)
 {
-	if (sei && algMan->availableAlgortihms.value(AlgorithmManager::MOTION)) {
-		QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
-		QByteArray sei_data = hash["motion_results"].toByteArray();
-		sei->processMessage(sei_data);
-		if (sei_data.size() == 0)
-			sei->clearLastSEIMessage();
-		else {
-			AlgorithmCommunication::AlarmInfo alarm;
-			alarm.set_baseid(algMan->getAlarmElement().baseId);
-			alarm.set_stationid(algMan->getAlarmElement().stationId);
-			alarm.set_deviceid(algMan->getAlarmElement().deviceId);
-			alarm.set_unittype(algMan->getAlarmElement().unitType);
-			if (algMan->getAlgorithmElement(AlgorithmManager::MOTION)->algHandlerEl.meta[0] != 0)
-				alarm.set_alarmflag(true);
-			else
-				alarm.set_alarmflag(false);
-			algMan->addAlarm(alarm);
-		}
-	} else if (algMan->availableAlgortihms.value(AlgorithmManager::TRACKING)) {
-		QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
-		QByteArray track_data = hash["track_results"].toByteArray();
-		PTZinformation ptzInfo = algMan->getAlgorithmElement(AlgorithmManager::TRACKING)->forwardPTZaction(track_data);
-		algMan->setPT(ptzInfo);
-		algMan->setZoom(ptzInfo.zoom);
-	}
 	return 0;
 }
 

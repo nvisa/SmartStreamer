@@ -2,7 +2,6 @@
 #define USBSTREAMER_H
 
 #include "lmm/players/basestreamer.h"
-#include "algorithmmanager.h"
 class RtpTransmitter;
 class SeiInserter;
 class BaseRtspServer;
@@ -14,17 +13,12 @@ public:
 	explicit UsbStreamer(QObject *parent = 0);
 	int generatePipelineForOneSource(const QString &SourceUrl);
 	int PerformAlgorithmForYUV(const RawBuffer &buf);
-	int setupAlgorithmManager();
-
 
 protected:
 	RtpTransmitter *rtpout;
 	RtpTransmitter *rtpout2;
 	SeiInserter *sei;
 	BaseRtspServer *rtspServer;
-	AlgorithmManager *algMan;
-
-
 	// BaseLmmElement interface
 protected:
 	int processBuffer(const RawBuffer &buf);
