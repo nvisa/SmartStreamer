@@ -22,6 +22,8 @@ extern "C" {
 #include <libavformat/avformat.h>
 }
 
+#include "streamercommon.h"
+
 UsbStreamer::UsbStreamer(QObject *parent)
 	: BaseStreamer(parent)
 {
@@ -66,12 +68,7 @@ int UsbStreamer::generatePipelineForOneSource(const QString &SourceUrl)
 	sei->setAlarmTemplate("sei_alarm_template.xml");
 	p2->append(sei);
 
-	rtpout = new RtpTransmitter(this);
-	rtpout->forwardRtpTs(false);
-	rtpout->setRtcp(false);
-	rtpout->setH264SEIInsertion(true);
-	rtpout->useIncomingTimestamp(false);
-
+	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(25);
 	p2->append(rtpout);
 	p2->end();
 
@@ -89,26 +86,11 @@ int UsbStreamer::generatePipelineForOneSource(const QString &SourceUrl)
 	enc2->setOutputResolution(640,480);
 	p3->append(enc2);
 
-	rtpout2 = new RtpTransmitter(this);
-	rtpout2->forwardRtpTs(false);
-	rtpout2->setRtcp(false);
-	rtpout2->setH264SEIInsertion(false);
-	rtpout2->useIncomingTimestamp(false);
-
+	RtpTransmitter *rtpout2 = StreamerCommon::createRtpTransmitter(25);
 	p3->append(rtpout2);
 	p3->end();
 
-	rtspServer = new BaseRtspServer(this, 8554);
-	rtspServer->addStream("stream1", false, rtpout);
-	rtspServer->addStream("stream1m",true, rtpout, 15678);
-	rtspServer->addMedia2Stream("videoTrack", "stream1", false, rtpout);
-	rtspServer->addMedia2Stream("videoTrack", "stream1m", true, rtpout);
-	rtspServer->addStream("stream2",false, rtpout2);
-	rtspServer->addStream("stream2m",true, rtpout2, 15680);
-	rtspServer->addMedia2Stream("videoTrack", "stream2", false, rtpout2);
-	rtspServer->addMedia2Stream("videoTrack", "stream2m", true, rtpout2);
-	algMan->startGrpc();
-
+	StreamerCommon::createRtspServer(rtpout, rtpout2);
 	return 0;
 }
 
