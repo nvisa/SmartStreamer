@@ -42,6 +42,7 @@ public:
 	grpc::Status GetTrackingDuration(grpc::ServerContext *context, const aw::Empty *request, aw::TrackDurationQ *response) override;
 	grpc::Status GetTrackingScore(grpc::ServerContext *context, const aw::Empty *request, aw::TrackScoreQ *response) override;
 	grpc::Status GetTrackingMultipleMode(grpc::ServerContext *context, const aw::Empty *request, aw::TrackMultipleQ *response) override;
+	grpc::Status GetTrackingState(grpc::ServerContext *context, const aw::Empty *request, aw::AlgoResponse *response) override;
 
 	// Face Works
 	grpc::Status RunFace(grpc::ServerContext *context, const aw::Empty *request, aw::RunStopResponse *response) override;
@@ -51,11 +52,13 @@ public:
 	grpc::Status SetFaceFrameRate(grpc::ServerContext *context, const aw::FaceFrameRateQ *request, aw::GeneralResponse *response) override;
 	grpc::Status GetFaceCamID(grpc::ServerContext *context, const aw::Empty *request, aw::FaceCamIDQ *response) override;
 	grpc::Status GetFaceFrameRate(grpc::ServerContext *context, const aw::Empty *request, aw::FaceFrameRateQ *response) override;
+	grpc::Status GetFaceState(grpc::ServerContext *context, const aw::Empty *request, aw::AlgoResponse *response) override;
 
 	// Panaroma Works
 	grpc::Status RunPanaroma(grpc::ServerContext *context, const aw::Empty *request, aw::RunStopResponse *response) override;
 	grpc::Status StopPanaroma(grpc::ServerContext *context, const aw::Empty *request, aw::RunStopResponse *response) override;
 	grpc::Status ReleasePanaroma(grpc::ServerContext *context, const aw::Empty *request, aw::RunStopResponse *response) override;
+	grpc::Status GetPanaromaState(grpc::ServerContext *context, const aw::Empty *request, aw::AlgoResponse *response) override;
 
 	void setFaceAlgorithmElement(FaceAlgorithmElement *el) {faceEl = el;}
 	void setTrackAlgorithmElement(TrackAlgorithmElement *el) {trackEl = el;}

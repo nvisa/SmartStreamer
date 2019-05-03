@@ -302,6 +302,16 @@ grpc::Status AlgorithmGrpcServer::GetTrackingMultipleMode(grpc::ServerContext *c
 	return grpc::Status::OK;
 }
 
+grpc::Status AlgorithmGrpcServer::GetTrackingState(grpc::ServerContext *context, const aw::Empty *request, aw::AlgoResponse *response)
+{
+	if (!trackEl)
+		return grpc::Status::CANCELLED;
+	aw::AlgoResponse::AlgoState state;
+	state = static_cast<aw::AlgoResponse::AlgoState>(trackEl->getState());
+	response->set_state(state);
+	return grpc::Status::OK;
+}
+
 grpc::Status AlgorithmGrpcServer::RunFace(grpc::ServerContext *context, const aw::Empty *request, aw::RunStopResponse *response)
 {
 	if (faceEl) {
@@ -377,6 +387,16 @@ grpc::Status AlgorithmGrpcServer::GetFaceFrameRate(grpc::ServerContext *context,
 	return grpc::Status::OK;
 }
 
+grpc::Status AlgorithmGrpcServer::GetFaceState(grpc::ServerContext *context, const aw::Empty *request, aw::AlgoResponse *response)
+{
+	if (!faceEl)
+		return grpc::Status::CANCELLED;
+	aw::AlgoResponse::AlgoState state;
+	state = static_cast<aw::AlgoResponse::AlgoState>(faceEl->getState());
+	response->set_state(state);
+	return grpc::Status::OK;
+}
+
 grpc::Status AlgorithmGrpcServer::RunPanaroma(grpc::ServerContext *context, const aw::Empty *request, aw::RunStopResponse *response)
 {
 	if (panaromaEl) {
@@ -407,6 +427,16 @@ grpc::Status AlgorithmGrpcServer::ReleasePanaroma(grpc::ServerContext *context, 
 		response->set_response(aw::RunStopResponse::SUCCESS);
 	} else
 		response->set_response(aw::RunStopResponse::FAIL);
+	return grpc::Status::OK;
+}
+
+grpc::Status AlgorithmGrpcServer::GetPanaromaState(grpc::ServerContext *context, const aw::Empty *request, aw::AlgoResponse *response)
+{
+	if (!panaromaEl)
+		return grpc::Status::CANCELLED;
+	aw::AlgoResponse::AlgoState state;
+	state = static_cast<aw::AlgoResponse::AlgoState>(panaromaEl->getState());
+	response->set_state(state);
 	return grpc::Status::OK;
 }
 

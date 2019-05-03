@@ -31,6 +31,7 @@ service AlgorithmWorks {
     rpc GetTrackingDuration(Empty) returns (TrackDurationQ) {}
     rpc GetTrackingScore(Empty) returns (TrackScoreQ) {}
     rpc GetTrackingMultipleMode(Empty) returns(TrackMultipleQ) {}
+    rpc GetTrackingState(Empty) returns(AlgoResponse) {}
 
     // Face Works
     rpc RunFace(Empty) returns (RunStopResponse) {}
@@ -40,11 +41,14 @@ service AlgorithmWorks {
     rpc SetFaceFrameRate(FaceFrameRateQ) returns (GeneralResponse) {}
     rpc GetFaceFrameRate(Empty) returns (FaceFrameRateQ) {}
     rpc GetFaceCamID(Empty) returns (FaceCamIDQ) {}
+    rpc GetFaceState(Empty) returns(AlgoResponse) {}
 
     // Panaroma Works
     rpc RunPanaroma(Empty) returns (RunStopResponse) {}
     rpc StopPanaroma(Empty) returns (RunStopResponse) {}
     rpc ReleasePanaroma(Empty) returns (RunStopResponse) {}
+    rpc GetPanaromaState(Empty) returns(AlgoResponse) {}
+
 }
 
 message Empty {
