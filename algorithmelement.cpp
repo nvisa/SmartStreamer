@@ -169,6 +169,7 @@ int AlgorithmElement::processBuffer(const RawBuffer &buf)
 
 int AlgorithmElement::processAlgorithm(const RawBuffer &buf)
 {
+#if 0
 	QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
 	float z = hash["current_zoom"].toFloat();
 	float *pan_tilt_zoom_read = &z;
@@ -222,6 +223,7 @@ int AlgorithmElement::processAlgorithm(const RawBuffer &buf)
 	if (algHandlerEl.currentActiveAlg == NONE)
 		return 3;
 	return 0;
+#endif
 }
 
 void AlgorithmElement::setPTZInformation(uchar meta[]){
