@@ -55,6 +55,14 @@ BaseAlgorithmCommon::BaseVariables BaseAlgorithmCommon::getAlgoParameters()
 	return v;
 }
 
+bool BaseAlgorithmCommon::isMotionEnabled()
+{
+	QJsonObject obj = getSubObj("motion_detection");
+	if (obj.isEmpty())
+		return false;
+	return obj.value("enabled").toBool();
+}
+
 int BaseAlgorithmCommon::getSensitivity(const QString &objName)
 {
 	QJsonObject mainObj = readJson(FILENAME);
@@ -72,7 +80,7 @@ bool BaseAlgorithmCommon::getMotionClassification()
 	QJsonObject mainObj = readJson(FILENAME);
 	if (!mainObj.contains("motion_detection")) {
 		qDebug() << "json file doesn't `motion_detection` object ";
-		return -ENODATA;
+		return false;
 	}
 	int classification = mainObj.value("motion_detection").toObject().value("classification").toBool();
 	return classification;
@@ -259,6 +267,19 @@ int BaseAlgorithmCommon::setTrackingMultiple(bool v)
 	subObj.insert("multiple_track", v);
 	mainObj.insert("tracking", subObj);
 	return writeJson(FILENAME, mainObj);
+}
+
+BaseAlgorithmCommon::AlarmVariables BaseAlgorithmCommon::getAlarmVariables()
+{
+	BaseAlgorithmCommon::AlarmVariables alarm;
+	QJsonObject subObj = getSubObj("alarm");
+	if (subObj.isEmpty())
+		return alarm;
+	alarm.baseID = subObj.value("baseid").toInt();
+	alarm.deviceID = subObj.value("deviceid").toInt();
+	alarm.unitType = subObj.value("unittype").toInt();
+	alarm.stationID = subObj.value("stationid").toInt();
+	return alarm;
 }
 
 BaseAlgorithmCommon::BaseAlgorithmCommon()

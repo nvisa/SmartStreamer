@@ -26,7 +26,17 @@ public:
 		int stabilization;
 	};
 
-	static BaseVariables getAlgoParameters();
+	struct AlarmVariables {
+		int baseID;
+		int stationID;
+		int deviceID;
+		int unitType;
+		QString date;
+		bool flag;
+	};
+
+	BaseVariables getAlgoParameters();
+	bool isMotionEnabled();
 	static int getSensitivity(const QString &objName);
 	static bool getMotionClassification();
 	static int saveRoiPoints(aw::RoiQ troi);
@@ -44,6 +54,7 @@ public:
 	static int setTrackingScore(float v);
 	static int setTrackingDuration(int v);
 	static int setTrackingMultiple(bool v);
+	static AlarmVariables getAlarmVariables();
 protected:
 	static QJsonObject getSubObj(const QString &objName);
 protected:
