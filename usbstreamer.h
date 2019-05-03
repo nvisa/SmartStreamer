@@ -11,14 +11,11 @@ class UsbStreamer : public BaseStreamer
 Q_OBJECT
 public:
 	explicit UsbStreamer(QObject *parent = 0);
-	int generatePipelineForOneSource(const QString &SourceUrl);
+	int generatePipelineForOneSource();
 	int PerformAlgorithmForYUV(const RawBuffer &buf);
 
 protected:
-	RtpTransmitter *rtpout;
-	RtpTransmitter *rtpout2;
 	SeiInserter *sei;
-	BaseRtspServer *rtspServer;
 	// BaseLmmElement interface
 protected:
 	int processBuffer(const RawBuffer &buf);

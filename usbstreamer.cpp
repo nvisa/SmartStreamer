@@ -30,15 +30,13 @@ UsbStreamer::UsbStreamer(QObject *parent)
 
 }
 
-int UsbStreamer::generatePipelineForOneSource(const QString &SourceUrl)
+int UsbStreamer::generatePipelineForOneSource()
 {
 	V4l2Input* v4l2 = new V4l2Input;
 	v4l2->setParameter("videoWidth",1920);
 	v4l2->setParameter("videoHeight",1080);
-	if (QFile::exists("/dev/video0"))
-		v4l2->setParameter("device","/dev/video0");
-	else if (QFile::exists("/dev/video1"))
-		v4l2->setParameter("device","/dev/video1");
+	v4l2->setParameter("device", "/dev/video0");
+
 	BufferQueue* queue = new BufferQueue;
 
 	VideoScaler* rgbConv1 = new VideoScaler;
