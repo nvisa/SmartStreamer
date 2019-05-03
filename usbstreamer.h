@@ -2,6 +2,9 @@
 #define USBSTREAMER_H
 
 #include "lmm/players/basestreamer.h"
+#include "algorithm/algorithmgrpcserver.h"
+#include "algorithm/motionalgorithmelement.h"
+
 class RtpTransmitter;
 class SeiInserter;
 class BaseRtspServer;
@@ -21,6 +24,8 @@ protected:
 	int processBuffer(const RawBuffer &buf);
 	int pipelineOutput(BaseLmmPipeline *p, const RawBuffer &buf);
 
+	MotionAlgorithmElement *motion;
+	AlgorithmGrpcServer *grpcserv;
 };
 
 #endif // USBSTREAMER_H

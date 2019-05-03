@@ -27,6 +27,7 @@ extern "C" {
 UsbStreamer::UsbStreamer(QObject *parent)
 	: BaseStreamer(parent)
 {
+	grpcserv = new AlgorithmGrpcServer();
 
 }
 
@@ -49,9 +50,15 @@ int UsbStreamer::generatePipelineForOneSource()
 	p1->append(rgbConv1);
 	p1->append(queue);
 
+	motion = new MotionAlgorithmElement();
+	motion->setState(BaseAlgorithmElement::UNKNOWN);
+
+	grpcserv->setMotionAlgorithmElement(motion);
+
 	FFmpegColorSpace *rgbConv3 = new  FFmpegColorSpace;
 	rgbConv3->setOutputFormat(AV_PIX_FMT_RGB24);
 	p1->append(rgbConv3);
+	p1->append(motion);
 	p1->append(newFunctionPipe(UsbStreamer, this, UsbStreamer::PerformAlgorithmForYUV));
 	p1->end();
 
@@ -94,6 +101,15 @@ int UsbStreamer::generatePipelineForOneSource()
 
 int UsbStreamer::PerformAlgorithmForYUV(const RawBuffer &buf)
 {
+	if (sei) {
+		if (motion->getState() == BaseAlgorithmElement::PROCESS) {
+			QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
+			QByteArray seiData = hash["motion_results"].toByteArray();
+			sei->processMessage(seiData);
+			if (seiData.size() == 0)
+				sei->clearLastSEIMessage();
+		}
+	}
 	return 0;
 }
 
