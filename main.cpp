@@ -290,7 +290,7 @@ int main(int argc, char *argv[])
 	} else  {
 		qDebug() << "starting usb streamer";
 		UsbStreamer *usbStr = new UsbStreamer;
-		usbStr->generatePipelineForOneSource("/dev/video0");
+		usbStr->generatePipelineForOneSource();
 		streamer = usbStr;
 	}
 
