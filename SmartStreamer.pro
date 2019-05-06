@@ -17,7 +17,9 @@ SOURCES += main.cpp \
     usbstreamer.cpp \
     yamgozstreamer.cpp \
     analogstreamer.cpp \
-    streamercommon.cpp
+    streamercommon.cpp \
+    teststreamer.cpp \
+    applicationinfo.cpp
 
 HEADERS += \
     moxadriver.h \
@@ -32,7 +34,9 @@ HEADERS += \
     commoninformationinterface.h \
     yamgozstreamer.h \
     analogstreamer.h \
-    streamercommon.h
+    streamercommon.h \
+    teststreamer.h \
+    applicationinfo.h
 
 websockets {
     SOURCES += websocketstreamer.cpp
@@ -41,6 +45,7 @@ websockets {
 
 include (build_config.pri)
 include (proto/grpc.pri)
+include (algorithm/algorithm.pri)
 
 tx1 {
     LIBS += -L/usr/local/cuda/lib64 -lcudart -lcufft
@@ -62,3 +67,4 @@ PRE_TARGETDEPS += version.h
 
 target.path = /usr/local/bin/
 INSTALLS += target
+
