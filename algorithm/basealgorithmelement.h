@@ -9,7 +9,7 @@ class BaseAlgorithmElement : public BaseLmmElement
 public:
 	explicit BaseAlgorithmElement(QObject *parent = 0);
 
-	enum AlgoState{
+	enum AlgoState {
 		INIT = 0x01,
 		GPUINIT = 0x02,
 		REINIT = 0x04,
@@ -25,15 +25,19 @@ public:
 	virtual int reinit();
 
 	virtual int processAlgo(const RawBuffer &buf);
-	virtual int baseAlgorithmProcess(const RawBuffer &buf);
 	virtual int reallocate();
 	virtual int stopAlgo();
 	virtual int release();
-	int setState(AlgoState state) { algoState = state; }
+
+	/* TODO: state management should be private */
+	void setState(AlgoState state) { algoState = state; }
 	int getState() { return algoState; }
 protected:
 	int processBuffer(const RawBuffer &buf);
 	AlgoState algoState;
+
+private:
+	int baseAlgorithmProcess(const RawBuffer &buf);
 };
 
 #endif // BASEALGORITHMELEMENT_H

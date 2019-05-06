@@ -5,6 +5,7 @@
 BaseAlgorithmElement::BaseAlgorithmElement(QObject *parent)
 	: BaseLmmElement(parent)
 {
+	algoState = UNKNOWN;
 }
 
 int BaseAlgorithmElement::init()
@@ -14,7 +15,6 @@ int BaseAlgorithmElement::init()
 
 int BaseAlgorithmElement::gpuInit()
 {
-	qDebug() << "we dont create gpu init function on motion alog element";
 	return 0;
 }
 
@@ -25,6 +25,7 @@ int BaseAlgorithmElement::reinit()
 
 int BaseAlgorithmElement::processAlgo(const RawBuffer &buf)
 {
+	Q_UNUSED(buf);
 	return 0;
 }
 
@@ -35,6 +36,7 @@ int BaseAlgorithmElement::processAlgo(const RawBuffer &buf)
 
 int BaseAlgorithmElement::baseAlgorithmProcess(const RawBuffer &buf)
 {
+	mInfo("Buffer sending with size %d", algoState);
 	switch (algoState) {
 	case INIT:
 		init();
@@ -63,6 +65,7 @@ int BaseAlgorithmElement::baseAlgorithmProcess(const RawBuffer &buf)
 	default:
 		break;
 	}
+
 	return newOutputBuffer(buf);
 }
 
