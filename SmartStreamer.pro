@@ -19,7 +19,8 @@ SOURCES += main.cpp \
     analogstreamer.cpp \
     streamercommon.cpp \
     teststreamer.cpp \
-    applicationinfo.cpp
+    applicationinfo.cpp \
+    diagnosticserviceimpl.cpp
 
 HEADERS += \
     moxadriver.h \
@@ -36,7 +37,8 @@ HEADERS += \
     analogstreamer.h \
     streamercommon.h \
     teststreamer.h \
-    applicationinfo.h
+    applicationinfo.h \
+    diagnosticserviceimpl.h
 
 websockets {
     SOURCES += websocketstreamer.cpp
