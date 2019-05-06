@@ -18,14 +18,9 @@ int MotionAlgorithmElement::init()
 	return BaseAlgorithmElement::init();
 }
 
-int MotionAlgorithmElement::reallocate()
-{
-	return 0;
-}
-
 int MotionAlgorithmElement::processAlgo(const RawBuffer &buf)
 {
-	mDebug("Processing Algorithm %d", buf.constPars()->videoHeight);
+	mInfo("Processing Algorithm %d", buf.constPars()->videoHeight);
 	QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
 
 	int width = buf.constPars()->videoWidth;
@@ -43,31 +38,8 @@ int MotionAlgorithmElement::processAlgo(const RawBuffer &buf)
 	QByteArray ba = QByteArray((char *)control.meta, 4096);
 	hash.insert("motion_results", ba);
 	((RawBuffer *)&buf)->pars()->metaData = RawBuffer::serializeMetadata(hash);
-	return newOutputBuffer(buf);
-}
 
-int MotionAlgorithmElement::baseAlgorithmProcess(const RawBuffer &buf)
-{
-	mInfo("Buffer sending with size %d", algoState);
-	switch (algoState) {
-	case INIT:
-		init();
-		algoState = PROCESS;
-		break;
-	case PROCESS:
-		return processAlgo(buf);
-		break;
-	case STOPALGO:
-		mDebug("Stopping Algorithm");
-		stopAlgo();
-		break;
-	case RELEASE:
-		release();
-		break;
-	default:
-		break;
-	}
-	return newOutputBuffer(buf);
+	return 0;
 }
 
 int MotionAlgorithmElement::release()

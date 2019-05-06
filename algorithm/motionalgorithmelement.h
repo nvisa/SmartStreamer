@@ -9,9 +9,7 @@ class MotionAlgorithmElement: public BaseAlgorithmElement
 public:
 	MotionAlgorithmElement(QObject *parent = 0);
 	int init();
-	int reallocate();
 	int processAlgo(const RawBuffer &buf);
-	int baseAlgorithmProcess(const RawBuffer &buf);
 	int release();
 	struct MotionControl {
 		uchar meta[4096];
