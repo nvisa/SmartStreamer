@@ -1,4 +1,5 @@
 #include "algorithmgrpcserver.h"
+#include "diagnosticserviceimpl.h"
 
 #include <lmm/debug.h>
 
@@ -41,6 +42,8 @@ public:
 		ServerBuilder builder;
 		builder.AddListeningPort(ep, grpc::InsecureServerCredentials());
 		builder.RegisterService(algorithm);
+		DiagnosticServiceImpl *diag = new DiagnosticServiceImpl(NULL);
+		builder.RegisterService(diag);
 		std::unique_ptr<Server> server(builder.BuildAndStart());
 		server->Wait();
 	}
