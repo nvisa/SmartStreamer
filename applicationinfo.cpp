@@ -7,7 +7,6 @@
 #include <QDebug>
 #include <QFile>
 
-
 static QJsonObject readJson(const QString &filename)
 {
 	QJsonObject obj;

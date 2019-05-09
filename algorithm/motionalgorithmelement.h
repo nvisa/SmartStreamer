@@ -6,6 +6,7 @@
 
 class MotionAlgorithmElement: public BaseAlgorithmElement
 {
+	Q_OBJECT
 public:
 	MotionAlgorithmElement(QObject *parent = 0);
 	int init();

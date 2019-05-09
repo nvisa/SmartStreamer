@@ -27,16 +27,15 @@ extern "C" {
 UsbStreamer::UsbStreamer(QObject *parent)
 	: BaseStreamer(parent)
 {
-	grpcserv = new AlgorithmGrpcServer();
+	grpcserv = AlgorithmGrpcServer::instance();
 	startPt("ttyS0?baud=9600;null");
-
 }
 
 int UsbStreamer::generatePipelineForOneSource()
 {
 	V4l2Input* v4l2 = new V4l2Input;
-	v4l2->setParameter("videoWidth",1920);
-	v4l2->setParameter("videoHeight",1080);
+	v4l2->setParameter("videoWidth", 1920);
+	v4l2->setParameter("videoHeight", 1080);
 	v4l2->setParameter("device", "/dev/video0");
 
 	BufferQueue* queue = new BufferQueue;
@@ -124,6 +123,7 @@ int UsbStreamer::startPt(const QString &address)
 
 int UsbStreamer::processBuffer(const RawBuffer &buf)
 {
+	Q_UNUSED(buf);
 	return 0;
 }
 

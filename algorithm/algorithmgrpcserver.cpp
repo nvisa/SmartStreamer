@@ -38,7 +38,6 @@ public:
 	void run()
 	{
 		string ep(qPrintable(QString("0.0.0.0:%1").arg(servicePort)));
-		qDebug() << "--------------------------------------------------" << QString::fromStdString(ep);
 		ServerBuilder builder;
 		builder.AddListeningPort(ep, grpc::InsecureServerCredentials());
 		builder.RegisterService(algorithm);

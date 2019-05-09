@@ -55,7 +55,10 @@ static aw::DiagnosticInfo* createResponse(BaseStreamer *streamer)
 			aw::Element *e = new aw::Element();
 			e->set_inputqueuecount(pipe->getInputQueueCount());
 			e->set_outputqueuecount(pipe->getOutputQueueCount());
-			e->set_name(pipe->objectName().toStdString());
+			if (pipe->objectName().size())
+				e->set_name(pipe->objectName().toStdString());
+			else
+				e->set_name(pipe->metaObject()->className());
 			e->set_latency(pipe->getLatency());
 			e->set_totalusememory(pipe->getTotalMemoryUsage());
 

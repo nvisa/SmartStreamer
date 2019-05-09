@@ -39,7 +39,6 @@ BaseAlgorithmCommon::BaseVariables BaseAlgorithmCommon::getAlgoParameters()
 {
 	BaseVariables v;
 	QJsonObject mainObj = readJson(FILENAME);
-	qDebug() << mainObj;
 	if (!mainObj.contains("parameters")) {
 		qDebug() << "json file doesn't `parameters` object ";
 		return v;
@@ -66,7 +65,6 @@ bool BaseAlgorithmCommon::isMotionEnabled()
 int BaseAlgorithmCommon::getSensitivity(const QString &objName)
 {
 	QJsonObject mainObj = readJson(FILENAME);
-	qDebug() << mainObj;
 	if (!mainObj.contains(objName)) {
 		qDebug() << "json file doesn't object " << objName;
 		return -ENODATA;
