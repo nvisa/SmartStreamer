@@ -27,10 +27,10 @@ using namespace std;
 #include "proto/AlgorithmWorks.pb.h"
 #include "algorithm/basealgorithmcommon.h"
 
-class GrpcThreadAlg : public QThread
+class GrpcThreadAlg1 : public QThread
 {
 public:
-	GrpcThreadAlg (quint16 port, AlgorithmGrpcServer *s)
+	GrpcThreadAlg1(quint16 port, AlgorithmGrpcServer *s)
 	{
 		servicePort = port;
 		algorithm = s;
@@ -63,7 +63,7 @@ AlgorithmGrpcServer::AlgorithmGrpcServer(QObject *parent)
 	panaromaEl = NULL;
 	stabilizationEl = NULL;
 
-	GrpcThreadAlg *grpcServ = new GrpcThreadAlg(50059, this);
+	GrpcThreadAlg1 *grpcServ = new GrpcThreadAlg1(50059, this);
 	grpcServ->start();
 }
 
