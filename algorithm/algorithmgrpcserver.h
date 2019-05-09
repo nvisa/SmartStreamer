@@ -15,7 +15,8 @@ class GrpcThread;
 class AlgorithmGrpcServer : public aw::AlgorithmWorks::Service
 {
 public:
-	explicit AlgorithmGrpcServer(QObject *parent = 0);
+	static AlgorithmGrpcServer * instance();
+
 	// MotionWorks
 	grpc::Status RunMotion(grpc::ServerContext *context, const aw::Empty *request, aw::RunStopResponse *response) override;
 	grpc::Status StopMotion(grpc::ServerContext *context, const aw::Empty *request, aw::RunStopResponse *response) override;
@@ -69,6 +70,8 @@ signals:
 
 public slots:
 protected:
+	explicit AlgorithmGrpcServer(QObject *parent = 0);
+
 	GrpcThread *grpcServ;
 	FaceAlgorithmElement *faceEl;
 	TrackAlgorithmElement *trackEl;

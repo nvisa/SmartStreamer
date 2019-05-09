@@ -54,6 +54,9 @@ protected:
 };
 
 
+static AlgorithmGrpcServer *inst = NULL;
+
+
 AlgorithmGrpcServer::AlgorithmGrpcServer(QObject *parent)
 	: aw::AlgorithmWorks::Service()
 {
@@ -65,6 +68,13 @@ AlgorithmGrpcServer::AlgorithmGrpcServer(QObject *parent)
 
 	GrpcThreadAlg1 *grpcServ = new GrpcThreadAlg1(50059, this);
 	grpcServ->start();
+}
+
+AlgorithmGrpcServer *AlgorithmGrpcServer::instance()
+{
+	if (!inst)
+		inst = new AlgorithmGrpcServer;
+	return inst;
 }
 
 grpc::Status AlgorithmGrpcServer::RunMotion(grpc::ServerContext *context, const aw::Empty *request, aw::RunStopResponse *response)
