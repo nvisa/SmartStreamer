@@ -44,56 +44,47 @@ int UsbStreamer::generatePipelineForOneSource()
 	rgbConv1->setOutputFormat(AV_PIX_FMT_YUV420P);
 	rgbConv1->setMode(1);
 
+	VideoScaler* downScalar = new VideoScaler;
+	downScalar->setOutputResolution(640, 480);
+
+	motion = new MotionAlgorithmElement();
+	motion->setState(BaseAlgorithmElement::INIT);
+	grpcserv->setMotionAlgorithmElement(motion);
+
+	TX1VideoEncoder *enc = new TX1VideoEncoder;
+	enc->setBitrate(4000000);
+	enc->setFps(25.0);
+
+	TX1VideoEncoder *enc2 = new TX1VideoEncoder;
+	enc2->setBitrate(4000000);
+	enc2->setFps(25.0);
+	enc2->setOutputResolution(640, 480);
+
+	sei = new SeiInserter;
+	sei->setAlarmTemplate("sei_alarm_template.xml");
+
+	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(25);
+	RtpTransmitter *rtpout2 = StreamerCommon::createRtpTransmitter(25);
+
 	BaseLmmPipeline *p1 = addPipeline();
 	p1->setQuitOnThreadError(true);
 	p1->append(v4l2);
 	p1->append(rgbConv1);
 	p1->append(queue);
-
-	motion = new MotionAlgorithmElement();
-	motion->setState(BaseAlgorithmElement::UNKNOWN);
-
-	grpcserv->setMotionAlgorithmElement(motion);
-
-	FFmpegColorSpace *rgbConv3 = new  FFmpegColorSpace;
-	rgbConv3->setOutputFormat(AV_PIX_FMT_RGB24);
-	p1->append(rgbConv3);
 	p1->append(motion);
+	/* TODO: Why not SEI is processing its own data? */
 	p1->append(newFunctionPipe(UsbStreamer, this, UsbStreamer::PerformAlgorithmForYUV));
+	p1->append(enc);
+	p1->append(sei);
+	p1->append(rtpout);
 	p1->end();
 
 	BaseLmmPipeline *p2 = addPipeline();
 	p2->append(queue);
-	TX1VideoEncoder *enc = new TX1VideoEncoder;
-	enc->setBitrate(4000000);
-	enc->setFps(25.0);
-	p2->append(enc);
-
-	sei = new SeiInserter;
-	sei->setAlarmTemplate("sei_alarm_template.xml");
-	p2->append(sei);
-
-	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(25);
-	p2->append(rtpout);
+	p2->append(downScalar);
+	p2->append(enc2);
+	p2->append(rtpout2);
 	p2->end();
-
-	VideoScaler* downScalar = new VideoScaler;
-	downScalar->setOutputResolution(640,480);
-	downScalar->setOutputFormat(AV_PIX_FMT_NV12);
-
-	BaseLmmPipeline *p3 = addPipeline();
-	p3->append(queue);
-	p3->append(downScalar);
-
-	TX1VideoEncoder *enc2 = new TX1VideoEncoder;
-	enc2->setBitrate(4000000);
-	enc2->setFps(25.0);
-	enc2->setOutputResolution(640,480);
-	p3->append(enc2);
-
-	RtpTransmitter *rtpout2 = StreamerCommon::createRtpTransmitter(25);
-	p3->append(rtpout2);
-	p3->end();
 
 	StreamerCommon::createRtspServer(rtpout, rtpout2);
 	return 0;
