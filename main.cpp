@@ -16,6 +16,46 @@
 #include "yamgozstreamer.h"
 #include "analogstreamer.h"
 #include "algorithmmanager.h"
+#include "algorithm/algorithmgrpcserver.h"
+
+#include "ecl/drivers/exarconfig.h"
+#include "ecl/drivers/qextserialport/qextserialport.h"
+#include "unistd.h"
+
+/*
+ * This function can be used to test Arya PT head
+ * communication functionality
+ */
+static inline int serialTestForAryaHead()
+{
+	QextSerialPort *port = NULL;
+	ExarConfig *exar = NULL;
+	QString device = "/dev/ttyXRUSB1";
+	port = new QextSerialPort(device, QextSerialPort::Polling);
+	port->setBaudRate(BAUD19200);
+	port->setDataBits(DATA_7);
+	port->setStopBits(STOP_1);
+	port->setParity(PAR_ODD);
+	port->setFlowControl(FLOW_OFF);
+	if (! port->open(QIODevice::ReadWrite)) {
+		qDebug() << "Serial port not opened.";
+		return -1;
+	}
+	exar = new ExarConfig(port->getFileDescriptor());
+	exar->setPort("422");
+	QString mes("<ZZZPTT:;ZZZ\?\?>");
+	port->write(mes.toUtf8());
+	sleep(1);
+	QByteArray ba = port->readAll();
+	qDebug() << "done" << ba.size() << ": ";// << QString::fromUtf8(ba);
+	for (int i = 0; i < ba.size(); i++){
+		qDebug("%d: 0x%x (%c)", i, (uchar)ba.at(i), ba.at(i));
+	}
+	QString str;
+	str.append(QString::fromUtf8(ba));
+	qDebug() << str;
+	return 0;
+}
 
 static void printStackTrace(void)
 {
