@@ -1215,6 +1215,6 @@ int AlgorithmManager::setZoom(uint pos)
 
 void AlgorithmManager::startGrpc()
 {
-	GrpcThreadAlg *grpcServ = new GrpcThreadAlg(50059, this);
+	GrpcThreadAlg *grpcServ = new GrpcThreadAlg(60059, this);
 	grpcServ->start();
 }
