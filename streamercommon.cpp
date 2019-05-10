@@ -48,3 +48,16 @@ BaseRtspServer *StreamerCommon::createRtspServer(RtpTransmitter *rtp0)
 	return rtspServer;
 }
 
+BaseRtspServer *StreamerCommon::createRtspServer(QList<RtpTransmitter *> rtpout)
+{
+	BaseRtspServer *rtspServer = new BaseRtspServer(NULL, StreamerCommon::detectRtspPort());
+	for (int i = 0; i < rtpout.size(); i++)
+	{
+		rtspServer->addStream(QString("stream%1").arg(i+1), false, rtpout[i]);
+		rtspServer->addStream(QString("stream%1%2").arg(i+1).arg("m"),true, rtpout[i], 15678+(2*i));
+		rtspServer->addMedia2Stream("videoTrack", QString("stream%1").arg(i+1), false, rtpout[i]);
+		rtspServer->addMedia2Stream("videoTrack", QString("stream%1%2").arg(i+1).arg("m"), true, rtpout[i]);
+	}
+	return rtspServer;
+}
+
