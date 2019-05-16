@@ -1,11 +1,21 @@
 #include "applicationinfo.h"
+#include "yamgozstreamer.h"
+#include "analogstreamer.h"
+#include "ipstreamer.h"
+#include "usbstreamer.h"
 
 #define FILENAME "application_info.json"
 
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QDebug>
 #include <QFile>
+
+#include <ecl/ptzp/kayidriver.h>
+#include <ecl/ptzp/tbgthdriver.h>
+#include <ecl/ptzp/aryadriver.h>
+#include <ecl/ptzp/irdomedriver.h>
 
 static QJsonObject readJson(const QString &filename)
 {
@@ -20,6 +30,21 @@ static QJsonObject readJson(const QString &filename)
 	QJsonDocument doc = QJsonDocument::fromJson(ba);
 	obj = doc.object();
 	return obj;
+}
+
+static QJsonObject getSubObj(const QString &objName)
+{
+	QJsonObject mainObj = readJson(FILENAME);
+	if (!mainObj.contains(objName)) {
+		qDebug() << "json file doesn't object " << objName;
+		return QJsonObject();
+	}
+	return mainObj.value(objName).toObject();
+}
+
+bool ApplicationInfo::isGuiApplication()
+{
+	return true;
 }
 
 bool ApplicationInfo::isBotasFixEnabled()
@@ -94,18 +119,57 @@ QString ApplicationInfo::getBotasFixAlgorithms()
 	return obj.value("algorithms").toString();
 }
 
-QJsonObject ApplicationInfo::getSubObj(const QString &objName)
+PtzpDriver *ApplicationInfo::getPtzpDriver(int index)
 {
-	QJsonObject mainObj = readJson(FILENAME);
-	if (!mainObj.contains(objName)) {
-		qDebug() << "json file doesn't object " << objName;
-		return QJsonObject();
+	if (index < drivers.size())
+		return drivers[index];
+	return nullptr;
+}
+
+BaseStreamer *ApplicationInfo::createAppStreamer()
+{
+	BaseStreamer *streamer = nullptr;
+	QJsonObject obj = readJson("/etc/smartstreamer/smartconfig.json");
+	if (obj.value("ipstreamer").toBool()) {
+		qDebug() << "starting ip stramer";
+		IpStreamer *ipStr = new IpStreamer;
+		ipStr->generatePipelineForOneSource("");
+		streamer = ipStr;
+	} else if (obj.value("analogstreamer").toBool()) {
+		qDebug() << "starting analog streamer";
+		streamer = new AnalogStreamer(obj["analog_config"].toObject());
+	} else if (obj.value("yamgozstreamer").toBool()) {
+		streamer = new YamgozStreamer(obj["yamgoz_config"].toObject());
+	} else {
+		qDebug() << "starting usb streamer";
+		UsbStreamer *usbStr = new UsbStreamer;
+		usbStr->generatePipelineForOneSource();
+		streamer = usbStr;
 	}
-	return mainObj.value(objName).toObject();
+	return streamer;
 }
 
 ApplicationInfo::ApplicationInfo()
 {
-
+	/* PTZP driver management */
+	QJsonObject obj = readJson("/etc/smartstreamer/smartconfig.json");
+	QJsonArray arr = obj["ptzp"].toArray();
+	foreach (QJsonValue val, arr) {
+		QJsonObject obj = val.toObject();
+		PtzpDriver *driver = NULL;
+		if (obj["type"] == "kayi") {
+			driver = new KayiDriver;
+		} else if (obj["type"] == "tbgth") {
+			driver = new TbgthDriver(true);
+		} else if (obj["type"] == "arya") {
+			driver = new AryaDriver;
+		} else if (obj["type"] == "irdome") {
+			driver = new IRDomeDriver;
+		}
+		driver->setTarget(obj["target"].toString());
+		if (obj.contains("grpc_port"))
+			driver->startGrpcApi(obj["grpc_port"].toInt());
+		drivers << driver;
+	}
 }
 

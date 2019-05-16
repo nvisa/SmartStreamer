@@ -1,12 +1,6 @@
 #include <QDir>
+#include <QDirIterator>
 #include <QApplication>
-
-#include <execinfo.h>
-
-#include <lmm/lmmcommon.h>
-
-#include <ecl/debug.h>
-#include <ecl/net/remotetcpconnection.h>
 
 #include "smartstreamer.h"
 #include "moxadriver.h"
@@ -17,10 +11,17 @@
 #include "analogstreamer.h"
 #include "algorithmmanager.h"
 #include "algorithm/algorithmgrpcserver.h"
+#include "applicationinfo.h"
 
-#include "ecl/drivers/exarconfig.h"
-#include "ecl/drivers/qextserialport/qextserialport.h"
-#include "unistd.h"
+#include <lmm/lmmcommon.h>
+
+#include <ecl/debug.h>
+#include <ecl/drivers/exarconfig.h>
+#include <ecl/net/remotetcpconnection.h>
+#include <ecl/drivers/qextserialport/qextserialport.h>
+
+#include <unistd.h>
+#include <execinfo.h>
 
 /*
  * This function can be used to test Arya PT head
@@ -272,36 +273,22 @@ static int testGrpc(const QString &action)
 	return 0;
 }
 
-QJsonObject static runApplication(const QString &filename)
-{
-	QJsonObject obj;
-	if (!QFile::exists(filename)) {
-		obj.insert("usbstreamer", true);
-		return obj;
-	}
-	QFile file(filename);
-	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-		qDebug() << "File opening error but starting usbstreamer application..." << filename;
-		obj.insert("usbstreamer", true);
-		return obj;
-	}
-	QString info = file.readAll();
-	file.close();
-	QJsonDocument doc = QJsonDocument::fromJson(info.toUtf8());
-	return doc.object();
-}
-
 int main(int argc, char *argv[])
 {
-	QCoreApplication a(argc, argv);
-	QDir::setCurrent(a.applicationDirPath());
+	ApplicationInfo *info = ApplicationInfo::instance();
+	QCoreApplication *a;
+	if (info->isGuiApplication())
+		a = new QApplication(argc, argv);
+	else
+		a = new QCoreApplication(argc, argv);
+	QDir::setCurrent(a->applicationDirPath());
 
-	if (a.arguments().size() > 1) {
-		if (a.arguments()[1] == "--version")
+	if (a->arguments().size() > 1) {
+		if (a->arguments()[1] == "--version")
 			qDebug() << VERSION_INFO;
-		else if (a.arguments()[1] == "--lmm-version")
+		else if (a->arguments()[1] == "--lmm-version")
 			qDebug() << LmmCommon::getLibraryVersion();
-		else if (a.arguments()[1] == "--ecl-version")
+		else if (a->arguments()[1] == "--ecl-version")
 			qDebug() << ecl::getLibraryVersion();
 		return 0;
 	}
@@ -310,32 +297,29 @@ int main(int argc, char *argv[])
 	ecl::initDebug();
 	installSignalHandlers();
 
-	BaseStreamer *streamer = NULL;
-
-	QJsonObject obj = runApplication("smartconfig.json");
-	if (obj.value("ipstreamer").toBool()) {
-		qDebug() << "starting ip stramer";
-		IpStreamer *ipStr = new IpStreamer;
-		ipStr->generatePipelineForOneSource("");
-		streamer = ipStr;
-	} else if (obj.value("analogstreamer").toBool()) {
-		qDebug() << "starting analog streamer";
-		new AlgorithmManager(NULL);
-		streamer = new AnalogStreamer(obj["analog_config"].toObject());
-	} else if (obj.value("yamgozstreamer").toBool()) {
-		streamer = new YamgozStreamer(obj["yamgoz_config"].toObject());
-	} else if (obj.value("grpctest").toBool()) {
-		qDebug() << "starting grpctest";
-		return testGrpc(argv[1]);
-	} else  {
-		qDebug() << "starting usb streamer";
-		UsbStreamer *usbStr = new UsbStreamer;
-		usbStr->generatePipelineForOneSource();
-		streamer = usbStr;
+	/* config export */
+	QDir d("/etc/");
+	d.mkdir("smartstreamer");
+	QDirIterator it (":", QDirIterator::Subdirectories);
+	while (it.hasNext()) {
+		QString s = it.next();
+		if (!s.startsWith(":/data/"))
+			continue;
+		QFileInfo finfo(s);
+		QString dst = QString("/etc/smartstreamer/%1").arg(finfo.fileName());
+		if (!QFile::exists(dst)) {
+			qDebug() << "exporting" << dst << QFile::copy(finfo.absoluteFilePath(), dst);
+		}
 	}
 
+	BaseStreamer *streamer = info->createAppStreamer();
 	if (streamer)
 		streamer->start();
+	else {
+		qDebug() << "no suitable streamer found for your config";
+		qDebug() << "starting grpctest";
+		return testGrpc(argv[1]);
+	}
 
-	return a.exec();
+	return a->exec();
 }

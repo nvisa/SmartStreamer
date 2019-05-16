@@ -2,6 +2,10 @@
 #define APPLICATIONINFO_H
 
 #include <QObject>
+#include <QCoreApplication>
+
+class PtzpDriver;
+class BaseStreamer;
 
 class ApplicationInfo
 {
@@ -14,6 +18,7 @@ public:
 		return inst;
 	}
 
+	bool isGuiApplication();
 	bool isBotasFixEnabled();
 	bool isBotasDomeEnabled();
 	QString getBotasFixPtAddress();
@@ -23,9 +28,13 @@ public:
 	QString getBotasFixStreamAddress();
 	QString getBotasDomeStreamAddress();
 	QString getBotasFixAlgorithms();
+
+	PtzpDriver * getPtzpDriver(int index = 0);
+	BaseStreamer * createAppStreamer();
 protected:
-	QJsonObject getSubObj(const QString &objName);
 	ApplicationInfo();
+
+	QList<PtzpDriver *> drivers;
 
 };
 
