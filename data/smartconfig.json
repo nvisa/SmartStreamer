@@ -7,11 +7,17 @@
 		"device": "/dev/video3",
 		"out_mode": "vout_only"
 	},
-	"ptzp": [
+	"_ptzp": [
 		{
 			"type": "kayi",
 			"target": "ttyXRUSB0?baud=9600?protocol=422;ttyXRUSB1?baud=19200?protocol=422?parity=1?databits=7?stopbits=1",
 			"grpc_port": 50058
+		},
+		{
+			"type": "irdome",
+			"target": "ttyS0?baud=9600;null",
+			"grpc_port": 50058
 		}
+
 	]
 }
