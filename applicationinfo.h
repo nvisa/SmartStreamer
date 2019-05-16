@@ -6,6 +6,7 @@
 
 class PtzpDriver;
 class BaseStreamer;
+class BaseAlgorithmElement;
 
 class ApplicationInfo
 {
@@ -31,6 +32,8 @@ public:
 
 	PtzpDriver * getPtzpDriver(int index = 0);
 	BaseStreamer * createAppStreamer();
+	BaseAlgorithmElement * createAlgorithm(int index);
+
 protected:
 	ApplicationInfo();
 

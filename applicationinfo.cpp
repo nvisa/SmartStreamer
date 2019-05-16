@@ -3,6 +3,7 @@
 #include "analogstreamer.h"
 #include "ipstreamer.h"
 #include "usbstreamer.h"
+#include "algorithm/motionalgorithmelement.h"
 
 #define FILENAME "application_info.json"
 
@@ -147,6 +148,23 @@ BaseStreamer *ApplicationInfo::createAppStreamer()
 		streamer = usbStr;
 	}
 	return streamer;
+}
+
+BaseAlgorithmElement *ApplicationInfo::createAlgorithm(int index)
+{
+	QJsonObject obj = readJson("/etc/smartstreamer/algodesc.json");
+	QJsonArray arr = obj["algorithms"].toArray();
+	if (index >= arr.size())
+		return nullptr;
+	QJsonObject algo = arr[index].toObject();
+	if (algo["type"] == "motion") {
+		MotionAlgorithmElement *motion = new MotionAlgorithmElement;
+		motion->setSensitivity(algo["sensitivity"].toInt());
+		motion->setClassification(algo["classification"].toBool());
+		return motion;
+	}
+
+	return nullptr;
 }
 
 ApplicationInfo::ApplicationInfo()
