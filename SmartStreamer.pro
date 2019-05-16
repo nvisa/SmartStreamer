@@ -70,3 +70,6 @@ PRE_TARGETDEPS += version.h
 target.path = /usr/local/bin/
 INSTALLS += target
 
+RESOURCES += \
+    resources.qrc
+

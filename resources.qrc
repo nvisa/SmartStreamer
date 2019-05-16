@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/smartconfig.json</file>
+    </qresource>
+</RCC>
