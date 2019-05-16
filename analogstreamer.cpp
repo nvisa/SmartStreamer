@@ -18,44 +18,57 @@ extern "C" {
 AnalogStreamer::AnalogStreamer(const QJsonObject &config, QObject *parent)
 	: BaseStreamer(parent)
 {
-	V4l2Input *v4l2 = new V4l2Input;
-	v4l2->setParameter("videoWidth", 720);
-	v4l2->setParameter("videoHeight", 576);
-	if (config.isEmpty())
-		v4l2->setParameter("device", QString("/dev/video0"));
-	else
-		v4l2->setParameter("device", QString(config["device"].toString()));
+	QList <V4l2Input *> v4l2;
+	QList <BaseLmmPipeline *> p;
+	QList <VideoScaler *> toRgb;
+	QList <VideoScaler *> to420;
+	QList <QString> videoSource;
+	QList <TX1VideoEncoder *> enc;
+	QList <RtpTransmitter *> rtpout;
 
-	VideoScaler *toRgb = new VideoScaler;
-	toRgb->setOutputFormat(AV_PIX_FMT_ARGB);
-	toRgb->setMode(1);
+	int numSource = 0;
 
-	VideoScaler *to420 = new VideoScaler;
-	to420->setOutputFormat(AV_PIX_FMT_YUV420P);
-	to420->setMode(1);
+	if (config.isEmpty()) {
+		numSource = 4;
+		videoSource << "/dev/video0" << "/dev/video1" << "/dev/video2" << "/dev/video3";
+	} else
+		numSource = config.size();
 
-	TX1VideoEncoder *enc = new TX1VideoEncoder;
-	enc->setBitrate(4000000);
-	enc->setFps(25.0);
-	enc->setOutputResolution(720, 576);
+	for (int i = 0; i < numSource; i++)
+	{
+		videoSource << config[QString("device%1").arg(i+1)].toString();
+		V4l2Input *v4l2input = new V4l2Input;
+		VideoScaler *rgb = new VideoScaler;
+		VideoScaler *yuv = new VideoScaler;
+		TX1VideoEncoder *encode = new TX1VideoEncoder;
+		BaseLmmPipeline *pipeline = addPipeline();
+		RtpTransmitter *rtp = StreamerCommon::createRtpTransmitter(25);
+		qDebug() << videoSource;
 
-	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(25);
+		v4l2 << v4l2input;
+		to420 << yuv;	
+		toRgb << rgb;
+		enc << encode;
+		p << pipeline;
+		rtpout << rtp;
 
-	if (config["out_mode"].toString() == "vout_only") {
-		BaseLmmPipeline *p = addPipeline();
-		p->append(v4l2);
-		p->append(toRgb);
-		p->append(new QtVideoOutput);
-		p->end();
-	} else {
-		BaseLmmPipeline *p = addPipeline();
-		p->append(v4l2);
-		p->append(to420);
-		p->append(enc);
-		p->append(rtpout);
-		p->end();
+		v4l2[i]->setParameter("videoWidth", 720);
+		v4l2[i]->setParameter("videoHeight", 576);
+		v4l2[i]->setParameter("device", videoSource[i]);
+
+		to420[i]->setOutputFormat(AV_PIX_FMT_YUV420P);
+		to420[i]->setMode(1);
+
+		enc[i]->setBitrate(4000000);
+		enc[i]->setFps(25.0);
+		enc[i]->setOutputResolution(720, 576);
+
+		p[i]->append(v4l2[i]);
+		p[i]->append(to420[i]);
+		p[i]->append(enc[i]);
+		p[i]->append(rtpout[i]);
+		p[i]->end();
 	}
-
 	StreamerCommon::createRtspServer(rtpout);
 }
 

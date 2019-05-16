@@ -67,7 +67,7 @@ VersionCheck.target = version.h
 QMAKE_EXTRA_TARGETS += VersionCheck
 PRE_TARGETDEPS += version.h
 
-target.path = /usr/local/bin/
+target.path = /home/ubuntu/bin/
 INSTALLS += target
 
 RESOURCES += \
