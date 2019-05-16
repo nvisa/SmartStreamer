@@ -300,17 +300,23 @@ int main(int argc, char *argv[])
 	/* config export */
 	QDir d("/etc/");
 	d.mkdir("smartstreamer");
+	d = QDir("/");
 	QDirIterator it (":", QDirIterator::Subdirectories);
 	while (it.hasNext()) {
 		QString s = it.next();
 		if (!s.startsWith(":/data/"))
 			continue;
 		QFileInfo finfo(s);
-		QString dst = QString("/etc/smartstreamer/%1").arg(finfo.fileName());
-		if (!QFile::exists(dst)) {
+		QString dst = finfo.absoluteFilePath().replace(":/data/", "/etc/smartstreamer/");
+		if (finfo.suffix().isEmpty())
+			d.mkpath(dst);
+		else if (!QFile::exists(dst)) {
 			qDebug() << "exporting" << dst << QFile::copy(finfo.absoluteFilePath(), dst);
 		}
 	}
+
+	if (!QFile::exists("alg_parameters.txt"))
+		QDir::setCurrent("/etc/smartstreamer/" + info->algorithmSet());
 
 	BaseStreamer *streamer = info->createAppStreamer();
 	if (streamer)

@@ -1,5 +1,24 @@
 <RCC>
     <qresource prefix="/">
         <file>data/smartconfig.json</file>
+        <file>data/algodesc.json</file>
+        <file>data/motion0/alg_parameters.txt</file>
+        <file>data/motion0/arya_calibration_parameters.txt</file>
+        <file>data/motion0/colorcompression_lookup.txt</file>
+        <file>data/motion0/face_parameters.txt</file>
+        <file>data/motion0/pan_params.txt</file>
+        <file>data/motion0/pan_shift_parameters.txt</file>
+        <file>data/motion0/panchange_parameters.txt</file>
+        <file>data/motion0/points.txt</file>
+        <file>data/motion0/preprocess_parameters.txt</file>
+        <file>data/motion0/Privacy_Points.txt</file>
+        <file>data/motion0/stabilization_parameters_short.txt</file>
+        <file>data/motion0/stabilization_parameters_Thermal.txt</file>
+        <file>data/motion0/stabilization_parameters.txt</file>
+        <file>data/motion0/stabilization_shifts.txt</file>
+        <file>data/motion0/System_parameters.txt</file>
+        <file>data/motion0/track_alg_parameters.txt</file>
+        <file>data/motion0/track_parameters.txt</file>
+        <file>data/algorithm_new.json</file>
     </qresource>
 </RCC>

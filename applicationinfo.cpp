@@ -167,6 +167,11 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithm(int index)
 	return nullptr;
 }
 
+QString ApplicationInfo::algorithmSet()
+{
+	return "motion0";
+}
+
 ApplicationInfo::ApplicationInfo()
 {
 	/* PTZP driver management */

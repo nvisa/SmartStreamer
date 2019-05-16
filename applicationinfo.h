@@ -33,6 +33,7 @@ public:
 	PtzpDriver * getPtzpDriver(int index = 0);
 	BaseStreamer * createAppStreamer();
 	BaseAlgorithmElement * createAlgorithm(int index);
+	QString algorithmSet();
 
 protected:
 	ApplicationInfo();
