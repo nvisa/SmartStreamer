@@ -26,7 +26,7 @@ protected:
 	int processBuffer(const RawBuffer &buf);
 	int pipelineOutput(BaseLmmPipeline *p, const RawBuffer &buf);
 
-	MotionAlgorithmElement *motion;
+	BaseAlgorithmElement *motion;
 	AlgorithmGrpcServer *grpcserv;
 	IRDomeDriver *botas;
 };
