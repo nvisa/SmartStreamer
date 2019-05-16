@@ -54,12 +54,15 @@ int BaseAlgorithmElement::baseAlgorithmProcess(const RawBuffer &buf)
 		processAlgo(buf);
 		break;
 	case REALLOCATE:
+		algoState = STOPALGO;
 		reallocate();
 		break;
 	case STOPALGO:
+		algoState = RELEASE;
 		stopAlgo();
 		break;
 	case RELEASE:
+		algoState = UNKNOWN;
 		release();
 		break;
 	default:

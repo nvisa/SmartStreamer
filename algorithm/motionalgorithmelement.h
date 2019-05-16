@@ -9,9 +9,15 @@ class MotionAlgorithmElement: public BaseAlgorithmElement
 	Q_OBJECT
 public:
 	MotionAlgorithmElement(QObject *parent = 0);
-	int init();
+	int init() override;
 	int processAlgo(const RawBuffer &buf);
 	int release();
+
+	int getSensitivity();
+	bool getClassification();
+	void setSensitivity(int value);
+	void setClassification(bool value);
+
 	struct MotionControl {
 		uchar meta[4096];
 		float *panTiltZoomRead;

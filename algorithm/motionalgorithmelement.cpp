@@ -25,8 +25,6 @@ int MotionAlgorithmElement::processAlgo(const RawBuffer &buf)
 
 	int width = buf.constPars()->videoWidth;
 	int height = buf.constPars()->videoHeight;
-	control.sensitivity = BaseAlgorithmCommon::instance()->getSensitivity("motion_detection");
-	control.classification = BaseAlgorithmCommon::instance()->getMotionClassification();
 
 	asel_via_base((uchar*)buf.constData(), width * height, width, height,
 				  v.rgb,v.shadow, v.ill, v.debug, v.stabilization, v.privacy,
@@ -46,4 +44,24 @@ int MotionAlgorithmElement::release()
 {
 	asel_via_base_release();
 	return 0;
+}
+
+int MotionAlgorithmElement::getSensitivity()
+{
+	return control.sensitivity;
+}
+
+bool MotionAlgorithmElement::getClassification()
+{
+	return control.classification;
+}
+
+void MotionAlgorithmElement::setSensitivity(int value)
+{
+	control.sensitivity = value;
+}
+
+void MotionAlgorithmElement::setClassification(bool value)
+{
+	control.classification = value;
 }

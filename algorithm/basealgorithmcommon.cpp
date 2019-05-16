@@ -6,7 +6,7 @@
 
 #include <lmm/debug.h>
 
-#define FILENAME "algorithm_new.json"
+#define FILENAME "/etc/smartstreamer/algorithm_new.json"
 
 static QJsonObject readJson(const QString &filename)
 {
