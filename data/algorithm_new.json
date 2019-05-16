@@ -1,0 +1,43 @@
+{
+    "motion_detection": {
+        "classification": false,
+        "enabled": false,
+        "sensitivity": 50
+    },
+    "parameters": {
+        "debug": 0,
+        "ill": 1,
+        "privacy": 0,
+        "record": 0,
+        "rgb": 1,
+        "shadow": 0,
+        "stabilization": 0
+    },
+    "stabilization": {
+        "enabled": false,
+        "sensitivity": 67
+    },
+    "face": {
+	"enabled": false,
+	"frame_rate": 50,
+	"cam_id": 254
+    },
+    "panaroma": {
+	"enabled": false
+    },
+    "tracking": {
+	"enabled": false,
+	"auto": false,
+	"semi_auto": false,
+	"manual": false,
+	"score": 0.45,
+	"duration": 30,
+	"multiple_track": false
+    },
+    "alarm": {
+	"baseid": 123,
+	"stationid": 456,
+	"deviceid": 789,
+	"unittype": 123
+    }
+}

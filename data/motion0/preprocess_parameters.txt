@@ -1,0 +1,7 @@
+0.5   	image scale X
+0.5   	image scale Y
+1   	Stabilization
+0   	Normalization
+1   	Privacy Mask
+0   	Haze Removal
+

@@ -1,5 +1,5 @@
 {
-	algorithms: [
+	"algorithms": [
 		{
 			"type": "motion",
 			"sensitivity": 50,

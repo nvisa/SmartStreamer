@@ -1,0 +1,15 @@
+1.0	image scale X
+1.0	image scale Y
+860	top-left point X
+830	top-left point Y
+140	target width
+70	target Height
+80	camera tilt angle
+30	the angle difference according to the top view, where speed arrangelemt starts (N)
+20	minimum speed when tilt is N degrees away from the top view (indicating the number of frames for convergence so low number corresponds to fast speed) normalde->20
+1	maximum speed when tilt is the top view (indicating the number of frames for convergence so low number corresponds to fast speed) normalde->1
+0	0->dome_gunduz, 1->thermal_pantilt, 2->sabit, 3->thermal_sabit
+0	start frame ID: for the cases we get video from file
+1	CPU/GPU : 0/1
+2	Track Alg 0/1/2/3/4/5: KCF(Gaussian) / DCT_CA / KCF_CA / Staple_DCT / Staple_KCF / KCF(linear), 5 is the default as the fastest
+0.05	Track Drop threshold

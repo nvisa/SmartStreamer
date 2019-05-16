@@ -1,0 +1,4 @@
+1	time period to detect new stab points (25 x N seconds)
+4	number of blocks for stabilization (4 or 8)
+128	Phase Correlation Block size
+0.25	Detection downsample rate (advice: 0.25 or 0.5)
