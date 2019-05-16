@@ -1,12 +1,12 @@
 {
-        "ipstreamer": false,
-        "analogstreamer": true,
-        "yamgozstreamer": false,
-        "grpctest": false,
-        "analog_config": {
-                "device": "/dev/video3",
+	"ipstreamer": false,
+	"analogstreamer": false,
+	"yamgozstreamer": false,
+	"usbstreamer": true,
+	"analog_config": {
+		"device": "/dev/video3",
 		"out_mode": "vout_only"
-        },
+	},
 	"ptzp": [
 		{
 			"type": "kayi",

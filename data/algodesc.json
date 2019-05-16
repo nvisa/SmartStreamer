@@ -1,0 +1,15 @@
+{
+	algorithms: [
+		{
+			"type": "motion",
+			"sensitivity": 50,
+			"classification": false,
+			"advanced": {
+				"files": [
+					"/etc/smartstreamer/motion0/alg_paramaters.txt",
+					"/etc/smartstreamer/motion0/points.txt"
+				]
+			}
+		}
+	]
+}

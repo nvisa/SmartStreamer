@@ -73,3 +73,6 @@ INSTALLS += target
 RESOURCES += \
     resources.qrc
 
+DISTFILES += \
+    data/algodesc.json
+
