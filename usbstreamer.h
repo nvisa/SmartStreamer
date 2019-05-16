@@ -28,7 +28,6 @@ protected:
 
 	BaseAlgorithmElement *motion;
 	AlgorithmGrpcServer *grpcserv;
-	IRDomeDriver *botas;
 };
 
 #endif // USBSTREAMER_H

@@ -27,7 +27,6 @@ UsbStreamer::UsbStreamer(QObject *parent)
 	: BaseStreamer(parent)
 {
 	grpcserv = AlgorithmGrpcServer::instance();
-	startPt("ttyS0?baud=9600;null");
 }
 
 int UsbStreamer::generatePipelineForOneSource()
@@ -106,14 +105,6 @@ int UsbStreamer::PerformAlgorithmForYUV(const RawBuffer &buf)
 				sei->clearLastSEIMessage();
 		}
 	}
-	return 0;
-}
-
-int UsbStreamer::startPt(const QString &address)
-{
-	botas = new IRDomeDriver();
-	botas->startGrpcApi(50058);
-	botas->setTarget(address);
 	return 0;
 }
 
