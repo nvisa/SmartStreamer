@@ -18,9 +18,9 @@ SOURCES += main.cpp \
     yamgozstreamer.cpp \
     analogstreamer.cpp \
     streamercommon.cpp \
-    teststreamer.cpp \
     applicationinfo.cpp \
-    diagnosticserviceimpl.cpp
+    diagnosticserviceimpl.cpp \
+    simpleipstreamer.cpp
 
 HEADERS += \
     moxadriver.h \
@@ -36,9 +36,9 @@ HEADERS += \
     yamgozstreamer.h \
     analogstreamer.h \
     streamercommon.h \
-    teststreamer.h \
     applicationinfo.h \
-    diagnosticserviceimpl.h
+    diagnosticserviceimpl.h \
+    simpleipstreamer.h
 
 websockets {
     SOURCES += websocketstreamer.cpp
