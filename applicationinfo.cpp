@@ -120,6 +120,34 @@ QString ApplicationInfo::getBotasFixAlgorithms()
 	return obj.value("algorithms").toString();
 }
 
+int ApplicationInfo::startPtzpDriver()
+{
+	/* PTZP driver management */
+	QJsonObject obj = readJson("/etc/smartstreamer/smartconfig.json");
+	QJsonArray arr = obj["ptzp"].toArray();
+	foreach (QJsonValue val, arr) {
+		QJsonObject obj = val.toObject();
+		PtzpDriver *driver = NULL;
+		if (obj["type"] == "kayi") {
+			driver = new KayiDriver;
+		} else if (obj["type"] == "tbgth") {
+			driver = new TbgthDriver(true);
+		} else if (obj["type"] == "arya") {
+			driver = new AryaDriver;
+		} else if (obj["type"] == "irdome") {
+			driver = new IRDomeDriver;
+		}
+		if (driver) {
+			fDebug("Starting PTZP driver for %s", qPrintable(obj["type"].toString()));
+			driver->setTarget(obj["target"].toString());
+			if (obj.contains("grpc_port"))
+				driver->startGrpcApi(obj["grpc_port"].toInt());
+			drivers << driver;
+		}
+	}
+	return 0;
+}
+
 PtzpDriver *ApplicationInfo::getPtzpDriver(int index)
 {
 	if (index < drivers.size())
@@ -174,25 +202,5 @@ QString ApplicationInfo::algorithmSet()
 
 ApplicationInfo::ApplicationInfo()
 {
-	/* PTZP driver management */
-	QJsonObject obj = readJson("/etc/smartstreamer/smartconfig.json");
-	QJsonArray arr = obj["ptzp"].toArray();
-	foreach (QJsonValue val, arr) {
-		QJsonObject obj = val.toObject();
-		PtzpDriver *driver = NULL;
-		if (obj["type"] == "kayi") {
-			driver = new KayiDriver;
-		} else if (obj["type"] == "tbgth") {
-			driver = new TbgthDriver(true);
-		} else if (obj["type"] == "arya") {
-			driver = new AryaDriver;
-		} else if (obj["type"] == "irdome") {
-			driver = new IRDomeDriver;
-		}
-		driver->setTarget(obj["target"].toString());
-		if (obj.contains("grpc_port"))
-			driver->startGrpcApi(obj["grpc_port"].toInt());
-		drivers << driver;
-	}
 }
 

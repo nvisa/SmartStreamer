@@ -282,6 +282,7 @@ int main(int argc, char *argv[])
 	else
 		a = new QCoreApplication(argc, argv);
 	QDir::setCurrent(a->applicationDirPath());
+	info->startPtzpDriver();
 
 	if (a->arguments().size() > 1) {
 		if (a->arguments()[1] == "--version")

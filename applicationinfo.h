@@ -29,6 +29,7 @@ public:
 	QString getBotasFixStreamAddress();
 	QString getBotasDomeStreamAddress();
 	QString getBotasFixAlgorithms();
+	int startPtzpDriver();
 
 	PtzpDriver * getPtzpDriver(int index = 0);
 	BaseStreamer * createAppStreamer();
