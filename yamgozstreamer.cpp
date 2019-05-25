@@ -1,12 +1,15 @@
 #include "yamgozstreamer.h"
 #include "streamercommon.h"
+#include "mjpegserver.h"
 
 #include <lmm/debug.h>
 #include <lmm/v4l2input.h>
+#include <lmm/bufferqueue.h>
 #include <lmm/videoscaler.h>
 #include <lmm/qtvideooutput.h>
 #include <lmm/baselmmpipeline.h>
 #include <lmm/multibuffersource.h>
+#include <lmm/tx1/tx1jpegencoder.h>
 #include <lmm/tx1/tx1videoencoder.h>
 #include <lmm/pipeline/functionpipeelement.h>
 
@@ -137,6 +140,10 @@ YamgozStreamer::YamgozStreamer(const QJsonObject &config, QObject *parent)
 	mDebug("Output resolution will be %dx%d", sz.width(), sz.height());
 	enc->setOutputResolution(sz.width(), sz.height());
 
+	TX1JpegEncoder *jenc = new TX1JpegEncoder;
+	MjpegElement *jpegel = new MjpegElement(13789);
+	BufferQueue *jpegq = new BufferQueue;
+
 	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(25);
 
 	if (config["out_mode"].toString() == "vout_only") {
@@ -151,8 +158,15 @@ YamgozStreamer::YamgozStreamer(const QJsonObject &config, QObject *parent)
 		p->append(multisrc, -1);
 		p->append(newFunctionPipe(YamgozStreamer, this, YamgozStreamer::stichFrames));
 		p->append(to420);
+		p->append(jpegq);
 		p->append(enc);
 		p->append(rtpout);
+		p->end();
+
+		p = addPipeline();
+		p->append(jpegq);
+		p->append(jenc);
+		p->append(jpegel);
 		p->end();
 	}
 
