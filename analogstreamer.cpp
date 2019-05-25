@@ -1,12 +1,15 @@
 #include "analogstreamer.h"
 #include "streamercommon.h"
+#include "mjpegserver.h"
 
 #include <lmm/debug.h>
 #include <lmm/v4l2input.h>
 #include <lmm/videoscaler.h>
+#include <lmm/bufferqueue.h>
 #include <lmm/qtvideooutput.h>
 #include <lmm/baselmmpipeline.h>
 #include <lmm/multibuffersource.h>
+#include <lmm/tx1/tx1jpegencoder.h>
 #include <lmm/rtsp/basertspserver.h>
 #include <lmm/tx1/tx1videoencoder.h>
 #include <lmm/pipeline/functionpipeelement.h>
@@ -39,6 +42,7 @@ AnalogStreamer::AnalogStreamer(const QJsonObject &config, QObject *parent)
 		TX1VideoEncoder *encode = new TX1VideoEncoder;
 		BaseLmmPipeline *p = addPipeline();
 		RtpTransmitter *rtp = StreamerCommon::createRtpTransmitter(25);
+		BufferQueue *jpegq = new BufferQueue;
 
 		v4l2input->setParameter("videoWidth", 720);
 		v4l2input->setParameter("videoHeight", 576);
@@ -53,11 +57,22 @@ AnalogStreamer::AnalogStreamer(const QJsonObject &config, QObject *parent)
 
 		p->append(v4l2input);
 		p->append(yuv);
+		p->append(jpegq);
 		p->append(encode);
 		p->append(rtp);
 		p->end();
 
 		rtpouts << rtp;
+
+		if (src["preview"].toBool()) {
+			TX1JpegEncoder *jenc = new TX1JpegEncoder;
+			MjpegElement *jpegel = new MjpegElement(13789);
+			p = addPipeline();
+			p->append(jpegq);
+			p->append(jenc);
+			p->append(jpegel);
+			p->end();
+		}
 	}
 
 	StreamerCommon::createRtspServer(rtpouts);
