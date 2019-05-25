@@ -72,12 +72,12 @@ int UsbStreamer::generatePipelineForOneSource()
 	p1->setQuitOnThreadError(true);
 	p1->append(v4l2);
 	p1->append(rgbConv1);
-	p1->append(queue);
 	if (motion) {
 		p1->append(motion);
 		/* TODO: Why not SEI is processing its own data? */
 		p1->append(newFunctionPipe(UsbStreamer, this, UsbStreamer::PerformAlgorithmForYUV));
 	}
+	p1->append(queue);
 	p1->append(enc);
 	p1->append(sei);
 	p1->append(rtpout);
