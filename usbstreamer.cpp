@@ -2,6 +2,7 @@
 #include "seiinserter.h"
 #include "mjpegserver.h"
 #include "applicationinfo.h"
+#include "mjpegserver.h"
 
 #include <lmm/debug.h>
 #include <lmm/v4l2input.h>
@@ -11,6 +12,7 @@
 #include <lmm/qtvideooutput.h>
 #include <lmm/tools/unittimestat.h>
 #include <lmm/rtp/rtptransmitter.h>
+#include <lmm/tx1/tx1jpegencoder.h>
 #include <lmm/tx1/tx1videoencoder.h>
 #include <lmm/pipeline/functionpipeelement.h>
 #include <lmm/rtsp/basertspserver.h>
@@ -62,6 +64,9 @@ int UsbStreamer::generatePipelineForOneSource()
 	enc2->setFps(25.0);
 	enc2->setOutputResolution(640, 480);
 
+	TX1JpegEncoder *jenc = new TX1JpegEncoder;
+	MjpegElement *jpegel = new MjpegElement(13789);
+
 	sei = new SeiInserter;
 	sei->setAlarmTemplate("sei_alarm_template.xml");
 
@@ -89,6 +94,12 @@ int UsbStreamer::generatePipelineForOneSource()
 	p2->append(enc2);
 	p2->append(rtpout2);
 	p2->end();
+
+	BaseLmmPipeline *p3 = addPipeline();
+	p3->append(queue);
+	p3->append(jenc);
+	p3->append(jpegel);
+	p3->end();
 
 	StreamerCommon::createRtspServer(rtpout, rtpout2);
 	return 0;
