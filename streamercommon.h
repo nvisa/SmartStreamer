@@ -14,6 +14,7 @@ public:
 	static BaseRtspServer * createRtspServer(RtpTransmitter *rtp0);
 	static BaseRtspServer *createRtspServer(RtpTransmitter *rtp0, RtpTransmitter *rtp1);
 	static BaseRtspServer * createRtspServer(QList<RtpTransmitter*> rtpout);
+	static BaseLmmElement * createOverlay();
 };
 
 #endif // STREAMERCOMMON_H

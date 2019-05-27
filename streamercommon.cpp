@@ -1,6 +1,23 @@
 #include "streamercommon.h"
 
+#include <lmm/textoverlay.h>
+
+#include <QFile>
 #include <QTcpServer>
+#include <QJsonObject>
+#include <QJsonDocument>
+
+static QJsonObject readJson(const QString &filename)
+{
+	QJsonObject obj;
+	QFile f(filename);
+	if (!f.open(QIODevice::ReadOnly))
+		return obj;
+	QByteArray ba = f.readAll();
+	f.close();
+	QJsonDocument doc = QJsonDocument::fromJson(ba);
+	return doc.object();
+}
 
 StreamerCommon::StreamerCommon()
 {
@@ -74,5 +91,19 @@ BaseRtspServer *StreamerCommon::createRtspServer(QList<RtpTransmitter *> rtpout)
 		rtspServer->addMedia2Stream("videoTrack", QString("stream%1%2").arg(i + 1).arg("m"), true, rtpout[i]);
 	}
 	return rtspServer;
+}
+
+BaseLmmElement *StreamerCommon::createOverlay()
+{
+	TextOverlay *overlay = new TextOverlay(TextOverlay::QPAINTER);
+	//QJsonObject obj = readJson("/etc/smartstreamer/overlay.json");
+	overlay->setFontSize(48);
+	overlay->setOverlayPosition(QPoint(0, 900));
+	overlay->setOverlayText("%1 - %2 - %3 - %4");
+	overlay->addOverlayField(TextOverlay::FIELD_CURRENT_DATETIME);
+	overlay->addOverlayField(TextOverlay::FIELD_STREAM_FPS);
+	overlay->addOverlayField(TextOverlay::FIELD_AVG_CPU_LOAD);
+	overlay->addOverlayField(TextOverlay::FIELD_STATIC_TEXT, "I made this!");
+	return overlay;
 }
 
