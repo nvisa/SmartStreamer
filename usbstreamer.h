@@ -31,6 +31,11 @@ protected:
 	BaseAlgorithmElement *privacy;
 	BaseAlgorithmElement *motion;
 	BaseAlgorithmElement *track;
+	BaseLmmElement *enc0;
+	BaseLmmElement *enc1;
+	BaseLmmElement *enc2;
+	BaseLmmElement *enc3;
+	BaseLmmElement *textOverlay;
 	AlgorithmGrpcServer *grpcserv;
 };
 

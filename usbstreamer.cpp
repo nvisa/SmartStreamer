@@ -39,6 +39,7 @@ int UsbStreamer::generatePipelineForOneSource()
 	v4l2->setParameter("videoWidth", 1920);
 	v4l2->setParameter("videoHeight", 1080);
 	v4l2->setParameter("device", "/dev/video0");
+	QSize res0(1920, 1080);
 
 	BufferQueue* queue = new BufferQueue;
 
@@ -46,30 +47,40 @@ int UsbStreamer::generatePipelineForOneSource()
 	rgbConv1->setOutputFormat(AV_PIX_FMT_YUV420P);
 	rgbConv1->setMode(1);
 
-	VideoScaler* downScalar = new VideoScaler;
-	downScalar->setOutputResolution(640, 480);
-
 	privacy = ApplicationInfo::instance()->createAlgorithm("privacy");
 	motion = ApplicationInfo::instance()->createAlgorithm("motion");
 	track = ApplicationInfo::instance()->createAlgorithm("track");
 
-	TX1VideoEncoder *enc = new TX1VideoEncoder;
-	enc->setBitrate(4000000);
-	enc->setFps(25.0);
+	enc0 = StreamerCommon::createEncoder(0);
+	enc1 = StreamerCommon::createEncoder(1);
+	enc2 = StreamerCommon::createEncoder(2);
+	enc3 = StreamerCommon::createEncoder(3);
 
-	TX1VideoEncoder *enc2 = new TX1VideoEncoder;
-	enc2->setBitrate(4000000);
-	enc2->setFps(25.0);
-	enc2->setOutputResolution(640, 480);
+	VideoScaler* downScalar1 = new VideoScaler;
+	VideoScaler* downScalar2 = new VideoScaler;
+	VideoScaler* downScalar3 = new VideoScaler;
+	QSize res1 = ((TX1VideoEncoder *)enc1)->getOutputResolution();
+	QSize res2 = ((TX1VideoEncoder *)enc2)->getOutputResolution();
+	QSize res3 = ((TX1VideoEncoder *)enc3)->getOutputResolution();
+	float fps0 = ((TX1VideoEncoder *)enc0)->getFps();
+	float fps1 = ((TX1VideoEncoder *)enc1)->getFps();
+	float fps2 = ((TX1VideoEncoder *)enc2)->getFps();
+	float fps3 = ((TX1VideoEncoder *)enc3)->getFps();
+	downScalar1->setOutputResolution(res1.width(), res1.height());
+	downScalar2->setOutputResolution(res2.width(), res2.height());
+	downScalar3->setOutputResolution(res3.width(), res3.height());
 
 	TX1JpegEncoder *jenc = new TX1JpegEncoder;
 	MjpegElement *jpegel = new MjpegElement(13789);
+	textOverlay = StreamerCommon::createOverlay();
 
 	sei = new SeiInserter;
 	sei->setAlarmTemplate("sei_alarm_template.xml");
 
-	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(25);
-	RtpTransmitter *rtpout2 = StreamerCommon::createRtpTransmitter(25);
+	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(fps0);
+	RtpTransmitter *rtpout2 = StreamerCommon::createRtpTransmitter(fps1);
+	RtpTransmitter *rtpout3 = StreamerCommon::createRtpTransmitter(fps2);
+	RtpTransmitter *rtpout4 = StreamerCommon::createRtpTransmitter(fps3);
 
 	BaseLmmPipeline *p1 = addPipeline();
 	p1->setQuitOnThreadError(true);
@@ -79,16 +90,18 @@ int UsbStreamer::generatePipelineForOneSource()
 	p1->append(motion);
 	p1->append(track);
 	p1->append(newFunctionPipe(UsbStreamer, this, UsbStreamer::checkSeiAlarm));
+	p1->append(textOverlay);
 	p1->append(queue);
-	p1->append(enc);
+	p1->append(enc0);
 	p1->append(sei);
 	p1->append(rtpout);
 	p1->end();
 
 	BaseLmmPipeline *p2 = addPipeline();
 	p2->append(queue);
-	p2->append(downScalar);
-	p2->append(enc2);
+	if (res0 != res1)
+		p2->append(downScalar1);
+	p2->append(enc1);
 	p2->append(rtpout2);
 	p2->end();
 
@@ -98,7 +111,34 @@ int UsbStreamer::generatePipelineForOneSource()
 	p3->append(jpegel);
 	p3->end();
 
-	StreamerCommon::createRtspServer(rtpout, rtpout2);
+	BaseLmmPipeline *p4 = addPipeline();
+	p4->append(queue);
+	if (res0 != res2)
+		p4->append(downScalar2);
+	p4->append(enc2);
+	p4->append(rtpout3);
+	p4->end();
+
+	BaseLmmPipeline *p5 = addPipeline();
+	p5->append(queue);
+	if (res0 != res3)
+		p5->append(downScalar3);
+	p5->append(enc3);
+	p5->append(rtpout4);
+	p5->end();
+
+	QList<RtpTransmitter *> rtplist;
+	rtplist << rtpout;
+	rtplist << rtpout2;
+	rtplist << rtpout3;
+	rtplist << rtpout4;
+	StreamerCommon::createRtspServer(rtplist);
+
+	queue->getOutputQueue(0)->setRateReduction(25, fps0);
+	queue->getOutputQueue(1)->setRateReduction(25, fps1);
+	//queue->getOutputQueue(2)->setRateReduction(25, fps0);
+	queue->getOutputQueue(3)->setRateReduction(25, fps2);
+	queue->getOutputQueue(4)->setRateReduction(25, fps3);
 
 	return 0;
 }
@@ -148,6 +188,16 @@ void UsbStreamer::apiUrlRequested(const QUrl &url)
 			el->setPassThru(false);
 		else if (action == "stop")
 			el->setState(BaseAlgorithmElement::STOPALGO);
+	} else if (actions[1] == "reload") {
+		if (actions.size() < 3)
+			return;
+		QString node = actions[2];
+		if (node == "overlay")
+			StreamerCommon::reloadJson(textOverlay);
+		if (node == "encoders") {
+			/* encoders don't support hot-reload */
+			QTimer::singleShot(1000, QCoreApplication::instance(), SLOT(quit()));
+		}
 	}
 }
 
