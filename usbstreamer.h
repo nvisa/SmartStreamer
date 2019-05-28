@@ -7,6 +7,8 @@
 
 #include <ecl/ptzp/irdomedriver.h>
 
+#include <QUrl>
+
 class RtpTransmitter;
 class SeiInserter;
 class BaseRtspServer;
@@ -16,17 +18,19 @@ Q_OBJECT
 public:
 	explicit UsbStreamer(QObject *parent = 0);
 	int generatePipelineForOneSource();
-	int PerformAlgorithmForYUV(const RawBuffer &buf);
-	int startPt(const QString &address);
+	int checkSeiAlarm(const RawBuffer &buf);
 
-protected:
-	SeiInserter *sei;
-	// BaseLmmElement interface
+protected slots:
+	void apiUrlRequested(const QUrl &url);
+
 protected:
 	int processBuffer(const RawBuffer &buf);
 	int pipelineOutput(BaseLmmPipeline *p, const RawBuffer &buf);
 
+	SeiInserter *sei;
+	BaseAlgorithmElement *privacy;
 	BaseAlgorithmElement *motion;
+	BaseAlgorithmElement *track;
 	AlgorithmGrpcServer *grpcserv;
 };
 

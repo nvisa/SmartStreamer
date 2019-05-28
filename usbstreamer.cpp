@@ -3,6 +3,7 @@
 #include "mjpegserver.h"
 #include "applicationinfo.h"
 #include "mjpegserver.h"
+#include "simpleapiserver.h"
 
 #include <lmm/debug.h>
 #include <lmm/v4l2input.h>
@@ -29,6 +30,7 @@ UsbStreamer::UsbStreamer(QObject *parent)
 	: BaseStreamer(parent)
 {
 	grpcserv = AlgorithmGrpcServer::instance();
+	connect(SimpleApiServer::instance(), SIGNAL(urlRequested(QUrl)), this, SLOT(apiUrlRequested(QUrl)));
 }
 
 int UsbStreamer::generatePipelineForOneSource()
@@ -47,13 +49,9 @@ int UsbStreamer::generatePipelineForOneSource()
 	VideoScaler* downScalar = new VideoScaler;
 	downScalar->setOutputResolution(640, 480);
 
-	motion = ApplicationInfo::instance()->createAlgorithm(0);
-	if (motion) {
-		motion->setState(BaseAlgorithmElement::INIT);
-		grpcserv->setMotionAlgorithmElement((MotionAlgorithmElement *)motion);
-	} else {
-		mDebug("Error creating motion detection algorithm element, please check your algo config json");
-	}
+	privacy = ApplicationInfo::instance()->createAlgorithm("privacy");
+	motion = ApplicationInfo::instance()->createAlgorithm("motion");
+	track = ApplicationInfo::instance()->createAlgorithm("track");
 
 	TX1VideoEncoder *enc = new TX1VideoEncoder;
 	enc->setBitrate(4000000);
@@ -77,11 +75,10 @@ int UsbStreamer::generatePipelineForOneSource()
 	p1->setQuitOnThreadError(true);
 	p1->append(v4l2);
 	p1->append(rgbConv1);
-	if (motion) {
-		p1->append(motion);
-		/* TODO: Why not SEI is processing its own data? */
-		p1->append(newFunctionPipe(UsbStreamer, this, UsbStreamer::PerformAlgorithmForYUV));
-	}
+	p1->append(privacy);
+	p1->append(motion);
+	p1->append(track);
+	p1->append(newFunctionPipe(UsbStreamer, this, UsbStreamer::checkSeiAlarm));
 	p1->append(queue);
 	p1->append(enc);
 	p1->append(sei);
@@ -102,21 +99,56 @@ int UsbStreamer::generatePipelineForOneSource()
 	p3->end();
 
 	StreamerCommon::createRtspServer(rtpout, rtpout2);
+
 	return 0;
 }
 
-int UsbStreamer::PerformAlgorithmForYUV(const RawBuffer &buf)
+int UsbStreamer::checkSeiAlarm(const RawBuffer &buf)
 {
-	if (sei) {
-		if (motion->getState() == BaseAlgorithmElement::PROCESS) {
-			QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
-			QByteArray seiData = hash["motion_results"].toByteArray();
-			sei->processMessage(seiData);
-			if (seiData.size() == 0)
-				sei->clearLastSEIMessage();
-		}
+	if (sei && buf.constPars()->metaData.size()) {
+		QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
+		QByteArray seiData = hash["motion_results"].toByteArray();
+		sei->processMessage(seiData);
+		if (seiData.size() == 0)
+			sei->clearLastSEIMessage();
 	}
 	return 0;
+}
+
+void UsbStreamer::apiUrlRequested(const QUrl &url)
+{
+	QString fname = url.toString();
+	QStringList actions = fname.split("/", QString::SkipEmptyParts);
+	ffDebug() << actions;
+	if (actions[0] != "control")
+		return;
+	if (actions.size() < 2)
+		return;
+	if (actions[1] == "algorithm") {
+		if (actions.size() < 4)
+			return;
+		int index = actions[2].toInt();
+		QString action = actions[3];
+		BaseAlgorithmElement *el = nullptr;
+		if (index == 0) {
+			el = motion;
+		} else if (index == 2) {
+			el = privacy;
+		}else if (index == 1) {
+			el = track;
+		} else
+			return;
+		if (action == "jsonreload")
+			el->reloadJson();
+		else if (action == "start")
+			el->setState(BaseAlgorithmElement::INIT);
+		else if (action == "pause")
+			el->setPassThru(true);
+		else if (action == "resume")
+			el->setPassThru(false);
+		else if (action == "stop")
+			el->setState(BaseAlgorithmElement::STOPALGO);
+	}
 }
 
 int UsbStreamer::processBuffer(const RawBuffer &buf)

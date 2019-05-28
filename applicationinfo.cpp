@@ -14,6 +14,7 @@
 #include <QJsonArray>
 #include <QDebug>
 #include <QFile>
+#include <QDir>
 
 #include <ecl/ptzp/kayidriver.h>
 #include <ecl/ptzp/tbgthdriver.h>
@@ -177,6 +178,7 @@ BaseStreamer *ApplicationInfo::createAppStreamer()
 		usbStr->generatePipelineForOneSource();
 		streamer = usbStr;
 	}
+	ffDebug() << "Starting application under path" << QDir::currentPath();
 	return streamer;
 }
 
