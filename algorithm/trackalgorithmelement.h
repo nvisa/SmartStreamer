@@ -10,9 +10,7 @@ class TrackAlgorithmElement: public BaseAlgorithmElement
 public:
 	TrackAlgorithmElement(QObject *parent = 0);
 	int init();
-	int reallocate();
 	int processAlgo(const RawBuffer &buf);
-	int baseAlgorithmProcess(const RawBuffer &buf);
 	int release();
 	enum TrackMode {
 		AUTO,
@@ -38,6 +36,10 @@ public:
 	};
 
 	int setTrackObjInfo(float x, float y, float w, float h);
+	int ZoomLevelNo;
+	float zoomvalues[1000*3];
+	void zoom2degree_conversion(int zoomReadOut,float* HV_fovAngles);
+
 protected:
 	BaseAlgorithmCommon::BaseVariables v;
 	TrackMode mode;
@@ -45,6 +47,7 @@ protected:
 	int autoTrack(const RawBuffer &buf);
 	int semiAutoTrack(const RawBuffer &buf);
 	int manualTrack(const RawBuffer &buf);
+	int reloadJson(const QJsonObject &node);
 	float objProp[4];
 };
 

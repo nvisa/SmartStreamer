@@ -12,12 +12,16 @@ public:
 	int init();
 	int reallocate();
 	int processAlgo(const RawBuffer &buf);
-	int baseAlgorithmProcess(const RawBuffer &buf);
 	int release();
 	struct StabilizationControl {
 		int initialize;
 		int sensitivity;
 	};
+	virtual QString getTypeString();
+
+	int ZoomLevelNo;
+	float zoomvalues[1000*3];
+	void zoom2degree_conversion(int zoomReadOut,float* HV_fovAngles);
 
 protected:
 	BaseAlgorithmCommon::BaseVariables v;

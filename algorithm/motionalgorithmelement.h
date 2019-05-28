@@ -18,6 +18,8 @@ public:
 	void setSensitivity(int value);
 	void setClassification(bool value);
 
+	virtual QString getTypeString();
+
 	struct MotionControl {
 		uchar meta[4096];
 		float *panTiltZoomRead;
@@ -28,6 +30,8 @@ public:
 	};
 
 protected:
+	int reloadJson(const QJsonObject &node);
+
 	BaseAlgorithmCommon::BaseVariables v;
 	MotionControl control;
 };

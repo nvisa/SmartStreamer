@@ -29,15 +29,23 @@ public:
 	virtual int stopAlgo();
 	virtual int release();
 
+	virtual QString getTypeString();
+	int reloadJson();
+	void setJsonAlgorithmIndex(int index);
+
 	/* TODO: state management should be private */
 	void setState(AlgoState state) { algoState = state; }
 	int getState() { return algoState; }
+
 protected:
+	virtual int reloadJson(const QJsonObject &node);
 	int processBuffer(const RawBuffer &buf);
 	AlgoState algoState;
 
 private:
 	int baseAlgorithmProcess(const RawBuffer &buf);
+
+	int algIndex;
 };
 
 #endif // BASEALGORITHMELEMENT_H
