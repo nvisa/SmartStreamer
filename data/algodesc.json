@@ -1,15 +1,36 @@
 {
-	"algorithms": [
-		{
-			"type": "motion",
-			"sensitivity": 50,
-			"classification": false,
-			"advanced": {
-				"files": [
-					"/etc/smartstreamer/motion0/alg_paramaters.txt",
-					"/etc/smartstreamer/motion0/points.txt"
-				]
-			}
-		}
-	]
+    "algorithms": [
+        {
+            "type": "motion",
+            "sensitivity": 22,
+            "classification": false,
+            "enabled": false,
+            "advanced": {
+                "files": [
+                    "/etc/smartstreamer/motion0/alg_paramaters.txt",
+                    "/etc/smartstreamer/motion0/points.txt"
+                ]
+            }
+        },
+        {
+            "type": "track",
+            "enabled": false,
+            "roi": {
+                "x": 486,
+                "y": 177,
+                "width": 347,
+                "height": 159
+            },
+            "advanced": {
+                "files": [
+                    "/etc/smartstreamer/motion0/track_alg_parameters.txt",
+                    "/etc/smartstreamer/motion0/track_parameters.txt"
+                ]
+            }
+        },
+        {
+            "type": "privacy",
+            "enabled": false
+        }
+    ]
 }

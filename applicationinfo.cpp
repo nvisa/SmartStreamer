@@ -4,6 +4,8 @@
 #include "ipstreamer.h"
 #include "usbstreamer.h"
 #include "algorithm/motionalgorithmelement.h"
+#include "algorithm/stabilizationalgorithmelement.h"
+#include "algorithm/trackalgorithmelement.h"
 
 #define FILENAME "application_info.json"
 
@@ -183,16 +185,53 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithm(int index)
 	QJsonObject obj = readJson("/etc/smartstreamer/algodesc.json");
 	QJsonArray arr = obj["algorithms"].toArray();
 	if (index >= arr.size())
-		return nullptr;
+		return new BaseAlgorithmElement;
 	QJsonObject algo = arr[index].toObject();
+	BaseAlgorithmElement * el = createAlgorithmFromJson(algo);
+	el->setJsonAlgorithmIndex(index);
+	el->reloadJson();
+	return el;
+}
+
+BaseAlgorithmElement *ApplicationInfo::createAlgorithmFromJson(const QJsonObject &algo)
+{
 	if (algo["type"] == "motion") {
-		MotionAlgorithmElement *motion = new MotionAlgorithmElement;
-		motion->setSensitivity(algo["sensitivity"].toInt());
-		motion->setClassification(algo["classification"].toBool());
-		return motion;
+		return new MotionAlgorithmElement;
+	} else if (algo["type"] == "bypass") {
+		return new StabilizationAlgorithmElement;
+	} else if (algo["type"] == "privacy") {
+		return new StabilizationAlgorithmElement;
+	} else if (algo["type"] == "track") {
+		return new TrackAlgorithmElement;
 	}
 
-	return nullptr;
+	return new BaseAlgorithmElement;
+}
+
+BaseAlgorithmElement *ApplicationInfo::createAlgorithm(const QString &type, int index)
+{
+	QJsonObject obj = readJson("/etc/smartstreamer/algodesc.json");
+	QJsonArray arr = obj["algorithms"].toArray();
+	QJsonArray filtered;
+	QHash<int, int> imap;
+	int i = 0;
+	foreach (QJsonValue value, arr) {
+		i++;
+		QJsonObject alg = value.toObject();
+		if (alg["type"] != type)
+			continue;
+		filtered << alg;
+		imap.insert(filtered.size() - 1, i - 1);
+	}
+
+	if (filtered.size() <= index)
+		return new BaseAlgorithmElement;
+
+	QJsonObject algo = filtered[index].toObject();
+	BaseAlgorithmElement *el = createAlgorithmFromJson(algo);
+	el->setJsonAlgorithmIndex(imap[index]);
+	el->reloadJson();
+	return el;
 }
 
 QString ApplicationInfo::algorithmSet()

@@ -2,6 +2,7 @@
 #define APPLICATIONINFO_H
 
 #include <QObject>
+#include <QJsonObject>
 #include <QCoreApplication>
 
 class PtzpDriver;
@@ -34,6 +35,9 @@ public:
 	PtzpDriver * getPtzpDriver(int index = 0);
 	BaseStreamer * createAppStreamer();
 	BaseAlgorithmElement * createAlgorithm(int index);
+	BaseAlgorithmElement * createAlgorithmFromJson(const QJsonObject &algo);
+	BaseAlgorithmElement * createAlgorithm(const QString &type, int index = 0);
+
 	QString algorithmSet();
 
 protected:
