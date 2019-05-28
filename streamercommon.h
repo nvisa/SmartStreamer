@@ -12,9 +12,11 @@ public:
 	static int detectRtspPort();
 	static RtpTransmitter * createRtpTransmitter(float fps);
 	static BaseRtspServer * createRtspServer(RtpTransmitter *rtp0);
-	static BaseRtspServer *createRtspServer(RtpTransmitter *rtp0, RtpTransmitter *rtp1);
+	static BaseRtspServer * createRtspServer(RtpTransmitter *rtp0, RtpTransmitter *rtp1);
 	static BaseRtspServer * createRtspServer(QList<RtpTransmitter*> rtpout);
 	static BaseLmmElement * createOverlay();
+	static BaseLmmElement * createEncoder(int id = 0);
+	static int reloadJson(BaseLmmElement *el);
 };
 
 #endif // STREAMERCOMMON_H
