@@ -20,5 +20,11 @@
         <file>data/motion0/track_alg_parameters.txt</file>
         <file>data/motion0/track_parameters.txt</file>
         <file>data/algorithm_new.json</file>
+        <file>data/encoders.json</file>
+        <file>data/Hfov.txt</file>
+        <file>data/overlay.json</file>
+        <file>data/Vfov.txt</file>
+        <file>data/Zoom_value.txt</file>
+        <file>data/motion0/Privacy_Points.json</file>
     </qresource>
 </RCC>

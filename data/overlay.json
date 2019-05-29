@@ -1,0 +1,21 @@
+{
+    "enabled": false,
+	"x": 100,
+	"y": 568,
+	"fontSize": 48,
+	"fields": [
+		{
+			"id": 2,
+			"value": ""
+		},
+		{
+			"id": 4,
+			"value": "Ankara/Aselsan"
+		},
+		{
+			"id": 4,
+			"value": ""
+		}
+	],
+	"text": "%2 %1 %3"
+}

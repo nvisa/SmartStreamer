@@ -1,0 +1,79 @@
+[
+	{
+		"name": "Main stream",
+		"h265": false,
+		"smartRecord": false,
+		"bitrate_min": 1000,
+		"bitrate_max": 15000,
+		"bitrate": 6000,
+		"frameRate": 25,
+		"framerate_min": 5,
+		"framerate_max": 25
+	},
+	{
+		"name": "Second stream",
+		"h265": false,
+		"smartRecord": false,
+		"bitrate_min": 500,
+		"bitrate_max": 4000,
+		"bitrate": 1250,
+        "frameRate": 25,
+		"framerate_min": 5,
+		"framerate_max": 25,
+		"resolution": "1280x720",
+		"resolutions": [
+			"1920x1080",
+			"1280x720",
+			"960x540",
+			"720x576*",
+			"720x480*",
+			"640x360",
+			"320x288*",
+			"320x180"
+		]
+	},
+	{
+		"name": "Third stream",
+		"h265": false,
+		"smartRecord": false,
+		"bitrate_min": 1000,
+		"bitrate_max": 15000,
+		"bitrate": 6000,
+		"frameRate": 25,
+		"framerate_min": 5,
+		"framerate_max": 25,
+		"resolution": "640x360",
+		"resolutions": [
+			"1920x1080",
+			"1280x720",
+			"960x540",
+			"720x576*",
+			"720x480*",
+			"640x360",
+			"320x288*",
+			"320x180"
+		]
+	},
+	{
+		"name": "Forth stream",
+		"h265": false,
+		"smartRecord": false,
+		"bitrate_min": 1000,
+		"bitrate_max": 15000,
+		"bitrate": 6000,
+		"frameRate": 25,
+		"framerate_min": 5,
+		"framerate_max": 25,
+		"resolution": "1920x1080",
+		"resolutions": [
+			"1920x1080",
+			"1280x720",
+			"960x540",
+			"720x576*",
+			"720x480*",
+			"640x360",
+			"320x288*",
+			"320x180"
+		]
+	}
+]

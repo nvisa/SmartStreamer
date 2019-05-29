@@ -27,7 +27,7 @@
     },
     "tracking": {
 	"enabled": false,
-	"auto": false,
+	"auto": true,
 	"semi_auto": false,
 	"manual": false,
 	"score": 0.45,

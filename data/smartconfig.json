@@ -7,15 +7,6 @@
 		"devices": [
 			{
 				"device": "/dev/video0"
-			},
-			{
-				"device": "/dev/video1"
-			},
-			{
-				"device": "/dev/video2"
-			},
-			{
-				"device": "/dev/video3"
 			}
 		],
 		"out_mode": "ip"
@@ -43,17 +34,12 @@
 			"height": 576
 		}
 	},
-	"_ptzp": [
-		{
-			"type": "kayi",
-			"target": "ttyXRUSB0?baud=9600?protocol=422;ttyXRUSB1?baud=19200?protocol=422?parity=1?databits=7?stopbits=1",
-			"grpc_port": 50058
-		},
+    "startup_delay": 60,
+	"ptzp": [
 		{
 			"type": "irdome",
 			"target": "ttyS0?baud=9600;null",
 			"grpc_port": 50058
 		}
-
 	]
 }
