@@ -280,7 +280,7 @@ int main(int argc, char *argv[])
 	if (info->isGuiApplication())
 		a = new QApplication(argc, argv);
 	else
-		a = new QCoreApplication(argc, argv);
+		a = new QGuiApplication(argc, argv);
 	QDir::setCurrent(a->applicationDirPath());
 
 	if (a->arguments().size() > 1) {
@@ -297,6 +297,8 @@ int main(int argc, char *argv[])
 	ecl::initDebug();
 	installSignalHandlers();
 
+	info->checkStartupDelay();
+
 	/* config export */
 	QDir d("/etc/");
 	d.mkdir("smartstreamer");
@@ -312,6 +314,7 @@ int main(int argc, char *argv[])
 			d.mkpath(dst);
 		else if (!QFile::exists(dst)) {
 			qDebug() << "exporting" << dst << QFile::copy(finfo.absoluteFilePath(), dst);
+			QFile::setPermissions(dst, QFile::ReadOwner | QFile::WriteOwner | QFile::ReadGroup | QFile::ReadOther);
 		}
 	}
 

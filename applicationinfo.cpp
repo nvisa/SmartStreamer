@@ -20,6 +20,9 @@
 #include <ecl/ptzp/tbgthdriver.h>
 #include <ecl/ptzp/aryadriver.h>
 #include <ecl/ptzp/irdomedriver.h>
+#include <ecl/drivers/systeminfo.h>
+
+#include <unistd.h>
 
 static QJsonObject readJson(const QString &filename)
 {
@@ -48,7 +51,7 @@ static QJsonObject getSubObj(const QString &objName)
 
 bool ApplicationInfo::isGuiApplication()
 {
-	return true;
+	return false;
 }
 
 bool ApplicationInfo::isBotasFixEnabled()
@@ -234,6 +237,18 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithm(const QString &type, int 
 	el->setJsonAlgorithmIndex(imap[index]);
 	el->reloadJson();
 	return el;
+}
+
+void ApplicationInfo::checkStartupDelay()
+{
+	QJsonObject obj = readJson("/etc/smartstreamer/smartconfig.json");
+	if (!obj.contains("startup_delay"))
+		return;
+	int sec = obj["startup_delay"].toInt() - SystemInfo::getUptime();
+	if (sec > 0) {
+		qDebug("waiting application start-up delay, sleeping %d msecs", sec);
+		sleep(sec);
+	}
 }
 
 QString ApplicationInfo::algorithmSet()

@@ -37,6 +37,7 @@ public:
 	BaseAlgorithmElement * createAlgorithm(int index);
 	BaseAlgorithmElement * createAlgorithmFromJson(const QJsonObject &algo);
 	BaseAlgorithmElement * createAlgorithm(const QString &type, int index = 0);
+	void checkStartupDelay();
 
 	QString algorithmSet();
 
