@@ -96,7 +96,12 @@ int StabilizationAlgorithmElement::processAlgo(const RawBuffer &buf)
 		panTiltZoomRead[1] = headpt->getTiltAngle();
 	}
 	if (headz) {
-		zoom2degree_conversion(headz->getZoom(), panTiltZoomRead);
+		//zoom2degree_conversion(headz->getZoom(), panTiltZoomRead);
+		float fovh = 0, fovv = 0;
+		if (!headz->getFOV(fovh, fovv)) {
+			panTiltZoomRead[3] = fovh;
+			panTiltZoomRead[4] = fovv;
+		}
 	}
 
 	asel_bypass((uchar *)buf.constData(), width * height, width, height,

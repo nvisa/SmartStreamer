@@ -106,9 +106,13 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 	PtzpHead *headpt = ApplicationInfo::instance()->getPtzpDriver(0)->getHead(1);
 	if (headpt == nullptr)
 		headpt = headz;
-	ffDebug() << headpt->getPanAngle() << headpt->getTiltAngle() << headz->getZoom();
 	float panTiltZoomRead[] = {headpt->getPanAngle(), headpt->getTiltAngle(), 0, 12, 12};
-	zoom2degree_conversion(headz->getZoom(),panTiltZoomRead);
+	//zoom2degree_conversion(headz->getZoom(),panTiltZoomRead);
+	float fovh = 0, fovv = 0;
+	if (!headz->getFOV(fovh, fovv)) {
+		panTiltZoomRead[3] = fovh;
+		panTiltZoomRead[4] = fovv;
+	}
 
 	asel_via_track((uchar *)buf.constData(), width * height, width , height,
 				   v.rgb,v.shadow, v.ill, v.debug, v.stabilization, v.privacy,
@@ -149,9 +153,13 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 	PtzpHead *headpt = ApplicationInfo::instance()->getPtzpDriver(0)->getHead(1);
 	if (headpt == nullptr)
 		headpt = headz;
-	ffDebug() << headpt->getPanAngle() << headpt->getTiltAngle() << headz->getZoom();
 	float panTiltZoomRead[] = {headpt->getPanAngle(), headpt->getTiltAngle(), 0, 12, 12};
-	zoom2degree_conversion(headz->getZoom(),panTiltZoomRead);
+	//zoom2degree_conversion(headz->getZoom(),panTiltZoomRead);
+	float fovh = 0, fovv = 0;
+	if (!headz->getFOV(fovh, fovv)) {
+		panTiltZoomRead[3] = fovh;
+		panTiltZoomRead[4] = fovv;
+	}
 
 	printf("start tracking %f %f %f %f\n",objProp[0],objProp[1],objProp[2],objProp[3]);
 	asel_direct_track((uchar *)buf.constData(), width * height, width , height,
