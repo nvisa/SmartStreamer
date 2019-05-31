@@ -1,6 +1,7 @@
 #include "yamgozstreamer.h"
 #include "streamercommon.h"
 #include "mjpegserver.h"
+#include "algorithm/basealgorithmelement.h"
 
 #include <lmm/debug.h>
 #include <lmm/v4l2input.h>
@@ -74,7 +75,7 @@ public:
 };
 
 YamgozStreamer::YamgozStreamer(const QJsonObject &config, QObject *parent)
-	: BaseStreamer(parent)
+	: TX1Streamer(parent)
 {
 	priv = new YamgozStreamerPriv;
 	if (config.isEmpty()) {
@@ -113,64 +114,20 @@ YamgozStreamer::YamgozStreamer(const QJsonObject &config, QObject *parent)
 			priv->stichRects << QRect();
 	}
 
-	MultiBufferSource *multisrc = new MultiBufferSource;
-	for (int i = 0; i < 4; i++) {
-		V4l2Input *v4l2 = new V4l2Input;
-		v4l2->setParameter("videoWidth", 720);
-		v4l2->setParameter("videoHeight", 576);
-		v4l2->setParameter("device", QString("/dev/video%1").arg(i));
-		BaseLmmPipeline *p = addPipeline();
-		p->append(v4l2);
-		p->append(multisrc, i);
-		p->end();
-	}
-
-	VideoScaler *toRgb = new VideoScaler;
-	toRgb->setOutputFormat(AV_PIX_FMT_ARGB);
-	toRgb->setMode(1);
-
-	VideoScaler *to420 = new VideoScaler;
-	to420->setOutputFormat(AV_PIX_FMT_YUV420P);
-	to420->setMode(1);
-
-	TX1VideoEncoder *enc = new TX1VideoEncoder;
-	enc->setBitrate(4000000);
-	enc->setFps(25.0);
-	QSize sz = getStichSize();
-	mDebug("Output resolution will be %dx%d", sz.width(), sz.height());
-	enc->setOutputResolution(sz.width(), sz.height());
-
-	TX1JpegEncoder *jenc = new TX1JpegEncoder;
-	MjpegElement *jpegel = new MjpegElement(13789);
-	BufferQueue *jpegq = new BufferQueue;
-
-	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(25);
-
+#if 0
 	if (config["out_mode"].toString() == "vout_only") {
+		VideoScaler *toRgb = new VideoScaler;
+		toRgb->setOutputFormat(AV_PIX_FMT_ARGB);
+		toRgb->setMode(1);
+
 		BaseLmmPipeline *p = addPipeline();
 		p->append(multisrc, -1);
 		p->append(newFunctionPipe(YamgozStreamer, this, YamgozStreamer::stichFrames));
 		p->append(toRgb);
 		p->append(new QtVideoOutput);
 		p->end();
-	} else {
-		BaseLmmPipeline *p = addPipeline();
-		p->append(multisrc, -1);
-		p->append(newFunctionPipe(YamgozStreamer, this, YamgozStreamer::stichFrames));
-		p->append(to420);
-		p->append(jpegq);
-		p->append(enc);
-		p->append(rtpout);
-		p->end();
-
-		p = addPipeline();
-		p->append(jpegq);
-		p->append(jenc);
-		p->append(jpegel);
-		p->end();
 	}
-
-	StreamerCommon::createRtspServer(rtpout);
+#endif
 }
 
 QSize YamgozStreamer::getStichSize()
@@ -253,5 +210,34 @@ int YamgozStreamer::stichFrames(const RawBuffer &buf)
 	mutbuf->pars()->streamBufferNo = ch0.constPars()->streamBufferNo;
 
 	return 0;
+}
+
+BaseLmmPipeline *YamgozStreamer::createYUV420Pipeline(QSize &res0)
+{
+	MultiBufferSource *multisrc = new MultiBufferSource;
+	for (int i = 0; i < 4; i++) {
+		V4l2Input *v4l2 = new V4l2Input;
+		v4l2->setParameter("videoWidth", 720);
+		v4l2->setParameter("videoHeight", 576);
+		v4l2->setParameter("device", QString("/dev/video%1").arg(i));
+		BaseLmmPipeline *p = addPipeline();
+		p->append(v4l2);
+		p->append(multisrc, i);
+		p->end();
+	}
+
+	VideoScaler *to420 = new VideoScaler;
+	to420->setOutputFormat(AV_PIX_FMT_YUV420P);
+	to420->setMode(1);
+
+	QSize sz = getStichSize();
+	res0.setWidth(sz.width());
+	res0.setHeight(sz.height());
+
+	BaseLmmPipeline *p = addPipeline();
+	p->append(multisrc, -1);
+	p->append(newFunctionPipe(YamgozStreamer, this, YamgozStreamer::stichFrames));
+	p->append(to420);
+	return p;
 }
 

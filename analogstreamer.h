@@ -1,19 +1,21 @@
 #ifndef ANALOGSTREAMER_H
 #define ANALOGSTREAMER_H
 
-#include <lmm/players/basestreamer.h>
+#include "tx1streamer.h"
 
+#include <QJsonArray>
 #include <QJsonObject>
 
-class AnalogStreamer : public BaseStreamer
+class AnalogStreamer : public TX1Streamer
 {
 	Q_OBJECT
 public:
 	explicit AnalogStreamer(const QJsonObject &config = QJsonObject(), QObject *parent = 0);
 
-signals:
+protected:
+	virtual BaseLmmPipeline * createYUV420Pipeline(QSize &res0);
 
-public slots:
+	QJsonArray sources;
 };
 
 #endif // ANALOGSTREAMER_H

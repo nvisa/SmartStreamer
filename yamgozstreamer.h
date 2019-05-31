@@ -1,13 +1,13 @@
 #ifndef YAMGOZSTREAMER_H
 #define YAMGOZSTREAMER_H
 
-#include <lmm/players/basestreamer.h>
+#include "tx1streamer.h"
 
 #include <QJsonObject>
 
 class YamgozStreamerPriv;
 
-class YamgozStreamer : public BaseStreamer
+class YamgozStreamer : public TX1Streamer
 {
 	Q_OBJECT
 public:
@@ -16,6 +16,7 @@ public:
 protected:
 	QSize getStichSize();
 	int stichFrames(const RawBuffer &buf);
+	virtual BaseLmmPipeline * createYUV420Pipeline(QSize &res0);
 
 	YamgozStreamerPriv *priv;
 };
