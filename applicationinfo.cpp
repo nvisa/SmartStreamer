@@ -178,7 +178,6 @@ BaseStreamer *ApplicationInfo::createAppStreamer()
 	} else {
 		qDebug() << "starting usb streamer";
 		UsbStreamer *usbStr = new UsbStreamer;
-		usbStr->generatePipelineForOneSource();
 		streamer = usbStr;
 	}
 	ffDebug() << "Starting application under path" << QDir::currentPath();

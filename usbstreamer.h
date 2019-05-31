@@ -1,42 +1,19 @@
 #ifndef USBSTREAMER_H
 #define USBSTREAMER_H
 
-#include "lmm/players/basestreamer.h"
-#include "algorithm/algorithmgrpcserver.h"
-#include "algorithm/motionalgorithmelement.h"
+#include "tx1streamer.h"
 
-#include <ecl/ptzp/irdomedriver.h>
-
-#include <QUrl>
-
-class RtpTransmitter;
-class SeiInserter;
-class BaseRtspServer;
-class UsbStreamer : public BaseStreamer
+class UsbStreamer : public TX1Streamer
 {
 Q_OBJECT
 public:
 	explicit UsbStreamer(QObject *parent = 0);
-	int generatePipelineForOneSource();
-	int checkSeiAlarm(const RawBuffer &buf);
-
 protected slots:
-	void apiUrlRequested(const QUrl &url);
 
 protected:
-	int processBuffer(const RawBuffer &buf);
 	int pipelineOutput(BaseLmmPipeline *p, const RawBuffer &buf);
+	BaseLmmPipeline * createYUV420Pipeline(QSize &res0);
 
-	SeiInserter *sei;
-	BaseAlgorithmElement *privacy;
-	BaseAlgorithmElement *motion;
-	BaseAlgorithmElement *track;
-	BaseLmmElement *enc0;
-	BaseLmmElement *enc1;
-	BaseLmmElement *enc2;
-	BaseLmmElement *enc3;
-	BaseLmmElement *textOverlay;
-	AlgorithmGrpcServer *grpcserv;
 };
 
 #endif // USBSTREAMER_H
