@@ -32,17 +32,16 @@ TX1Streamer::TX1Streamer(QObject *parent)
 	: BaseStreamer(parent)
 {
 	grpcserv = AlgorithmGrpcServer::instance();
-	connect(SimpleApiServer::instance(), SIGNAL(urlRequested(QUrl)), this, SLOT(apiUrlRequested(QUrl)));
 }
 
 int TX1Streamer::start()
 {
 	QSize res0;
 	BaseLmmPipeline *p1 = createYUV420Pipeline(res0);
-	if (p1)
+	if (p1) {
 		finishGeneric420Pipeline(p1, res0);
-	else
-		return -EINVAL;
+		connect(SimpleApiServer::instance(), SIGNAL(urlRequested(QUrl)), this, SLOT(apiUrlRequested(QUrl)));
+	}
 
 	return BaseStreamer::start();
 }
@@ -120,6 +119,7 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	track = ApplicationInfo::instance()->createAlgorithm("track");
 
 	enc0 = StreamerCommon::createEncoder(0);
+	((TX1VideoEncoder *)enc0)->setOutputResolution(res0.width(), res0.height());
 	enc1 = StreamerCommon::createEncoder(1);
 	enc2 = StreamerCommon::createEncoder(2);
 	enc3 = StreamerCommon::createEncoder(3);
