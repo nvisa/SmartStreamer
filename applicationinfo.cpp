@@ -20,6 +20,7 @@
 #include <ecl/ptzp/tbgthdriver.h>
 #include <ecl/ptzp/aryadriver.h>
 #include <ecl/ptzp/irdomedriver.h>
+#include <ecl/ptzp/yamgozdriver.h>
 #include <ecl/drivers/systeminfo.h>
 
 #include <unistd.h>
@@ -142,6 +143,8 @@ int ApplicationInfo::startPtzpDriver()
 			driver = new AryaDriver;
 		} else if (obj["type"] == "irdome") {
 			driver = new IRDomeDriver;
+		} else if (obj["type"] == "yamgoz") {
+			driver = new YamGozDriver;
 		}
 		if (driver) {
 			fDebug("Starting PTZP driver for %s", qPrintable(obj["type"].toString()));
