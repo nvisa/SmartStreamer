@@ -34,11 +34,21 @@
 			"height": 576
 		}
 	},
-    "startup_delay": 60,
+	"startup_delay": 60,
 	"ptzp": [
 		{
 			"type": "irdome",
 			"target": "ttyS0?baud=9600;null",
+			"grpc_port": 50058
+		},
+		{
+			"type": "yamgoz",
+			"target": "11.41.1.100:6670:udp:9106:2000;11.41.1.101:6670:udp:9107:2000;11.41.1.102:6670:udp:9108:2000",
+			"grpc_port": 50058
+		},
+		{
+			"type": "kayi+",
+			"target": "ttyXRUSB1?baud=9600?protocol=422;ttyXRUSB2?baud=19200?databits=7?parity=1?protocol=422",
 			"grpc_port": 50058
 		}
 	]
