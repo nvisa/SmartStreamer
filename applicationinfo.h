@@ -21,15 +21,6 @@ public:
 	}
 
 	bool isGuiApplication();
-	bool isBotasFixEnabled();
-	bool isBotasDomeEnabled();
-	QString getBotasFixPtAddress();
-	QString getBotasDomePtAddress();
-	int getBotasFixPtGrpcPort();
-	int getBotasDomePtGrpcPort();
-	QString getBotasFixStreamAddress();
-	QString getBotasDomeStreamAddress();
-	QString getBotasFixAlgorithms();
 	int startPtzpDriver();
 
 	PtzpDriver * getPtzpDriver(int index = 0);
