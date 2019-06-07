@@ -20,10 +20,21 @@ public:
 		return inst;
 	}
 
+	enum Platform {
+		GENERIC,
+		BOTAS_FIX,
+		BOTAS_DOME,
+		ARYA_ORION,
+		KAYI_SAHINGOZ,
+		YAMGOZ,
+		TBGTH,
+	};
+
 	bool isGuiApplication();
 	int startPtzpDriver();
-
+	Platform getApplicationPlatform();
 	PtzpDriver * getPtzpDriver(int index = 0);
+	QJsonObject getPtzpObject(int index = 0);
 	BaseStreamer * createAppStreamer();
 	BaseAlgorithmElement * createAlgorithm(int index);
 	BaseAlgorithmElement * createAlgorithmFromJson(const QJsonObject &algo);

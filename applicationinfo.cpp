@@ -10,6 +10,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QProcess>
 #include <QDebug>
 #include <QFile>
 #include <QDir>
@@ -48,19 +49,36 @@ int ApplicationInfo::startPtzpDriver()
 	/* PTZP driver management */
 	QJsonObject obj = readJson("/etc/smartstreamer/smartconfig.json");
 	QJsonArray arr = obj["ptzp"].toArray();
+	Platform plat = getApplicationPlatform();
 	foreach (QJsonValue val, arr) {
 		QJsonObject obj = val.toObject();
 		PtzpDriver *driver = NULL;
-		if (obj["type"] == "kayi") {
-			driver = new KayiDriver;
-		} else if (obj["type"] == "tbgth") {
-			driver = new TbgthDriver(true);
-		} else if (obj["type"] == "arya") {
+		switch (plat) {
+		case GENERIC:
+			break;
+		case KAYI_SAHINGOZ: {
+			QList<int> relayConfig;
+			if (!obj["relay"].toObject().isEmpty()) {
+				relayConfig << obj["relay"].toObject()["daycam"].toInt();
+				relayConfig << obj["relay"].toObject()["thermal"].toInt();
+				relayConfig << obj["relay"].toObject()["standby"].toInt();
+			}
+			driver = new KayiDriver(relayConfig);
+			break;
+		}
+		case ARYA_ORION:
 			driver = new AryaDriver;
-		} else if (obj["type"] == "irdome") {
-			driver = new IRDomeDriver;
-		} else if (obj["type"] == "yamgoz") {
+			break;
+		case TBGTH:
+			driver = new TbgthDriver(true);
+			break;
+		case YAMGOZ:
 			driver = new YamGozDriver;
+			break;
+		case BOTAS_DOME:
+		case BOTAS_FIX:
+			driver = new IRDomeDriver;
+			break;
 		}
 		if (driver) {
 			fDebug("Starting PTZP driver for %s", qPrintable(obj["type"].toString()));
@@ -69,8 +87,32 @@ int ApplicationInfo::startPtzpDriver()
 				driver->startGrpcApi(obj["grpc_port"].toInt());
 			drivers << driver;
 		}
+		/* we only support one ptzp driver at the moment */
+		break;
 	}
+
 	return 0;
+}
+
+ApplicationInfo::Platform ApplicationInfo::getApplicationPlatform()
+{
+	QJsonObject obj = readJson("/etc/smartstreamer/smartconfig.json");
+	QJsonArray arr = obj["ptzp"].toArray();
+	foreach (QJsonValue val, arr) {
+		QJsonObject obj = val.toObject();
+		if (obj["type"] == "kayi") {
+			return KAYI_SAHINGOZ;
+		} else if (obj["type"] == "tbgth") {
+			return TBGTH;
+		} else if (obj["type"] == "arya") {
+			return ARYA_ORION;
+		} else if (obj["type"] == "irdome") {
+			return BOTAS_FIX;
+		} else if (obj["type"] == "yamgoz") {
+			return YAMGOZ;
+		}
+	}
+	return GENERIC;
 }
 
 PtzpDriver *ApplicationInfo::getPtzpDriver(int index)
@@ -78,6 +120,15 @@ PtzpDriver *ApplicationInfo::getPtzpDriver(int index)
 	if (index < drivers.size())
 		return drivers[index];
 	return nullptr;
+}
+
+QJsonObject ApplicationInfo::getPtzpObject(int index)
+{
+	QJsonObject obj = readJson("/etc/smartstreamer/smartconfig.json");
+	QJsonArray arr = obj["ptzp"].toArray();
+	if (index < arr.size())
+		return arr[index].toObject();
+	return QJsonObject();
 }
 
 BaseStreamer *ApplicationInfo::createAppStreamer()
@@ -159,6 +210,22 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithm(const QString &type, int 
 
 void ApplicationInfo::checkStartupDelay()
 {
+	if (getApplicationPlatform() == KAYI_SAHINGOZ) {
+		QList<int> relayConfig;
+		QJsonObject obj = getPtzpObject();
+		if (!obj["relay"].toObject().isEmpty()) {
+			relayConfig << obj["relay"].toObject()["daycam"].toInt();
+			relayConfig << obj["relay"].toObject()["thermal"].toInt();
+			relayConfig << obj["relay"].toObject()["standby"].toInt();
+		} else {
+			relayConfig << 4;
+			relayConfig << 5;
+			relayConfig << 6;
+		}
+		QProcess::execute("i2cset -f -y 1 0x70 0x03 0x00");
+		QProcess::execute(QString("i2cset -f -y 1 0x70 0x01 0x%1").arg((1 << (relayConfig[0] - 1)), 2, 16));
+
+	}
 	QJsonObject obj = readJson("/etc/smartstreamer/smartconfig.json");
 	if (!obj.contains("startup_delay"))
 		return;
