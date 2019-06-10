@@ -1,0 +1,126 @@
+syntax = "proto3";
+
+package kaapi;
+
+import "google/protobuf/empty.proto";
+
+service CameraService {
+	rpc GetPosition (google.protobuf.Empty) returns (PosInfo) {}
+	rpc MoveAbsolute(AbsoluteMoveParameters) returns (AbsoluteMoveResult) {}
+	rpc MoveRelative(RelativeMoveParameters) returns (RelativeMoveResult) {}
+	rpc GetCameraStatus(GetCameraStatusParameters) returns (CameraStatus) {}
+	rpc UpdateCameraStatus(UpdateCameraStatusParameters) returns (CameraStatus) {}
+
+	rpc CommunicationChannel(stream CommWrite) returns (stream CommRead) {}
+}
+
+message CommWrite {
+	enum Action {
+		NONE = 0;
+		MOVE_ABS = 1;
+		MOVE_REL = 2;
+		UPDATE = 3;
+		SET_CAMERA = 4;
+	}
+	Action action = 1;
+	AbsoluteMoveParameters abspars = 2;
+	RelativeMoveParameters relpars = 3;
+	UpdateCameraStatusParameters updpars = 4;
+}
+
+message CommRead {
+	PosInfo posInfo = 1;
+	CameraStatus status = 2;
+	AbsoluteMoveResult absres = 3;
+	RelativeMoveResult relres = 4;
+}
+
+message UpdateCameraStatusParameters {
+	CameraStatus status = 1;
+}
+
+message GetCameraStatusParameters {
+	int64 filters = 1;
+}
+
+message CameraStatus {
+	int64 capabilities = 1;
+	int32 numericParametersVector = 2;
+	repeated NumericParameter numericParameters = 3;
+	int32 enumParametersVector = 4;
+	repeated int32 enumParameters = 5;
+	int32 enumCommandsVector = 6;
+	repeated int32 enumCommands = 7;
+	Calibration calibration = 8;
+	Boresight boresight = 9;
+	ROI roi = 10;
+	ROI fence = 11;
+}
+
+message Point {
+	float x = 1;
+	float y = 2;
+}
+
+message Polygon {
+	repeated Point points = 1;
+}
+
+message ROI {
+	int32 roiCount = 1;
+	repeated Polygon regions = 2;
+}
+
+message Boresight {
+	int32 d0 = 1;
+	int32 d1 = 2;
+}
+
+message Calibration {
+	double d0 = 1;
+	double d1 = 2;
+}
+
+message NumericParameter {
+	double value = 1;
+	int32 byte0 = 2;
+	int32 byte1 = 3;
+	int32 byte2 = 4;
+}
+
+message RelativeMoveParameters {
+	float panSpeed = 1;
+	float tiltSpeed = 2;
+	float zoomSpeed = 3;
+}
+
+message RelativeMoveResult {
+	PosInfo posInfo = 1;
+}
+
+message AbsoluteMoveParameters {
+	float panPos = 1;
+	float tiltPos = 2;
+	float zoomPos = 3;
+	float panSpeed = 4;
+	float tiltSpeed = 5;
+	float zoomSpeed = 6;
+}
+
+message AbsoluteMoveResult {
+	enum Completion {
+		COMPLETED = 0;
+		INPROGRESS = 1;
+	}
+	Completion completionStatus = 1;
+	PosInfo posInfo = 2;
+}
+
+message PosInfo {
+	float panPos = 1;
+	float tiltPos = 2;
+	float zoomPos = 3;
+	float fovh = 4;
+	float fovv = 5;
+}
+

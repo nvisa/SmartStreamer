@@ -273,8 +273,47 @@ static int testGrpc(const QString &action)
 	return 0;
 }
 
+#include "proto/KardelenAPI.grpc.pb.h"
+int kaapiClient(int argc, char *argv[])
+{
+	Q_UNUSED(argc);
+	Q_UNUSED(argv);
+
+	google::protobuf::Empty ereq;
+	std::string ep = "127.0.0.1:50060";
+	std::shared_ptr<grpc::Channel> chn = grpc::CreateChannel(ep, grpc::InsecureChannelCredentials());
+	std::shared_ptr<kaapi::CameraService::Stub> stub = kaapi::CameraService::NewStub(chn);
+	kaapi::PosInfo posi;
+	grpc::ClientContext ctx;
+
+	QString action = "status";
+
+	if (action == "position") {
+		grpc::Status s = stub->GetPosition(&ctx, ereq, &posi);
+		if (s.error_code() != grpc::StatusCode::OK) {
+			fDebug("Some grpc error occurred");
+			return -1;
+		}
+		fDebug("Got position: %lf %lf", posi.panpos(), posi.tiltpos());
+	} else if (action == "status") {
+		kaapi::CameraStatus cstatus;
+		kaapi::GetCameraStatusParameters preq;
+		grpc::Status s = stub->GetCameraStatus(&ctx, preq, &cstatus);
+		if (s.error_code() != grpc::StatusCode::OK) {
+			fDebug("Some grpc error occurred");
+			return -1;
+		}
+		fDebug("capabilities = 0x%lx", cstatus.capabilities());
+	}
+
+	return 0;
+}
+
 int main(int argc, char *argv[])
 {
+	if (QString::fromLatin1(argv[0]).contains("kaapic"))
+		return kaapiClient(argc, argv);
+
 	ApplicationInfo *info = ApplicationInfo::instance();
 	QCoreApplication *a;
 	if (info->isGuiApplication())

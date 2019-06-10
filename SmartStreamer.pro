@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     diagnosticserviceimpl.cpp \
     simpleipstreamer.cpp \
     simpleapiserver.cpp \
-    tx1streamer.cpp
+    tx1streamer.cpp \
+    kardelenapi.cpp
 
 HEADERS += \
     moxadriver.h \
@@ -42,7 +43,8 @@ HEADERS += \
     diagnosticserviceimpl.h \
     simpleipstreamer.h \
     simpleapiserver.h \
-    tx1streamer.h
+    tx1streamer.h \
+    kardelenapi.h
 
 websockets {
     SOURCES += websocketstreamer.cpp

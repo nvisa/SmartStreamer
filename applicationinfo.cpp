@@ -6,6 +6,7 @@
 #include "algorithm/motionalgorithmelement.h"
 #include "algorithm/stabilizationalgorithmelement.h"
 #include "algorithm/trackalgorithmelement.h"
+#include "kardelenapi.h"
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -86,6 +87,10 @@ int ApplicationInfo::startPtzpDriver()
 			if (obj.contains("grpc_port"))
 				driver->startGrpcApi(obj["grpc_port"].toInt());
 			drivers << driver;
+
+			if (obj["kardelen"].toBool())
+				new KardelenAPIServer(driver);
+
 		}
 		/* we only support one ptzp driver at the moment */
 		break;

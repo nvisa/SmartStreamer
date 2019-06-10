@@ -8,6 +8,7 @@ smart-grpc {
     PROTOS += proto/AlgorithmWorks.proto
     PROTOS += proto/AlgorithmCommunication.proto
     PROTOS += proto/OrionCommunication.proto
+	PROTOS += proto/KardelenAPI.proto
 
     protobuf_decl.name = protobuf headers
     protobuf_decl.input = PROTOS
@@ -41,4 +42,9 @@ smart-grpc {
     grpc_impl.commands = $$escape_expand(\n)
     grpc_impl.variable_out = SOURCES
     QMAKE_EXTRA_COMPILERS += grpc_impl
+
+    DEFINES += HAVE_PTZP_GRPC_API
 }
+
+DISTFILES += \
+    $$PWD/KardelenAPI.proto
