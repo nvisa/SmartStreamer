@@ -262,11 +262,30 @@ public:
 
 	virtual void setNumericParameter(int index, double &value, int32_t bytes[3])
 	{
-
+		if (index == NUM_PARAM_FOV)
+			ptzp->getHead(0)->setProperty("fov_pos", value);
+		else if (index == NUM_PARAM_FOCUS)
+			ptzp->getHead(0)->setProperty("focus_in", value);
 	}
 
 	virtual void setEnumParameter(int index, int32_t value)
 	{
+		if (index == ENUM_PARAM_CAMERA_TYPE) {
+			if (value == TV)
+				ptzp->getHead(0)->setProperty("choose_cam", 1);
+			else if (value == THERMAL)
+				ptzp->getHead(0)->setProperty("choose_cam", 0);
+		} else if (index == ENUM_PARAM_POLARITY) {
+			if (value == BLACK_HOT)
+				ptzp->getHead(0)->setProperty("choose_cam", 1);
+			else if (value == WHITE_HOT)
+				ptzp->getHead(0)->setProperty("choose_cam", 0);
+		} else if (index == ENUM_PARAM_SEMBOLOGY){
+			if (value == SYMBOLOGY_ON)
+				ptzp->getHead(0)->setProperty("choose_cam", 1);
+			else if (value == SYMBOLOGY_OFF)
+				ptzp->getHead(0)->setProperty("choose_cam", 0);
+		}
 	}
 
 	virtual void setEnumCommand(int index, int32_t value)
