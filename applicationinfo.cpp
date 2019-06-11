@@ -89,7 +89,7 @@ int ApplicationInfo::startPtzpDriver()
 			drivers << driver;
 
 			if (obj["kardelen"].toBool())
-				new KardelenAPIServer(driver);
+				new KardelenAPIServer(driver, obj["type"].toString());
 
 		}
 		/* we only support one ptzp driver at the moment */

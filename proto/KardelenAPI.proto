@@ -3,6 +3,7 @@ syntax = "proto3";
 package kaapi;
 
 import "google/protobuf/empty.proto";
+option java_package = "tr.com.aselsan.kardelen.orion.message.definition";
 
 service CameraService {
 	rpc GetPosition (google.protobuf.Empty) returns (PosInfo) {}
@@ -10,8 +11,72 @@ service CameraService {
 	rpc MoveRelative(RelativeMoveParameters) returns (RelativeMoveResult) {}
 	rpc GetCameraStatus(GetCameraStatusParameters) returns (CameraStatus) {}
 	rpc UpdateCameraStatus(UpdateCameraStatusParameters) returns (CameraStatus) {}
+	rpc SetCamera(SetCameraRequest) returns (SetCameraResponse) {}
+	rpc GetNumericParameter(GetNumericParameterRequest) returns (GetNumericParameterResponse) {}
+	rpc GetEnumParameter(GetEnumParameterRequest) returns (GetEnumParameterResponse) {}
+	rpc SetNumericParameter(SetNumericParameterRequest) returns (SetNumericParameterResponse) {}
+	rpc SetEnumParameter(SetEnumParameterRequest) returns (SetEnumParameterResponse) {}
+	rpc SetEnumCommand(SetEnumCommandRequest) returns (SetEnumCommandResponse) {}
+	rpc GetVersion(google.protobuf.Empty) returns (ApiVersion) {}
 
 	rpc CommunicationChannel(stream CommWrite) returns (stream CommRead) {}
+}
+
+message ApiVersion {
+	string date = 1;
+	string time = 2;
+	string version = 3;
+}
+
+message GetNumericParameterRequest {
+	int32 index = 1;
+}
+
+message GetNumericParameterResponse {
+	NumericParameter value = 1;
+}
+
+message GetEnumParameterRequest {
+	int32 index = 1;
+}
+
+message GetEnumParameterResponse {
+	int32 value = 1;
+}
+
+message SetNumericParameterRequest {
+	int32 index = 1;
+	NumericParameter value = 2;
+}
+
+message SetNumericParameterResponse {
+	NumericParameter value = 1;
+}
+
+message SetEnumParameterRequest {
+	int32 index = 1;
+	int32 value = 2;
+}
+
+message SetEnumParameterResponse {
+	int32 value = 1;
+}
+
+message SetEnumCommandRequest {
+	int32 index = 1;
+	int32 value = 2;
+}
+
+message SetEnumCommandResponse {
+	int32 value = 1;
+}
+
+message SetCameraRequest {
+	int32 cameraType = 1;
+}
+
+message SetCameraResponse {
+	int64 capabilities = 1;
 }
 
 message CommWrite {

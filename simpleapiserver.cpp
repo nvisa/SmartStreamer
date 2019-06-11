@@ -26,6 +26,13 @@ const QByteArray SimpleApiServer::getFile(const QString filename, QString &mime,
 {
 	Q_UNUSED(mime);
 	Q_UNUSED(filename);
+	if (filename.startsWith("/:")) {
+		QFile f(filename.mid(1));
+		if (f.open(QIODevice::ReadOnly)) {
+			return f.readAll();
+		} else
+			return QByteArray();
+	}
 	emit urlRequested(url);
 	return QByteArray(128, '-');
 }

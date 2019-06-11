@@ -18,6 +18,7 @@
 #include <grpc++/security/credentials.h>
 #include <grpc++/security/server_credentials.h>
 
+using namespace kaapi;
 using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
@@ -49,173 +50,256 @@ protected:
 	KardelenAPIServer *kaapi;
 };
 
-KardelenAPIServer::KardelenAPIServer(PtzpDriver *ptzp)
+class KardelenAPIImpl
+{
+public:
+	virtual int64_t getCapabilities() = 0;
+	virtual void fillCameraStatus(kaapi::CameraStatus *response) = 0;
+	virtual void setPosi(kaapi::PosInfo *posi) = 0;
+	virtual void moveRelative(const kaapi::RelativeMoveParameters *request) = 0;
+	virtual void setCamera(int32_t type) = 0;
+	virtual void getNumericParameter(int index, double &value, int32_t bytes[3]) = 0;
+	virtual void setNumericParameter(int index, double &value, int32_t bytes[3]) = 0;
+	virtual int32_t getEnumParameter(int index) = 0;
+	virtual void setEnumParameter(int index, int32_t value) = 0;
+	virtual void setEnumCommand(int index, int32_t value) = 0;
+
+	PtzpDriver *ptzp;
+
+protected:
+	void addNumericParameter(int32_t &v, int32_t type, kaapi::CameraStatus *response)
+	{
+		addbit(v, type);
+		double value;
+		int32_t bytes[] {0, 0, 0};
+		getNumericParameter(type, value, bytes);
+		kaapi::NumericParameter *np = response->add_numericparameters();
+		np->set_value(value);
+		np->set_byte0(bytes[0]);
+		np->set_byte1(bytes[1]);
+		np->set_byte2(bytes[2]);
+	}
+	void addEnumParameter(int32_t &v, int32_t type, kaapi::CameraStatus *response)
+	{
+		addbit(v, type);
+		response->add_enumparameters(getEnumParameter(type));
+	}
+};
+
+class KardelenAPIFalconEyeImpl : public KardelenAPIImpl
+{
+public:
+	KardelenAPIFalconEyeImpl()
+	{
+		cameraType = 0;
+
+	}
+
+	int64_t getCapabilities()
+	{
+		int64_t caps = 0;
+		addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
+		addcap(caps, CAPABILITY_DETECTION);
+		addcap(caps, CAPABILITY_TRACKING);
+		addcap(caps, CAPABILITY_ZOOM);
+		addcap(caps, CAPABILITY_FOCUS);
+		addcap(caps, CAPABILITY_POLARITY);
+		addcap(caps, CAPABILITY_PT);
+		addcap(caps, CAPABILITY_ROI);
+		addcap(caps, CAPABILITY_DAY_VIEW);
+		addcap(caps, CAPABILITY_RANGE);
+		addcap(caps, CAPABILITY_MENU_OVER_VIDEO);
+		addcap(caps, CAPABILITY_LAZER_RANGE_FINDER);
+		addcap(caps, CAPABILITY_SHOW_HIDE_SEMBOLOGY);
+		addcap(caps, CAPABILITY_SHUT_DOWN);
+		addcap(caps, CAPABILITY_RESTART);
+		addcap(caps, CAPABILITY_AUTO_TRACK_WINDOW);
+		addcap(caps, CAPABILITY_AUTO_TRACK_DETECTION);
+		addcap(caps, CAPABILITY_NUC);
+		addcap(caps, CAPABILITY_FIRE);
+		addcap(caps, CAPABILITY_HPF_GAIN);
+		addcap(caps, CAPABILITY_HPF_SPATIAL);
+		return caps;
+	}
+
+	void setPosi(kaapi::PosInfo *posi)
+	{
+		posi->set_panpos(ptzp->getHead(1)->getPanAngle());
+		posi->set_tiltpos(ptzp->getHead(1)->getTiltAngle());
+		posi->set_zoompos(ptzp->getHead(0)->getZoom());
+		float fovh, fovv;
+		ptzp->getHead(0)->getFOV(fovh, fovv);
+		posi->set_fovh(fovh);
+		posi->set_fovv(fovv);
+	}
+
+	void fillCameraStatus(kaapi::CameraStatus *response)
+	{
+		response->set_capabilities(getCapabilities());
+
+		int32_t v = 0;
+
+		/* numeric parameters */
+		addNumericParameter(v, NUM_PARAM_RANGE, response);
+		addNumericParameter(v, NUM_PARAM_HEIGHT, response);
+		addNumericParameter(v, NUM_PARAM_FOV, response);
+		addNumericParameter(v, NUM_PARAM_FOCUS, response);
+		addNumericParameter(v, NUM_PARAM_YAW, response);
+		addNumericParameter(v, NUM_PARAM_PITCH, response);
+		addNumericParameter(v, NUM_PARAM_HORIZONTAL_RES, response);
+		addNumericParameter(v, NUM_PARAM_VERTICAL_RES, response);
+		addNumericParameter(v, NUM_PARAM_ZOOM, response);
+		addNumericParameter(v, NUM_PARAM_HPF_GAIN, response);
+		addNumericParameter(v, NUM_PARAM_HPF_SPATIAL, response);
+		response->set_numericparametersvector(v);
+
+		/* enum parameters */
+		v = 0;
+		addEnumParameter(v, ENUM_PARAM_CAMERA_TYPE, response);
+		addEnumParameter(v, ENUM_PARAM_OPERATIONAL_MODE, response);
+		addEnumParameter(v, ENUM_PARAM_DETECTION_CREATION_MODE, response);
+		addEnumParameter(v, ENUM_PARAM_POLARITY, response);
+		addEnumParameter(v, ENUM_PARAM_SEMBOLOGY, response);
+		response->set_enumparametersvector(v);
+	}
+
+	void moveRelative(const kaapi::RelativeMoveParameters *request)
+	{
+		/* speed is no-op for falcon-eye */
+		if (request->zoomspeed() > 0)
+			ptzp->getHead(0)->startZoomIn(0);
+		else if (request->zoomspeed() < 0)
+			ptzp->getHead(0)->startZoomOut(0);
+		else
+			ptzp->getHead(0)->stopZoom();
+		ptzp->getHead(1)->panTiltAbs(request->panspeed(), request->tiltspeed());
+	}
+
+	void setCamera(int32_t type)
+	{
+		/* TODO: handle camera type switch */
+		cameraType = type;
+		ptzp->getHead(0)->setProperty("choose_cam", 0);
+	}
+
+	virtual void getNumericParameter(int index, double &value, int32_t bytes[3])
+	{
+		if (map.isEmpty())
+			map = ptzp->getHead(0)->getSettings();
+
+		if (index == NUM_PARAM_FOV) {
+			value = ptzp->getHead(0)->getProperty(map["fov_pos"].toUInt());
+		} else if (index == NUM_PARAM_FOCUS) {
+			value = ptzp->getHead(0)->getProperty(map["focus_pos_set"].toUInt());
+		} else if (index == NUM_PARAM_YAW) {
+			float pana = ptzp->getHead(1)->getPanAngle();
+			if (pana > 180)
+				value = pana - 360;
+			else
+				value = pana;
+		} else if (index == NUM_PARAM_PITCH) {
+			value = ptzp->getHead(1)->getTiltAngle();
+		} else if (index == NUM_PARAM_HORIZONTAL_RES) {
+			value = 720;
+		} else if (index == NUM_PARAM_VERTICAL_RES) {
+			value = 576;
+		} else if (index == NUM_PARAM_ZOOM) {
+			value = ptzp->getHead(0)->getProperty(map["fov_pos"].toUInt());
+		} else if (index == NUM_PARAM_HPF_GAIN) {
+			value = ptzp->getHead(0)->getProperty(map["hf_sigma_coeff"].toUInt());
+		} else if (index == NUM_PARAM_HPF_SPATIAL) {
+			value = ptzp->getHead(0)->getProperty(map["hf_filter_std"].toUInt());
+		} else if (index == NUM_PARAM_RANGE || index == NUM_PARAM_HEIGHT) {
+			QString lref = map["laser_reflections"].toString();
+			if (lref.size()) {
+				/* TODO: how to report multiple detections */
+				QString ref0 = lref.split(";").first();
+				QStringList flds = ref0.split(",");
+				if (value == NUM_PARAM_RANGE)
+					value = flds[0].toInt();
+				else
+					value = flds[1].toInt();
+				/* TODO: we have laser range but no laser height? */
+			}
+		}
+	}
+
+	virtual int32_t getEnumParameter(int index)
+	{
+		if (map.isEmpty())
+			map = ptzp->getHead(0)->getSettings();
+
+		/* TODO: report correct camera type */
+		/* TODO: report correct camera op mode */
+		/* TODO: report correct detection creation mode */
+		/* TODO: report correct thermal polarity */
+		/* TODO: report correct symbology */
+		if (index == ENUM_PARAM_CAMERA_TYPE)
+			return cameraType;
+		if (index == ENUM_PARAM_OPERATIONAL_MODE)
+			return CONTROL_MODE_WATCH;
+		if (index == ENUM_PARAM_DETECTION_CREATION_MODE)
+			return DETECTION_OPEN_MODE;
+		if (index == ENUM_PARAM_POLARITY)
+			return WHITE_HOT;
+		if (index == ENUM_PARAM_SEMBOLOGY)
+			return SYMBOLOGY_ON;
+
+		return 0;
+	}
+
+	virtual void setNumericParameter(int index, double &value, int32_t bytes[3])
+	{
+
+	}
+
+	virtual void setEnumParameter(int index, int32_t value)
+	{
+	}
+
+	virtual void setEnumCommand(int index, int32_t value)
+	{
+	}
+
+	int cameraType;
+	QVariantMap map;
+};
+
+KardelenAPIServer::KardelenAPIServer(PtzpDriver *ptzp, QString nodeType)
 {
 	KaapiThread *grpcServ = new KaapiThread(50060, this);
 	grpcServ->start();
-	this->ptzp = ptzp;
-}
-
-void KardelenAPIServer::setPosi(kaapi::PosInfo *posi)
-{
-	posi->set_panpos(ptzp->getHead(1)->getPanAngle());
-	posi->set_tiltpos(ptzp->getHead(1)->getTiltAngle());
-	posi->set_zoompos(ptzp->getHead(0)->getZoom());
-	posi->set_fovh(0);
-	posi->set_fovv(0);
-}
-
-void KardelenAPIServer::fillCameraStatus(kaapi::CameraStatus *response)
-{
-	response->set_capabilities(getCapabilities());
-
-	int32_t v = 0;
-	QVariantMap map = ptzp->getHead(0)->getSettings();
-	kaapi::NumericParameter *np;
-	float pana = ptzp->getHead(1)->getPanAngle();
-	float tilta = ptzp->getHead(1)->getTiltAngle();
-
-	QString lref = map["laser_reflections"].toString();
-	if (lref.size()) {
-		/* TODO: how to report multiple detections */
-		QString ref0 = lref.split(";").first();
-		QStringList flds = ref0.split(",");
-		addbit(v, NUM_PARAM_RANGE);
-		np = response->add_numericparameters();
-		np->set_value(flds[0].toInt());
-
-		addbit(v, NUM_PARAM_HEIGHT);
-		np = response->add_numericparameters();
-		np->set_value(flds[1].toInt());
-		/* TODO: we have laser range but no laser height? */
-		//addbit(v, NUM_PARAM_LASER_RANGE);
-	}
-
-	addbit(v, NUM_PARAM_FOV);
-	np = response->add_numericparameters();
-	np->set_value(map["fov_pos"].toInt());
-
-	addbit(v, NUM_PARAM_FOCUS);
-	np = response->add_numericparameters();
-	np->set_value(map["focus_pos_set"].toInt()); /* just in case driver holds last value */
-
-	addbit(v, NUM_PARAM_YAW);
-	np = response->add_numericparameters();
-	if (pana > 180)
-		np->set_value(pana - 360);
+	if (nodeType == "kayi")
+		impl = new KardelenAPIFalconEyeImpl;
 	else
-		np->set_value(pana);
-
-	addbit(v, NUM_PARAM_PITCH);
-	np = response->add_numericparameters();
-	np->set_value(tilta);
-
-	addbit(v, NUM_PARAM_HORIZONTAL_RES);
-	np = response->add_numericparameters();
-	np->set_value(720);
-
-	addbit(v, NUM_PARAM_VERTICAL_RES);
-	np = response->add_numericparameters();
-	np->set_value(576);
-
-	addbit(v, NUM_PARAM_ZOOM);
-	np = response->add_numericparameters();
-	np->set_value(map["fov_pos"].toInt());
-
-	/* TODO: What are correct HPF parameters */
-	addbit(v, NUM_PARAM_HPF_GAIN);
-	np = response->add_numericparameters();
-	np->set_value(map["hf_sigma_coeff"].toInt());
-
-	addbit(v, NUM_PARAM_HPF_SPATIAL);
-	np = response->add_numericparameters();
-	np->set_value(map["hf_filter_std"].toInt());
-
-	response->set_numericparametersvector(v);
-
-	/* enum parameters */
-
-	/* TODO: report correct camera type */
-	addbit(v, ENUM_PARAM_CAMERA_TYPE);
-	response->add_enumparameters(TV);
-
-	/* TODO: report correct camera op mode */
-	addbit(v, ENUM_PARAM_OPERATIONAL_MODE);
-	response->add_enumparameters(CONTROL_MODE_WATCH);
-
-	/* TODO: report correct detection creation mode */
-	addbit(v, ENUM_PARAM_DETECTION_CREATION_MODE);
-	response->add_enumparameters(DETECTION_OPEN_MODE);
-
-	/* TODO: report correct thermal polarity */
-	addbit(v, ENUM_PARAM_POLARITY);
-	response->add_enumparameters(WHITE_HOT);
-
-	/* TODO: report correct symbology */
-	addbit(v, ENUM_PARAM_SEMBOLOGY);
-	response->add_enumparameters(SYMBOLOGY_ON);
-
-	response->set_enumparametersvector(v);
-}
-
-int64_t KardelenAPIServer::getCapabilities()
-{
-	int64_t caps = 0;
-	addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
-	addcap(caps, CAPABILITY_DETECTION);
-	addcap(caps, CAPABILITY_TRACKING);
-	addcap(caps, CAPABILITY_ZOOM);
-	addcap(caps, CAPABILITY_FOCUS);
-	addcap(caps, CAPABILITY_POLARITY);
-	addcap(caps, CAPABILITY_PT);
-	addcap(caps, CAPABILITY_ROI);
-	addcap(caps, CAPABILITY_DAY_VIEW);
-	addcap(caps, CAPABILITY_RANGE);
-	addcap(caps, CAPABILITY_MENU_OVER_VIDEO);
-	addcap(caps, CAPABILITY_LAZER_RANGE_FINDER);
-	addcap(caps, CAPABILITY_SHOW_HIDE_SEMBOLOGY);
-	addcap(caps, CAPABILITY_SHUT_DOWN);
-	addcap(caps, CAPABILITY_RESTART);
-	addcap(caps, CAPABILITY_AUTO_TRACK_WINDOW);
-	addcap(caps, CAPABILITY_AUTO_TRACK_DETECTION);
-	addcap(caps, CAPABILITY_NUC);
-	addcap(caps, CAPABILITY_FIRE);
-	addcap(caps, CAPABILITY_HPF_GAIN);
-	addcap(caps, CAPABILITY_HPF_SPATIAL);
-	return caps;
+		Q_ASSERT(0);
+	impl->ptzp = ptzp;
 }
 
 grpc::Status KardelenAPIServer::GetPosition(grpc::ServerContext *, const google::protobuf::Empty *, kaapi::PosInfo *response)
 {
-	setPosi(response);
+	impl->setPosi(response);
 	return grpc::Status::OK;
 }
 
 grpc::Status KardelenAPIServer::MoveAbsolute(grpc::ServerContext *, const kaapi::AbsoluteMoveParameters *request, kaapi::AbsoluteMoveResult *response)
 {
 	response->set_completionstatus(kaapi::AbsoluteMoveResult_Completion_COMPLETED);
-	setPosi(response->mutable_posinfo());
+	impl->setPosi(response->mutable_posinfo());
 	return grpc::Status::OK;
 }
 
 grpc::Status KardelenAPIServer::MoveRelative(grpc::ServerContext *, const kaapi::RelativeMoveParameters *request, kaapi::RelativeMoveResult *response)
 {
-	/* speed is no-op for falcon-eye */
-	if (request->zoomspeed() > 0)
-		ptzp->getHead(0)->startZoomIn(0);
-	else if (request->zoomspeed() < 0)
-		ptzp->getHead(0)->startZoomOut(0);
-	else
-		ptzp->getHead(0)->stopZoom();
-	ptzp->getHead(1)->panTiltAbs(request->panspeed(), request->tiltspeed());
 	kaapi::PosInfo *posi = response->mutable_posinfo();
-	setPosi(posi);
+	impl->moveRelative(request);
+	impl->setPosi(posi);
 	return grpc::Status::OK;
 }
 
 grpc::Status KardelenAPIServer::GetCameraStatus(grpc::ServerContext *, const kaapi::GetCameraStatusParameters *, kaapi::CameraStatus *response)
 {
-	fillCameraStatus(response);
+	impl->fillCameraStatus(response);
 	return grpc::Status::OK;
 }
 
@@ -244,10 +328,69 @@ grpc::Status KardelenAPIServer::CommunicationChannel(grpc::ServerContext *, ::gr
 		}
 
 		kaapi::CommRead msgr;
-		setPosi(msgr.mutable_posinfo());
-		fillCameraStatus(msgr.mutable_status());
+		impl->setPosi(msgr.mutable_posinfo());
+		impl->fillCameraStatus(msgr.mutable_status());
 		stream->Write(msgr);
 	}
 
+	return grpc::Status::OK;
+}
+
+grpc::Status KardelenAPIServer::SetCamera(grpc::ServerContext *, const SetCameraRequest *request, SetCameraResponse *response)
+{
+	impl->setCamera(request->cameratype());
+	response->set_capabilities(impl->getCapabilities());
+	return grpc::Status::OK;
+}
+
+grpc::Status KardelenAPIServer::GetNumericParameter(grpc::ServerContext *, const GetNumericParameterRequest *request, GetNumericParameterResponse *response)
+{
+	double value = 0;
+	int32_t bytes[] = {0, 0, 0};
+	impl->getNumericParameter(request->index(), value, bytes);
+	response->mutable_value()->set_value(value);
+	response->mutable_value()->set_byte0(bytes[0]);
+	response->mutable_value()->set_byte1(bytes[1]);
+	response->mutable_value()->set_byte2(bytes[2]);
+	return grpc::Status::OK;
+}
+
+grpc::Status KardelenAPIServer::GetEnumParameter(grpc::ServerContext *, const GetEnumParameterRequest *request, GetEnumParameterResponse *response)
+{
+	response->set_value(impl->getEnumParameter(request->index()));
+	return grpc::Status::OK;
+}
+
+grpc::Status KardelenAPIServer::SetNumericParameter(grpc::ServerContext *, const SetNumericParameterRequest *request, SetNumericParameterResponse *response)
+{
+	double value = request->value().value();
+	int32_t bytes[] = {request->value().byte0(), request->value().byte1(), request->value().byte2()};
+	impl->setNumericParameter(request->index(), value, bytes);
+	impl->getNumericParameter(request->index(), value, bytes);
+	response->mutable_value()->set_value(value);
+	response->mutable_value()->set_byte0(bytes[0]);
+	response->mutable_value()->set_byte1(bytes[1]);
+	response->mutable_value()->set_byte2(bytes[2]);
+
+	return grpc::Status::OK;
+}
+
+grpc::Status KardelenAPIServer::SetEnumParameter(grpc::ServerContext *, const SetEnumParameterRequest *request, SetEnumParameterResponse *response)
+{
+	impl->setEnumParameter(request->index(), response->value());
+	return grpc::Status::OK;
+}
+
+grpc::Status KardelenAPIServer::SetEnumCommand(grpc::ServerContext *, const SetEnumCommandRequest *request, SetEnumCommandResponse *response)
+{
+	impl->setEnumCommand(request->index(), response->value());
+	return grpc::Status::OK;
+}
+
+grpc::Status KardelenAPIServer::GetVersion(grpc::ServerContext *, const google::protobuf::Empty *, ApiVersion *response)
+{
+	response->set_date(__DATE__);
+	response->set_time(__TIME__);
+	response->set_version("1.0.3");
 	return grpc::Status::OK;
 }
