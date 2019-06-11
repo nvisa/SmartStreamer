@@ -178,8 +178,9 @@ public:
 	void setCamera(int32_t type)
 	{
 		/* TODO: handle camera type switch */
+		/* Kamera tipine göre görüntü değişimi (termal = 0, gündüz = 1) */
 		cameraType = type;
-		ptzp->getHead(0)->setProperty("choose_cam", 0);
+		ptzp->getHead(0)->setProperty("choose_cam", cameraType);
 	}
 
 	virtual void getNumericParameter(int index, double &value, int32_t bytes[3])
@@ -229,22 +230,33 @@ public:
 		if (map.isEmpty())
 			map = ptzp->getHead(0)->getSettings();
 
-		/* TODO: report correct camera type */
+		/* TODO: report correct camera type */ // ---> done
 		/* TODO: report correct camera op mode */
 		/* TODO: report correct detection creation mode */
-		/* TODO: report correct thermal polarity */
-		/* TODO: report correct symbology */
-		if (index == ENUM_PARAM_CAMERA_TYPE)
-			return cameraType;
+		/* TODO: report correct thermal polarity */ // ---> done
+		/* TODO: report correct symbology */ // ---> done
+		if (index == ENUM_PARAM_CAMERA_TYPE) {
+			if (ptzp->getHead(0)->getProperty("choose_cam").toInt())
+				return TV;
+			else
+				return THERMAL;
+		}
 		if (index == ENUM_PARAM_OPERATIONAL_MODE)
 			return CONTROL_MODE_WATCH;
 		if (index == ENUM_PARAM_DETECTION_CREATION_MODE)
 			return DETECTION_OPEN_MODE;
-		if (index == ENUM_PARAM_POLARITY)
-			return WHITE_HOT;
-		if (index == ENUM_PARAM_SEMBOLOGY)
-			return SYMBOLOGY_ON;
-
+		if (index == ENUM_PARAM_POLARITY) {
+			if (ptzp->getHead(0)->getProperty("polarity").toInt())
+				return BLACK_HOT;
+			else
+				return WHITE_HOT;
+		}
+		if (index == ENUM_PARAM_SEMBOLOGY) {
+			if (ptzp->getHead(0)->getProperty("symbology").toInt())
+				return SYMBOLOGY_ON;
+			else
+				return SYMBOLOGY_OFF;
+		}
 		return 0;
 	}
 
