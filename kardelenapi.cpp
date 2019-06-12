@@ -4,6 +4,7 @@
 #include <ecl/ptzp/ptzphead.h>
 #include <ecl/ptzp/ptzpdriver.h>
 
+#include <QDebug>
 #include <QThread>
 
 #include <string>
@@ -58,15 +59,45 @@ public:
 	virtual void setPosi(kaapi::PosInfo *posi) = 0;
 	virtual void moveRelative(const kaapi::RelativeMoveParameters *request) = 0;
 	virtual void setCamera(int32_t type) = 0;
-	virtual void getNumericParameter(int index, double &value, int32_t bytes[3]) = 0;
-	virtual void setNumericParameter(int index, double &value, int32_t bytes[3]) = 0;
 	virtual int32_t getEnumParameter(int index) = 0;
 	virtual void setEnumParameter(int index, int32_t value) = 0;
 	virtual void setEnumCommand(int index, int32_t value) = 0;
 
+	virtual void getNumericParameterP(int index, double &value, int32_t bytes[3])
+	{
+		getNumericParameter(index, value, bytes);
+	}
+
+	virtual void setNumericParameterP(int index, double &value, int32_t bytes[3])
+	{
+		if (index == NUM_PARAM_YAW || index == NUM_PARAM_PITCH) {
+			if (bytes[2] == 0x0) {
+				if (index == NUM_PARAM_YAW)
+					lastPanSpeed = value;
+				else if (index == NUM_PARAM_PITCH)
+					lastTiltSpeed = value;
+				/* relative movement */
+				kaapi::RelativeMoveParameters req;
+				req.set_panspeed(lastPanSpeed);
+				req.set_tiltspeed(lastTiltSpeed);
+				req.set_zoomspeed(lastZoomSpeed);
+				moveRelative(&req);
+			} else if (bytes[2] == 0x3) {
+				/* goto preset or position */
+			}
+		} else
+			setNumericParameter(index, value, bytes);
+	}
+
+	double lastPanSpeed;
+	double lastTiltSpeed;
+	double lastZoomSpeed;
 	PtzpDriver *ptzp;
 
 protected:
+	virtual void getNumericParameter(int index, double &value, int32_t bytes[3]) = 0;
+	virtual void setNumericParameter(int index, double &value, int32_t bytes[3]) = 0;
+
 	void addNumericParameter(int32_t &v, int32_t type, kaapi::CameraStatus *response)
 	{
 		addbit(v, type);
@@ -107,6 +138,7 @@ public:
 		addcap(caps, CAPABILITY_PT);
 		addcap(caps, CAPABILITY_ROI);
 		addcap(caps, CAPABILITY_DAY_VIEW);
+		addcap(caps, CAPABILITY_NIGHT_VIEW);
 		addcap(caps, CAPABILITY_RANGE);
 		addcap(caps, CAPABILITY_MENU_OVER_VIDEO);
 		addcap(caps, CAPABILITY_LAZER_RANGE_FINDER);
@@ -116,7 +148,6 @@ public:
 		addcap(caps, CAPABILITY_AUTO_TRACK_WINDOW);
 		addcap(caps, CAPABILITY_AUTO_TRACK_DETECTION);
 		addcap(caps, CAPABILITY_NUC);
-		addcap(caps, CAPABILITY_FIRE);
 		addcap(caps, CAPABILITY_HPF_GAIN);
 		addcap(caps, CAPABILITY_HPF_SPATIAL);
 		return caps;
@@ -188,6 +219,8 @@ public:
 		if (map.isEmpty())
 			map = ptzp->getHead(0)->getSettings();
 
+		value = 0;
+
 		if (index == NUM_PARAM_FOV) {
 			value = ptzp->getHead(0)->getProperty(map["fov_pos"].toUInt());
 		} else if (index == NUM_PARAM_FOCUS) {
@@ -257,7 +290,9 @@ public:
 			else
 				return SYMBOLOGY_OFF;
 		}
-		return 0;
+
+		/* API wants this */
+		return -1;
 	}
 
 	virtual void setNumericParameter(int index, double &value, int32_t bytes[3])
@@ -378,7 +413,7 @@ grpc::Status KardelenAPIServer::GetNumericParameter(grpc::ServerContext *, const
 {
 	double value = 0;
 	int32_t bytes[] = {0, 0, 0};
-	impl->getNumericParameter(request->index(), value, bytes);
+	impl->getNumericParameterP(request->index(), value, bytes);
 	response->mutable_value()->set_value(value);
 	response->mutable_value()->set_byte0(bytes[0]);
 	response->mutable_value()->set_byte1(bytes[1]);
@@ -394,10 +429,13 @@ grpc::Status KardelenAPIServer::GetEnumParameter(grpc::ServerContext *, const Ge
 
 grpc::Status KardelenAPIServer::SetNumericParameter(grpc::ServerContext *, const SetNumericParameterRequest *request, SetNumericParameterResponse *response)
 {
+	int32_t index = request->index();
 	double value = request->value().value();
 	int32_t bytes[] = {request->value().byte0(), request->value().byte1(), request->value().byte2()};
-	impl->setNumericParameter(request->index(), value, bytes);
-	impl->getNumericParameter(request->index(), value, bytes);
+	impl->setNumericParameterP(index, value, bytes);
+
+	/* return old parameter */
+	impl->getNumericParameterP(index, value, bytes);
 	response->mutable_value()->set_value(value);
 	response->mutable_value()->set_byte0(bytes[0]);
 	response->mutable_value()->set_byte1(bytes[1]);

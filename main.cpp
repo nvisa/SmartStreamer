@@ -273,7 +273,7 @@ static int testGrpc(const QString &action)
 	return 0;
 }
 
-#include "proto/KardelenAPI.grpc.pb.h"
+#include "kardelenapi.h"
 int kaapiClient(int argc, char *argv[])
 {
 	Q_UNUSED(argc);
@@ -286,7 +286,7 @@ int kaapiClient(int argc, char *argv[])
 	kaapi::PosInfo posi;
 	grpc::ClientContext ctx;
 
-	QString action = "status";
+	QString action = QString::fromUtf8(argv[1]);
 
 	if (action == "position") {
 		grpc::Status s = stub->GetPosition(&ctx, ereq, &posi);
@@ -304,6 +304,81 @@ int kaapiClient(int argc, char *argv[])
 			return -1;
 		}
 		fDebug("capabilities = 0x%lx", cstatus.capabilities());
+	} else if (action == "getnum") {
+		QString index = QString::fromUtf8(argv[2]);
+		kaapi::GetNumericParameterResponse resp;
+		kaapi::GetNumericParameterRequest preq;
+		preq.set_index(index.toInt());
+		grpc::Status s = stub->GetNumericParameter(&ctx, preq, &resp);
+		if (s.error_code() != grpc::StatusCode::OK) {
+			fDebug("Some grpc error occurred");
+			return -1;
+		}
+		fDebug("num param (%d): %lf", index.toInt(), resp.value().value());
+	} else if (action == "getenum") {
+		QString index = QString::fromUtf8(argv[2]);
+		kaapi::GetEnumParameterResponse resp;
+		kaapi::GetEnumParameterRequest preq;
+		preq.set_index(index.toInt());
+		grpc::Status s = stub->GetEnumParameter(&ctx, preq, &resp);
+		if (s.error_code() != grpc::StatusCode::OK) {
+			fDebug("Some grpc error occurred");
+			return -1;
+		}
+		fDebug("num param (%d): %d", index.toInt(), resp.value());
+	} else if (action == "setcam") {
+		QString cam = QString::fromUtf8(argv[2]);
+		kaapi::SetCameraResponse resp;
+		kaapi::SetCameraRequest preq;
+		preq.set_cameratype(cam.toInt());
+		grpc::Status s = stub->SetCamera(&ctx, preq, &resp);
+		if (s.error_code() != grpc::StatusCode::OK) {
+			fDebug("Some grpc error occurred");
+			return -1;
+		}
+		fDebug("setcam (%d): 0x%lx", cam.toInt(), resp.capabilities());
+	} else if (action == "setnum") {
+		QString index = QString::fromUtf8(argv[2]);
+		QString value = QString::fromUtf8(argv[3]);
+		kaapi::SetNumericParameterResponse resp;
+		kaapi::SetNumericParameterRequest preq;
+		preq.set_index(index.toInt());
+		kaapi::NumericParameter *np = preq.mutable_value();
+		np->set_value(value.toDouble());
+		grpc::Status s = stub->SetNumericParameter(&ctx, preq, &resp);
+		if (s.error_code() != grpc::StatusCode::OK) {
+			fDebug("Some grpc error occurred");
+			return -1;
+		}
+		fDebug("set numeric parameter ok");
+	} else if (action == "pan") {
+		QString value = QString::fromUtf8(argv[2]);
+		kaapi::SetNumericParameterResponse resp;
+		kaapi::SetNumericParameterRequest preq;
+		preq.set_index(kaapi::NUM_PARAM_YAW);
+		kaapi::NumericParameter *np = preq.mutable_value();
+		np->set_value(value.toDouble());
+		np->set_byte2(0x0);
+		grpc::Status s = stub->SetNumericParameter(&ctx, preq, &resp);
+		if (s.error_code() != grpc::StatusCode::OK) {
+			fDebug("Some grpc error occurred");
+			return -1;
+		}
+		fDebug("pan ok");
+	} else if (action == "tilt") {
+		QString value = QString::fromUtf8(argv[2]);
+		kaapi::SetNumericParameterResponse resp;
+		kaapi::SetNumericParameterRequest preq;
+		preq.set_index(kaapi::NUM_PARAM_PITCH);
+		kaapi::NumericParameter *np = preq.mutable_value();
+		np->set_value(value.toDouble());
+		np->set_byte2(0x0);
+		grpc::Status s = stub->SetNumericParameter(&ctx, preq, &resp);
+		if (s.error_code() != grpc::StatusCode::OK) {
+			fDebug("Some grpc error occurred");
+			return -1;
+		}
+		fDebug("tilt ok");
 	}
 
 	return 0;
