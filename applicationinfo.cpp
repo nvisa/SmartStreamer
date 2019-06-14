@@ -84,13 +84,14 @@ int ApplicationInfo::startPtzpDriver()
 		if (driver) {
 			fDebug("Starting PTZP driver for %s", qPrintable(obj["type"].toString()));
 			driver->setTarget(obj["target"].toString());
-			if (obj.contains("grpc_port"))
+			if (obj.contains("grpc_port")) {
 				driver->startGrpcApi(obj["grpc_port"].toInt());
+				QProcess::execute("killall grpcwebproxy");
+			}
 			drivers << driver;
 
 			if (obj["kardelen"].toBool())
 				new KardelenAPIServer(driver, obj["type"].toString());
-
 		}
 		/* we only support one ptzp driver at the moment */
 		break;
