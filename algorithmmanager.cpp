@@ -1089,7 +1089,7 @@ int AlgorithmManager::setupDeviceController(const System systemInfo)
 			arya = new AryaDriver();
 			ptzp = arya;
 		} else if (systemInfo == KAYI) {
-			kayi = new KayiDriver;
+			kayi = nullptr;//new KayiDriver;
 			kayi->startGrpcApi(50058);
 			kayi->setTarget("ttyXRUSB0?baud=9600?protocol=422;ttyXRUSB1?baud=19200?protocol=422?parity=1?databits=7?stopbits=1");
 		} else if (systemInfo == EMPTY_SYSTEM) {
