@@ -70,12 +70,26 @@ public:
 
 	virtual void setNumericParameterP(int index, double &value, int32_t bytes[3])
 	{
+
 		if (index == NUM_PARAM_YAW || index == NUM_PARAM_PITCH) {
-			if (bytes[2] == 0x0) {
+			if (bytes[2] == VALUE_NO_CHANGE) {
+
+			} else if (bytes[2] == VALUE_INCREASE) {
 				if (index == NUM_PARAM_YAW)
-					lastPanSpeed = value;
+					lastPanSpeed = value / 100.0;
 				else if (index == NUM_PARAM_PITCH)
-					lastTiltSpeed = value;
+					lastTiltSpeed = value / 100.0;
+				/* relative movement */
+				kaapi::RelativeMoveParameters req;
+				req.set_panspeed(lastPanSpeed);
+				req.set_tiltspeed(lastTiltSpeed);
+				req.set_zoomspeed(lastZoomSpeed);
+				moveRelative(&req);
+			} else if (bytes[2] == VALUE_DECREASE) {
+				if (index == NUM_PARAM_YAW)
+					lastPanSpeed = -1 * value / 100.0;
+				else if (index == NUM_PARAM_PITCH)
+					lastTiltSpeed = -1 * value / 100.0;
 				/* relative movement */
 				kaapi::RelativeMoveParameters req;
 				req.set_panspeed(lastPanSpeed);
@@ -123,7 +137,7 @@ public:
 	KardelenAPIFalconEyeImpl()
 	{
 		cameraType = 0;
-
+		opMode = CONTROL_MODE_JOYSTICK;
 	}
 
 	int64_t getCapabilities()
@@ -275,7 +289,7 @@ public:
 				return THERMAL;
 		}
 		if (index == ENUM_PARAM_OPERATIONAL_MODE)
-			return CONTROL_MODE_WATCH;
+			return opMode;
 		if (index == ENUM_PARAM_DETECTION_CREATION_MODE)
 			return DETECTION_OPEN_MODE;
 		if (index == ENUM_PARAM_POLARITY) {
@@ -317,10 +331,11 @@ public:
 				ptzp->getHead(0)->setProperty("choose_cam", 0);
 		} else if (index == ENUM_PARAM_SEMBOLOGY){
 			if (value == SYMBOLOGY_ON)
-				ptzp->getHead(0)->setProperty("choose_cam", 1);
+				ptzp->getHead(0)->setProperty("symbology", 1);
 			else if (value == SYMBOLOGY_OFF)
-				ptzp->getHead(0)->setProperty("choose_cam", 0);
-		}
+				ptzp->getHead(0)->setProperty("symbology", 0);
+		} else if (index == ENUM_PARAM_OPERATIONAL_MODE)
+			opMode = value;
 	}
 
 	virtual void setEnumCommand(int index, int32_t value)
@@ -328,6 +343,7 @@ public:
 	}
 
 	int cameraType;
+	int opMode;
 	QVariantMap map;
 };
 

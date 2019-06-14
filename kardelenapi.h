@@ -88,6 +88,11 @@ const static int NUM_PARAM_BULLET_COUNT = 26;
 const static int NUM_PARAM_HPF_GAIN = 27;
 const static int NUM_PARAM_HPF_SPATIAL = 28;
 
+const static int VALUE_NO_CHANGE = 0;
+const static int VALUE_INCREASE = 1;
+const static int VALUE_DECREASE = 2;
+const static int VALUE_SET = 3;
+
 const static int ENUM_PARAM_SENSITIVITY_ADJUSTMENT_TYPE = 0;
 typedef int byte;
 const static byte AUTO_MODE = (byte) 0x01;
