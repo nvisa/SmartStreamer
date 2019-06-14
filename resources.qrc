@@ -31,5 +31,7 @@
         <file>proto/gen/KardelenAPI.java</file>
         <file>proto/gen/Ptzp.java</file>
         <file>proto/gen/PTZServiceGrpc.java</file>
+        <file>oa.jpg</file>
+        <file>oa.png</file>
     </qresource>
 </RCC>

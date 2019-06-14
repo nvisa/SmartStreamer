@@ -28,10 +28,21 @@ extern "C" {
 
 #include "streamercommon.h"
 
+#include <QPainter>
+
+struct fg {
+	int mode;
+	QImage img;
+	int cnt;
+};
+
+static fg x;
+
 TX1Streamer::TX1Streamer(QObject *parent)
 	: BaseStreamer(parent)
 {
 	grpcserv = AlgorithmGrpcServer::instance();
+	x.mode = 0;
 }
 
 int TX1Streamer::start()
@@ -79,6 +90,8 @@ void TX1Streamer::apiUrlRequested(const QUrl &url)
 			el->setPassThru(false);
 		else if (action == "stop")
 			el->setState(BaseAlgorithmElement::STOPALGO);
+		else if (action == "restart")
+			el->restart();
 	} else if (actions[1] == "reload") {
 		if (actions.size() < 3)
 			return;
@@ -89,6 +102,8 @@ void TX1Streamer::apiUrlRequested(const QUrl &url)
 			/* encoders don't support hot-reload */
 			QTimer::singleShot(1000, QCoreApplication::instance(), SLOT(quit()));
 		}
+	} else if (actions[1] == "fg") {
+		x.mode = actions[2].toInt();
 	}
 }
 
@@ -101,6 +116,46 @@ int TX1Streamer::checkSeiAlarm(const RawBuffer &buf)
 		if (seiData.size() == 0)
 			sei->clearLastSEIMessage();
 	}
+	return 0;
+}
+
+int TX1Streamer::frameGenerator(const RawBuffer &buf)
+{
+	if (x.mode == 0)
+		return 0;
+	if (x.img.isNull()) {
+		x.img.load(":/oa.png");
+		x.cnt = 0;
+		x.mode = 2;
+	}
+	if (x.mode == 1) {
+		if (!x.cnt++) {
+			//memset((void *)buf.constData(), 0x80, buf.size());
+			QImage im((uchar *)buf.constData(), buf.constPars()->videoWidth, buf.constPars()->videoHeight, QImage::Format_Grayscale8);
+			//im.fill(0);
+			QPainter p(&im);
+			p.setPen(Qt::white);
+			p.setBrush(Qt::white);
+			p.setFont(QFont("Arial", 48));
+			p.drawImage(0, 0, x.img);
+
+			QString text = "funny";
+			//p.drawText(im.rect(), Qt::AlignVCenter | Qt::AlignHCenter, text);
+		} else if (x.cnt == 25)
+			x.cnt = 0;
+	} else if (x.mode == 2) {
+		memset((void *)buf.constData(), 0x80, buf.size());
+		QImage im((uchar *)buf.constData(), buf.constPars()->videoWidth, buf.constPars()->videoHeight, QImage::Format_Grayscale8);
+		im.fill(0);
+		QPainter p(&im);
+		p.setPen(Qt::white);
+		p.setBrush(Qt::white);
+		p.setFont(QFont("Arial", 48));
+		p.drawImage(0, 0, x.img);
+		QString text = "funny";
+		p.drawText(im.rect(), Qt::AlignVCenter | Qt::AlignRight, text);
+	}
+
 	return 0;
 }
 
@@ -127,6 +182,7 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	VideoScaler* downScalar1 = new VideoScaler;
 	VideoScaler* downScalar2 = new VideoScaler;
 	VideoScaler* downScalar3 = new VideoScaler;
+	VideoScaler* downScalarJpeg = new VideoScaler;
 	QSize res1 = ((TX1VideoEncoder *)enc1)->getOutputResolution();
 	QSize res2 = ((TX1VideoEncoder *)enc2)->getOutputResolution();
 	QSize res3 = ((TX1VideoEncoder *)enc3)->getOutputResolution();
@@ -137,6 +193,7 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	downScalar1->setOutputResolution(res1.width(), res1.height());
 	downScalar2->setOutputResolution(res2.width(), res2.height());
 	downScalar3->setOutputResolution(res3.width(), res3.height());
+	downScalarJpeg->setOutputResolution(960, 540);
 
 	TX1JpegEncoder *jenc = new TX1JpegEncoder;
 	MjpegElement *jpegel = new MjpegElement(13789);
@@ -172,6 +229,8 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 
 	BaseLmmPipeline *p3 = addPipeline();
 	p3->append(queue);
+	p3->append(downScalarJpeg);
+	p3->append(newFunctionPipe(TX1Streamer, this, TX1Streamer::frameGenerator));
 	p3->append(jenc);
 	p3->append(jpegel);
 	p3->end();
