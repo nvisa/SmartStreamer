@@ -84,7 +84,8 @@ int TrackAlgorithmElement::processAlgo(const RawBuffer &buf)
 
 int TrackAlgorithmElement::release()
 {
-
+	PtzpHead *headpt = ApplicationInfo::instance()->getPtzpDriver(0)->getHead(1);
+	headpt->panTiltAbs(0, 0);
 	if (mode == AUTO)
 		asel_via_track_release();
 	else if (mode == MANUAL)
@@ -153,7 +154,10 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 	PtzpHead *headpt = ApplicationInfo::instance()->getPtzpDriver(0)->getHead(1);
 	if (headpt == nullptr)
 		headpt = headz;
-	float panTiltZoomRead[] = {headpt->getPanAngle(), headpt->getTiltAngle(), 0, 12, 12};
+	float ta = headpt->getTiltAngle();
+	if (ta > 180)
+		ta -= 360;
+	float panTiltZoomRead[] = {headpt->getPanAngle(), ta, 0, 12, 12};
 	//zoom2degree_conversion(headz->getZoom(),panTiltZoomRead);
 	float fovh = 0, fovv = 0;
 	if (!headz->getFOV(fovh, fovv)) {
@@ -165,7 +169,6 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 	asel_direct_track((uchar *)buf.constData(), width * height, width , height,
 					  v.debug, control.meta, panTiltZoomRead,
 					  objProp, control.initialize);
-
 
 	float speed_pan  = (float)control.meta[11];
 	float speed_tilt = (float)control.meta[12];

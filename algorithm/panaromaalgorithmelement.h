@@ -17,6 +17,7 @@ public:
 		uchar meta[4096];
 		int pan;
 		int tilt;
+		int initialize;
 	};
 
 protected:

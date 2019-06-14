@@ -24,6 +24,8 @@ public:
 	void zoom2degree_conversion(int zoomReadOut,float* HV_fovAngles);
 
 protected:
+	int reloadJson(const QJsonObject &node);
+
 	BaseAlgorithmCommon::BaseVariables v;
 	StabilizationControl control;
 };

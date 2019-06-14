@@ -27,8 +27,9 @@ int PanaromaAlgorithmElement::processAlgo(const RawBuffer &buf)
 	int width = buf.constPars()->videoWidth;
 	int height = buf.constPars()->videoHeight;
 
+	float panTiltZoomRead[] = {0, 0, 0, 0, 0, 0};
 	asel_pan((uchar *)buf.constData(), width * height, width, height, v.rgb,
-			 v.shadow, v.ill, v.debug, control.meta, control.pan, control.tilt);
+			 v.shadow, v.ill, v.debug, control.meta, panTiltZoomRead, control.initialize);
 
 	return newOutputBuffer(buf);
 }

@@ -18,7 +18,7 @@ void record_video(unsigned char *buf, int size, int width, int height);
 void asel_bypass(unsigned char *buf, int size, int width, int height,float pan_tilt_zoom_read[],int debug_case,int stabilization_case,int privacy_case,int init_bypass,int sensitivity,int VideoFormat);
 void asel_bypass_release();
 
-void asel_pan(unsigned char *buf, int size, int width, int height,int RGB_case,int shadow_case,int ill_norm_case,int debug_case,unsigned char* meta,int tilt_degree, int pan_degree);
+void asel_pan(unsigned char *buf, int size, int width, int height,int RGB_case,int shadow_case,int ill_norm_case,int debug_case,unsigned char* meta, float tilt_degree[], int);
 void asel_pan_release();
 
 void asel_via_base(unsigned char *buf, int size, int width, int height,int VideoFormat,int shadow_case,int ill_norm_case,int debug_case,int stabilization_case,int privacy_case, unsigned char* meta,float pan_tilt_zoom_read[],bool &alarmFlag,int init_viabase,int sensitivity,bool Classification,bool Overlay);

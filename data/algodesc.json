@@ -33,7 +33,8 @@
 		},
 		{
 			"type": "privacy",
-			"enabled": false
+			"enabled": false,
+			"stabilization": false
 		}
 	]
 }

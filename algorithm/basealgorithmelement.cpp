@@ -53,7 +53,7 @@ int BaseAlgorithmElement::processAlgo(const RawBuffer &buf)
 
 int BaseAlgorithmElement::baseAlgorithmProcess(const RawBuffer &buf)
 {
-	mInfo("Buffer sending with size %d", algoState);
+	mInfo("Current algorithm state is %d", algoState);
 	switch (algoState) {
 	case INIT:
 		init();

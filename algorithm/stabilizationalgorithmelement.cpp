@@ -64,6 +64,12 @@ void StabilizationAlgorithmElement::zoom2degree_conversion(int zoomReadOut,float
 	//printf("H-F angles: %f %f\n",HV_fovAngles[3],HV_fovAngles[4]);
 }
 
+int StabilizationAlgorithmElement::reloadJson(const QJsonObject &node)
+{
+	v.stabilization = node["stabilization"].toBool() ? 1 : 0;
+	return 0;
+}
+
 int StabilizationAlgorithmElement::init()
 {
 	v.debug = 0;
@@ -72,7 +78,6 @@ int StabilizationAlgorithmElement::init()
 	v.record = 0;
 	v.rgb = 1;
 	v.shadow = 0;
-	v.stabilization = 0;
 	control.initialize = 1;
 	v.rgb = 1;
 	return BaseAlgorithmElement::init();
@@ -96,7 +101,6 @@ int StabilizationAlgorithmElement::processAlgo(const RawBuffer &buf)
 		panTiltZoomRead[1] = headpt->getTiltAngle();
 	}
 	if (headz) {
-		//zoom2degree_conversion(headz->getZoom(), panTiltZoomRead);
 		float fovh = 0, fovv = 0;
 		if (!headz->getFOV(fovh, fovv)) {
 			panTiltZoomRead[3] = fovh;
