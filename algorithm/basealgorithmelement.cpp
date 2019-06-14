@@ -27,6 +27,7 @@ BaseAlgorithmElement::BaseAlgorithmElement(QObject *parent)
 {
 	algoState = UNKNOWN;
 	algIndex = 0;
+	restarting = false;
 }
 
 int BaseAlgorithmElement::init()
@@ -81,6 +82,12 @@ int BaseAlgorithmElement::baseAlgorithmProcess(const RawBuffer &buf)
 		algoState = UNKNOWN;
 		release();
 		break;
+	case UNKNOWN:
+		if (restarting) {
+			algoState = INIT;
+			restarting = false;
+		}
+		break;
 	default:
 		break;
 	}
@@ -123,6 +130,19 @@ int BaseAlgorithmElement::reloadJson()
 void BaseAlgorithmElement::setJsonAlgorithmIndex(int index)
 {
 	algIndex = index;
+}
+
+void BaseAlgorithmElement::restart()
+{
+	restarting = true;
+	setState(STOPALGO);
+}
+
+void BaseAlgorithmElement::setState(BaseAlgorithmElement::AlgoState state)
+{
+	if (state == STOPALGO && algoState != PROCESS)
+		return;
+	algoState = state;
 }
 
 int BaseAlgorithmElement::reloadJson(const QJsonObject &node)

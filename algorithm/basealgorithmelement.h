@@ -32,9 +32,10 @@ public:
 	virtual QString getTypeString();
 	int reloadJson();
 	void setJsonAlgorithmIndex(int index);
+	void restart();
 
 	/* TODO: state management should be private */
-	void setState(AlgoState state) { algoState = state; }
+	void setState(AlgoState state);
 	int getState() { return algoState; }
 
 protected:
@@ -46,6 +47,7 @@ private:
 	int baseAlgorithmProcess(const RawBuffer &buf);
 
 	int algIndex;
+	bool restarting;
 };
 
 #endif // BASEALGORITHMELEMENT_H
