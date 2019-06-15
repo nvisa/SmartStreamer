@@ -179,20 +179,24 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 					  v.debug, control.meta, panTiltZoomRead,
 					  objProp, control.initialize);
 
-	float speed_pan  = (float)control.meta[11];
-	float speed_tilt = (float)control.meta[12];
-	if(speed_pan>64)
-		speed_pan = -(speed_pan-64);
-	if(speed_tilt>64)
-		speed_tilt = -(speed_tilt-64);
-	if((int)control.meta[31]==0)//track score
-	{
-		speed_pan  = 0;
-		speed_tilt = 0;
-		//TODO: stop algorithm
+	if (migrateDebug) {
+		float speed_pan  = (float)control.meta[11];
+		float speed_tilt = (float)control.meta[12];
+		if(speed_pan>64)
+			speed_pan = -(speed_pan-64);
+		if(speed_tilt>64)
+			speed_tilt = -(speed_tilt-64);
+		if((int)control.meta[31]==0)//track score
+		{
+			speed_pan  = 0;
+			speed_tilt = 0;
+			//TODO: stop algorithm
+		}
+		mDebug("######################### cevo speed pan=%d tilt=%d", speed_pan, speed_tilt);
+		mDebug("######################### ptzp head pan=%d tilt=%d", panTiltZoomRead[3], panTiltZoomRead[4]);
 	}
-	printf("final speeds: %d %d\n",(int)speed_pan,(int)(speed_tilt));
-	headpt->panTiltAbs((float)speed_pan/63.0, (float)speed_tilt/63.0);
+
+	headpt->panTiltDegree(panTiltZoomRead[3], panTiltZoomRead[4]);
 
 	if (control.initialize)
 		control.initialize = 0;
