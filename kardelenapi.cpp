@@ -58,6 +58,7 @@ public:
 	virtual void fillCameraStatus(kaapi::CameraStatus *response) = 0;
 	virtual void setPosi(kaapi::PosInfo *posi) = 0;
 	virtual void moveRelative(const kaapi::RelativeMoveParameters *request) = 0;
+	virtual void moveAbsolute(const kaapi::AbsoluteMoveParameters *request) = 0;
 	virtual void setCamera(int32_t type) = 0;
 	virtual int32_t getEnumParameter(int index) = 0;
 	virtual void setEnumParameter(int index, int32_t value) = 0;
@@ -70,7 +71,6 @@ public:
 
 	virtual void setNumericParameterP(int index, double &value, int32_t bytes[3])
 	{
-
 		if (index == NUM_PARAM_YAW || index == NUM_PARAM_PITCH) {
 			if (bytes[2] == VALUE_NO_CHANGE) {
 
@@ -78,7 +78,7 @@ public:
 				if (index == NUM_PARAM_YAW)
 					lastPanSpeed = value / 100.0;
 				else if (index == NUM_PARAM_PITCH)
-					lastTiltSpeed = value / 100.0;
+					lastTiltSpeed = -1 * value / 100.0;
 				/* relative movement */
 				kaapi::RelativeMoveParameters req;
 				req.set_panspeed(lastPanSpeed);
@@ -89,15 +89,36 @@ public:
 				if (index == NUM_PARAM_YAW)
 					lastPanSpeed = -1 * value / 100.0;
 				else if (index == NUM_PARAM_PITCH)
-					lastTiltSpeed = -1 * value / 100.0;
+					lastTiltSpeed = value / 100.0;
 				/* relative movement */
 				kaapi::RelativeMoveParameters req;
 				req.set_panspeed(lastPanSpeed);
 				req.set_tiltspeed(lastTiltSpeed);
 				req.set_zoomspeed(lastZoomSpeed);
 				moveRelative(&req);
-			} else if (bytes[2] == 0x3) {
+			} else if (bytes[2] == VALUE_SET) {
+				if (index == NUM_PARAM_YAW)
+					lastPanPos = value / 100.0;
+				else if (index == NUM_PARAM_PITCH)
+					lastTiltPos = value / 100.0;
 				/* goto preset or position */
+				kaapi::AbsoluteMoveParameters req;
+				req.set_panpos(lastPanPos);
+				req.set_tiltpos(lastTiltPos);
+				moveAbsolute(&req);
+			}
+		} else if (index == NUM_PARAM_FOV) {
+			/* NOTE: zoom speed is no-op for falconeye */
+			lastZoomSpeed = value;
+			kaapi::RelativeMoveParameters req;
+			req.set_panspeed(lastPanSpeed);
+			req.set_tiltspeed(lastTiltSpeed);
+			req.set_zoomspeed(lastZoomSpeed);
+			moveRelative(&req);
+			if (bytes[2] == VALUE_NO_CHANGE) {
+			} else if (bytes[2] == VALUE_INCREASE) {
+			} else if (bytes[2] == VALUE_DECREASE) {
+			} else if (bytes[2] == VALUE_SET) {
 			}
 		} else
 			setNumericParameter(index, value, bytes);
@@ -106,6 +127,8 @@ public:
 	double lastPanSpeed;
 	double lastTiltSpeed;
 	double lastZoomSpeed;
+	double lastPanPos;
+	double lastTiltPos;
 	PtzpDriver *ptzp;
 
 protected:
@@ -217,7 +240,12 @@ public:
 			ptzp->getHead(0)->startZoomOut(0);
 		else
 			ptzp->getHead(0)->stopZoom();
-		ptzp->getHead(1)->panTiltAbs(request->panspeed(), request->tiltspeed());
+		ptzp->getHead(1)->panTiltAbs(request->panspeed() / 100.0, request->tiltspeed() / 100.0);
+	}
+
+	void moveAbsolute(const kaapi::AbsoluteMoveParameters *request)
+	{
+		ptzp->getHead(1)->panTiltGoPos(request->panpos(), request->tiltpos());
 	}
 
 	void setCamera(int32_t type)
@@ -312,7 +340,7 @@ public:
 	virtual void setNumericParameter(int index, double &value, int32_t bytes[3])
 	{
 		if (index == NUM_PARAM_FOV)
-			ptzp->getHead(0)->setProperty("fov_pos", value);
+			ptzp->getHead(0)->setProperty("fov_pos", value); /* TODO: what is this? an enum */
 		else if (index == NUM_PARAM_FOCUS)
 			ptzp->getHead(0)->setProperty("focus_in", value);
 	}
@@ -366,8 +394,9 @@ grpc::Status KardelenAPIServer::GetPosition(grpc::ServerContext *, const google:
 
 grpc::Status KardelenAPIServer::MoveAbsolute(grpc::ServerContext *, const kaapi::AbsoluteMoveParameters *request, kaapi::AbsoluteMoveResult *response)
 {
-	response->set_completionstatus(kaapi::AbsoluteMoveResult_Completion_COMPLETED);
+	impl->moveAbsolute(request);
 	impl->setPosi(response->mutable_posinfo());
+	response->set_completionstatus(kaapi::AbsoluteMoveResult_Completion_COMPLETED);
 	return grpc::Status::OK;
 }
 

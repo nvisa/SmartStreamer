@@ -295,6 +295,18 @@ int kaapiClient(int argc, char *argv[])
 			return -1;
 		}
 		fDebug("Got position: %lf %lf", posi.panpos(), posi.tiltpos());
+	} else if (action == "gotopos") {
+		QString panpos = QString::fromUtf8(argv[2]);
+		QString tiltpos = QString::fromUtf8(argv[3]);
+		kaapi::AbsoluteMoveResult res;
+		kaapi::AbsoluteMoveParameters req;
+		req.set_panpos(panpos.toFloat());
+		req.set_tiltpos(tiltpos.toFloat());
+		grpc::Status s = stub->MoveAbsolute(&ctx, req, &res);
+		if (s.error_code() != grpc::StatusCode::OK) {
+			fDebug("Some grpc error occurred");
+			return -1;
+		}
 	} else if (action == "status") {
 		kaapi::CameraStatus cstatus;
 		kaapi::GetCameraStatusParameters preq;
@@ -325,7 +337,8 @@ int kaapiClient(int argc, char *argv[])
 			fDebug("Some grpc error occurred");
 			return -1;
 		}
-		fDebug("num param (%d): %d", index.toInt(), resp.value());
+		int32_t v = resp.value();
+		fDebug("enum param (%d): %d", index.toInt(), v);
 	} else if (action == "setcam") {
 		QString cam = QString::fromUtf8(argv[2]);
 		kaapi::SetCameraResponse resp;
