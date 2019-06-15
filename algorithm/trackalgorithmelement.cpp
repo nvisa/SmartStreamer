@@ -154,18 +154,27 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 	PtzpHead *headpt = ApplicationInfo::instance()->getPtzpDriver(0)->getHead(1);
 	if (headpt == nullptr)
 		headpt = headz;
+
+	/* algorithm doesn't want >180 pan values */
 	float ta = headpt->getTiltAngle();
 	if (ta > 180)
 		ta -= 360;
+
+	/* if we do not support fov reading for some reason, 12/12 are sane defaults */
 	float panTiltZoomRead[] = {headpt->getPanAngle(), ta, 0, 12, 12};
-	//zoom2degree_conversion(headz->getZoom(),panTiltZoomRead);
 	float fovh = 0, fovv = 0;
 	if (!headz->getFOV(fovh, fovv)) {
 		panTiltZoomRead[3] = fovh;
 		panTiltZoomRead[4] = fovv;
 	}
+	bool migrateDebug = false;
+	if (migrateDebug) {
+		mDebug("######################### ptzp head fovh=%f fovv=%f", fovv, fovh);
+		zoom2degree_conversion(headz->getZoom(), panTiltZoomRead);
+		mDebug("######################### cevo fovh=%f fovv=%f", panTiltZoomRead[3], panTiltZoomRead[4]);
+	}
 
-	printf("start tracking %f %f %f %f\n",objProp[0],objProp[1],objProp[2],objProp[3]);
+	mInfo("start tracking %f %f %f %f\n", objProp[0], objProp[1], objProp[2], objProp[3]);
 	asel_direct_track((uchar *)buf.constData(), width * height, width , height,
 					  v.debug, control.meta, panTiltZoomRead,
 					  objProp, control.initialize);
