@@ -280,7 +280,6 @@ public:
 	{
 		if (map.isEmpty())
 			map = ptzp->getHead(0)->getSettings();
-		/* TODO: handle camera type switch */
 		/* Kamera tipine göre görüntü değişimi (termal = 0, gündüz = 1) */
 		if (type == TV)
 			ptzp->getHead(0)->setProperty(5, 1);
@@ -349,11 +348,6 @@ public:
 		if (map.isEmpty())
 			map = ptzp->getHead(0)->getSettings();
 
-		/* TODO: report correct camera type */ // ---> done
-		/* TODO: report correct camera op mode */
-		/* TODO: report correct detection creation mode */
-		/* TODO: report correct thermal polarity */ // ---> done
-		/* TODO: report correct symbology */ // ---> done
 		if (index == ENUM_PARAM_CAMERA_TYPE) {
 			if (ptzp->getHead(0)->getProperty(3))
 				return TV;
@@ -378,6 +372,9 @@ public:
 		}
 		if (index == ENUM_PARAM_FOV_LEVEL){
 			return (ptzp->getHead(0)->getProperty(2) + 1);
+		}
+		if (index == ENUM_PARAM_CALIBRATION_TYPE) {
+			return CALIBRATION_YAW_PITCH;
 		}
 
 		/* API wants this */
@@ -639,12 +636,44 @@ grpc::Status KardelenAPIServer::GetVersion(grpc::ServerContext *, const google::
 {
 	response->set_date(__DATE__);
 	response->set_time(__TIME__);
-	response->set_version("1.0.3");
+	response->set_version("1.0.5");
 	return grpc::Status::OK;
 }
 
 grpc::Status KardelenAPIServer::ScreenClick(grpc::ServerContext *, const ClickParameter *request, google::protobuf::Empty *)
 {
 	impl->screenClick(request->pt().x(), request->pt().y(), request->value());
+	return grpc::Status::OK;
+}
+
+
+grpc::Status KardelenAPIServer::SetMotionROI(grpc::ServerContext *, const MotionROIRequest *request, google::protobuf::Empty *)
+{
+	kaapi::Polygon r = request->roi();
+	for (int i = 0; i < r.points_size(); i++) {
+		kaapi::Point p = r.points(i);
+		qDebug() << i << p.x() << p.y();
+	}
+
+	kaapi::Rectangle far = request->far();
+	kaapi::Rectangle close = request->close();
+
+	qDebug() << "far" << far.topleft().x() << far.topleft().y() << far.width() << far.height();
+	qDebug() << "close" << close.topleft().x() << close.topleft().y() << close.width() << close.height();
+
+	return grpc::Status::OK;
+}
+
+grpc::Status KardelenAPIServer::SetTrackWindow(grpc::ServerContext *, const Rectangle *request, google::protobuf::Empty *)
+{
+	qDebug() << "track" << request->topleft().x() << request->topleft().y() << request->width() << request->height();
+	// move to CONTROL_MODE_TRACK_WINDOW_SELECT, then move to CONTROL_MODE_TRACK_STARTED, return to CONTROL_MODE_TRACK_WINDOW_SELECT
+	return grpc::Status::OK;
+}
+
+
+grpc::Status KardelenAPIServer::SetCalibration(grpc::ServerContext *, const CalibrationRequest *request, google::protobuf::Empty *)
+{
+	qDebug() << request->value1() << request->value2() << request->mode();
 	return grpc::Status::OK;
 }

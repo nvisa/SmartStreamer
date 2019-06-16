@@ -24,13 +24,20 @@ service CameraService {
 	rpc CommunicationChannel(stream CommWrite) returns (stream CommRead) {}
 
 	rpc SetMotionROI(MotionROIRequest) returns (google.protobuf.Empty) {}
-	rpc StartTrack(Rectangle) returns (google.protobuf.Empty) {}
+	rpc SetTrackWindow(Rectangle) returns (google.protobuf.Empty) {}
+	rpc SetCalibration(CalibrationRequest) returns (google.protobuf.Empty) {}
+}
+
+message CalibrationRequest {
+	float value1 = 1;
+	float value2 = 2;
+	int32 mode = 3;
 }
 
 message MotionROIRequest {
 	Polygon roi = 1;
-	Rectangle min = 2;
-	Rectangle max = 3;
+	Rectangle far = 2;
+	Rectangle close = 3;
 }
 
 message ApiVersion {
