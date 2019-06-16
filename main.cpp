@@ -307,6 +307,21 @@ int kaapiClient(int argc, char *argv[])
 			fDebug("Some grpc error occurred");
 			return -1;
 		}
+	} else if (action == "motroi") {
+		ffDebug() << "motion roi";
+		kaapi::MotionROIRequest req;
+		kaapi::Rectangle *r = req.mutable_far();
+		r->set_width(10);
+		r->set_height(20);
+		r = req.mutable_close();
+		r->set_width(30);
+		r->set_height(40);
+		google::protobuf::Empty res;
+		grpc::Status s = stub->SetMotionROI(&ctx, req, &res);
+		if (s.error_code() != grpc::StatusCode::OK) {
+			fDebug("Some grpc error occurred");
+			return -1;
+		}
 	} else if (action == "status") {
 		kaapi::CameraStatus cstatus;
 		kaapi::GetCameraStatusParameters preq;
