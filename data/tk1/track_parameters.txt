@@ -1,0 +1,213 @@
+0.5	image scale X
+0.5	image scale Y
+960	top-left point X
+540	top-left point Y
+100	target width
+100	target Height
+80	camera tilt angle
+30	the angle difference according to the top view, where speed arrangelemt starts (N)
+20	minimum speed when tilt is N degrees away from the top view (indicating the number of frames for convergence so low number corresponds to fast speed) normalde->20
+1	maximum speed when tilt is the top view (indicating the number of frames for convergence so low number corresponds to fast speed) normalde->1
+0	0->dome_gunduz, 1->thermal_pantilt, 2->sabit, 3->thermal_sabit
+0	start frame ID: for the cases we get video from file
+1	CPU/GPU : 0/1
+5	Track Alg 0/1/2/3/4/5: KCF(Gaussian) / DCT_CA / KCF_CA / Staple_DCT / Staple_KCF / KCF(linear), 5 is the default as the fastest
+0.05	Track Drop threshold
+3	stabilization stop criteria
+
+
+sbt3_13
+-----------
+frame id: 1
+1705
+438
+80
+160
+
+frame id: 29
+1862
+393
+45
+75
+
+frame id: 45
+1860
+482
+55
+76
+80
+-------------
+sbt4_1
+frame_id: 189
+1081
+53
+64
+43
+
+1037
+31
+17
+35
+
+frame_id: 1
+1117
+41
+21
+26
+
+frame_id: 52
+1090
+30
+21
+32
+
+--------------
+sbt2_4
+frame_id: 0
+289
+197
+33
+54
+
+frame_id: 941
+253
+122
+19
+29
+
+VOT videos
+-------------
+Human7_HD
+frame_id: 0
+660
+500
+222
+522
+-------------
+car_HD
+frame_id: 0
+138
+396
+396
+248
+-------------
+Bosch_video1
+frame_id: 0
+894
+363
+142
+202
+-------------
+Bosch_video2
+frame_id: 7
+897
+381
+161
+267
+-------------
+HikVision_v1
+frame_id: 4
+797
+381
+140
+240
+-------------
+crossing
+frame_id: 0
+763
+816
+75
+130
+
+907
+749
+89
+153
+-------------
+ped_2
+frame_id: 0
+407
+512
+18
+33
+
+907
+749
+89
+153
+-------------
+scooter
+frame_id: 0
+573
+262
+122
+233
+-------------
+UAV track data:
+-------------
+bike1
+703
+361
+57
+114
+
+person6
+673
+57
+33
+95
+
+person9
+799
+638
+62
+82
+
+person13
+328
+261
+39
+77
+
+person14
+frameid: 69
+666
+241
+25
+52
+
+person15
+609
+171
+29
+81
+
+person17
+553
+246
+25
+77
+
+person18
+493
+247
+82
+302
+
+person20
+453
+367
+69
+159
+
+person23
+382
+299
+48
+113
+
+uges_ent_V1:
+635
+560
+74
+130

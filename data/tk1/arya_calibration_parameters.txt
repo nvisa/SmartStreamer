@@ -1,0 +1,4 @@
+1	number of blocks for calibration (1 or 4 or 8)
+64	Phase Correlation Block size
+1	Detection downsample rate (advice: 0.25 or 0.5)
+0	Visualize for Debug

@@ -305,8 +305,8 @@ int IpStreamer::readSourceInformation()
 
 	decBufferCount = itemized_source_prop_info["fps"].toInt();
 
-	decOutputInFps = itemized_source_prop_info["in_fps"].toVariant().toFloat();
-	decOutputOutFps = itemized_source_prop_info["out_fps"].toVariant().toFloat();
+	decOutputInFps = itemized_source_prop_info["in_fps"].toDouble();
+	decOutputOutFps = itemized_source_prop_info["out_fps"].toDouble();
 
 	QJsonObject resolution_info = itemized_source_prop_info["resolution"].toObject();
 	decWidth  = resolution_info["width"].toInt();

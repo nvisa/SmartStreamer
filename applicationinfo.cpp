@@ -3,9 +3,13 @@
 #include "analogstreamer.h"
 #include "ipstreamer.h"
 #include "usbstreamer.h"
+#include "aryastreamer.h"
+#include "flirstreamer.h"
+
 #include "algorithm/motionalgorithmelement.h"
 #include "algorithm/stabilizationalgorithmelement.h"
 #include "algorithm/trackalgorithmelement.h"
+#include "algorithm/panaromaalgorithmelement.h"
 #include "kardelenapi.h"
 
 #include <QJsonDocument>
@@ -19,6 +23,7 @@
 #include <ecl/ptzp/kayidriver.h>
 #include <ecl/ptzp/tbgthdriver.h>
 #include <ecl/ptzp/aryadriver.h>
+#include <ecl/ptzp/flirdriver.h>
 #include <ecl/ptzp/irdomedriver.h>
 #include <ecl/ptzp/yamgozdriver.h>
 #include <ecl/drivers/systeminfo.h>
@@ -80,6 +85,9 @@ int ApplicationInfo::startPtzpDriver()
 		case BOTAS_FIX:
 			driver = new IRDomeDriver;
 			break;
+		case FLIR_ORION:
+			driver = new FlirDriver;
+			break;
 		}
 		if (driver) {
 			fDebug("Starting PTZP driver for %s", qPrintable(obj["type"].toString()));
@@ -89,9 +97,10 @@ int ApplicationInfo::startPtzpDriver()
 				QProcess::execute("killall grpcwebproxy");
 			}
 			drivers << driver;
-
+#if HAVE_TX1
 			if (obj["kardelen"].toBool())
 				new KardelenAPIServer(driver, obj["type"].toString());
+#endif
 		}
 		/* we only support one ptzp driver at the moment */
 		break;
@@ -106,16 +115,18 @@ ApplicationInfo::Platform ApplicationInfo::getApplicationPlatform()
 	QJsonArray arr = obj["ptzp"].toArray();
 	foreach (QJsonValue val, arr) {
 		QJsonObject obj = val.toObject();
-		if (obj["type"] == "kayi") {
+		if (obj["type"] == QString("kayi")) {
 			return KAYI_SAHINGOZ;
-		} else if (obj["type"] == "tbgth") {
+		} else if (obj["type"] == QString("tbgth")) {
 			return TBGTH;
-		} else if (obj["type"] == "arya") {
+		} else if (obj["type"] == QString("arya")) {
 			return ARYA_ORION;
-		} else if (obj["type"] == "irdome") {
+		} else if (obj["type"] == QString("irdome")) {
 			return BOTAS_FIX;
-		} else if (obj["type"] == "yamgoz") {
+		} else if (obj["type"] == QString("yamgoz")) {
 			return YAMGOZ;
+		} else if (obj["type"] == QString("yamgoz")) {
+			return FLIR_ORION;
 		}
 	}
 	return GENERIC;
@@ -141,6 +152,7 @@ BaseStreamer *ApplicationInfo::createAppStreamer()
 {
 	BaseStreamer *streamer = nullptr;
 	QJsonObject obj = readJson("/etc/smartstreamer/smartconfig.json");
+#if HAVE_TX1
 	if (obj.value("ipstreamer").toBool()) {
 		qDebug() << "starting ip stramer";
 		IpStreamer *ipStr = new IpStreamer;
@@ -156,6 +168,17 @@ BaseStreamer *ApplicationInfo::createAppStreamer()
 		UsbStreamer *usbStr = new UsbStreamer;
 		streamer = usbStr;
 	}
+#elif HAVE_TK1
+	if (obj.value("aryastreamer").toBool()) {
+		qDebug() << "starting arya stramer";
+		AryaStreamer *aryaStr = new AryaStreamer(obj["arya_config"].toObject());
+		streamer = aryaStr;
+	} else if (obj.value("flirstreamer").toBool()) {
+		qDebug() << "starting flir streamer";
+		FlirStreamer *flirStr = new FlirStreamer(obj["flir_config"].toObject());
+		streamer = flirStr;
+	}
+#endif
 	ffDebug() << "Starting application under path" << QDir::currentPath();
 	return streamer;
 }
@@ -175,16 +198,21 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithm(int index)
 
 BaseAlgorithmElement *ApplicationInfo::createAlgorithmFromJson(const QJsonObject &algo)
 {
-	if (algo["type"] == "motion") {
+	if (algo["type"] == QString("motion")) {
 		return new MotionAlgorithmElement;
-	} else if (algo["type"] == "bypass") {
+#if HAVE_TX1
+	} else if (algo["type"] == QString("bypass")) {
 		return new StabilizationAlgorithmElement;
-	} else if (algo["type"] == "privacy") {
+	} else if (algo["type"] == QString("privacy")) {
 		return new StabilizationAlgorithmElement;
-	} else if (algo["type"] == "track") {
+	} else if (algo["type"] == QString("track")) {
 		return new TrackAlgorithmElement;
+#endif
+#if HAVE_TK1
+	} else if (algo["type"] == QString("panaroma")) {
+		return new PanaromaAlgorithmElement;
 	}
-
+#endif
 	return new BaseAlgorithmElement;
 }
 
@@ -200,7 +228,7 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithm(const QString &type, int 
 		QJsonObject alg = value.toObject();
 		if (alg["type"] != type)
 			continue;
-		filtered << alg;
+		filtered.append(alg);
 		imap.insert(filtered.size() - 1, i - 1);
 	}
 
@@ -244,10 +272,14 @@ void ApplicationInfo::checkStartupDelay()
 
 QString ApplicationInfo::algorithmSet()
 {
+#if HAVE_TX1
 	return "motion0";
+#endif
+#if HAVE_TK1
+	return "tk1";
+#endif
 }
 
 ApplicationInfo::ApplicationInfo()
 {
 }
-

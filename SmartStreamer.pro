@@ -11,40 +11,21 @@ SOURCES += main.cpp \
     mjpegserver.cpp \
     seiinserter.cpp \
     peercheck.cpp \
-    algorithmmanager.cpp \
-    ipstreamer.cpp \
-    algorithmelement.cpp \
-    usbstreamer.cpp \
-    yamgozstreamer.cpp \
-    analogstreamer.cpp \
     streamercommon.cpp \
     applicationinfo.cpp \
     diagnosticserviceimpl.cpp \
-    simpleipstreamer.cpp \
-    simpleapiserver.cpp \
-    tx1streamer.cpp \
-    kardelenapi.cpp
+    snapshotelement.cpp
 
 HEADERS += \
     moxadriver.h \
     mjpegserver.h \
     seiinserter.h \
     peercheck.h \
-    algorithmmanager.h \
-    algorithmfunctions.h \
-    ipstreamer.h \
-    algorithmelement.h \
-    usbstreamer.h \
     commoninformationinterface.h \
-    yamgozstreamer.h \
-    analogstreamer.h \
     streamercommon.h \
     applicationinfo.h \
     diagnosticserviceimpl.h \
-    simpleipstreamer.h \
-    simpleapiserver.h \
-    tx1streamer.h \
-    kardelenapi.h
+    snapshotelement.h
 
 websockets {
     SOURCES += websocketstreamer.cpp
@@ -56,8 +37,62 @@ include (proto/grpc.pri)
 include (algorithm/algorithm.pri)
 
 tx1 {
+    SOURCES += \
+        ipstreamer.cpp \
+        usbstreamer.cpp \
+        yamgozstreamer.cpp \
+        analogstreamer.cpp \
+	simpleipstreamer.cpp \
+	simpleapiserver.cpp \
+	tx1streamer.cpp \
+	kardelenapi.cpp
+
+
+    HEADERS += \
+        ipstreamer.h \
+        usbstreamer.h \
+        yamgozstreamer.h \
+        analogstreamer.h \
+	simpleipstreamer.h \
+	simpleapiserver.h \
+	tx1streamer.h \
+	kardelenapi.h
+
     LIBS += -L/usr/local/cuda/lib64 -lcudart -lcufft
     LIBS += -L/usr/lib/aarch64-linux-gnu/tegra/ -lv4l2 -lnvbuf_utils -lnvinfer -lnvparsers -lnvjpeg -lEGL -lX11
+
+    LIBS += -lopencv_imgcodecs -lboost_system -lboost_filesystem
+    CONFIG += third-party
+    DEFINES += HAVE_TX1
+}
+
+tk1 {
+    SOURCES += \
+	aryastreamer.cpp \
+	orioncommunicationserver.cpp \
+	flirstreamer.cpp \
+	tk1omxpipeline.cpp
+    HEADERS += \
+	aryastreamer.h \
+	orioncommunicationserver.h \
+	flirstreamer.h \
+	tk1omxpipeline.h
+    LIBS += -lvdpau -lX11 -lXv -lva-drm -lva-x11
+    INCLUDEPATH += /usr/include/gstreamer-1.0
+    INCLUDEPATH += /usr/include/glib-2.0
+    INCLUDEPATH += /usr/lib/arm-linux-gnueabihf/glib-2.0/include
+    DEFINES += HAVE_TK1
+}
+
+deprecated {
+    SOURCES += \
+        algorithmmanager.cpp \
+        algorithmelement.cpp \
+
+    HEADERS += \
+        algorithmmanager.h \
+        algorithmelement.h \
+        algorithmfunctions.h \
 }
 
 third-party {

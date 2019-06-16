@@ -20,6 +20,16 @@ public:
 		UNKNOWN = 0xFF
 	};
 
+	struct BaseVariables {
+		int rgb;
+		int ill;
+		int debug;
+		int shadow;
+		int record;
+		int privacy;
+		int stabilization;
+	};
+
 	virtual int init();
 	virtual int gpuInit();
 	virtual int reinit();
@@ -42,6 +52,7 @@ protected:
 	virtual int reloadJson(const QJsonObject &node);
 	int processBuffer(const RawBuffer &buf);
 	AlgoState algoState;
+	BaseVariables v;
 
 private:
 	int baseAlgorithmProcess(const RawBuffer &buf);

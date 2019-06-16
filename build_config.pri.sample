@@ -1,4 +1,4 @@
-INSTALL_PREFIX=$$OUT_PWD/../../
+INSTALL_PREFIX=$$OUT_PWD/../..
 INCLUDEPATH += $$INSTALL_PREFIX/usr/local/include
 DEFINES += DEBUG INFO LOG LOGV DEBUG_TIMING
 LIBS += $$INSTALL_PREFIX/usr/local/lib/liblmm.a
@@ -9,16 +9,14 @@ PRE_TARGETDEPS += $$INSTALL_PREFIX/usr/local/lib/libEncoderCommonLibrary.a
 LIBS += -lx264 -lyuv
 LIBS += -L$$INSTALL_PREFIX/usr/local/lib/ -lavformat -lswscale -lavcodec -lavutil -lswresample
 LIBS += -lgstreamer-1.0 -lgobject-2.0 -lglib-2.0 -lgstbase-1.0 -lgstapp-1.0 -lz -llzma -lva
-LIBS += -L/usr/local/cuda/lib -lcudart -lcufft
-LIBS += -lgpu
+LIBS += $$INSTALL_PREFIX/usr/local/lib/libgpu.a
+LIBS += -L/usr/local/cuda/lib -lcudart -lcufft -lcublas
 LIBS += -lopencv_core \
     -lopencv_imgproc \
     -lopencv_highgui \
     -lopencv_ml \
-    -lopencv_video \
-    -lopencv_imgcodecs
+    -lopencv_video
 
-DEFINES += HAVE_VIA_WRAPPER HAVE_LIBYUV
+DEFINES += HAVE_LIBYUV HAVE_VIA_MOTION HAVE_VIA_PANAROMA
 
-LIBS += -lboost_system -lboost_filesystem
-CONFIG += c++11 tx1 smart-grpc third-party
+CONFIG += smart-grpc tk1

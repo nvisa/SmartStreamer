@@ -1,14 +1,14 @@
 smart-grpc {
+    CONFIG += c++11
     LIBS += -L/usr/local/lib -lprotobuf -lgrpc++
 
     QMAKE_EXTRA_VARIABLES = GRPC_CPP_PLUGIN GRPC_CPP_PLUGIN_PATH
     GRPC_CPP_PLUGIN = grpc_cpp_plugin
     GRPC_CPP_PLUGIN_PATH = `which $(EXPORT_GRPC_CPP_PLUGIN)`
 
-    PROTOS += proto/AlgorithmWorks.proto
     PROTOS += proto/AlgorithmCommunication.proto
     PROTOS += proto/OrionCommunication.proto
-	PROTOS += proto/KardelenAPI.proto
+    PROTOS += proto/KardelenAPI.proto
 
     protobuf_decl.name = protobuf headers
     protobuf_decl.input = PROTOS

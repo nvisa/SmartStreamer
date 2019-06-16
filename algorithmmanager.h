@@ -32,9 +32,9 @@ public:
 	grpc::Status StopAlgorithm(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfRequests *response);
 	grpc::Status SetAlgorithmParameters(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfRequests *response);
 	grpc::Status GetAlgorithmParameters(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfParameterRequests *response);
-	grpc::Status SetSystemFeatures(grpc::ServerContext *context, const AlgorithmCommunication::RequestForSystemFeatures *request, AlgorithmCommunication::ResponseOfSystemFeatures *response);
-	grpc::Status GetSystemFeatures(grpc::ServerContext *context, const AlgorithmCommunication::RequestForSystemFeatures *request, AlgorithmCommunication::ResponseOfSystemFeatures *response);
-	grpc::Status SendInformation(::grpc::ServerContext* context, const ::AlgorithmCommunication::WhichInfo* request, ::grpc::ServerWriter< ::AlgorithmCommunication::GeneralInfo>* writer);
+//	grpc::Status SetSystemFeatures(grpc::ServerContext *context, const AlgorithmCommunication::RequestForSystemFeatures *request, AlgorithmCommunication::ResponseOfSystemFeatures *response);
+//	grpc::Status GetSystemFeatures(grpc::ServerContext *context, const AlgorithmCommunication::RequestForSystemFeatures *request, AlgorithmCommunication::ResponseOfSystemFeatures *response);
+//	grpc::Status SendInformation(::grpc::ServerContext* context, const ::AlgorithmCommunication::WhichInfo* request, ::grpc::ServerWriter< ::AlgorithmCommunication::GeneralInfo>* writer);
 
 	enum Algorithm {
 		MOTION,
