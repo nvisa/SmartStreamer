@@ -19,13 +19,29 @@ service CameraService {
 	rpc SetEnumCommand(SetEnumCommandRequest) returns (SetEnumCommandResponse) {}
 	rpc GetVersion(google.protobuf.Empty) returns (ApiVersion) {}
 
+	rpc ScreenClick(ClickParameter) returns (google.protobuf.Empty) {}
+
 	rpc CommunicationChannel(stream CommWrite) returns (stream CommRead) {}
+
+	rpc SetMotionROI(MotionROIRequest) returns (google.protobuf.Empty) {}
+	rpc StartTrack(Rectangle) returns (google.protobuf.Empty) {}
+}
+
+message MotionROIRequest {
+	Polygon roi = 1;
+	Rectangle min = 2;
+	Rectangle max = 3;
 }
 
 message ApiVersion {
 	string date = 1;
 	string time = 2;
 	string version = 3;
+}
+
+message ClickParameter {
+	Point pt = 1;
+	int32 value = 2;
 }
 
 message GetNumericParameterRequest {
@@ -120,6 +136,12 @@ message CameraStatus {
 	Boresight boresight = 9;
 	ROI roi = 10;
 	ROI fence = 11;
+}
+
+message Rectangle {
+	Point topLeft = 1;
+	int32 width = 2;
+	int32 height = 3;
 }
 
 message Point {

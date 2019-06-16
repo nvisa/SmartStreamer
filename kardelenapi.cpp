@@ -28,6 +28,8 @@ using grpc::ServerWriter;
 using grpc::Status;
 using grpc::StatusCode;
 
+#define NOT_SUPP 100000
+
 class KaapiThread : public QThread
 {
 public:
@@ -63,6 +65,7 @@ public:
 	virtual int32_t getEnumParameter(int index) = 0;
 	virtual void setEnumParameter(int index, int32_t value) = 0;
 	virtual void setEnumCommand(int index, int32_t value) = 0;
+	virtual void screenClick(int x, int y, int action) = 0;
 
 	virtual void getNumericParameterP(int index, double &value, int32_t bytes[3])
 	{
@@ -159,34 +162,57 @@ class KardelenAPIFalconEyeImpl : public KardelenAPIImpl
 public:
 	KardelenAPIFalconEyeImpl()
 	{
-		cameraType = 0;
 		opMode = CONTROL_MODE_JOYSTICK;
 	}
 
 	int64_t getCapabilities()
 	{
 		int64_t caps = 0;
-		addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
-		addcap(caps, CAPABILITY_DETECTION);
-		addcap(caps, CAPABILITY_TRACKING);
-		addcap(caps, CAPABILITY_ZOOM);
-		addcap(caps, CAPABILITY_FOCUS);
-		addcap(caps, CAPABILITY_POLARITY);
-		addcap(caps, CAPABILITY_PT);
-		addcap(caps, CAPABILITY_ROI);
-		addcap(caps, CAPABILITY_DAY_VIEW);
-		addcap(caps, CAPABILITY_NIGHT_VIEW);
-		addcap(caps, CAPABILITY_RANGE);
-		addcap(caps, CAPABILITY_MENU_OVER_VIDEO);
-		addcap(caps, CAPABILITY_LAZER_RANGE_FINDER);
-		addcap(caps, CAPABILITY_SHOW_HIDE_SEMBOLOGY);
-		addcap(caps, CAPABILITY_SHUT_DOWN);
-		addcap(caps, CAPABILITY_RESTART);
-		addcap(caps, CAPABILITY_AUTO_TRACK_WINDOW);
-		addcap(caps, CAPABILITY_AUTO_TRACK_DETECTION);
-		addcap(caps, CAPABILITY_NUC);
-		addcap(caps, CAPABILITY_HPF_GAIN);
-		addcap(caps, CAPABILITY_HPF_SPATIAL);
+		if (THERMAL) {
+			addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
+			addcap(caps, CAPABILITY_DETECTION);
+			addcap(caps, CAPABILITY_TRACKING);
+			addcap(caps, CAPABILITY_ZOOM);
+			addcap(caps, CAPABILITY_POLARITY);
+			addcap(caps, CAPABILITY_PT);
+			addcap(caps, CAPABILITY_ROI);
+			addcap(caps, CAPABILITY_DAY_VIEW);
+			addcap(caps, CAPABILITY_NIGHT_VIEW);
+			addcap(caps, CAPABILITY_RANGE); //TODO: return sahingoz static value
+			addcap(caps, CAPABILITY_MENU_OVER_VIDEO);
+			addcap(caps, CAPABILITY_LAZER_RANGE_FINDER);
+			addcap(caps, CAPABILITY_SHOW_HIDE_SEMBOLOGY);
+			addcap(caps, CAPABILITY_AUTO_TRACK_WINDOW);
+			addcap(caps, CAPABILITY_AUTO_TRACK_DETECTION);
+			addcap(caps, CAPABILITY_NUC);
+
+			addcap(caps, CAPABILITY_MISSION_EXECUTION);
+			addcap(caps, CAPABILITY_SENSITIVITY_ADJUSTMENT);
+			addcap(caps, CAPABILITY_CALIBRATION);
+			addcap(caps, CAPABILITY_HARD_CALIBRATION);
+		} else {
+			addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
+			addcap(caps, CAPABILITY_DETECTION);
+			addcap(caps, CAPABILITY_TRACKING);
+			addcap(caps, CAPABILITY_ZOOM);
+			addcap(caps, CAPABILITY_FOCUS);
+			addcap(caps, CAPABILITY_PT);
+			addcap(caps, CAPABILITY_ROI);
+			addcap(caps, CAPABILITY_DAY_VIEW);
+			addcap(caps, CAPABILITY_NIGHT_VIEW);
+			addcap(caps, CAPABILITY_RANGE); //TODO: return sahingoz static value
+			addcap(caps, CAPABILITY_MENU_OVER_VIDEO);
+			addcap(caps, CAPABILITY_LAZER_RANGE_FINDER);
+			addcap(caps, CAPABILITY_SHOW_HIDE_SEMBOLOGY);
+			addcap(caps, CAPABILITY_AUTO_TRACK_WINDOW);
+			addcap(caps, CAPABILITY_AUTO_TRACK_DETECTION);
+
+			addcap(caps, CAPABILITY_MISSION_EXECUTION);
+			addcap(caps, CAPABILITY_SENSITIVITY_ADJUSTMENT);
+			addcap(caps, CAPABILITY_CALIBRATION);
+			addcap(caps, CAPABILITY_HARD_CALIBRATION);
+		}
+
 		return caps;
 	}
 
@@ -208,17 +234,18 @@ public:
 		int32_t v = 0;
 
 		/* numeric parameters */
-		addNumericParameter(v, NUM_PARAM_RANGE, response);
-		addNumericParameter(v, NUM_PARAM_HEIGHT, response);
+//		addNumericParameter(v, NUM_PARAM_RANGE, response);
+//		addNumericParameter(v, NUM_PARAM_HEIGHT, response);
 		addNumericParameter(v, NUM_PARAM_FOV, response);
-		addNumericParameter(v, NUM_PARAM_FOCUS, response);
+//		addNumericParameter(v, NUM_PARAM_FOCUS, response);
 		addNumericParameter(v, NUM_PARAM_YAW, response);
 		addNumericParameter(v, NUM_PARAM_PITCH, response);
 		addNumericParameter(v, NUM_PARAM_HORIZONTAL_RES, response);
 		addNumericParameter(v, NUM_PARAM_VERTICAL_RES, response);
 		addNumericParameter(v, NUM_PARAM_ZOOM, response);
-		addNumericParameter(v, NUM_PARAM_HPF_GAIN, response);
-		addNumericParameter(v, NUM_PARAM_HPF_SPATIAL, response);
+		addNumericParameter(v, NUM_PARAM_PREDEFINED_FOV_COUNT, response);
+//		addNumericParameter(v, NUM_PARAM_HPF_GAIN, response);
+//		addNumericParameter(v, NUM_PARAM_HPF_SPATIAL, response);
 		response->set_numericparametersvector(v);
 
 		/* enum parameters */
@@ -228,6 +255,7 @@ public:
 		addEnumParameter(v, ENUM_PARAM_DETECTION_CREATION_MODE, response);
 		addEnumParameter(v, ENUM_PARAM_POLARITY, response);
 		addEnumParameter(v, ENUM_PARAM_SEMBOLOGY, response);
+		addEnumParameter(v, ENUM_PARAM_FOV_LEVEL, response);
 		response->set_enumparametersvector(v);
 	}
 
@@ -250,10 +278,14 @@ public:
 
 	void setCamera(int32_t type)
 	{
+		if (map.isEmpty())
+			map = ptzp->getHead(0)->getSettings();
 		/* TODO: handle camera type switch */
 		/* Kamera tipine göre görüntü değişimi (termal = 0, gündüz = 1) */
-		cameraType = type;
-		ptzp->getHead(0)->setProperty("choose_cam", cameraType);
+		if (type == TV)
+			ptzp->getHead(0)->setProperty(5, 1);
+		else
+			ptzp->getHead(0)->setProperty(5, 0);
 	}
 
 	virtual void getNumericParameter(int index, double &value, int32_t bytes[3])
@@ -264,10 +296,13 @@ public:
 		value = 0;
 
 		if (index == NUM_PARAM_FOV) {
-			value = ptzp->getHead(0)->getProperty(map["fov_pos"].toUInt());
-		} else if (index == NUM_PARAM_FOCUS) {
+			value = ptzp->getHead(0)->getProperty(map["fov_pos"].toUInt()); //TODO: convert to degrees
+		}
+		/* else if (index == NUM_PARAM_FOCUS) {
 			value = ptzp->getHead(0)->getProperty(map["focus_pos_set"].toUInt());
-		} else if (index == NUM_PARAM_YAW) {
+		}
+		*/
+		else if (index == NUM_PARAM_YAW) {
 			float pana = ptzp->getHead(1)->getPanAngle();
 			if (pana > 180)
 				value = pana - 360;
@@ -280,23 +315,32 @@ public:
 		} else if (index == NUM_PARAM_VERTICAL_RES) {
 			value = 576;
 		} else if (index == NUM_PARAM_ZOOM) {
-			value = ptzp->getHead(0)->getProperty(map["fov_pos"].toUInt());
-		} else if (index == NUM_PARAM_HPF_GAIN) {
+			value = ptzp->getHead(0)->getProperty(map["fov_pos"].toUInt()); //TODO: normalize
+		}
+		/* Toplam fov sayısı(wide, middle, narrow) */
+		else if(index == NUM_PARAM_PREDEFINED_FOV_COUNT)
+			value = 3;
+			/*  Şartname içeriğinde olmadığı için kaldırıldı
+		else if (index == NUM_PARAM_HPF_GAIN) {
 			value = ptzp->getHead(0)->getProperty(map["hf_sigma_coeff"].toUInt());
 		} else if (index == NUM_PARAM_HPF_SPATIAL) {
 			value = ptzp->getHead(0)->getProperty(map["hf_filter_std"].toUInt());
-		} else if (index == NUM_PARAM_RANGE || index == NUM_PARAM_HEIGHT) {
+		}
+		 else if (index == NUM_PARAM_RANGE || index == NUM_PARAM_HEIGHT) {
 			QString lref = map["laser_reflections"].toString();
 			if (lref.size()) {
-				/* TODO: how to report multiple detections */
+//				 TODO: how to report multiple detections
 				QString ref0 = lref.split(";").first();
 				QStringList flds = ref0.split(",");
 				if (value == NUM_PARAM_RANGE)
 					value = flds[0].toInt();
 				else
 					value = flds[1].toInt();
-				/* TODO: we have laser range but no laser height? */
+//				 TODO: we have laser range but no laser height?
 			}
+		}
+*/		else {
+			value = 100000;
 		}
 	}
 
@@ -311,7 +355,7 @@ public:
 		/* TODO: report correct thermal polarity */ // ---> done
 		/* TODO: report correct symbology */ // ---> done
 		if (index == ENUM_PARAM_CAMERA_TYPE) {
-			if (ptzp->getHead(0)->getProperty("choose_cam").toInt())
+			if (ptzp->getHead(0)->getProperty(3))
 				return TV;
 			else
 				return THERMAL;
@@ -321,16 +365,19 @@ public:
 		if (index == ENUM_PARAM_DETECTION_CREATION_MODE)
 			return DETECTION_OPEN_MODE;
 		if (index == ENUM_PARAM_POLARITY) {
-			if (ptzp->getHead(0)->getProperty("polarity").toInt())
+			if (ptzp->getHead(0)->getProperty(map["polarity"].toInt()))
 				return BLACK_HOT;
 			else
 				return WHITE_HOT;
 		}
 		if (index == ENUM_PARAM_SEMBOLOGY) {
-			if (ptzp->getHead(0)->getProperty("symbology").toInt())
+			if (ptzp->getHead(0)->getProperty(map["symbology"].toInt()))
 				return SYMBOLOGY_ON;
 			else
 				return SYMBOLOGY_OFF;
+		}
+		if (index == ENUM_PARAM_FOV_LEVEL){
+			return (ptzp->getHead(0)->getProperty(2) + 1);
 		}
 
 		/* API wants this */
@@ -347,30 +394,117 @@ public:
 
 	virtual void setEnumParameter(int index, int32_t value)
 	{
+		qDebug() << index << value;
+
 		if (index == ENUM_PARAM_CAMERA_TYPE) {
 			if (value == TV)
 				ptzp->getHead(0)->setProperty("choose_cam", 1);
 			else if (value == THERMAL)
 				ptzp->getHead(0)->setProperty("choose_cam", 0);
 		} else if (index == ENUM_PARAM_POLARITY) {
-			if (value == BLACK_HOT)
-				ptzp->getHead(0)->setProperty("choose_cam", 1);
+			if (value == (int)BLACK_HOT)
+				ptzp->getHead(0)->setProperty(7, 1);
 			else if (value == WHITE_HOT)
-				ptzp->getHead(0)->setProperty("choose_cam", 0);
+				ptzp->getHead(0)->setProperty(7, 0);
 		} else if (index == ENUM_PARAM_SEMBOLOGY){
 			if (value == SYMBOLOGY_ON)
-				ptzp->getHead(0)->setProperty("symbology", 1);
+				ptzp->getHead(0)->setProperty(map["symbology"].toInt(), 1);
 			else if (value == SYMBOLOGY_OFF)
-				ptzp->getHead(0)->setProperty("symbology", 0);
+				ptzp->getHead(0)->setProperty(map["symbology"].toInt(), 0);
 		} else if (index == ENUM_PARAM_OPERATIONAL_MODE)
 			opMode = value;
+		else if (index == ENUM_PARAM_FOV_LEVEL)
+			ptzp->getHead(0)->setProperty(4, value -1);
 	}
 
 	virtual void setEnumCommand(int index, int32_t value)
 	{
 	}
 
-	int cameraType;
+	double BUTTON_HEIGHT 	= 0.108; //0.112
+	double BUTTON_WIDTH 	= 0.158; //0.158
+	double FIRST_BUTTON_UP_LEFT_X = 0.026; //0.026
+	double FIRST_BUTTON_UP_LEFT_Y = 0.246; //0.246
+	double SECOND_BUTTON_UP_LEFT_X = 0.026; //0.026
+	double SECOND_BUTTON_UP_LEFT_Y = 0.424; //0.555
+	double THIRD_BUTTON_UP_LEFT_X = 0.026; //0.026
+	double THIRD_BUTTON_UP_LEFT_Y = 0.602; //0.710
+	double FOURTH_BUTTON_UP_LEFT_X = 0.793; //0.793
+	double FOURTH_BUTTON_UP_LEFT_Y = 0.246; //0.246
+	double FIFTH_BUTTON_UP_LEFT_X = 0.793; //0.793
+	double FIFTH_BUTTON_UP_LEFT_Y = 0.424;//0.555
+	double SIXTH_BUTTON_UP_LEFT_X = 0.793; //0.793
+	double SIXTH_BUTTON_UP_LEFT_Y = 0.602; //0.710
+
+	double ROUTING_LEFT_X1 = 0.815; //0.815
+	double ROUTING_LEFT_X2 = 0.84; //0.840
+	double ROUTING_RIGHT_X1 = 0.86; //0.861
+	double ROUTING_RIGHT_X2 = 0.887; //0.8875
+	double ROUTING_RIGHT_LEFT_Y1 = 0.871;  //0.871
+	double ROUTING_RIGHT_LEFT_Y2 = 0.9;  //0.9
+	double ROUTING_UP_DOWN_X1 = 0.84; //0.840
+	double ROUTING_UP_DOWN_X2 = 0.887; //0.0887
+	double ROUTING_UP_Y1 = 0.87; //0.871
+	double ROUTING_UP_Y2 = 0.84; //0.842
+	double ROUTING_DOWN_Y1 = 0.93; //0.930
+	double ROUTING_DOWN_Y2 = 0.90; //0.901
+
+	double ROUTING_AREA_TOP 	= 0.84; //0.840
+	double ROUTING_AREA_BOTTOM = 0.93; //0.930
+	int L0 = 0;
+	int L1 = 1;
+	int L2 = 2;
+	int R0 = 3;
+	int R1 = 4;
+	int R2 = 5;
+	int UP = 6;
+	int DOWN = 7;
+	int LEFT = 8;
+	int RIGHT = 9;
+	virtual void screenClick(int x, int y, int action)
+	{
+		double ratioX = x / 720.0;
+		double ratioY = y / 576.0;
+
+		if(ratioY >= FIRST_BUTTON_UP_LEFT_Y && ratioY <= (FIRST_BUTTON_UP_LEFT_Y + BUTTON_HEIGHT)) {
+			if(ratioX >= FIRST_BUTTON_UP_LEFT_X && ratioX <= (FIRST_BUTTON_UP_LEFT_X + BUTTON_WIDTH)){
+				buttonClick(L0, action);
+			} else if(ratioX >= FOURTH_BUTTON_UP_LEFT_X && ratioX <= (FOURTH_BUTTON_UP_LEFT_X + BUTTON_WIDTH)) {
+				buttonClick(R0, action);
+			}
+		} else if(ratioY >= SECOND_BUTTON_UP_LEFT_Y && ratioY <= (SECOND_BUTTON_UP_LEFT_Y + BUTTON_HEIGHT)) {
+			if(ratioX >= SECOND_BUTTON_UP_LEFT_X && ratioX <= (SECOND_BUTTON_UP_LEFT_X + BUTTON_WIDTH)){
+				buttonClick(L1, action);
+			} else if(ratioX >= FIFTH_BUTTON_UP_LEFT_X && ratioX <= (FIFTH_BUTTON_UP_LEFT_X + BUTTON_WIDTH)) {
+				buttonClick(R1, action);
+			}
+		} else if(ratioY >= THIRD_BUTTON_UP_LEFT_Y && ratioY <= (THIRD_BUTTON_UP_LEFT_Y + BUTTON_HEIGHT)) {
+			if(ratioX >= THIRD_BUTTON_UP_LEFT_X && ratioX <= (THIRD_BUTTON_UP_LEFT_X + BUTTON_WIDTH)){
+				buttonClick(L2, action);
+			} else if(ratioX >= SIXTH_BUTTON_UP_LEFT_X && ratioX <= (SIXTH_BUTTON_UP_LEFT_X + BUTTON_WIDTH)) {
+				buttonClick(R2, action);
+			}
+		} else if(ratioY >= ROUTING_AREA_TOP && ratioY <= ROUTING_AREA_BOTTOM){
+			if(ratioX >= ROUTING_LEFT_X1 && ratioX <= ROUTING_LEFT_X2 && ratioY >= ROUTING_RIGHT_LEFT_Y1 && ratioY<= ROUTING_RIGHT_LEFT_Y2) {
+				buttonClick(LEFT, action);
+			} else if(ratioX >= ROUTING_RIGHT_X1 && ratioX <= ROUTING_RIGHT_X2 && ratioY >= ROUTING_RIGHT_LEFT_Y1 && ratioY<= ROUTING_RIGHT_LEFT_Y2) {
+				buttonClick(RIGHT, action);
+			} else if(ratioY >= ROUTING_DOWN_Y2 && ratioY <= ROUTING_DOWN_Y1 && ratioX >= ROUTING_UP_DOWN_X1 && ratioX <= ROUTING_UP_DOWN_X2) {
+				buttonClick(DOWN, action);
+			} else if(ratioY >= ROUTING_UP_Y2 && ratioY <= ROUTING_UP_Y1 && ratioX >= ROUTING_UP_DOWN_X1 && ratioX <= ROUTING_UP_DOWN_X2) {
+				buttonClick(UP, action);
+			}
+		}
+	}
+
+	void buttonClick(int b, int action)
+	{
+		if (action == MENU_MOUSE_PRESSED)
+			ptzp->getHead(0)->setProperty(35, b);
+		else if (action == MENU_MOUSE_RELEASED)
+			ptzp->getHead(0)->setProperty(36, b);
+	}
+
 	int opMode;
 	QVariantMap map;
 };
@@ -491,13 +625,13 @@ grpc::Status KardelenAPIServer::SetNumericParameter(grpc::ServerContext *, const
 
 grpc::Status KardelenAPIServer::SetEnumParameter(grpc::ServerContext *, const SetEnumParameterRequest *request, SetEnumParameterResponse *response)
 {
-	impl->setEnumParameter(request->index(), response->value());
+	impl->setEnumParameter(request->index(), request->value());
 	return grpc::Status::OK;
 }
 
 grpc::Status KardelenAPIServer::SetEnumCommand(grpc::ServerContext *, const SetEnumCommandRequest *request, SetEnumCommandResponse *response)
 {
-	impl->setEnumCommand(request->index(), response->value());
+	impl->setEnumCommand(request->index(), request->value());
 	return grpc::Status::OK;
 }
 
@@ -506,5 +640,11 @@ grpc::Status KardelenAPIServer::GetVersion(grpc::ServerContext *, const google::
 	response->set_date(__DATE__);
 	response->set_time(__TIME__);
 	response->set_version("1.0.3");
+	return grpc::Status::OK;
+}
+
+grpc::Status KardelenAPIServer::ScreenClick(grpc::ServerContext *, const ClickParameter *request, google::protobuf::Empty *)
+{
+	impl->screenClick(request->pt().x(), request->pt().y(), request->value());
 	return grpc::Status::OK;
 }

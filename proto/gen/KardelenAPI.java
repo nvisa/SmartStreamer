@@ -14,6 +14,976 @@ public final class KardelenAPI {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
+  public interface MotionROIRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:kaapi.MotionROIRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.kaapi.Polygon roi = 1;</code>
+     */
+    boolean hasRoi();
+    /**
+     * <code>.kaapi.Polygon roi = 1;</code>
+     */
+    tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon getRoi();
+    /**
+     * <code>.kaapi.Polygon roi = 1;</code>
+     */
+    tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.PolygonOrBuilder getRoiOrBuilder();
+
+    /**
+     * <code>.kaapi.Rectangle min = 2;</code>
+     */
+    boolean hasMin();
+    /**
+     * <code>.kaapi.Rectangle min = 2;</code>
+     */
+    tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle getMin();
+    /**
+     * <code>.kaapi.Rectangle min = 2;</code>
+     */
+    tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.RectangleOrBuilder getMinOrBuilder();
+
+    /**
+     * <code>.kaapi.Rectangle max = 3;</code>
+     */
+    boolean hasMax();
+    /**
+     * <code>.kaapi.Rectangle max = 3;</code>
+     */
+    tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle getMax();
+    /**
+     * <code>.kaapi.Rectangle max = 3;</code>
+     */
+    tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.RectangleOrBuilder getMaxOrBuilder();
+  }
+  /**
+   * Protobuf type {@code kaapi.MotionROIRequest}
+   */
+  public  static final class MotionROIRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:kaapi.MotionROIRequest)
+      MotionROIRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use MotionROIRequest.newBuilder() to construct.
+    private MotionROIRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private MotionROIRequest() {
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private MotionROIRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon.Builder subBuilder = null;
+              if (roi_ != null) {
+                subBuilder = roi_.toBuilder();
+              }
+              roi_ = input.readMessage(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(roi_);
+                roi_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 18: {
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.Builder subBuilder = null;
+              if (min_ != null) {
+                subBuilder = min_.toBuilder();
+              }
+              min_ = input.readMessage(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(min_);
+                min_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 26: {
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.Builder subBuilder = null;
+              if (max_ != null) {
+                subBuilder = max_.toBuilder();
+              }
+              max_ = input.readMessage(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(max_);
+                max_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.internal_static_kaapi_MotionROIRequest_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.internal_static_kaapi_MotionROIRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest.class, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest.Builder.class);
+    }
+
+    public static final int ROI_FIELD_NUMBER = 1;
+    private tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon roi_;
+    /**
+     * <code>.kaapi.Polygon roi = 1;</code>
+     */
+    public boolean hasRoi() {
+      return roi_ != null;
+    }
+    /**
+     * <code>.kaapi.Polygon roi = 1;</code>
+     */
+    public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon getRoi() {
+      return roi_ == null ? tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon.getDefaultInstance() : roi_;
+    }
+    /**
+     * <code>.kaapi.Polygon roi = 1;</code>
+     */
+    public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.PolygonOrBuilder getRoiOrBuilder() {
+      return getRoi();
+    }
+
+    public static final int MIN_FIELD_NUMBER = 2;
+    private tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle min_;
+    /**
+     * <code>.kaapi.Rectangle min = 2;</code>
+     */
+    public boolean hasMin() {
+      return min_ != null;
+    }
+    /**
+     * <code>.kaapi.Rectangle min = 2;</code>
+     */
+    public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle getMin() {
+      return min_ == null ? tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.getDefaultInstance() : min_;
+    }
+    /**
+     * <code>.kaapi.Rectangle min = 2;</code>
+     */
+    public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.RectangleOrBuilder getMinOrBuilder() {
+      return getMin();
+    }
+
+    public static final int MAX_FIELD_NUMBER = 3;
+    private tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle max_;
+    /**
+     * <code>.kaapi.Rectangle max = 3;</code>
+     */
+    public boolean hasMax() {
+      return max_ != null;
+    }
+    /**
+     * <code>.kaapi.Rectangle max = 3;</code>
+     */
+    public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle getMax() {
+      return max_ == null ? tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.getDefaultInstance() : max_;
+    }
+    /**
+     * <code>.kaapi.Rectangle max = 3;</code>
+     */
+    public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.RectangleOrBuilder getMaxOrBuilder() {
+      return getMax();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (roi_ != null) {
+        output.writeMessage(1, getRoi());
+      }
+      if (min_ != null) {
+        output.writeMessage(2, getMin());
+      }
+      if (max_ != null) {
+        output.writeMessage(3, getMax());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (roi_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getRoi());
+      }
+      if (min_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getMin());
+      }
+      if (max_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getMax());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest)) {
+        return super.equals(obj);
+      }
+      tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest other = (tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest) obj;
+
+      boolean result = true;
+      result = result && (hasRoi() == other.hasRoi());
+      if (hasRoi()) {
+        result = result && getRoi()
+            .equals(other.getRoi());
+      }
+      result = result && (hasMin() == other.hasMin());
+      if (hasMin()) {
+        result = result && getMin()
+            .equals(other.getMin());
+      }
+      result = result && (hasMax() == other.hasMax());
+      if (hasMax()) {
+        result = result && getMax()
+            .equals(other.getMax());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasRoi()) {
+        hash = (37 * hash) + ROI_FIELD_NUMBER;
+        hash = (53 * hash) + getRoi().hashCode();
+      }
+      if (hasMin()) {
+        hash = (37 * hash) + MIN_FIELD_NUMBER;
+        hash = (53 * hash) + getMin().hashCode();
+      }
+      if (hasMax()) {
+        hash = (37 * hash) + MAX_FIELD_NUMBER;
+        hash = (53 * hash) + getMax().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code kaapi.MotionROIRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:kaapi.MotionROIRequest)
+        tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.internal_static_kaapi_MotionROIRequest_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.internal_static_kaapi_MotionROIRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest.class, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest.Builder.class);
+      }
+
+      // Construct using tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (roiBuilder_ == null) {
+          roi_ = null;
+        } else {
+          roi_ = null;
+          roiBuilder_ = null;
+        }
+        if (minBuilder_ == null) {
+          min_ = null;
+        } else {
+          min_ = null;
+          minBuilder_ = null;
+        }
+        if (maxBuilder_ == null) {
+          max_ = null;
+        } else {
+          max_ = null;
+          maxBuilder_ = null;
+        }
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.internal_static_kaapi_MotionROIRequest_descriptor;
+      }
+
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest getDefaultInstanceForType() {
+        return tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest.getDefaultInstance();
+      }
+
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest build() {
+        tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest buildPartial() {
+        tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest result = new tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest(this);
+        if (roiBuilder_ == null) {
+          result.roi_ = roi_;
+        } else {
+          result.roi_ = roiBuilder_.build();
+        }
+        if (minBuilder_ == null) {
+          result.min_ = min_;
+        } else {
+          result.min_ = minBuilder_.build();
+        }
+        if (maxBuilder_ == null) {
+          result.max_ = max_;
+        } else {
+          result.max_ = maxBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest) {
+          return mergeFrom((tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest other) {
+        if (other == tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest.getDefaultInstance()) return this;
+        if (other.hasRoi()) {
+          mergeRoi(other.getRoi());
+        }
+        if (other.hasMin()) {
+          mergeMin(other.getMin());
+        }
+        if (other.hasMax()) {
+          mergeMax(other.getMax());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon roi_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon.Builder, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.PolygonOrBuilder> roiBuilder_;
+      /**
+       * <code>.kaapi.Polygon roi = 1;</code>
+       */
+      public boolean hasRoi() {
+        return roiBuilder_ != null || roi_ != null;
+      }
+      /**
+       * <code>.kaapi.Polygon roi = 1;</code>
+       */
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon getRoi() {
+        if (roiBuilder_ == null) {
+          return roi_ == null ? tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon.getDefaultInstance() : roi_;
+        } else {
+          return roiBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.kaapi.Polygon roi = 1;</code>
+       */
+      public Builder setRoi(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon value) {
+        if (roiBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          roi_ = value;
+          onChanged();
+        } else {
+          roiBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Polygon roi = 1;</code>
+       */
+      public Builder setRoi(
+          tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon.Builder builderForValue) {
+        if (roiBuilder_ == null) {
+          roi_ = builderForValue.build();
+          onChanged();
+        } else {
+          roiBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Polygon roi = 1;</code>
+       */
+      public Builder mergeRoi(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon value) {
+        if (roiBuilder_ == null) {
+          if (roi_ != null) {
+            roi_ =
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon.newBuilder(roi_).mergeFrom(value).buildPartial();
+          } else {
+            roi_ = value;
+          }
+          onChanged();
+        } else {
+          roiBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Polygon roi = 1;</code>
+       */
+      public Builder clearRoi() {
+        if (roiBuilder_ == null) {
+          roi_ = null;
+          onChanged();
+        } else {
+          roi_ = null;
+          roiBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Polygon roi = 1;</code>
+       */
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon.Builder getRoiBuilder() {
+        
+        onChanged();
+        return getRoiFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.kaapi.Polygon roi = 1;</code>
+       */
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.PolygonOrBuilder getRoiOrBuilder() {
+        if (roiBuilder_ != null) {
+          return roiBuilder_.getMessageOrBuilder();
+        } else {
+          return roi_ == null ?
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon.getDefaultInstance() : roi_;
+        }
+      }
+      /**
+       * <code>.kaapi.Polygon roi = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon.Builder, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.PolygonOrBuilder> 
+          getRoiFieldBuilder() {
+        if (roiBuilder_ == null) {
+          roiBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Polygon.Builder, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.PolygonOrBuilder>(
+                  getRoi(),
+                  getParentForChildren(),
+                  isClean());
+          roi_ = null;
+        }
+        return roiBuilder_;
+      }
+
+      private tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle min_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.Builder, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.RectangleOrBuilder> minBuilder_;
+      /**
+       * <code>.kaapi.Rectangle min = 2;</code>
+       */
+      public boolean hasMin() {
+        return minBuilder_ != null || min_ != null;
+      }
+      /**
+       * <code>.kaapi.Rectangle min = 2;</code>
+       */
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle getMin() {
+        if (minBuilder_ == null) {
+          return min_ == null ? tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.getDefaultInstance() : min_;
+        } else {
+          return minBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.kaapi.Rectangle min = 2;</code>
+       */
+      public Builder setMin(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle value) {
+        if (minBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          min_ = value;
+          onChanged();
+        } else {
+          minBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Rectangle min = 2;</code>
+       */
+      public Builder setMin(
+          tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.Builder builderForValue) {
+        if (minBuilder_ == null) {
+          min_ = builderForValue.build();
+          onChanged();
+        } else {
+          minBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Rectangle min = 2;</code>
+       */
+      public Builder mergeMin(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle value) {
+        if (minBuilder_ == null) {
+          if (min_ != null) {
+            min_ =
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.newBuilder(min_).mergeFrom(value).buildPartial();
+          } else {
+            min_ = value;
+          }
+          onChanged();
+        } else {
+          minBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Rectangle min = 2;</code>
+       */
+      public Builder clearMin() {
+        if (minBuilder_ == null) {
+          min_ = null;
+          onChanged();
+        } else {
+          min_ = null;
+          minBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Rectangle min = 2;</code>
+       */
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.Builder getMinBuilder() {
+        
+        onChanged();
+        return getMinFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.kaapi.Rectangle min = 2;</code>
+       */
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.RectangleOrBuilder getMinOrBuilder() {
+        if (minBuilder_ != null) {
+          return minBuilder_.getMessageOrBuilder();
+        } else {
+          return min_ == null ?
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.getDefaultInstance() : min_;
+        }
+      }
+      /**
+       * <code>.kaapi.Rectangle min = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.Builder, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.RectangleOrBuilder> 
+          getMinFieldBuilder() {
+        if (minBuilder_ == null) {
+          minBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.Builder, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.RectangleOrBuilder>(
+                  getMin(),
+                  getParentForChildren(),
+                  isClean());
+          min_ = null;
+        }
+        return minBuilder_;
+      }
+
+      private tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle max_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.Builder, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.RectangleOrBuilder> maxBuilder_;
+      /**
+       * <code>.kaapi.Rectangle max = 3;</code>
+       */
+      public boolean hasMax() {
+        return maxBuilder_ != null || max_ != null;
+      }
+      /**
+       * <code>.kaapi.Rectangle max = 3;</code>
+       */
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle getMax() {
+        if (maxBuilder_ == null) {
+          return max_ == null ? tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.getDefaultInstance() : max_;
+        } else {
+          return maxBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.kaapi.Rectangle max = 3;</code>
+       */
+      public Builder setMax(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle value) {
+        if (maxBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          max_ = value;
+          onChanged();
+        } else {
+          maxBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Rectangle max = 3;</code>
+       */
+      public Builder setMax(
+          tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.Builder builderForValue) {
+        if (maxBuilder_ == null) {
+          max_ = builderForValue.build();
+          onChanged();
+        } else {
+          maxBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Rectangle max = 3;</code>
+       */
+      public Builder mergeMax(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle value) {
+        if (maxBuilder_ == null) {
+          if (max_ != null) {
+            max_ =
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.newBuilder(max_).mergeFrom(value).buildPartial();
+          } else {
+            max_ = value;
+          }
+          onChanged();
+        } else {
+          maxBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Rectangle max = 3;</code>
+       */
+      public Builder clearMax() {
+        if (maxBuilder_ == null) {
+          max_ = null;
+          onChanged();
+        } else {
+          max_ = null;
+          maxBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Rectangle max = 3;</code>
+       */
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.Builder getMaxBuilder() {
+        
+        onChanged();
+        return getMaxFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.kaapi.Rectangle max = 3;</code>
+       */
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.RectangleOrBuilder getMaxOrBuilder() {
+        if (maxBuilder_ != null) {
+          return maxBuilder_.getMessageOrBuilder();
+        } else {
+          return max_ == null ?
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.getDefaultInstance() : max_;
+        }
+      }
+      /**
+       * <code>.kaapi.Rectangle max = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.Builder, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.RectangleOrBuilder> 
+          getMaxFieldBuilder() {
+        if (maxBuilder_ == null) {
+          maxBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.Builder, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.RectangleOrBuilder>(
+                  getMax(),
+                  getParentForChildren(),
+                  isClean());
+          max_ = null;
+        }
+        return maxBuilder_;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:kaapi.MotionROIRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:kaapi.MotionROIRequest)
+    private static final tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest();
+    }
+
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MotionROIRequest>
+        PARSER = new com.google.protobuf.AbstractParser<MotionROIRequest>() {
+      public MotionROIRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new MotionROIRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<MotionROIRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MotionROIRequest> getParserForType() {
+      return PARSER;
+    }
+
+    public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface ApiVersionOrBuilder extends
       // @@protoc_insertion_point(interface_extends:kaapi.ApiVersion)
       com.google.protobuf.MessageOrBuilder {
@@ -808,6 +1778,651 @@ public final class KardelenAPI {
     }
 
     public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ApiVersion getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ClickParameterOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:kaapi.ClickParameter)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.kaapi.Point pt = 1;</code>
+     */
+    boolean hasPt();
+    /**
+     * <code>.kaapi.Point pt = 1;</code>
+     */
+    tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point getPt();
+    /**
+     * <code>.kaapi.Point pt = 1;</code>
+     */
+    tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.PointOrBuilder getPtOrBuilder();
+
+    /**
+     * <code>int32 value = 2;</code>
+     */
+    int getValue();
+  }
+  /**
+   * Protobuf type {@code kaapi.ClickParameter}
+   */
+  public  static final class ClickParameter extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:kaapi.ClickParameter)
+      ClickParameterOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ClickParameter.newBuilder() to construct.
+    private ClickParameter(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ClickParameter() {
+      value_ = 0;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ClickParameter(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.Builder subBuilder = null;
+              if (pt_ != null) {
+                subBuilder = pt_.toBuilder();
+              }
+              pt_ = input.readMessage(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(pt_);
+                pt_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 16: {
+
+              value_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.internal_static_kaapi_ClickParameter_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.internal_static_kaapi_ClickParameter_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter.class, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter.Builder.class);
+    }
+
+    public static final int PT_FIELD_NUMBER = 1;
+    private tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point pt_;
+    /**
+     * <code>.kaapi.Point pt = 1;</code>
+     */
+    public boolean hasPt() {
+      return pt_ != null;
+    }
+    /**
+     * <code>.kaapi.Point pt = 1;</code>
+     */
+    public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point getPt() {
+      return pt_ == null ? tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.getDefaultInstance() : pt_;
+    }
+    /**
+     * <code>.kaapi.Point pt = 1;</code>
+     */
+    public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.PointOrBuilder getPtOrBuilder() {
+      return getPt();
+    }
+
+    public static final int VALUE_FIELD_NUMBER = 2;
+    private int value_;
+    /**
+     * <code>int32 value = 2;</code>
+     */
+    public int getValue() {
+      return value_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (pt_ != null) {
+        output.writeMessage(1, getPt());
+      }
+      if (value_ != 0) {
+        output.writeInt32(2, value_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (pt_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getPt());
+      }
+      if (value_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, value_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter)) {
+        return super.equals(obj);
+      }
+      tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter other = (tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter) obj;
+
+      boolean result = true;
+      result = result && (hasPt() == other.hasPt());
+      if (hasPt()) {
+        result = result && getPt()
+            .equals(other.getPt());
+      }
+      result = result && (getValue()
+          == other.getValue());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasPt()) {
+        hash = (37 * hash) + PT_FIELD_NUMBER;
+        hash = (53 * hash) + getPt().hashCode();
+      }
+      hash = (37 * hash) + VALUE_FIELD_NUMBER;
+      hash = (53 * hash) + getValue();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code kaapi.ClickParameter}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:kaapi.ClickParameter)
+        tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameterOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.internal_static_kaapi_ClickParameter_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.internal_static_kaapi_ClickParameter_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter.class, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter.Builder.class);
+      }
+
+      // Construct using tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (ptBuilder_ == null) {
+          pt_ = null;
+        } else {
+          pt_ = null;
+          ptBuilder_ = null;
+        }
+        value_ = 0;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.internal_static_kaapi_ClickParameter_descriptor;
+      }
+
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter getDefaultInstanceForType() {
+        return tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter.getDefaultInstance();
+      }
+
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter build() {
+        tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter buildPartial() {
+        tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter result = new tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter(this);
+        if (ptBuilder_ == null) {
+          result.pt_ = pt_;
+        } else {
+          result.pt_ = ptBuilder_.build();
+        }
+        result.value_ = value_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter) {
+          return mergeFrom((tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter other) {
+        if (other == tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter.getDefaultInstance()) return this;
+        if (other.hasPt()) {
+          mergePt(other.getPt());
+        }
+        if (other.getValue() != 0) {
+          setValue(other.getValue());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point pt_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.Builder, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.PointOrBuilder> ptBuilder_;
+      /**
+       * <code>.kaapi.Point pt = 1;</code>
+       */
+      public boolean hasPt() {
+        return ptBuilder_ != null || pt_ != null;
+      }
+      /**
+       * <code>.kaapi.Point pt = 1;</code>
+       */
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point getPt() {
+        if (ptBuilder_ == null) {
+          return pt_ == null ? tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.getDefaultInstance() : pt_;
+        } else {
+          return ptBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.kaapi.Point pt = 1;</code>
+       */
+      public Builder setPt(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point value) {
+        if (ptBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          pt_ = value;
+          onChanged();
+        } else {
+          ptBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Point pt = 1;</code>
+       */
+      public Builder setPt(
+          tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.Builder builderForValue) {
+        if (ptBuilder_ == null) {
+          pt_ = builderForValue.build();
+          onChanged();
+        } else {
+          ptBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Point pt = 1;</code>
+       */
+      public Builder mergePt(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point value) {
+        if (ptBuilder_ == null) {
+          if (pt_ != null) {
+            pt_ =
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.newBuilder(pt_).mergeFrom(value).buildPartial();
+          } else {
+            pt_ = value;
+          }
+          onChanged();
+        } else {
+          ptBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Point pt = 1;</code>
+       */
+      public Builder clearPt() {
+        if (ptBuilder_ == null) {
+          pt_ = null;
+          onChanged();
+        } else {
+          pt_ = null;
+          ptBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Point pt = 1;</code>
+       */
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.Builder getPtBuilder() {
+        
+        onChanged();
+        return getPtFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.kaapi.Point pt = 1;</code>
+       */
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.PointOrBuilder getPtOrBuilder() {
+        if (ptBuilder_ != null) {
+          return ptBuilder_.getMessageOrBuilder();
+        } else {
+          return pt_ == null ?
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.getDefaultInstance() : pt_;
+        }
+      }
+      /**
+       * <code>.kaapi.Point pt = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.Builder, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.PointOrBuilder> 
+          getPtFieldBuilder() {
+        if (ptBuilder_ == null) {
+          ptBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.Builder, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.PointOrBuilder>(
+                  getPt(),
+                  getParentForChildren(),
+                  isClean());
+          pt_ = null;
+        }
+        return ptBuilder_;
+      }
+
+      private int value_ ;
+      /**
+       * <code>int32 value = 2;</code>
+       */
+      public int getValue() {
+        return value_;
+      }
+      /**
+       * <code>int32 value = 2;</code>
+       */
+      public Builder setValue(int value) {
+        
+        value_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 value = 2;</code>
+       */
+      public Builder clearValue() {
+        
+        value_ = 0;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:kaapi.ClickParameter)
+    }
+
+    // @@protoc_insertion_point(class_scope:kaapi.ClickParameter)
+    private static final tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter();
+    }
+
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ClickParameter>
+        PARSER = new com.google.protobuf.AbstractParser<ClickParameter>() {
+      public ClickParameter parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ClickParameter(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ClickParameter> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ClickParameter> getParserForType() {
+      return PARSER;
+    }
+
+    public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -12325,6 +13940,714 @@ public final class KardelenAPI {
 
   }
 
+  public interface RectangleOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:kaapi.Rectangle)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.kaapi.Point topLeft = 1;</code>
+     */
+    boolean hasTopLeft();
+    /**
+     * <code>.kaapi.Point topLeft = 1;</code>
+     */
+    tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point getTopLeft();
+    /**
+     * <code>.kaapi.Point topLeft = 1;</code>
+     */
+    tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.PointOrBuilder getTopLeftOrBuilder();
+
+    /**
+     * <code>int32 width = 2;</code>
+     */
+    int getWidth();
+
+    /**
+     * <code>int32 height = 3;</code>
+     */
+    int getHeight();
+  }
+  /**
+   * Protobuf type {@code kaapi.Rectangle}
+   */
+  public  static final class Rectangle extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:kaapi.Rectangle)
+      RectangleOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use Rectangle.newBuilder() to construct.
+    private Rectangle(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private Rectangle() {
+      width_ = 0;
+      height_ = 0;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Rectangle(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.Builder subBuilder = null;
+              if (topLeft_ != null) {
+                subBuilder = topLeft_.toBuilder();
+              }
+              topLeft_ = input.readMessage(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(topLeft_);
+                topLeft_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 16: {
+
+              width_ = input.readInt32();
+              break;
+            }
+            case 24: {
+
+              height_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.internal_static_kaapi_Rectangle_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.internal_static_kaapi_Rectangle_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.class, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.Builder.class);
+    }
+
+    public static final int TOPLEFT_FIELD_NUMBER = 1;
+    private tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point topLeft_;
+    /**
+     * <code>.kaapi.Point topLeft = 1;</code>
+     */
+    public boolean hasTopLeft() {
+      return topLeft_ != null;
+    }
+    /**
+     * <code>.kaapi.Point topLeft = 1;</code>
+     */
+    public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point getTopLeft() {
+      return topLeft_ == null ? tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.getDefaultInstance() : topLeft_;
+    }
+    /**
+     * <code>.kaapi.Point topLeft = 1;</code>
+     */
+    public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.PointOrBuilder getTopLeftOrBuilder() {
+      return getTopLeft();
+    }
+
+    public static final int WIDTH_FIELD_NUMBER = 2;
+    private int width_;
+    /**
+     * <code>int32 width = 2;</code>
+     */
+    public int getWidth() {
+      return width_;
+    }
+
+    public static final int HEIGHT_FIELD_NUMBER = 3;
+    private int height_;
+    /**
+     * <code>int32 height = 3;</code>
+     */
+    public int getHeight() {
+      return height_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (topLeft_ != null) {
+        output.writeMessage(1, getTopLeft());
+      }
+      if (width_ != 0) {
+        output.writeInt32(2, width_);
+      }
+      if (height_ != 0) {
+        output.writeInt32(3, height_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (topLeft_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getTopLeft());
+      }
+      if (width_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, width_);
+      }
+      if (height_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, height_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle)) {
+        return super.equals(obj);
+      }
+      tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle other = (tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle) obj;
+
+      boolean result = true;
+      result = result && (hasTopLeft() == other.hasTopLeft());
+      if (hasTopLeft()) {
+        result = result && getTopLeft()
+            .equals(other.getTopLeft());
+      }
+      result = result && (getWidth()
+          == other.getWidth());
+      result = result && (getHeight()
+          == other.getHeight());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasTopLeft()) {
+        hash = (37 * hash) + TOPLEFT_FIELD_NUMBER;
+        hash = (53 * hash) + getTopLeft().hashCode();
+      }
+      hash = (37 * hash) + WIDTH_FIELD_NUMBER;
+      hash = (53 * hash) + getWidth();
+      hash = (37 * hash) + HEIGHT_FIELD_NUMBER;
+      hash = (53 * hash) + getHeight();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code kaapi.Rectangle}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:kaapi.Rectangle)
+        tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.RectangleOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.internal_static_kaapi_Rectangle_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.internal_static_kaapi_Rectangle_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.class, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.Builder.class);
+      }
+
+      // Construct using tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (topLeftBuilder_ == null) {
+          topLeft_ = null;
+        } else {
+          topLeft_ = null;
+          topLeftBuilder_ = null;
+        }
+        width_ = 0;
+
+        height_ = 0;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.internal_static_kaapi_Rectangle_descriptor;
+      }
+
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle getDefaultInstanceForType() {
+        return tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.getDefaultInstance();
+      }
+
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle build() {
+        tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle buildPartial() {
+        tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle result = new tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle(this);
+        if (topLeftBuilder_ == null) {
+          result.topLeft_ = topLeft_;
+        } else {
+          result.topLeft_ = topLeftBuilder_.build();
+        }
+        result.width_ = width_;
+        result.height_ = height_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle) {
+          return mergeFrom((tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle other) {
+        if (other == tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.getDefaultInstance()) return this;
+        if (other.hasTopLeft()) {
+          mergeTopLeft(other.getTopLeft());
+        }
+        if (other.getWidth() != 0) {
+          setWidth(other.getWidth());
+        }
+        if (other.getHeight() != 0) {
+          setHeight(other.getHeight());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point topLeft_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.Builder, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.PointOrBuilder> topLeftBuilder_;
+      /**
+       * <code>.kaapi.Point topLeft = 1;</code>
+       */
+      public boolean hasTopLeft() {
+        return topLeftBuilder_ != null || topLeft_ != null;
+      }
+      /**
+       * <code>.kaapi.Point topLeft = 1;</code>
+       */
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point getTopLeft() {
+        if (topLeftBuilder_ == null) {
+          return topLeft_ == null ? tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.getDefaultInstance() : topLeft_;
+        } else {
+          return topLeftBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.kaapi.Point topLeft = 1;</code>
+       */
+      public Builder setTopLeft(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point value) {
+        if (topLeftBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          topLeft_ = value;
+          onChanged();
+        } else {
+          topLeftBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Point topLeft = 1;</code>
+       */
+      public Builder setTopLeft(
+          tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.Builder builderForValue) {
+        if (topLeftBuilder_ == null) {
+          topLeft_ = builderForValue.build();
+          onChanged();
+        } else {
+          topLeftBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Point topLeft = 1;</code>
+       */
+      public Builder mergeTopLeft(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point value) {
+        if (topLeftBuilder_ == null) {
+          if (topLeft_ != null) {
+            topLeft_ =
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.newBuilder(topLeft_).mergeFrom(value).buildPartial();
+          } else {
+            topLeft_ = value;
+          }
+          onChanged();
+        } else {
+          topLeftBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Point topLeft = 1;</code>
+       */
+      public Builder clearTopLeft() {
+        if (topLeftBuilder_ == null) {
+          topLeft_ = null;
+          onChanged();
+        } else {
+          topLeft_ = null;
+          topLeftBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.kaapi.Point topLeft = 1;</code>
+       */
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.Builder getTopLeftBuilder() {
+        
+        onChanged();
+        return getTopLeftFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.kaapi.Point topLeft = 1;</code>
+       */
+      public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.PointOrBuilder getTopLeftOrBuilder() {
+        if (topLeftBuilder_ != null) {
+          return topLeftBuilder_.getMessageOrBuilder();
+        } else {
+          return topLeft_ == null ?
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.getDefaultInstance() : topLeft_;
+        }
+      }
+      /**
+       * <code>.kaapi.Point topLeft = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.Builder, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.PointOrBuilder> 
+          getTopLeftFieldBuilder() {
+        if (topLeftBuilder_ == null) {
+          topLeftBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Point.Builder, tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.PointOrBuilder>(
+                  getTopLeft(),
+                  getParentForChildren(),
+                  isClean());
+          topLeft_ = null;
+        }
+        return topLeftBuilder_;
+      }
+
+      private int width_ ;
+      /**
+       * <code>int32 width = 2;</code>
+       */
+      public int getWidth() {
+        return width_;
+      }
+      /**
+       * <code>int32 width = 2;</code>
+       */
+      public Builder setWidth(int value) {
+        
+        width_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 width = 2;</code>
+       */
+      public Builder clearWidth() {
+        
+        width_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int height_ ;
+      /**
+       * <code>int32 height = 3;</code>
+       */
+      public int getHeight() {
+        return height_;
+      }
+      /**
+       * <code>int32 height = 3;</code>
+       */
+      public Builder setHeight(int value) {
+        
+        height_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 height = 3;</code>
+       */
+      public Builder clearHeight() {
+        
+        height_ = 0;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:kaapi.Rectangle)
+    }
+
+    // @@protoc_insertion_point(class_scope:kaapi.Rectangle)
+    private static final tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle();
+    }
+
+    public static tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Rectangle>
+        PARSER = new com.google.protobuf.AbstractParser<Rectangle>() {
+      public Rectangle parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Rectangle(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Rectangle> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Rectangle> getParserForType() {
+      return PARSER;
+    }
+
+    public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface PointOrBuilder extends
       // @@protoc_insertion_point(interface_extends:kaapi.Point)
       com.google.protobuf.MessageOrBuilder {
@@ -19545,10 +21868,20 @@ public final class KardelenAPI {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_kaapi_MotionROIRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_kaapi_MotionROIRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_kaapi_ApiVersion_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_kaapi_ApiVersion_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_kaapi_ClickParameter_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_kaapi_ClickParameter_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_kaapi_GetNumericParameterRequest_descriptor;
   private static final 
@@ -19635,6 +21968,11 @@ public final class KardelenAPI {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_kaapi_CameraStatus_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_kaapi_Rectangle_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_kaapi_Rectangle_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_kaapi_Point_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -19699,95 +22037,105 @@ public final class KardelenAPI {
   static {
     java.lang.String[] descriptorData = {
       "\n\021KardelenAPI.proto\022\005kaapi\032\033google/proto" +
-      "buf/empty.proto\"9\n\nApiVersion\022\014\n\004date\030\001 " +
-      "\001(\t\022\014\n\004time\030\002 \001(\t\022\017\n\007version\030\003 \001(\t\"+\n\032Ge" +
-      "tNumericParameterRequest\022\r\n\005index\030\001 \001(\005\"" +
-      "E\n\033GetNumericParameterResponse\022&\n\005value\030" +
-      "\001 \001(\0132\027.kaapi.NumericParameter\"(\n\027GetEnu" +
-      "mParameterRequest\022\r\n\005index\030\001 \001(\005\")\n\030GetE" +
-      "numParameterResponse\022\r\n\005value\030\001 \001(\005\"S\n\032S" +
-      "etNumericParameterRequest\022\r\n\005index\030\001 \001(\005" +
-      "\022&\n\005value\030\002 \001(\0132\027.kaapi.NumericParameter" +
-      "\"E\n\033SetNumericParameterResponse\022&\n\005value" +
-      "\030\001 \001(\0132\027.kaapi.NumericParameter\"7\n\027SetEn" +
-      "umParameterRequest\022\r\n\005index\030\001 \001(\005\022\r\n\005val" +
-      "ue\030\002 \001(\005\")\n\030SetEnumParameterResponse\022\r\n\005" +
-      "value\030\001 \001(\005\"5\n\025SetEnumCommandRequest\022\r\n\005" +
-      "index\030\001 \001(\005\022\r\n\005value\030\002 \001(\005\"\'\n\026SetEnumCom" +
-      "mandResponse\022\r\n\005value\030\001 \001(\005\"&\n\020SetCamera" +
-      "Request\022\022\n\ncameraType\030\001 \001(\005\")\n\021SetCamera" +
-      "Response\022\024\n\014capabilities\030\001 \001(\003\"\226\002\n\tCommW" +
-      "rite\022\'\n\006action\030\001 \001(\0162\027.kaapi.CommWrite.A" +
-      "ction\022.\n\007abspars\030\002 \001(\0132\035.kaapi.AbsoluteM" +
-      "oveParameters\022.\n\007relpars\030\003 \001(\0132\035.kaapi.R" +
-      "elativeMoveParameters\0224\n\007updpars\030\004 \001(\0132#" +
-      ".kaapi.UpdateCameraStatusParameters\"J\n\006A" +
-      "ction\022\010\n\004NONE\020\000\022\014\n\010MOVE_ABS\020\001\022\014\n\010MOVE_RE" +
-      "L\020\002\022\n\n\006UPDATE\020\003\022\016\n\nSET_CAMERA\020\004\"\246\001\n\010Comm" +
-      "Read\022\037\n\007posInfo\030\001 \001(\0132\016.kaapi.PosInfo\022#\n" +
-      "\006status\030\002 \001(\0132\023.kaapi.CameraStatus\022)\n\006ab" +
-      "sres\030\003 \001(\0132\031.kaapi.AbsoluteMoveResult\022)\n" +
-      "\006relres\030\004 \001(\0132\031.kaapi.RelativeMoveResult" +
-      "\"C\n\034UpdateCameraStatusParameters\022#\n\006stat" +
-      "us\030\001 \001(\0132\023.kaapi.CameraStatus\",\n\031GetCame" +
-      "raStatusParameters\022\017\n\007filters\030\001 \001(\003\"\343\002\n\014" +
-      "CameraStatus\022\024\n\014capabilities\030\001 \001(\003\022\037\n\027nu" +
-      "mericParametersVector\030\002 \001(\005\0222\n\021numericPa" +
-      "rameters\030\003 \003(\0132\027.kaapi.NumericParameter\022" +
-      "\034\n\024enumParametersVector\030\004 \001(\005\022\026\n\016enumPar" +
-      "ameters\030\005 \003(\005\022\032\n\022enumCommandsVector\030\006 \001(" +
-      "\005\022\024\n\014enumCommands\030\007 \003(\005\022\'\n\013calibration\030\010" +
-      " \001(\0132\022.kaapi.Calibration\022#\n\tboresight\030\t " +
-      "\001(\0132\020.kaapi.Boresight\022\027\n\003roi\030\n \001(\0132\n.kaa" +
-      "pi.ROI\022\031\n\005fence\030\013 \001(\0132\n.kaapi.ROI\"\035\n\005Poi" +
-      "nt\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\"\'\n\007Polygon\022\034\n\006p" +
-      "oints\030\001 \003(\0132\014.kaapi.Point\"8\n\003ROI\022\020\n\010roiC" +
-      "ount\030\001 \001(\005\022\037\n\007regions\030\002 \003(\0132\016.kaapi.Poly" +
-      "gon\"#\n\tBoresight\022\n\n\002d0\030\001 \001(\005\022\n\n\002d1\030\002 \001(\005" +
-      "\"%\n\013Calibration\022\n\n\002d0\030\001 \001(\001\022\n\n\002d1\030\002 \001(\001\"" +
-      "N\n\020NumericParameter\022\r\n\005value\030\001 \001(\001\022\r\n\005by" +
-      "te0\030\002 \001(\005\022\r\n\005byte1\030\003 \001(\005\022\r\n\005byte2\030\004 \001(\005\"" +
-      "P\n\026RelativeMoveParameters\022\020\n\010panSpeed\030\001 " +
-      "\001(\002\022\021\n\ttiltSpeed\030\002 \001(\002\022\021\n\tzoomSpeed\030\003 \001(" +
-      "\002\"5\n\022RelativeMoveResult\022\037\n\007posInfo\030\001 \001(\013" +
-      "2\016.kaapi.PosInfo\"\202\001\n\026AbsoluteMoveParamet" +
-      "ers\022\016\n\006panPos\030\001 \001(\002\022\017\n\007tiltPos\030\002 \001(\002\022\017\n\007" +
-      "zoomPos\030\003 \001(\002\022\020\n\010panSpeed\030\004 \001(\002\022\021\n\ttiltS" +
-      "peed\030\005 \001(\002\022\021\n\tzoomSpeed\030\006 \001(\002\"\242\001\n\022Absolu" +
-      "teMoveResult\022>\n\020completionStatus\030\001 \001(\0162$" +
-      ".kaapi.AbsoluteMoveResult.Completion\022\037\n\007" +
-      "posInfo\030\002 \001(\0132\016.kaapi.PosInfo\"+\n\nComplet" +
-      "ion\022\r\n\tCOMPLETED\020\000\022\016\n\nINPROGRESS\020\001\"W\n\007Po" +
-      "sInfo\022\016\n\006panPos\030\001 \001(\002\022\017\n\007tiltPos\030\002 \001(\002\022\017" +
-      "\n\007zoomPos\030\003 \001(\002\022\014\n\004fovh\030\004 \001(\002\022\014\n\004fovv\030\005 " +
-      "\001(\0022\373\007\n\rCameraService\0227\n\013GetPosition\022\026.g" +
-      "oogle.protobuf.Empty\032\016.kaapi.PosInfo\"\000\022J" +
-      "\n\014MoveAbsolute\022\035.kaapi.AbsoluteMoveParam" +
-      "eters\032\031.kaapi.AbsoluteMoveResult\"\000\022J\n\014Mo" +
-      "veRelative\022\035.kaapi.RelativeMoveParameter" +
-      "s\032\031.kaapi.RelativeMoveResult\"\000\022J\n\017GetCam" +
-      "eraStatus\022 .kaapi.GetCameraStatusParamet" +
-      "ers\032\023.kaapi.CameraStatus\"\000\022P\n\022UpdateCame" +
-      "raStatus\022#.kaapi.UpdateCameraStatusParam" +
-      "eters\032\023.kaapi.CameraStatus\"\000\022@\n\tSetCamer" +
-      "a\022\027.kaapi.SetCameraRequest\032\030.kaapi.SetCa" +
-      "meraResponse\"\000\022^\n\023GetNumericParameter\022!." +
-      "kaapi.GetNumericParameterRequest\032\".kaapi" +
-      ".GetNumericParameterResponse\"\000\022U\n\020GetEnu" +
-      "mParameter\022\036.kaapi.GetEnumParameterReque" +
-      "st\032\037.kaapi.GetEnumParameterResponse\"\000\022^\n" +
-      "\023SetNumericParameter\022!.kaapi.SetNumericP" +
-      "arameterRequest\032\".kaapi.SetNumericParame" +
-      "terResponse\"\000\022U\n\020SetEnumParameter\022\036.kaap" +
-      "i.SetEnumParameterRequest\032\037.kaapi.SetEnu" +
-      "mParameterResponse\"\000\022O\n\016SetEnumCommand\022\034" +
-      ".kaapi.SetEnumCommandRequest\032\035.kaapi.Set" +
-      "EnumCommandResponse\"\000\0229\n\nGetVersion\022\026.go" +
-      "ogle.protobuf.Empty\032\021.kaapi.ApiVersion\"\000" +
-      "\022?\n\024CommunicationChannel\022\020.kaapi.CommWri" +
-      "te\032\017.kaapi.CommRead\"\000(\0010\001B2\n0tr.com.asel" +
-      "san.kardelen.orion.message.definitionb\006p" +
-      "roto3"
+      "buf/empty.proto\"m\n\020MotionROIRequest\022\033\n\003r" +
+      "oi\030\001 \001(\0132\016.kaapi.Polygon\022\035\n\003min\030\002 \001(\0132\020." +
+      "kaapi.Rectangle\022\035\n\003max\030\003 \001(\0132\020.kaapi.Rec" +
+      "tangle\"9\n\nApiVersion\022\014\n\004date\030\001 \001(\t\022\014\n\004ti" +
+      "me\030\002 \001(\t\022\017\n\007version\030\003 \001(\t\"9\n\016ClickParame" +
+      "ter\022\030\n\002pt\030\001 \001(\0132\014.kaapi.Point\022\r\n\005value\030\002" +
+      " \001(\005\"+\n\032GetNumericParameterRequest\022\r\n\005in" +
+      "dex\030\001 \001(\005\"E\n\033GetNumericParameterResponse" +
+      "\022&\n\005value\030\001 \001(\0132\027.kaapi.NumericParameter" +
+      "\"(\n\027GetEnumParameterRequest\022\r\n\005index\030\001 \001" +
+      "(\005\")\n\030GetEnumParameterResponse\022\r\n\005value\030" +
+      "\001 \001(\005\"S\n\032SetNumericParameterRequest\022\r\n\005i" +
+      "ndex\030\001 \001(\005\022&\n\005value\030\002 \001(\0132\027.kaapi.Numeri" +
+      "cParameter\"E\n\033SetNumericParameterRespons" +
+      "e\022&\n\005value\030\001 \001(\0132\027.kaapi.NumericParamete" +
+      "r\"7\n\027SetEnumParameterRequest\022\r\n\005index\030\001 " +
+      "\001(\005\022\r\n\005value\030\002 \001(\005\")\n\030SetEnumParameterRe" +
+      "sponse\022\r\n\005value\030\001 \001(\005\"5\n\025SetEnumCommandR" +
+      "equest\022\r\n\005index\030\001 \001(\005\022\r\n\005value\030\002 \001(\005\"\'\n\026" +
+      "SetEnumCommandResponse\022\r\n\005value\030\001 \001(\005\"&\n" +
+      "\020SetCameraRequest\022\022\n\ncameraType\030\001 \001(\005\")\n" +
+      "\021SetCameraResponse\022\024\n\014capabilities\030\001 \001(\003" +
+      "\"\226\002\n\tCommWrite\022\'\n\006action\030\001 \001(\0162\027.kaapi.C" +
+      "ommWrite.Action\022.\n\007abspars\030\002 \001(\0132\035.kaapi" +
+      ".AbsoluteMoveParameters\022.\n\007relpars\030\003 \001(\013" +
+      "2\035.kaapi.RelativeMoveParameters\0224\n\007updpa" +
+      "rs\030\004 \001(\0132#.kaapi.UpdateCameraStatusParam" +
+      "eters\"J\n\006Action\022\010\n\004NONE\020\000\022\014\n\010MOVE_ABS\020\001\022" +
+      "\014\n\010MOVE_REL\020\002\022\n\n\006UPDATE\020\003\022\016\n\nSET_CAMERA\020" +
+      "\004\"\246\001\n\010CommRead\022\037\n\007posInfo\030\001 \001(\0132\016.kaapi." +
+      "PosInfo\022#\n\006status\030\002 \001(\0132\023.kaapi.CameraSt" +
+      "atus\022)\n\006absres\030\003 \001(\0132\031.kaapi.AbsoluteMov" +
+      "eResult\022)\n\006relres\030\004 \001(\0132\031.kaapi.Relative" +
+      "MoveResult\"C\n\034UpdateCameraStatusParamete" +
+      "rs\022#\n\006status\030\001 \001(\0132\023.kaapi.CameraStatus\"" +
+      ",\n\031GetCameraStatusParameters\022\017\n\007filters\030" +
+      "\001 \001(\003\"\343\002\n\014CameraStatus\022\024\n\014capabilities\030\001" +
+      " \001(\003\022\037\n\027numericParametersVector\030\002 \001(\005\0222\n" +
+      "\021numericParameters\030\003 \003(\0132\027.kaapi.Numeric" +
+      "Parameter\022\034\n\024enumParametersVector\030\004 \001(\005\022" +
+      "\026\n\016enumParameters\030\005 \003(\005\022\032\n\022enumCommandsV" +
+      "ector\030\006 \001(\005\022\024\n\014enumCommands\030\007 \003(\005\022\'\n\013cal" +
+      "ibration\030\010 \001(\0132\022.kaapi.Calibration\022#\n\tbo" +
+      "resight\030\t \001(\0132\020.kaapi.Boresight\022\027\n\003roi\030\n" +
+      " \001(\0132\n.kaapi.ROI\022\031\n\005fence\030\013 \001(\0132\n.kaapi." +
+      "ROI\"I\n\tRectangle\022\035\n\007topLeft\030\001 \001(\0132\014.kaap" +
+      "i.Point\022\r\n\005width\030\002 \001(\005\022\016\n\006height\030\003 \001(\005\"\035" +
+      "\n\005Point\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\"\'\n\007Polygon" +
+      "\022\034\n\006points\030\001 \003(\0132\014.kaapi.Point\"8\n\003ROI\022\020\n" +
+      "\010roiCount\030\001 \001(\005\022\037\n\007regions\030\002 \003(\0132\016.kaapi" +
+      ".Polygon\"#\n\tBoresight\022\n\n\002d0\030\001 \001(\005\022\n\n\002d1\030" +
+      "\002 \001(\005\"%\n\013Calibration\022\n\n\002d0\030\001 \001(\001\022\n\n\002d1\030\002" +
+      " \001(\001\"N\n\020NumericParameter\022\r\n\005value\030\001 \001(\001\022" +
+      "\r\n\005byte0\030\002 \001(\005\022\r\n\005byte1\030\003 \001(\005\022\r\n\005byte2\030\004" +
+      " \001(\005\"P\n\026RelativeMoveParameters\022\020\n\010panSpe" +
+      "ed\030\001 \001(\002\022\021\n\ttiltSpeed\030\002 \001(\002\022\021\n\tzoomSpeed" +
+      "\030\003 \001(\002\"5\n\022RelativeMoveResult\022\037\n\007posInfo\030" +
+      "\001 \001(\0132\016.kaapi.PosInfo\"\202\001\n\026AbsoluteMovePa" +
+      "rameters\022\016\n\006panPos\030\001 \001(\002\022\017\n\007tiltPos\030\002 \001(" +
+      "\002\022\017\n\007zoomPos\030\003 \001(\002\022\020\n\010panSpeed\030\004 \001(\002\022\021\n\t" +
+      "tiltSpeed\030\005 \001(\002\022\021\n\tzoomSpeed\030\006 \001(\002\"\242\001\n\022A" +
+      "bsoluteMoveResult\022>\n\020completionStatus\030\001 " +
+      "\001(\0162$.kaapi.AbsoluteMoveResult.Completio" +
+      "n\022\037\n\007posInfo\030\002 \001(\0132\016.kaapi.PosInfo\"+\n\nCo" +
+      "mpletion\022\r\n\tCOMPLETED\020\000\022\016\n\nINPROGRESS\020\001\"" +
+      "W\n\007PosInfo\022\016\n\006panPos\030\001 \001(\002\022\017\n\007tiltPos\030\002 " +
+      "\001(\002\022\017\n\007zoomPos\030\003 \001(\002\022\014\n\004fovh\030\004 \001(\002\022\014\n\004fo" +
+      "vv\030\005 \001(\0022\270\t\n\rCameraService\0227\n\013GetPositio" +
+      "n\022\026.google.protobuf.Empty\032\016.kaapi.PosInf" +
+      "o\"\000\022J\n\014MoveAbsolute\022\035.kaapi.AbsoluteMove" +
+      "Parameters\032\031.kaapi.AbsoluteMoveResult\"\000\022" +
+      "J\n\014MoveRelative\022\035.kaapi.RelativeMovePara" +
+      "meters\032\031.kaapi.RelativeMoveResult\"\000\022J\n\017G" +
+      "etCameraStatus\022 .kaapi.GetCameraStatusPa" +
+      "rameters\032\023.kaapi.CameraStatus\"\000\022P\n\022Updat" +
+      "eCameraStatus\022#.kaapi.UpdateCameraStatus" +
+      "Parameters\032\023.kaapi.CameraStatus\"\000\022@\n\tSet" +
+      "Camera\022\027.kaapi.SetCameraRequest\032\030.kaapi." +
+      "SetCameraResponse\"\000\022^\n\023GetNumericParamet" +
+      "er\022!.kaapi.GetNumericParameterRequest\032\"." +
+      "kaapi.GetNumericParameterResponse\"\000\022U\n\020G" +
+      "etEnumParameter\022\036.kaapi.GetEnumParameter" +
+      "Request\032\037.kaapi.GetEnumParameterResponse" +
+      "\"\000\022^\n\023SetNumericParameter\022!.kaapi.SetNum" +
+      "ericParameterRequest\032\".kaapi.SetNumericP" +
+      "arameterResponse\"\000\022U\n\020SetEnumParameter\022\036" +
+      ".kaapi.SetEnumParameterRequest\032\037.kaapi.S" +
+      "etEnumParameterResponse\"\000\022O\n\016SetEnumComm" +
+      "and\022\034.kaapi.SetEnumCommandRequest\032\035.kaap" +
+      "i.SetEnumCommandResponse\"\000\0229\n\nGetVersion" +
+      "\022\026.google.protobuf.Empty\032\021.kaapi.ApiVers" +
+      "ion\"\000\022>\n\013ScreenClick\022\025.kaapi.ClickParame" +
+      "ter\032\026.google.protobuf.Empty\"\000\022?\n\024Communi" +
+      "cationChannel\022\020.kaapi.CommWrite\032\017.kaapi." +
+      "CommRead\"\000(\0010\001\022A\n\014SetMotionROI\022\027.kaapi.M" +
+      "otionROIRequest\032\026.google.protobuf.Empty\"" +
+      "\000\0228\n\nStartTrack\022\020.kaapi.Rectangle\032\026.goog" +
+      "le.protobuf.Empty\"\000B2\n0tr.com.aselsan.ka" +
+      "rdelen.orion.message.definitionb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -19802,176 +22150,194 @@ public final class KardelenAPI {
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.EmptyProto.getDescriptor(),
         }, assigner);
-    internal_static_kaapi_ApiVersion_descriptor =
+    internal_static_kaapi_MotionROIRequest_descriptor =
       getDescriptor().getMessageTypes().get(0);
+    internal_static_kaapi_MotionROIRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_kaapi_MotionROIRequest_descriptor,
+        new java.lang.String[] { "Roi", "Min", "Max", });
+    internal_static_kaapi_ApiVersion_descriptor =
+      getDescriptor().getMessageTypes().get(1);
     internal_static_kaapi_ApiVersion_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_ApiVersion_descriptor,
         new java.lang.String[] { "Date", "Time", "Version", });
+    internal_static_kaapi_ClickParameter_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_kaapi_ClickParameter_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_kaapi_ClickParameter_descriptor,
+        new java.lang.String[] { "Pt", "Value", });
     internal_static_kaapi_GetNumericParameterRequest_descriptor =
-      getDescriptor().getMessageTypes().get(1);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_kaapi_GetNumericParameterRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_GetNumericParameterRequest_descriptor,
         new java.lang.String[] { "Index", });
     internal_static_kaapi_GetNumericParameterResponse_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_kaapi_GetNumericParameterResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_GetNumericParameterResponse_descriptor,
         new java.lang.String[] { "Value", });
     internal_static_kaapi_GetEnumParameterRequest_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_kaapi_GetEnumParameterRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_GetEnumParameterRequest_descriptor,
         new java.lang.String[] { "Index", });
     internal_static_kaapi_GetEnumParameterResponse_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_kaapi_GetEnumParameterResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_GetEnumParameterResponse_descriptor,
         new java.lang.String[] { "Value", });
     internal_static_kaapi_SetNumericParameterRequest_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_kaapi_SetNumericParameterRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_SetNumericParameterRequest_descriptor,
         new java.lang.String[] { "Index", "Value", });
     internal_static_kaapi_SetNumericParameterResponse_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_kaapi_SetNumericParameterResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_SetNumericParameterResponse_descriptor,
         new java.lang.String[] { "Value", });
     internal_static_kaapi_SetEnumParameterRequest_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_kaapi_SetEnumParameterRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_SetEnumParameterRequest_descriptor,
         new java.lang.String[] { "Index", "Value", });
     internal_static_kaapi_SetEnumParameterResponse_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_kaapi_SetEnumParameterResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_SetEnumParameterResponse_descriptor,
         new java.lang.String[] { "Value", });
     internal_static_kaapi_SetEnumCommandRequest_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_kaapi_SetEnumCommandRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_SetEnumCommandRequest_descriptor,
         new java.lang.String[] { "Index", "Value", });
     internal_static_kaapi_SetEnumCommandResponse_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_kaapi_SetEnumCommandResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_SetEnumCommandResponse_descriptor,
         new java.lang.String[] { "Value", });
     internal_static_kaapi_SetCameraRequest_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_kaapi_SetCameraRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_SetCameraRequest_descriptor,
         new java.lang.String[] { "CameraType", });
     internal_static_kaapi_SetCameraResponse_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_kaapi_SetCameraResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_SetCameraResponse_descriptor,
         new java.lang.String[] { "Capabilities", });
     internal_static_kaapi_CommWrite_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_kaapi_CommWrite_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_CommWrite_descriptor,
         new java.lang.String[] { "Action", "Abspars", "Relpars", "Updpars", });
     internal_static_kaapi_CommRead_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_kaapi_CommRead_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_CommRead_descriptor,
         new java.lang.String[] { "PosInfo", "Status", "Absres", "Relres", });
     internal_static_kaapi_UpdateCameraStatusParameters_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_kaapi_UpdateCameraStatusParameters_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_UpdateCameraStatusParameters_descriptor,
         new java.lang.String[] { "Status", });
     internal_static_kaapi_GetCameraStatusParameters_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_kaapi_GetCameraStatusParameters_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_GetCameraStatusParameters_descriptor,
         new java.lang.String[] { "Filters", });
     internal_static_kaapi_CameraStatus_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_kaapi_CameraStatus_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_CameraStatus_descriptor,
         new java.lang.String[] { "Capabilities", "NumericParametersVector", "NumericParameters", "EnumParametersVector", "EnumParameters", "EnumCommandsVector", "EnumCommands", "Calibration", "Boresight", "Roi", "Fence", });
+    internal_static_kaapi_Rectangle_descriptor =
+      getDescriptor().getMessageTypes().get(20);
+    internal_static_kaapi_Rectangle_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_kaapi_Rectangle_descriptor,
+        new java.lang.String[] { "TopLeft", "Width", "Height", });
     internal_static_kaapi_Point_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_kaapi_Point_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_Point_descriptor,
         new java.lang.String[] { "X", "Y", });
     internal_static_kaapi_Polygon_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_kaapi_Polygon_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_Polygon_descriptor,
         new java.lang.String[] { "Points", });
     internal_static_kaapi_ROI_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_kaapi_ROI_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_ROI_descriptor,
         new java.lang.String[] { "RoiCount", "Regions", });
     internal_static_kaapi_Boresight_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_kaapi_Boresight_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_Boresight_descriptor,
         new java.lang.String[] { "D0", "D1", });
     internal_static_kaapi_Calibration_descriptor =
-      getDescriptor().getMessageTypes().get(22);
+      getDescriptor().getMessageTypes().get(25);
     internal_static_kaapi_Calibration_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_Calibration_descriptor,
         new java.lang.String[] { "D0", "D1", });
     internal_static_kaapi_NumericParameter_descriptor =
-      getDescriptor().getMessageTypes().get(23);
+      getDescriptor().getMessageTypes().get(26);
     internal_static_kaapi_NumericParameter_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_NumericParameter_descriptor,
         new java.lang.String[] { "Value", "Byte0", "Byte1", "Byte2", });
     internal_static_kaapi_RelativeMoveParameters_descriptor =
-      getDescriptor().getMessageTypes().get(24);
+      getDescriptor().getMessageTypes().get(27);
     internal_static_kaapi_RelativeMoveParameters_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_RelativeMoveParameters_descriptor,
         new java.lang.String[] { "PanSpeed", "TiltSpeed", "ZoomSpeed", });
     internal_static_kaapi_RelativeMoveResult_descriptor =
-      getDescriptor().getMessageTypes().get(25);
+      getDescriptor().getMessageTypes().get(28);
     internal_static_kaapi_RelativeMoveResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_RelativeMoveResult_descriptor,
         new java.lang.String[] { "PosInfo", });
     internal_static_kaapi_AbsoluteMoveParameters_descriptor =
-      getDescriptor().getMessageTypes().get(26);
+      getDescriptor().getMessageTypes().get(29);
     internal_static_kaapi_AbsoluteMoveParameters_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_AbsoluteMoveParameters_descriptor,
         new java.lang.String[] { "PanPos", "TiltPos", "ZoomPos", "PanSpeed", "TiltSpeed", "ZoomSpeed", });
     internal_static_kaapi_AbsoluteMoveResult_descriptor =
-      getDescriptor().getMessageTypes().get(27);
+      getDescriptor().getMessageTypes().get(30);
     internal_static_kaapi_AbsoluteMoveResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_AbsoluteMoveResult_descriptor,
         new java.lang.String[] { "CompletionStatus", "PosInfo", });
     internal_static_kaapi_PosInfo_descriptor =
-      getDescriptor().getMessageTypes().get(28);
+      getDescriptor().getMessageTypes().get(31);
     internal_static_kaapi_PosInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kaapi_PosInfo_descriptor,

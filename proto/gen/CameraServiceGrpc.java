@@ -411,6 +411,38 @@ public final class CameraServiceGrpc {
      return getGetVersionMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter,
+      com.google.protobuf.Empty> getScreenClickMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ScreenClick",
+      requestType = tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter.class,
+      responseType = com.google.protobuf.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter,
+      com.google.protobuf.Empty> getScreenClickMethod() {
+    io.grpc.MethodDescriptor<tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter, com.google.protobuf.Empty> getScreenClickMethod;
+    if ((getScreenClickMethod = CameraServiceGrpc.getScreenClickMethod) == null) {
+      synchronized (CameraServiceGrpc.class) {
+        if ((getScreenClickMethod = CameraServiceGrpc.getScreenClickMethod) == null) {
+          CameraServiceGrpc.getScreenClickMethod = getScreenClickMethod = 
+              io.grpc.MethodDescriptor.<tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter, com.google.protobuf.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "kaapi.CameraService", "ScreenClick"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+                  .setSchemaDescriptor(new CameraServiceMethodDescriptorSupplier("ScreenClick"))
+                  .build();
+          }
+        }
+     }
+     return getScreenClickMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.CommWrite,
       tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.CommRead> getCommunicationChannelMethod;
 
@@ -441,6 +473,70 @@ public final class CameraServiceGrpc {
         }
      }
      return getCommunicationChannelMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest,
+      com.google.protobuf.Empty> getSetMotionROIMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SetMotionROI",
+      requestType = tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest.class,
+      responseType = com.google.protobuf.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest,
+      com.google.protobuf.Empty> getSetMotionROIMethod() {
+    io.grpc.MethodDescriptor<tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest, com.google.protobuf.Empty> getSetMotionROIMethod;
+    if ((getSetMotionROIMethod = CameraServiceGrpc.getSetMotionROIMethod) == null) {
+      synchronized (CameraServiceGrpc.class) {
+        if ((getSetMotionROIMethod = CameraServiceGrpc.getSetMotionROIMethod) == null) {
+          CameraServiceGrpc.getSetMotionROIMethod = getSetMotionROIMethod = 
+              io.grpc.MethodDescriptor.<tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest, com.google.protobuf.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "kaapi.CameraService", "SetMotionROI"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+                  .setSchemaDescriptor(new CameraServiceMethodDescriptorSupplier("SetMotionROI"))
+                  .build();
+          }
+        }
+     }
+     return getSetMotionROIMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle,
+      com.google.protobuf.Empty> getStartTrackMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "StartTrack",
+      requestType = tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.class,
+      responseType = com.google.protobuf.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle,
+      com.google.protobuf.Empty> getStartTrackMethod() {
+    io.grpc.MethodDescriptor<tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle, com.google.protobuf.Empty> getStartTrackMethod;
+    if ((getStartTrackMethod = CameraServiceGrpc.getStartTrackMethod) == null) {
+      synchronized (CameraServiceGrpc.class) {
+        if ((getStartTrackMethod = CameraServiceGrpc.getStartTrackMethod) == null) {
+          CameraServiceGrpc.getStartTrackMethod = getStartTrackMethod = 
+              io.grpc.MethodDescriptor.<tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle, com.google.protobuf.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "kaapi.CameraService", "StartTrack"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+                  .setSchemaDescriptor(new CameraServiceMethodDescriptorSupplier("StartTrack"))
+                  .build();
+          }
+        }
+     }
+     return getStartTrackMethod;
   }
 
   /**
@@ -556,9 +652,30 @@ public final class CameraServiceGrpc {
 
     /**
      */
+    public void screenClick(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      asyncUnimplementedUnaryCall(getScreenClickMethod(), responseObserver);
+    }
+
+    /**
+     */
     public io.grpc.stub.StreamObserver<tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.CommWrite> communicationChannel(
         io.grpc.stub.StreamObserver<tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.CommRead> responseObserver) {
       return asyncUnimplementedStreamingCall(getCommunicationChannelMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void setMotionROI(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      asyncUnimplementedUnaryCall(getSetMotionROIMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void startTrack(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      asyncUnimplementedUnaryCall(getStartTrackMethod(), responseObserver);
     }
 
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
@@ -648,12 +765,33 @@ public final class CameraServiceGrpc {
                 tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ApiVersion>(
                   this, METHODID_GET_VERSION)))
           .addMethod(
+            getScreenClickMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter,
+                com.google.protobuf.Empty>(
+                  this, METHODID_SCREEN_CLICK)))
+          .addMethod(
             getCommunicationChannelMethod(),
             asyncBidiStreamingCall(
               new MethodHandlers<
                 tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.CommWrite,
                 tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.CommRead>(
                   this, METHODID_COMMUNICATION_CHANNEL)))
+          .addMethod(
+            getSetMotionROIMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest,
+                com.google.protobuf.Empty>(
+                  this, METHODID_SET_MOTION_ROI)))
+          .addMethod(
+            getStartTrackMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle,
+                com.google.protobuf.Empty>(
+                  this, METHODID_START_TRACK)))
           .build();
     }
   }
@@ -774,10 +912,34 @@ public final class CameraServiceGrpc {
 
     /**
      */
+    public void screenClick(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getScreenClickMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
     public io.grpc.stub.StreamObserver<tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.CommWrite> communicationChannel(
         io.grpc.stub.StreamObserver<tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.CommRead> responseObserver) {
       return asyncBidiStreamingCall(
           getChannel().newCall(getCommunicationChannelMethod(), getCallOptions()), responseObserver);
+    }
+
+    /**
+     */
+    public void setMotionROI(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getSetMotionROIMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void startTrack(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getStartTrackMethod(), getCallOptions()), request, responseObserver);
     }
   }
 
@@ -881,6 +1043,27 @@ public final class CameraServiceGrpc {
     public tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ApiVersion getVersion(com.google.protobuf.Empty request) {
       return blockingUnaryCall(
           getChannel(), getGetVersionMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.google.protobuf.Empty screenClick(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter request) {
+      return blockingUnaryCall(
+          getChannel(), getScreenClickMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.google.protobuf.Empty setMotionROI(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getSetMotionROIMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.google.protobuf.Empty startTrack(tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle request) {
+      return blockingUnaryCall(
+          getChannel(), getStartTrackMethod(), getCallOptions(), request);
     }
   }
 
@@ -997,6 +1180,30 @@ public final class CameraServiceGrpc {
       return futureUnaryCall(
           getChannel().newCall(getGetVersionMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> screenClick(
+        tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter request) {
+      return futureUnaryCall(
+          getChannel().newCall(getScreenClickMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> setMotionROI(
+        tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getSetMotionROIMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> startTrack(
+        tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle request) {
+      return futureUnaryCall(
+          getChannel().newCall(getStartTrackMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_GET_POSITION = 0;
@@ -1011,7 +1218,10 @@ public final class CameraServiceGrpc {
   private static final int METHODID_SET_ENUM_PARAMETER = 9;
   private static final int METHODID_SET_ENUM_COMMAND = 10;
   private static final int METHODID_GET_VERSION = 11;
-  private static final int METHODID_COMMUNICATION_CHANNEL = 12;
+  private static final int METHODID_SCREEN_CLICK = 12;
+  private static final int METHODID_SET_MOTION_ROI = 13;
+  private static final int METHODID_START_TRACK = 14;
+  private static final int METHODID_COMMUNICATION_CHANNEL = 15;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -1077,6 +1287,18 @@ public final class CameraServiceGrpc {
         case METHODID_GET_VERSION:
           serviceImpl.getVersion((com.google.protobuf.Empty) request,
               (io.grpc.stub.StreamObserver<tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ApiVersion>) responseObserver);
+          break;
+        case METHODID_SCREEN_CLICK:
+          serviceImpl.screenClick((tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.ClickParameter) request,
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
+        case METHODID_SET_MOTION_ROI:
+          serviceImpl.setMotionROI((tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.MotionROIRequest) request,
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
+        case METHODID_START_TRACK:
+          serviceImpl.startTrack((tr.com.aselsan.kardelen.orion.message.definition.KardelenAPI.Rectangle) request,
+              (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -1154,7 +1376,10 @@ public final class CameraServiceGrpc {
               .addMethod(getSetEnumParameterMethod())
               .addMethod(getSetEnumCommandMethod())
               .addMethod(getGetVersionMethod())
+              .addMethod(getScreenClickMethod())
               .addMethod(getCommunicationChannelMethod())
+              .addMethod(getSetMotionROIMethod())
+              .addMethod(getStartTrackMethod())
               .build();
         }
       }
