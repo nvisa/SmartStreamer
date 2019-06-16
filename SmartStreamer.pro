@@ -79,11 +79,11 @@ tk1 {
 		flirstreamer.h \
 		tk1omxpipeline.h
 
-LIBS += -lvdpau -lX11 -lXv -lva-drm -lva-x11
-    INCLUDEPATH += /usr/include/gstreamer-1.0
-    INCLUDEPATH += /usr/include/glib-2.0
-    INCLUDEPATH += /usr/lib/arm-linux-gnueabihf/glib-2.0/include
-    DEFINES += HAVE_TK1
+	LIBS += -lvdpau -lX11 -lXv -lva-drm -lva-x11
+	INCLUDEPATH += /usr/include/gstreamer-1.0
+	INCLUDEPATH += /usr/include/glib-2.0
+	INCLUDEPATH += /usr/lib/arm-linux-gnueabihf/glib-2.0/include
+	DEFINES += HAVE_TK1
 }
 
 deprecated {
