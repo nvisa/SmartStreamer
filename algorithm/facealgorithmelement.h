@@ -1,7 +1,6 @@
 #ifndef FACEALGORITHMELEMENT_H
 #define FACEALGORITHMELEMENT_H
 
-#include "basealgorithmcommon.h"
 #include "basealgorithmelement.h"
 
 class FaceAlgorithmElement : public BaseAlgorithmElement
@@ -23,7 +22,6 @@ public:
 	};
 
 protected:
-	BaseAlgorithmCommon::BaseVariables v;
 	FaceControl control;
 };
 
