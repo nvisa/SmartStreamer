@@ -1,13 +1,17 @@
 #include "streamercommon.h"
 
 #include <lmm/textoverlay.h>
-#include <lmm/tx1/tx1videoencoder.h>
+#include <lmm/rtsp/rtspclient.h>
 
 #include <QFile>
 #include <QTcpServer>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
+
+#if HAVE_TX1
+	#include <lmm/tx1/tx1videoencoder.h>
+#endif
 
 static QJsonDocument readJson(const QString &filename)
 {
@@ -94,6 +98,44 @@ BaseRtspServer *StreamerCommon::createRtspServer(QList<RtpTransmitter *> rtpout)
 	return rtspServer;
 }
 
+BaseRtspServer *StreamerCommon::createRtspServer(QList<RtpTransmitter *> rtpout)
+{
+	BaseRtspServer *rtspServer = new BaseRtspServer(NULL, StreamerCommon::detectRtspPort());
+	for (int i = 0; i < rtpout.size(); i++) {
+		rtspServer->addStream(QString("stream%1").arg(i + 1), false, rtpout[i]);
+		rtspServer->addStream(QString("stream%1%2").arg(i + 1).arg("m"),true, rtpout[i], 15678 + (2 * i));
+		rtspServer->addMedia2Stream("videoTrack", QString("stream%1").arg(i + 1), false, rtpout[i]);
+		rtspServer->addMedia2Stream("videoTrack", QString("stream%1%2").arg(i + 1).arg("m"), true, rtpout[i]);
+	}
+	return rtspServer;
+}
+
+RtspClient *StreamerCommon::createRtspClient(RtpReceiver *rtp, const QString &url, const QString &user, const QString &pass)
+{
+	RtspClient *rtsp = new RtspClient();
+	rtsp->addSetupTrack("videoTrack", rtp);
+	rtsp->addSetupTrack("trackID=0", rtp);
+	rtsp->addSetupTrack("trackID=1", rtp);
+	rtsp->addSetupTrack("video", rtp);
+	if (!user.isEmpty())
+		rtsp->setAuthCredentials(user, pass);
+	if (url.startsWith("rtsp://"))
+		rtsp->setServerUrl(QString("%1").arg(url));
+	else
+		rtsp->setServerUrl(QString("rtsp://%1").arg(url));
+	return rtsp;
+}
+
+FFmpegDecoder *StreamerCommon::createFFmpegDecoder(int w, int h, int count)
+{
+	FFmpegDecoder *dec = new FFmpegDecoder;
+	dec->suppressDebugMessages();
+	dec->setVideoResolution(w, h);
+	dec->setBufferCount(count);
+	return dec;
+}
+
+#if HAVE_TX1
 BaseLmmElement *StreamerCommon::createOverlay()
 {
 	TextOverlay *overlay = new TextOverlay(TextOverlay::QPAINTER);
@@ -158,4 +200,4 @@ int StreamerCommon::reloadJson(BaseLmmElement *el)
 		return -ENOENT;
 	return 0;
 }
-
+#endif
