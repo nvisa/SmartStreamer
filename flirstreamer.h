@@ -2,14 +2,16 @@
 #define FLIRSTREAMER_H
 
 #include <lmm/players/basestreamer.h>
-#include "tk1omxpipeline.h"
+
 #include <QElapsedTimer>
 
 class RtpReceiver;
 class SeiInserter;
+class TK1OmxPipeline;
 class FlirStreamerPriv;
 class AlgorithmGrpcServer;
 class BaseAlgorithmElement;
+
 class FlirStreamer: public BaseStreamer
 {
 	Q_OBJECT

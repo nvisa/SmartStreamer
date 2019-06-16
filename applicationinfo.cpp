@@ -211,8 +211,8 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithmFromJson(const QJsonObject
 #if HAVE_TK1
 	} else if (algo["type"] == QString("panaroma")) {
 		return new PanaromaAlgorithmElement;
-	}
 #endif
+	}
 	return new BaseAlgorithmElement;
 }
 

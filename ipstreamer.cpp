@@ -37,6 +37,7 @@ IpStreamer::IpStreamer(QObject *parent): BaseStreamer(parent){
 
 int IpStreamer::generatePipelineForOneSource(const QString &Url)
 {
+#if 0
 	setupAlgorithmManager();
 	rtp = new RtpReceiver(this);
 	rtp->useThreadedReading(true);
@@ -135,7 +136,7 @@ int IpStreamer::generatePipelineForOneSource(const QString &Url)
 	rtspServer->addMedia2Stream("videoTrack", "stream1_vsm", true, rtpout2);
 
 	algMan->startGrpc();
-
+#endif
 	return 0;
 }
 
@@ -325,7 +326,7 @@ int IpStreamer::readSourceInformation()
 
 int IpStreamer::setupAlgorithmManager()
 {
-	algMan = new AlgorithmManager(this);
+	//algMan = new AlgorithmManager(this);
 }
 
 int IpStreamer::pipelineOutput(BaseLmmPipeline *p, const RawBuffer &buf)
