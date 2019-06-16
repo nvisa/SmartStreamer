@@ -182,7 +182,6 @@ public:
 			addcap(caps, CAPABILITY_MENU_OVER_VIDEO);
 			addcap(caps, CAPABILITY_LAZER_RANGE_FINDER);
 			addcap(caps, CAPABILITY_SHOW_HIDE_SEMBOLOGY);
-			addcap(caps, CAPABILITY_AUTO_TRACK_WINDOW);
 			addcap(caps, CAPABILITY_AUTO_TRACK_DETECTION);
 			addcap(caps, CAPABILITY_NUC);
 
@@ -204,7 +203,6 @@ public:
 			addcap(caps, CAPABILITY_MENU_OVER_VIDEO);
 			addcap(caps, CAPABILITY_LAZER_RANGE_FINDER);
 			addcap(caps, CAPABILITY_SHOW_HIDE_SEMBOLOGY);
-			addcap(caps, CAPABILITY_AUTO_TRACK_WINDOW);
 			addcap(caps, CAPABILITY_AUTO_TRACK_DETECTION);
 
 			addcap(caps, CAPABILITY_MISSION_EXECUTION);
@@ -416,6 +414,8 @@ public:
 
 	virtual void setEnumCommand(int index, int32_t value)
 	{
+		// TODO: implement digital zoom
+		// TODO: cache all enum and numeric values
 	}
 
 	double BUTTON_HEIGHT 	= 0.108; //0.112
