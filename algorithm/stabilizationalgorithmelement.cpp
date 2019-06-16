@@ -67,6 +67,7 @@ void StabilizationAlgorithmElement::zoom2degree_conversion(int zoomReadOut,float
 int StabilizationAlgorithmElement::reloadJson(const QJsonObject &node)
 {
 	v.stabilization = node["stabilization"].toBool() ? 1 : 0;
+	control.sensitivity = node["sensitivity"].toInt();
 	return 0;
 }
 
@@ -92,7 +93,6 @@ int StabilizationAlgorithmElement::processAlgo(const RawBuffer &buf)
 {
 	int width = buf.constPars()->videoWidth;
 	int height = buf.constPars()->videoHeight;
-	control.sensitivity = BaseAlgorithmCommon::instance()->getSensitivity("stabilization");
 	PtzpHead *headz = ApplicationInfo::instance()->getPtzpDriver(0)->getHead(0);
 	PtzpHead *headpt = ApplicationInfo::instance()->getPtzpDriver(0)->getHead(1);
 	float panTiltZoomRead[] = {10, 10, 0, 57.6, 34.3}; //some sane defaults
@@ -107,10 +107,11 @@ int StabilizationAlgorithmElement::processAlgo(const RawBuffer &buf)
 			panTiltZoomRead[4] = fovv;
 		}
 	}
-
+#if HAVE_VIA_STABILIZATION
 	asel_bypass((uchar *)buf.constData(), width * height, width, height,
 				panTiltZoomRead, v.debug, v.stabilization,v.privacy,
 				control.initialize, control.sensitivity, v.rgb);
+#endif
 
 	if (control.initialize)
 		control.initialize = 0;
@@ -121,7 +122,9 @@ int StabilizationAlgorithmElement::processAlgo(const RawBuffer &buf)
 
 int StabilizationAlgorithmElement::release()
 {
+#if HAVE_VIA_STABILIZATION
 	asel_bypass_release();
+#endif
 	return 0;
 }
 

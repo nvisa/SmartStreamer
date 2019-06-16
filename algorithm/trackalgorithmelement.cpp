@@ -65,7 +65,7 @@ void TrackAlgorithmElement::zoom2degree_conversion(int zoomReadOut,float* HV_fov
 }
 int TrackAlgorithmElement::init()
 {
-	v = BaseAlgorithmCommon::instance()->getAlgoParameters();
+	v.rgb = 1;
 	control.initialize = 1;
 
 	return BaseAlgorithmElement::init();

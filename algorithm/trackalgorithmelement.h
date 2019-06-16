@@ -1,7 +1,6 @@
 #ifndef TRACKALGORITHMELEMENT_H
 #define TRACKALGORITHMELEMENT_H
 
-#include "basealgorithmcommon.h"
 #include "basealgorithmelement.h"
 
 
@@ -41,7 +40,6 @@ public:
 	void zoom2degree_conversion(int zoomReadOut,float* HV_fovAngles);
 
 protected:
-	BaseAlgorithmCommon::BaseVariables v;
 	TrackMode mode;
 	TrackControl control;
 	int autoTrack(const RawBuffer &buf);

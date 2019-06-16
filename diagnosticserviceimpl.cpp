@@ -4,31 +4,31 @@
 #include <lmm/baselmmpipeline.h>
 #include <lmm/pipeline/pipelinedebugger.h>
 
-static aw::DiagnosticInfo* createResponse(BaseStreamer *streamer);
+static AlgorithmCommunication::DiagnosticInfo* createResponse(BaseStreamer *streamer);
 
 DiagnosticServiceImpl::DiagnosticServiceImpl(BaseStreamer *streamer)
 {
 	serviceStreamer = streamer;
 }
 
-grpc::Status DiagnosticServiceImpl::GetDiagnosticStatus(grpc::ServerContext *context, const aw::DiagnosticQ *request, aw::DiagnosticInfo *response)
+grpc::Status DiagnosticServiceImpl::GetDiagnosticStatus(grpc::ServerContext *context, const AlgorithmCommunication::DiagnosticQ *request, AlgorithmCommunication::DiagnosticInfo *response)
 {
 	(void)context;
 	(void)request;
 
-	aw::DiagnosticInfo *resp = createResponse(serviceStreamer);
+	AlgorithmCommunication::DiagnosticInfo *resp = createResponse(serviceStreamer);
 	*response = *resp;
 
 	return grpc::Status::OK;
 }
 
-grpc::Status DiagnosticServiceImpl::GetDiagnosticStatusStream(grpc::ServerContext *context, const aw::DiagnosticQ *request, ::grpc::ServerWriter<aw::DiagnosticInfo> *writer)
+grpc::Status DiagnosticServiceImpl::GetDiagnosticStatusStream(grpc::ServerContext *context, const AlgorithmCommunication::DiagnosticQ *request, ::grpc::ServerWriter<AlgorithmCommunication::DiagnosticInfo> *writer)
 {
 	(void)context;
 	(void)request;
 
 	while (true) {
-		aw::DiagnosticInfo *resp = createResponse(serviceStreamer);
+		AlgorithmCommunication::DiagnosticInfo *resp = createResponse(serviceStreamer);
 
 		if (!writer->Write(*resp))
 			break;
@@ -39,9 +39,9 @@ grpc::Status DiagnosticServiceImpl::GetDiagnosticStatusStream(grpc::ServerContex
 	return grpc::Status::OK;
 }
 
-static aw::DiagnosticInfo* createResponse(BaseStreamer *streamer)
+static AlgorithmCommunication::DiagnosticInfo* createResponse(BaseStreamer *streamer)
 {
-	aw::DiagnosticInfo *response = new aw::DiagnosticInfo();
+	AlgorithmCommunication::DiagnosticInfo *response = new AlgorithmCommunication::DiagnosticInfo();
 
 	if (PipelineDebugger::GetInstance()->getPipelineCount() > 0) {
 		BaseLmmPipeline *p = PipelineDebugger::GetInstance()->getPipeline(0);
@@ -52,7 +52,7 @@ static aw::DiagnosticInfo* createResponse(BaseStreamer *streamer)
 		for (int i = 0; i < p->getPipeCount(); i++) {
 			BaseLmmElement *pipe = p->getPipe(i);
 
-			aw::Element *e = new aw::Element();
+			AlgorithmCommunication::Element *e = new AlgorithmCommunication::Element();
 			e->set_inputqueuecount(pipe->getInputQueueCount());
 			e->set_outputqueuecount(pipe->getOutputQueueCount());
 			if (pipe->objectName().size())
@@ -63,13 +63,13 @@ static aw::DiagnosticInfo* createResponse(BaseStreamer *streamer)
 			e->set_totalusememory(pipe->getTotalMemoryUsage());
 
 			auto nodeElement = response->add_nodes();
-			nodeElement->set_type(aw::Node_NodeType_ELEMENT);
+			nodeElement->set_type(AlgorithmCommunication::Node_NodeType_ELEMENT);
 			nodeElement->set_allocated_element(e);
 
 			for (int j = 0; j < pipe->getOutputQueueCount(); j++) {
 				ElementIOQueue *eq = pipe->getOutputQueue(j);
 
-				aw::ElementQueue *q = new aw::ElementQueue();
+				AlgorithmCommunication::ElementQueue *q = new AlgorithmCommunication::ElementQueue();
 				q->set_bitrate(eq->getBitrate());
 				q->set_buffercount(eq->getBufferCount());
 				q->set_elapsedtime(eq->getElapsedSinceLastAdd());
@@ -79,7 +79,7 @@ static aw::DiagnosticInfo* createResponse(BaseStreamer *streamer)
 				q->set_totalsize(eq->getTotalSize());
 
 				auto nodeQueue = response->add_nodes();
-				nodeQueue->set_type(aw::Node_NodeType_QUEUE);
+				nodeQueue->set_type(AlgorithmCommunication::Node_NodeType_QUEUE);
 				nodeQueue->set_allocated_queue(q);
 			}
 		}

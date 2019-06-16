@@ -28,6 +28,7 @@ public:
 		KAYI_SAHINGOZ,
 		YAMGOZ,
 		TBGTH,
+		FLIR_ORION
 	};
 
 	bool isGuiApplication();

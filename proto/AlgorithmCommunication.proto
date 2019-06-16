@@ -3,16 +3,20 @@ syntax="proto3";
 package AlgorithmCommunication;
 
 service AlgorithmService {
+	rpc GetScreenShot(ScreenshotInfo) returns(ScreenFrame) {}
+	rpc GetScreenShotStream(ScreenshotInfo) returns(stream ScreenFrame) {}
+	//////////////////////////////////////////////////////////////////////////////
+	rpc RunAlgorithm(RequestForAlgorithm) returns(ResponseOfRequests) { }
+	rpc StopAlgorithm(RequestForAlgorithm) returns(ResponseOfRequests) { }
+	rpc SetAlgorithmParameters(RequestForAlgorithm) returns(ResponseOfRequests) { }
+	rpc GetAlgorithmParameters(RequestForAlgorithm) returns(ResponseOfParameterRequests) { }
 
-	rpc RunAlgorithm(RequestForAlgorithm) returns(ResponseOfRequests) {}
-	rpc StopAlgorithm(RequestForAlgorithm) returns(ResponseOfRequests) {}
+	rpc GetSystemFeature(SystemFeature) returns(SystemFeature) {}
+	rpc SetSystemFeature(SystemFeature) returns(SystemFeature) {}
+	rpc GetAllSystemFeatures(SystemFeatures) returns(SystemFeatures) {}
+	rpc SetAllSystemFeatures(SystemFeatures) returns(SystemFeatures) {}
 
-	rpc SetAlgorithmParameters(RequestForAlgorithm) returns(ResponseOfRequests) {}
-	rpc GetAlgorithmParameters(RequestForAlgorithm) returns(ResponseOfParameterRequests) {}
-
-	rpc GetSystemFeatures(RequestForSystemFeatures) returns(ResponseOfSystemFeatures) {}
-	rpc SetSystemFeatures(RequestForSystemFeatures) returns(ResponseOfSystemFeatures) {}
-	rpc SendInformation(WhichInfo) returns(stream GeneralInfo){}
+	rpc GetAlarm(stream AlarmReqInfo) returns(stream Alarms) {}
 }
 
 service DiagnosticService {
@@ -22,6 +26,23 @@ service DiagnosticService {
 
 message DiagnosticQ {
 	int32 value = 1;
+}
+
+message DiagnosticInfo {
+	repeated Node nodes = 1;
+	int64 latency = 2;
+	int64 totalUseMemory = 3;
+}
+
+message Node {
+	enum NodeType {
+		ELEMENT = 0;
+		QUEUE = 1;
+	}
+
+	NodeType type = 1;
+	Element element = 2;
+	ElementQueue queue = 3;
 }
 
 message Element {
@@ -42,24 +63,32 @@ message ElementQueue {
 	int64 totalSize = 7;
 }
 
-message Node {
-	enum NodeType {
-		ELEMENT = 0;
-		QUEUE = 1;
+
+message ScreenshotInfo {
+	int32 channelId = 1;
+	int32 quality = 2;
+	float fps = 3;
+}
+
+message ScreenFrame {
+    bytes frame = 1;
+    int32 quality = 2;
+    int64 ts = 3;
+    string metadata = 4;
+}
+
+message TargetStruct {
+	enum TargetClass {
+		HUMAN = 0;
+		CAR = 1;
+		OTHER = 2;
 	}
-
-	NodeType type = 1;
-	Element element = 2;
-	ElementQueue queue = 3;
+	int32 topLeftX = 1;
+	int32 topLeftY = 2;
+	int32 widthOfTarget = 3;
+	int32 heightOfTarget = 4;
+	TargetClass targetClass = 5;
 }
-
-message DiagnosticInfo {
-	repeated Node nodes = 1;
-	int64 latency = 2;
-	int64 totalUseMemory = 3;
-}
-
-//service ekleyebilirsin 2. servicisi 
 
 
 message AlarmInfo {
@@ -69,26 +98,53 @@ message AlarmInfo {
 	int32 unitType = 4;
 	string date = 5;
 	bool alarmFlag = 6;
+	TargetStruct target = 7;
+	bytes frameOfAlarm = 8;
+}
+
+message CITInfo {
+	enum Info {
+		OK = 0;
+		NOK = 1;
+	}
+
+	Info moduleInfo = 1;
+	Info motorInfo = 2;
+	Info usbInfo = 3;
 }
 
 message GeneralInfo {
 	AlarmInfo alarmInfo = 1;
+	CITInfo citInfo = 2;
 }
 
-message WhichInfo {
-	enum InfoOfContent {
-		ALARM = 0;
-		OTHER = 1;
-	}
-	InfoOfContent content = 1;
+message AlarmReqInfo {
+	string filter = 1;
+	int32 channel = 2;
+	int32 intervalMsecs = 3;
 }
 
+message Alarm {
+	repeated string key = 1;
+	repeated string value = 2;
+	string type = 3;
+
+	CITInfo cit = 4;
+	AlarmInfo alarm = 5;
+}
+
+message Alarms {
+	repeated Alarm alarms = 1;
+	int64 ts = 2;
+}
+
+//*******************************************
 message ResponseOfRequests {
 	enum Response {
 		SUCCESSFUL = 0;
 		FAIL = 1;
 		MISSING_PARAMETER = 2;
-		NOT_APPLICABLE = 3;		
+		NOT_APPLICABLE = 3;
 	}
 	int32 err = 1;
 	Response response = 2;
@@ -99,7 +155,7 @@ message ResponseOfParameterRequests {
 		SUCCESSFUL = 0;
 		FAIL = 1;
 		MISSING_PARAMETER = 2;
-		NOT_APPLICABLE = 3;		
+		NOT_APPLICABLE = 3;
 	}
 	enum Algorithm {
 		MOTION = 0;
@@ -120,10 +176,6 @@ message ResponseOfParameterRequests {
 }
 
 message RequestForAlgorithm {
-	enum DeviceType {
-		TV = 0;
-		THERMAL = 1;
-	}
 	enum Algorithm {
 		MOTION = 0;
 		STABILIZATION = 1;
@@ -138,53 +190,17 @@ message RequestForAlgorithm {
 	StabilizationParameters stabilizationParam = 4;
 	PanaromaParameters panaromaParam = 5;
 	FaceDetectionParameters faceDetectionParam = 6;
-	DeviceType device=7;
+	int32 channel = 7;
 }
 
-message RequestForSystemFeatures {
-	enum Features {
-		UPTIME = 0;
-		LIFETIME = 1;
-		FOV_VALUE = 2;
-		GPIO = 3;
-		BITRATE = 4;
-		GENERIC = 5;	
-	}
-	enum DeviceType {
-		TV = 0;
-		THERMAL = 1;
-	}
-	DeviceType device = 1;
-	Features feature = 2;
-	int32 whichGPIO = 3;
-	int32 valueForFeature = 4;
-	float valueForFeatureFloat = 5;
-	bool valueForFeatureBool = 6;
-	string valueForGenericKey = 7;
-	string valueForGenericValue = 8;
+message SystemFeature {
+	string key = 1;
+	string value = 2;
+	int32 device = 3;
 }
 
-message ResponseOfSystemFeatures {
-	enum Features {
-		UPTIME = 0;
-		LIFETIME = 1;
-		FOV_VALUE = 2;
-		GPIO = 3;
-		BITRATE = 4;
-		GENERIC = 5;
-	}
-	enum DeviceType {
-	TV = 0;
-	THERMAL = 1;
-	}
-	DeviceType device = 1;
-	Features feature = 2;
-	int32 whichGPIO = 3;
-	int32 valueForFeature = 4;
-	float valueForFeatureFloat = 5;
-	bool valueForFeatureBool = 6;
-	string valueForGenericKey = 7;
-	string valueForGenericValue = 8;
+message SystemFeatures {
+	repeated SystemFeature features = 1;
 }
 
 message MotionParameters {
@@ -195,13 +211,13 @@ message MotionParameters {
 	}
 	Settings settingChoice = 1;
 	int32 sensitivity = 2;
-	TRoi ROIlist = 3; 
+	TRoi ROIlist = 3;
 }
 
 message TRoi {
-    repeated TPolygon polygon = 1;
-    TRectangle rect1 = 2;
-    TRectangle rect2 = 3;
+	repeated TPolygon polygon = 1;
+	TRectangle rect1 = 2;
+	TRectangle rect2 = 3;
 }
 
 message TPoint{
@@ -224,7 +240,7 @@ message TrackParameters {
 		AUTO = 0;
 		SEMI_AUTO = 1;
 		MANUAL = 2;
-	}	
+	}
 	enum Mode {
 		DistanceToCenter = 0;
 		SizeOfObject = 1;
@@ -255,3 +271,4 @@ message PanaromaParameters {
 message FaceDetectionParameters {
 	int32 dummy = 1;
 }
+

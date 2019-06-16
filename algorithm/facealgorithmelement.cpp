@@ -12,10 +12,10 @@ FaceAlgorithmElement::FaceAlgorithmElement(QObject *parent)
 
 int FaceAlgorithmElement::init()
 {
-	v = BaseAlgorithmCommon::instance()->getAlgoParameters();
+	v.rgb  =1;
 	control.initialize = 1;
-	control.camid = BaseAlgorithmCommon::instance()->getFaceCamID();
-	control.frameRate = BaseAlgorithmCommon::instance()->getFaceFrameRate();
+	control.camid = 0;
+	control.frameRate = 25;
 	control.counter = 0;
 	return 0;
 }

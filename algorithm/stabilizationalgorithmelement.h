@@ -2,7 +2,6 @@
 #define STABILIZATIONALGORITHMELEMENT_H
 
 #include "algorithm/basealgorithmelement.h"
-#include "algorithm/basealgorithmcommon.h"
 
 class StabilizationAlgorithmElement : public BaseAlgorithmElement
 {
@@ -25,8 +24,6 @@ public:
 
 protected:
 	int reloadJson(const QJsonObject &node);
-
-	BaseAlgorithmCommon::BaseVariables v;
 	StabilizationControl control;
 };
 

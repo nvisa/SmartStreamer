@@ -37,6 +37,7 @@ IpStreamer::IpStreamer(QObject *parent): BaseStreamer(parent){
 
 int IpStreamer::generatePipelineForOneSource(const QString &Url)
 {
+#if 0
 	setupAlgorithmManager();
 	rtp = new RtpReceiver(this);
 	rtp->useThreadedReading(true);
@@ -135,7 +136,7 @@ int IpStreamer::generatePipelineForOneSource(const QString &Url)
 	rtspServer->addMedia2Stream("videoTrack", "stream1_vsm", true, rtpout2);
 
 	algMan->startGrpc();
-
+#endif
 	return 0;
 }
 
@@ -305,8 +306,8 @@ int IpStreamer::readSourceInformation()
 
 	decBufferCount = itemized_source_prop_info["fps"].toInt();
 
-	decOutputInFps = itemized_source_prop_info["in_fps"].toVariant().toFloat();
-	decOutputOutFps = itemized_source_prop_info["out_fps"].toVariant().toFloat();
+	decOutputInFps = itemized_source_prop_info["in_fps"].toDouble();
+	decOutputOutFps = itemized_source_prop_info["out_fps"].toDouble();
 
 	QJsonObject resolution_info = itemized_source_prop_info["resolution"].toObject();
 	decWidth  = resolution_info["width"].toInt();
@@ -325,7 +326,7 @@ int IpStreamer::readSourceInformation()
 
 int IpStreamer::setupAlgorithmManager()
 {
-	algMan = new AlgorithmManager(this);
+	//algMan = new AlgorithmManager(this);
 }
 
 int IpStreamer::pipelineOutput(BaseLmmPipeline *p, const RawBuffer &buf)

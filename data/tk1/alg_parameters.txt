@@ -1,0 +1,99 @@
+0.7	scaleX
+0.7	scaleY
+6	params[0]: Matching sigma multiplier: high->less alarm --  sensitivity range (K - 1.5K)
+4	params[1]: Mode number: not to be changed
+0.0005	params[2]: Mean intensity learning rate --  sensitivity range (0.001 - 0.01)
+0.0005	params[3]: Variance and Weights learning rate -- sensitivity range (0.0002 - 0.002) 
+70	params[4]: sensitivity 0 to 100, 100 is the highest sensitivity, more alarms -- the values in this file are determined according to the most sensitive scenario
+100	params[5]: initial variance
+0.005	params[6]: initial weight
+0.7	params[7]: threshold for foreground detection -- sensitivity range (0.7 - 0.9)
+0.00051	params[8]: increment of mean learning rate (params[2]) during relearning --  sensitivity range (0.0001 - 0.001)
+0.00051	params[9]: increment of variance/weight (params[5]-params[6]) learning rates during relearning --  sensitivity range (0.0001 - 0.001)
+0.00051	params[10]: increment of threshold (params[7]) during relearning --  sensitivity range (0.0001 - 0.001)
+20	params[11]: minimum area of an object - used to prevent very small targets
+800	params[12]: maximum area of an object - used for tracking size threshold
+0.20	params[13]: intersection ratio of the object over consecutive sequences -- sensitivity range (S - 0.2+S)
+20	params[14]: time counter threshold over consecutive sequences -- sensitivity range (N - 5xN)
+0	params[18]: The fillness ratio to eliminate reflection on thin structures
+0.4	params[19]: The degree of dehazing
+0.005	params[2]: Mean intensity learning rate -- actively used
+0.0008	params[3]: Variance and Weights learning rate -- actively used
+0.0004	params[4]: sensitivity 0 to 100, 100 is the highest sensitivity, more alarms -- from here these parameters are not utilized in order to decrease computation for Dual modelling case
+60	params[5]: initial variance
+0.005	params[6]: initial weight
+0.7	params[7]: threshold for foreground detection 
+0.0004	params[8]: increment of mean learning rate (params[2]) during relearning
+0.0002	params[9]: increment of variance/weight (params[5]-params[6]) learning rates during relearning
+0.0002	params[10]: increment of threshold (params[7]) during relearning
+
+
+// parameters
+scaleX
+scaleY
+params[0]: Matching sigma multiplier: high->less alarm --  sensitivity range (K - 1.5K)
+params[1]: Mode number: not to be changed
+params[2]: Mean intensity learning rate --  sensitivity range (0.001 - 0.01)
+params[3]: Variance and Weights learning rate -- sensitivity range (0.0002 - 0.002) 
+params[4]: sensitivity 0 to 100, 100 is the highest sensitivity, more alarms -- the values in this file are determined according to the most sensitive scenario
+params[5]: initial variance
+params[6]: initial weight
+params[7]: threshold for foreground detection -- sensitivity range (0.7 - 0.9)
+params[8]: increment of mean learning rate (params[2]) during relearning --  sensitivity range (0.0001 - 0.001)
+params[9]: increment of variance/weight (params[5]-params[6]) learning rates during relearning --  sensitivity range (0.0001 - 0.001)
+params[10]: increment of threshold (params[7]) during relearning --  sensitivity range (0.0001 - 0.001)
+params[11]: minimum area of an object - used to prevent very small targets
+params[12]: maximum area of an object - used for tracking size threshold
+params[13]: intersection ratio of the object over consecutive sequences -- sensitivity range (S - 0.2+S)
+params[14]: time counter threshold over consecutive sequences -- sensitivity range (N - 5xN)
+params[18]: The fillness ratio to eliminate reflection on thin structures
+params[19]: The degree of dehazing
+
+rest is the parameter set for one mode background modelling which are read over the params
+params[2]: Mean intensity learning rate -- actively used
+params[3]: Variance and Weights learning rate -- actively used
+
+the rest is not used during one mode background modelling in order to decrease computation
+params[4]: sensitivity 0 to 100, 100 is the highest sensitivity, more alarms
+params[5]: initial variance
+params[6]: initial weight
+params[7]: threshold for foreground detection 
+params[8]: increment of mean learning rate (params[2]) during relearning
+params[9]: increment of variance/weight (params[5]-params[6]) learning rates during relearning
+params[10]: increment of threshold (params[7]) during relearning
+
+
+
+
+ilk set-up:
+
+0.5
+0.5
+6
+4
+0.001
+0.0002
+50
+100
+0.005
+0.8
+0.0001
+0.0001
+0.0001
+10
+1000
+0.20
+10
+0.005
+0.0008
+0.0004
+60
+0.005
+0.7
+0.0004
+0.0002
+0.0002
+
+
+
+

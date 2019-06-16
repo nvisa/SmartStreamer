@@ -1,0 +1,30 @@
+0.0001	lambda
+2	lambda2
+3.5	padding
+0.125	output_sigma_factor
+0.012	interp_factor
+0.6	sigma
+4	cell_size
+96	template_size
+5	number of scales
+0.05	scale step
+0.4	fillness ratio threshold (for background modelling based activation)
+0	colornames option 0/1: On/Off
+0	number of HOG features (0: all, rest in the actual number)
+
+// parameters
+lambda
+lambda2
+padding
+output_sigma_factor
+interp_factor
+sigma
+cell_size
+template_size
+number of scales
+scale step
+fillness ratio threshold
+colornames option
+number of HOG features (0: all, rest in the actual number)
+
+

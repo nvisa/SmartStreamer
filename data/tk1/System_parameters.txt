@@ -1,0 +1,7 @@
+6   	0: pano, 2: via_track, 3: direct_track, 5: via -left object, 6: via - base, 7: via -all
+1   	color process: 0: Gray scale, 1: RGB
+0   	shadow process: 0: OFF 1: ON
+1	illumination normalization process: 0: OFF, 1: ON, 2: Haze removal
+0   	record events: 0: NO, 1:YES
+0   	Debug Mode: 0: NO, 1:YES, 2: HeatMap Output
+0   	Stabilization: 0: NO, 1: YES, 2: DEMO mode (half yes half no)

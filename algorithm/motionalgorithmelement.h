@@ -1,8 +1,9 @@
 #ifndef MOTIONALGORITHMELEMENT_H
 #define MOTIONALGORITHMELEMENT_H
 
-#include "basealgorithmcommon.h"
 #include "basealgorithmelement.h"
+#include "proto/AlgorithmCommunication.grpc.pb.h"
+#include "proto/OrionCommunication.grpc.pb.h"
 
 class MotionAlgorithmElement: public BaseAlgorithmElement
 {
@@ -29,10 +30,17 @@ public:
 		bool classification;
 	};
 
+	int saveROI(AlgorithmCommunication::TRoi troi);
+	AlgorithmCommunication::MotionParameters *loadROI();
+
+#if HAVE_TK1
+	int saveROI(const OrionCommunication::TRoi *troi);
+	OrionCommunication::TRoi *loadROIOrion();
+#endif
+
 protected:
 	int reloadJson(const QJsonObject &node);
 
-	BaseAlgorithmCommon::BaseVariables v;
 	MotionControl control;
 };
 
