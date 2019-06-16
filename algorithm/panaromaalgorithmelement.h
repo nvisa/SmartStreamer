@@ -1,28 +1,41 @@
 #ifndef PANAROMAALGORITHMELEMENT_H
 #define PANAROMAALGORITHMELEMENT_H
 
-#include "basealgorithmcommon.h"
 #include "basealgorithmelement.h"
+#include "ecl/ptzp/ptzphead.h"
+#include "ecl/ptzp/aryapthead.h"
+
+#include <QElapsedTimer>
 
 class PanaromaAlgorithmElement : public BaseAlgorithmElement
 {
 public:
 	explicit PanaromaAlgorithmElement(QObject *parent = 0);
 	int init();
-	int reallocate();
+	int reinit();
 	int processAlgo(const RawBuffer &buf);
-	int baseAlgorithmProcess(const RawBuffer &buf);
+	int reallocate();
+	int stopAlgo();
 	int release();
 	struct PanaromaControl {
 		uchar meta[4096];
-		int pan;
-		int tilt;
-		int initialize;
+		struct Started {
+			int pan;
+			int tilt;
+		};
+		Started started;
+		float panTiltZoomRead[10];
+		int init;
 	};
-
+	PanaromaControl getPanaromaControl() { return control;}
+	QByteArray getPanaromaFrame(const QString &picture);
 protected:
-	BaseAlgorithmCommon::BaseVariables v;
+	PtzpHead* getPanTiltHead();
+	int resetPosition();
+	int doPivot(float speed);
+private:
 	PanaromaControl control;
+	PtzpHead *pt;
 };
 
 #endif // PANAROMAALGORITHMELEMENT_H
