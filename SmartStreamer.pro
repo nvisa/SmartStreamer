@@ -42,10 +42,10 @@ tx1 {
         usbstreamer.cpp \
         yamgozstreamer.cpp \
         analogstreamer.cpp \
-	simpleipstreamer.cpp \
-	simpleapiserver.cpp \
-	tx1streamer.cpp \
-	kardelenapi.cpp
+		simpleipstreamer.cpp \
+		simpleapiserver.cpp \
+		tx1streamer.cpp \
+		kardelenapi.cpp
 
 
     HEADERS += \
@@ -53,10 +53,10 @@ tx1 {
         usbstreamer.h \
         yamgozstreamer.h \
         analogstreamer.h \
-	simpleipstreamer.h \
-	simpleapiserver.h \
-	tx1streamer.h \
-	kardelenapi.h
+		simpleipstreamer.h \
+		simpleapiserver.h \
+		tx1streamer.h \
+		kardelenapi.h
 
     LIBS += -L/usr/local/cuda/lib64 -lcudart -lcufft
     LIBS += -L/usr/lib/aarch64-linux-gnu/tegra/ -lv4l2 -lnvbuf_utils -lnvinfer -lnvparsers -lnvjpeg -lEGL -lX11
@@ -67,17 +67,19 @@ tx1 {
 }
 
 tk1 {
-    SOURCES += \
-	aryastreamer.cpp \
-	orioncommunicationserver.cpp \
-	flirstreamer.cpp \
-	tk1omxpipeline.cpp
-    HEADERS += \
-	aryastreamer.h \
-	orioncommunicationserver.h \
-	flirstreamer.h \
-	tk1omxpipeline.h
-    LIBS += -lvdpau -lX11 -lXv -lva-drm -lva-x11
+	SOURCES += \
+		aryastreamer.cpp \
+		orioncommunicationserver.cpp \
+		flirstreamer.cpp \
+		tk1omxpipeline.cpp
+
+	HEADERS += \
+		aryastreamer.h \
+		orioncommunicationserver.h \
+		flirstreamer.h \
+		tk1omxpipeline.h
+
+LIBS += -lvdpau -lX11 -lXv -lva-drm -lva-x11
     INCLUDEPATH += /usr/include/gstreamer-1.0
     INCLUDEPATH += /usr/include/glib-2.0
     INCLUDEPATH += /usr/lib/arm-linux-gnueabihf/glib-2.0/include
