@@ -229,6 +229,7 @@ public:
 	grpc::Status SetEnumParameter(grpc::ServerContext *, const kaapi::SetEnumParameterRequest *request, kaapi::SetEnumParameterResponse *response) override;
 	grpc::Status SetEnumCommand(grpc::ServerContext *, const kaapi::SetEnumCommandRequest *request, kaapi::SetEnumCommandResponse *response) override;
 	grpc::Status GetVersion(grpc::ServerContext *, const google::protobuf::Empty *, kaapi::ApiVersion *response) override;
+	grpc::Status ScreenClick(grpc::ServerContext *, const kaapi::ClickParameter *request, google::protobuf::Empty *) override;
 };
 
 #endif // KARDELENAPI_H
