@@ -125,7 +125,7 @@ ApplicationInfo::Platform ApplicationInfo::getApplicationPlatform()
 			return BOTAS_FIX;
 		} else if (obj["type"] == QString("yamgoz")) {
 			return YAMGOZ;
-		} else if (obj["type"] == QString("yamgoz")) {
+		} else if (obj["type"] == QString("flir")) {
 			return FLIR_ORION;
 		}
 	}
