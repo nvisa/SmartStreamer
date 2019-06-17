@@ -3,6 +3,8 @@
 	"analogstreamer": false,
 	"yamgozstreamer": false,
 	"usbstreamer": true,
+	"aryastreamer": false,
+	"flirstreamer": false,
 	"analog_config": {
 		"devices": [
 			{
@@ -34,6 +36,24 @@
 			"height": 576
 		}
 	},
+	"arya_config": {
+		"rtsp_user": "admin",
+		"rtsp_pass": "moxamoxa",
+		"url": "rtsp://50.23.169.211/multicaststream_ch1_stream1",
+		"width": 720,
+		"height": 576,
+		"fps": 25.0,
+		"orion_api": true,
+		"general_api": false
+	},
+	"flir_config": {
+		"url": "rtsp://192.168.2.238/stream1",
+		"rtsp_user": "",
+		"rtsp_pass": "",
+		"width": 1920,
+		"height": 1080,
+		"fps": 25.0
+	},
 	"startup_delay": 60,
 	"ptzp": [
 		{
@@ -49,6 +69,16 @@
 		{
 			"type": "kayi+",
 			"target": "ttyXRUSB1?baud=9600?protocol=422;ttyXRUSB2?baud=19200?databits=7?parity=1?protocol=422",
+			"grpc_port": 50058
+		},
+		{
+			"type": "flir+",
+			"target": "http://192.168.2.238?80?admin?12345;http://192.168.2.250/API/PTCmd",
+			"grpc_port": 50058
+		},
+		{
+			"type": "arya+",
+			"target": "50.23.169.213",
 			"grpc_port": 50058
 		}
 	]
