@@ -530,14 +530,157 @@ public:
 	QVariantMap map;
 };
 
+class KardelenAPIYamgozImpl : public KardelenAPIImpl
+{
+public:
+	KardelenAPIYamgozImpl()
+	{
+
+	}
+
+	int64_t getCapabilities()
+	{
+		int64_t caps = 0;
+		if (THERMAL){
+			addcap(caps, CAPABILITY_POLARITY);
+			addcap(caps, CAPABILITY_NUC);
+			addcap(caps, CAPABILITY_DAY_VIEW);
+			addcap(caps, CAPABILITY_NIGHT_VIEW);
+		} else {
+			addcap(caps, CAPABILITY_DAY_VIEW);
+			addcap(caps, CAPABILITY_NIGHT_VIEW);
+		}
+		/* todo: algorithm capabilities */
+
+		return caps;
+	}
+
+	void setPosi(kaapi::PosInfo *posi)
+	{
+		/* todo for triple head */
+	}
+
+	void fillCameraStatus(kaapi::CameraStatus *response)
+	{
+		response->set_capabilities(getCapabilities());
+
+		int32_t v = 0;
+
+		addEnumParameter(v, ENUM_PARAM_CAMERA_TYPE, response);
+		addEnumParameter(v, ENUM_PARAM_POLARITY, response);
+
+		/* todo addEnumCommand */
+
+
+	}
+
+	void moveRelative(const kaapi::RelativeMoveParameters *request)
+	{
+
+	}
+
+	void moveAbsolute(const kaapi::AbsoluteMoveParameters *request)
+	{
+
+	}
+
+	void setCamera(int32_t type)
+	{
+		/* TODO: handle camera type switch */
+		/* Kamera tipine göre görüntü değişimi (termal = 0, gündüz = 1) */
+		if (type == TV) {
+			ptzp->getHead(0)->setProperty(4, 1);
+			ptzp->getHead(1)->setProperty(4, 1);
+			ptzp->getHead(2)->setProperty(4, 1);
+		}
+		else if (type == THERMAL) {
+			ptzp->getHead(0)->setProperty(4, 0);
+			ptzp->getHead(1)->setProperty(4, 0);
+			ptzp->getHead(2)->setProperty(4, 0);
+		}
+
+	}
+
+	virtual void getNumericParameter(int index, double &value, int32_t bytes[3])
+	{
+		value = 100000;
+	}
+
+	virtual int32_t getEnumParameter(int index)
+	{
+		if (map.isEmpty())
+			map = ptzp->getHead(0)->getSettings();
+
+		/* TODO: report correct camera type */ // ---> done
+		/* TODO: report correct thermal polarity */ // ---> done
+		if (index == ENUM_PARAM_CAMERA_TYPE) {
+			if (ptzp->getHead(0)->getProperty(3))
+				return TV;
+			else
+				return THERMAL;
+		}
+
+		if (index == ENUM_PARAM_POLARITY) {
+			if (ptzp->getHead(0)->getProperty(2))
+				return WHITE_HOT;
+			else
+				return BLACK_HOT;
+		}
+
+		return -1;
+	}
+
+	virtual void setNumericParameter(int index, double &value, int32_t bytes[3])
+	{
+
+	}
+
+	virtual void setEnumParameter(int index, int32_t value)
+	{
+		if (index == ENUM_PARAM_POLARITY) {
+			if (value == BLACK_HOT){
+				ptzp->getHead(0)->setProperty(2, 0);
+				ptzp->getHead(1)->setProperty(2, 0);
+				ptzp->getHead(2)->setProperty(2, 0);
+			}
+			else if (value == WHITE_HOT){
+				ptzp->getHead(0)->setProperty(2, 1);
+				ptzp->getHead(1)->setProperty(2, 1);
+				ptzp->getHead(2)->setProperty(2, 1);
+			}
+		} else if (index == ENUM_PARAM_OPERATIONAL_MODE)
+			opMode = value;
+	}
+
+	virtual void setEnumCommand(int index, int32_t value)
+	{
+		/* todo: enum commands (nuc and digital zoom) */
+		if (index == ENUM_COMMAND_SYSTEM) {
+			if (value == SYSTEM_NUC){
+				ptzp->getHead(0)->setProperty(3, 8);
+				ptzp->getHead(1)->setProperty(3, 8);
+				ptzp->getHead(2)->setProperty(3, 8);
+			}
+		}
+	}
+
+	void screenClick(int x, int y, int action)
+	{
+
+	}
+
+	int opMode;
+	QVariantMap map;
+};
+
 KardelenAPIServer::KardelenAPIServer(PtzpDriver *ptzp, QString nodeType)
 {
 	KaapiThread *grpcServ = new KaapiThread(50060, this);
 	grpcServ->start();
 	if (nodeType == "kayi")
 		impl = new KardelenAPIFalconEyeImpl;
-	else
-		Q_ASSERT(0);
+	else if (nodeType == "yamgoz")
+		impl = new KardelenAPIYamgozImpl;
 	impl->ptzp = ptzp;
 }
 
