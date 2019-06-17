@@ -184,6 +184,7 @@ public:
 			addcap(caps, CAPABILITY_SHOW_HIDE_SEMBOLOGY);
 			addcap(caps, CAPABILITY_AUTO_TRACK_DETECTION);
 			addcap(caps, CAPABILITY_NUC);
+			addcap(caps, CAPABILITY_DIGITAL_ZOOM);
 
 			addcap(caps, CAPABILITY_MISSION_EXECUTION);
 			addcap(caps, CAPABILITY_SENSITIVITY_ADJUSTMENT);
@@ -204,6 +205,7 @@ public:
 			addcap(caps, CAPABILITY_LAZER_RANGE_FINDER);
 			addcap(caps, CAPABILITY_SHOW_HIDE_SEMBOLOGY);
 			addcap(caps, CAPABILITY_AUTO_TRACK_DETECTION);
+			addcap(caps, CAPABILITY_DIGITAL_ZOOM);
 
 			addcap(caps, CAPABILITY_MISSION_EXECUTION);
 			addcap(caps, CAPABILITY_SENSITIVITY_ADJUSTMENT);
@@ -312,7 +314,16 @@ public:
 		} else if (index == NUM_PARAM_VERTICAL_RES) {
 			value = 576;
 		} else if (index == NUM_PARAM_ZOOM) {
-			value = ptzp->getHead(0)->getProperty(map["fov_pos"].toUInt()); //TODO: normalize
+			if(ptzp->getHead(0)->getProperty(2) == 0)
+				value = 0; //TODO: normalize
+			else if (ptzp->getHead(0)->getProperty(2) == 1){
+				if (ptzp->getHead(0)->getProperty(3))
+					value = 66;
+				else
+					value = 83;
+			}
+			else if (ptzp->getHead(0)->getProperty(2) == 2)
+				value = 100;
 		}
 		/* Toplam fov sayısı(wide, middle, narrow) */
 		else if(index == NUM_PARAM_PREDEFINED_FOV_COUNT)
@@ -416,6 +427,19 @@ public:
 	{
 		// TODO: implement digital zoom
 		// TODO: cache all enum and numeric values
+		qDebug() << index << value;
+		/* digital zoom operational mode digital window select'e bağlanacak */
+		if (index == ENUM_COMMAND_DIGITAL_ZOOM){
+			if (value == DIGITAL_ZOOM_START )
+				ptzp->getHead(0)->setProperty(6, 1);
+			else if(value == DIGITAL_ZOOM_STOP)
+				ptzp->getHead(0)->setProperty(6, 0);
+		}
+		else if (index == ENUM_COMMAND_SYSTEM) {
+			if (value == SYSTEM_NUC)
+				ptzp->getHead(0)->setProperty(17,8);
+		}
+
 	}
 
 	double BUTTON_HEIGHT 	= 0.108; //0.112
