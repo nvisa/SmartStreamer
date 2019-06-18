@@ -5,6 +5,7 @@
 #include "applicationinfo.h"
 #include "algorithm/algorithmgrpcserver.h"
 #include "algorithm/motionalgorithmelement.h"
+#include "tk1omxpipeline.h"
 
 #include <lmm/debug.h>
 #include <lmm/bufferqueue.h>

@@ -33,5 +33,14 @@
         <file>proto/gen/PTZServiceGrpc.java</file>
         <file>oa.jpg</file>
         <file>oa.png</file>
+        <file>data/tk1/alg_parameters.txt</file>
+        <file>data/tk1/arya_calibration_parameters.txt</file>
+        <file>data/tk1/pan_params.txt</file>
+        <file>data/tk1/points.txt</file>
+        <file>data/tk1/sei_alarm_template.xml</file>
+        <file>data/tk1/stabilization_parameters.txt</file>
+        <file>data/tk1/System_parameters.txt</file>
+        <file>data/tk1/track_alg_parameters.txt</file>
+        <file>data/tk1/track_parameters.txt</file>
     </qresource>
 </RCC>
