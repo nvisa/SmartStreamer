@@ -115,6 +115,8 @@ int TX1Streamer::checkSeiAlarm(const RawBuffer &buf)
 		sei->processMessage(seiData);
 		if (seiData.size() == 0)
 			sei->clearLastSEIMessage();
+	} else if (buf.constPars()->metaData.size() == 0) {
+		sei->clearLastSEIMessage();
 	}
 	return 0;
 }
