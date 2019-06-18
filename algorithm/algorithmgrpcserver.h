@@ -12,11 +12,17 @@
 #include "algorithm/panaromaalgorithmelement.h"
 #include "algorithm/stabilizationalgorithmelement.h"
 
+class AlgoManIface
+{
+public:
+	virtual BaseAlgorithmElement * getAlgo(int channel) = 0;
+};
+
 class AlgorithmGrpcServer : public AlgorithmCommunication::AlgorithmService::Service
 {
 public:
 	static AlgorithmGrpcServer * instance();
-
+	void setAlgorithmManagementInterface(AlgoManIface *i);
 	void setFaceAlgorithmElement(FaceAlgorithmElement *el) {faceEl = el;}
 	void setTrackAlgorithmElement(TrackAlgorithmElement *el) {trackEl = el;}
 	void setMotionAlgorithmElement(MotionAlgorithmElement *el) {motionEl = el;}
@@ -43,6 +49,7 @@ private:
 	PanaromaAlgorithmElement *panaromaEl;
 	StabilizationAlgorithmElement *stabilizationEl;
 	SnapshotElement *snapshotEl;
+	AlgoManIface *manif;
 };
 
 #endif // ALGORITHMGRPCSERVER_H

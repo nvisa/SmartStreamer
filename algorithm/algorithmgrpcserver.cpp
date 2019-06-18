@@ -85,6 +85,11 @@ AlgorithmGrpcServer *AlgorithmGrpcServer::instance()
 	return inst;
 }
 
+void AlgorithmGrpcServer::setAlgorithmManagementInterface(AlgoManIface *i)
+{
+	manif = i;
+}
+
 grpc::Status AlgorithmGrpcServer::RunAlgorithm(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfRequests *response)
 {
 	int chn = request->channel();
