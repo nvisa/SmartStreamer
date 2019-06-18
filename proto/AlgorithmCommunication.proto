@@ -236,7 +236,7 @@ message TRectangle {
 }
 
 message TrackParameters {
-		enum TrackType {
+        enum TrackType {
 		AUTO = 0;
 		SEMI_AUTO = 1;
 		MANUAL = 2;
@@ -261,7 +261,9 @@ message TrackObject {
 }
 
 message StabilizationParameters {
-	int32 sensitivity = 1;
+        int32 privacy = 1;
+        int32 sensitivity = 2;
+        int32 stabilization = 3;
 }
 
 message PanaromaParameters {
