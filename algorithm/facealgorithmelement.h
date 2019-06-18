@@ -2,6 +2,7 @@
 #define FACEALGORITHMELEMENT_H
 
 #include "basealgorithmelement.h"
+#include <QJsonObject>
 
 class FaceAlgorithmElement : public BaseAlgorithmElement
 {
@@ -23,6 +24,8 @@ public:
 
 protected:
 	FaceControl control;
+	int reloadJson(const QJsonObject &node);
+	QJsonObject resaveJson(const QJsonObject &node);
 };
 
 #endif // FACEALGORITHMELEMENT_H

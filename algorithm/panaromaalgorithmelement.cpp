@@ -117,6 +117,17 @@ int PanaromaAlgorithmElement::doPivot(float speed)
 	return 0;
 }
 
+int PanaromaAlgorithmElement::reloadJson(const QJsonObject &node)
+{
+	Q_UNUSED(node);
+}
+
+QJsonObject PanaromaAlgorithmElement::resaveJson(const QJsonObject &node)
+{
+	Q_UNUSED(node);
+	return QJsonObject();
+}
+
 PtzpHead *PanaromaAlgorithmElement::getPanTiltHead()
 {
 	return ApplicationInfo::instance()->getPtzpDriver(0)->getHead(0);

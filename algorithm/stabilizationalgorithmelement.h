@@ -21,9 +21,15 @@ public:
 	int ZoomLevelNo;
 	float zoomvalues[1000*3];
 	void zoom2degree_conversion(int zoomReadOut,float* HV_fovAngles);
-
+	int getSensitivity() { return control.sensitivity; }
+	void setSensitivity(int s) { control.sensitivity = s; }
+	int getPrivacy() { return v.privacy; }
+	void setPrivacy(int p) { v.privacy = p; }
+	int getStabilization() { return v.stabilization; }
+	void setStabilization(int s) {v.stabilization = s; }
 protected:
 	int reloadJson(const QJsonObject &node);
+	QJsonObject resaveJson(const QJsonObject &node);
 	StabilizationControl control;
 };
 

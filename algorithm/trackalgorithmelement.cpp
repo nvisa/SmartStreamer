@@ -217,8 +217,9 @@ int TrackAlgorithmElement::reloadJson(const QJsonObject &node)
 	objProp[1] = roi["y"].toDouble();
 	objProp[2] = roi["width"].toDouble();
 	objProp[3] = roi["height"].toDouble();
+	control.trackScore = node["score"].toDouble();
+	control.trackInterval = node["interval"].toInt();
 	control.sensitivity = node["sensitivity"].toInt();
-	control.classification = node["classification"].toBool();
 	if (node["mode"].toString() == "auto")
 		mode = AUTO;
 	else if (node["mode"].toString() == "manual")
@@ -226,6 +227,25 @@ int TrackAlgorithmElement::reloadJson(const QJsonObject &node)
 	else
 		mode = AUTO;
 	return 0;
+}
+
+QJsonObject TrackAlgorithmElement::resaveJson(const QJsonObject &node)
+{
+	QJsonObject tr = node;
+	QJsonObject roi;
+	roi["x"] = control.obj.point_x;
+	roi["y"] = control.obj.point_y;
+	roi["width"] = control.obj.width;
+	roi["height"] = control.obj.height;
+	tr["roi"] = roi;
+	tr["score"] = control.trackScore;
+	tr["interval"] = control.trackInterval;
+	tr["sensitivity"] = control.sensitivity;
+	if (mode == AUTO)
+		tr["mode"] = "auto";
+	else if (mode == MANUAL)
+		tr["mode"] = "manual";
+	return tr;
 }
 
 int TrackAlgorithmElement::setTrackObjInfo(float x, float y, float w, float h)
@@ -236,5 +256,10 @@ int TrackAlgorithmElement::setTrackObjInfo(float x, float y, float w, float h)
 	control.obj.height = h;
 	algoState = REALLOCATE;
 	return 0;
+}
+
+float* TrackAlgorithmElement::getTrackObjInfo()
+{
+	return objProp;
 }
 

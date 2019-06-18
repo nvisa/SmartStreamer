@@ -22,6 +22,18 @@ static QJsonObject readJson(const QString &filename)
 	return obj;
 }
 
+static int saveJson(const QString &filename, const QJsonDocument &doc)
+{
+	QFile f(filename);
+	if (!f.open(QIODevice::WriteOnly)) {
+		qDebug() << "File opening error: " << errno << filename;
+		return -1;
+	}
+	f.write(doc.toJson());
+	f.close();
+	return 0;
+}
+
 BaseAlgorithmElement::BaseAlgorithmElement(QObject *parent)
 	: BaseLmmElement(parent)
 {
@@ -127,6 +139,23 @@ int BaseAlgorithmElement::reloadJson()
 	return reloadJson(node);
 }
 
+int BaseAlgorithmElement::savetoJson()
+{
+	QJsonObject obj = readJson("/etc/smartstreamer/algodesc.json");
+	QJsonArray arr = obj["algorithms"].toArray();
+	if (arr.size() <= algIndex)
+		return -EINVAL;
+	QJsonObject node = arr[algIndex].toObject();
+	QJsonObject aj = resaveJson(node);
+	mInfo("Object redefinition %s", qPrintable(QJsonDocument(aj).toJson()));
+	if (aj.isEmpty())
+		return -1;
+	arr[algIndex] = aj;
+	obj["algorithms"] = arr;
+	saveJson("/etc/smartstreamer/algodesc.json", QJsonDocument(obj));
+	return 0;
+}
+
 void BaseAlgorithmElement::setJsonAlgorithmIndex(int index)
 {
 	algIndex = index;
@@ -149,6 +178,12 @@ int BaseAlgorithmElement::reloadJson(const QJsonObject &node)
 {
 	Q_UNUSED(node);
 	return 0;
+}
+
+QJsonObject BaseAlgorithmElement::resaveJson(const QJsonObject &node)
+{
+	Q_UNUSED(node);
+	return QJsonObject();
 }
 
 int BaseAlgorithmElement::processBuffer(const RawBuffer &buf)

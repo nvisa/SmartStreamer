@@ -40,6 +40,7 @@ public:
 
 protected:
 	int reloadJson(const QJsonObject &node);
+	QJsonObject resaveJson(const QJsonObject &node);
 
 	MotionControl control;
 };

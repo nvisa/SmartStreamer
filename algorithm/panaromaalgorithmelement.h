@@ -33,6 +33,8 @@ protected:
 	PtzpHead* getPanTiltHead();
 	int resetPosition();
 	int doPivot(float speed);
+	int reloadJson(const QJsonObject &node);
+	QJsonObject resaveJson(const QJsonObject &node);
 private:
 	PanaromaControl control;
 	PtzpHead *pt;

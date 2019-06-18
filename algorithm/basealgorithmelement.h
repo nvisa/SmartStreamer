@@ -42,14 +42,17 @@ public:
 	virtual QString getTypeString();
 	int reloadJson();
 	void setJsonAlgorithmIndex(int index);
+	int getAlgorithmIndex() { return algIndex; }
 	void restart();
 
 	/* TODO: state management should be private */
 	void setState(AlgoState state);
 	int getState() { return algoState; }
 
+	int savetoJson();
 protected:
 	virtual int reloadJson(const QJsonObject &node);
+	virtual QJsonObject resaveJson(const QJsonObject &node);
 	int processBuffer(const RawBuffer &buf);
 	AlgoState algoState;
 	BaseVariables v;

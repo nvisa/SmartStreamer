@@ -91,9 +91,17 @@ QString MotionAlgorithmElement::getTypeString()
 
 int MotionAlgorithmElement::reloadJson(const QJsonObject &node)
 {
-	setSensitivity(node["sensitivity"].toInt());
-	setClassification(node["classification"].toBool());
+	control.sensitivity = node["sensitivity"].toInt();
+	control.classification = node["classification"].toBool();
 	return 0;
+}
+
+QJsonObject MotionAlgorithmElement::resaveJson(const QJsonObject &node)
+{
+	QJsonObject tr = node;
+	tr["sensitivity"] = control.sensitivity;
+	tr["classification"] = control.classification;
+	return tr;
 }
 
 int MotionAlgorithmElement::saveROI(AlgorithmCommunication::TRoi troi)

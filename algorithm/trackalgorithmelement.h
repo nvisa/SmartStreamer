@@ -17,6 +17,12 @@ public:
 		MANUAL
 	};
 
+	enum TrackStyle {
+		DistanceToCenter,
+		SizeOfObject,
+		UserMode
+	};
+
 	struct TrackObjInfo {
 		float point_x;
 		float point_y;
@@ -30,11 +36,25 @@ public:
 		bool alarmFlag;
 		int initialize;
 		int sensitivity;
-		bool classification;
+		float trackScore;
+		int trackInterval;
 		TrackObjInfo obj;
+		TrackStyle style;
 	};
 
 	int setTrackObjInfo(float x, float y, float w, float h);
+
+	float getTrackScore() { return control.trackScore; }
+	void setTrackScore(float s) { control.trackScore = s; }
+	int getTrackInterval() { return control.trackInterval; }
+	void setTrackInterval(int i) { control.trackInterval = i; }
+	int getSensitivity() { return control.sensitivity; }
+	void setSensitivity(int sens) { control.sensitivity = sens; }
+	void setMode(TrackMode m) { mode = m; }
+	int getMode() { return mode; }
+	float *getTrackObjInfo();
+
+	void setTrackStyle(int s) { control.style = (TrackStyle)s; }
 	int ZoomLevelNo;
 	float zoomvalues[1000*3];
 	void zoom2degree_conversion(int zoomReadOut,float* HV_fovAngles);
@@ -46,6 +66,7 @@ protected:
 	int semiAutoTrack(const RawBuffer &buf);
 	int manualTrack(const RawBuffer &buf);
 	int reloadJson(const QJsonObject &node);
+	QJsonObject resaveJson(const QJsonObject &node);
 	float objProp[4];
 };
 

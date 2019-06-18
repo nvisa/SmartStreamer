@@ -69,3 +69,14 @@ int FaceAlgorithmElement::release()
 	return 0;
 }
 
+int FaceAlgorithmElement::reloadJson(const QJsonObject &node)
+{
+	Q_UNUSED(node);
+}
+
+QJsonObject FaceAlgorithmElement::resaveJson(const QJsonObject &node)
+{
+	Q_UNUSED(node);
+	return QJsonObject();
+}
+

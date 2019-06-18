@@ -66,9 +66,19 @@ void StabilizationAlgorithmElement::zoom2degree_conversion(int zoomReadOut,float
 
 int StabilizationAlgorithmElement::reloadJson(const QJsonObject &node)
 {
+	v.privacy = node["privacy"].toBool() ? 1 : 0;
 	v.stabilization = node["stabilization"].toBool() ? 1 : 0;
 	control.sensitivity = node["sensitivity"].toInt();
 	return 0;
+}
+
+QJsonObject StabilizationAlgorithmElement::resaveJson(const QJsonObject &node)
+{
+	QJsonObject tr = node;
+	tr["sensitivity"] = control.sensitivity;
+	tr["privacy"] = v.privacy ? "true" : "false";
+	tr["stabilization"] = v.stabilization ? "true" : "false";
+	return tr;
 }
 
 int StabilizationAlgorithmElement::init()
@@ -80,7 +90,6 @@ int StabilizationAlgorithmElement::init()
 	v.rgb = 1;
 	v.shadow = 0;
 	control.initialize = 1;
-	v.rgb = 1;
 	return BaseAlgorithmElement::init();
 }
 
