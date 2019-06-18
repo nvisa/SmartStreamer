@@ -35,6 +35,12 @@ using namespace std;
 #include <QBuffer>
 #include <unistd.h>
 
+#define returnOnError(x) \
+	if(!x) { \
+		qDebug() << "Algorithm elemenet didn't found :%d", x;\
+		return grpc::Status::CANCELLED; \
+	}
+
 class GrpcThreadAlg1 : public QThread
 {
 public:
