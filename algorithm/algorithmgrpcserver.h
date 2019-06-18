@@ -40,8 +40,10 @@ public:
 
 protected:
 	explicit AlgorithmGrpcServer(QObject *parent = 0);
-	int setMotionParameters(AlgorithmCommunication::MotionParameters p);
+	int setMotionParameters(MotionAlgorithmElement *el, AlgorithmCommunication::MotionParameters p);
 	int getMotionParameters(AlgorithmCommunication::MotionParameters p);
+	BaseAlgorithmElement *algorithmElementManager(int chn);
+	int setTrackParameters(TrackAlgorithmElement *el, AlgorithmCommunication::TrackParameters p);
 private:
 	FaceAlgorithmElement *faceEl;
 	TrackAlgorithmElement *trackEl;

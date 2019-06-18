@@ -98,24 +98,29 @@ void AlgorithmGrpcServer::setAlgorithmManagementInterface(AlgoManIface *i)
 
 grpc::Status AlgorithmGrpcServer::RunAlgorithm(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfRequests *response)
 {
-	int chn = request->channel();
+	Q_UNUSED(context);
 	AlgorithmCommunication::TrackParameters trackpar = request->trackparam();
 	AlgorithmCommunication::MotionParameters motionpar = request->motionparam();
 	AlgorithmCommunication::PanaromaParameters panaromapar = request->panaromaparam();
 	AlgorithmCommunication::StabilizationParameters stabilizationpar = request->stabilizationparam();
 	AlgorithmCommunication::FaceDetectionParameters facedetectionpar = request->facedetectionparam();
 
+	BaseAlgorithmElement *el = algorithmElementManager(request->channel());
+	returnOnError(el);
+
 	switch (request->algorithmtype()) {
 	case AlgorithmCommunication::RequestForAlgorithm::MOTION:
-		if (!setMotionParameters(motionpar))
-			motionEl->setState(BaseAlgorithmElement::INIT);
+		if (!setMotionParameters((MotionAlgorithmElement*)el, motionpar))
+			el->setState(BaseAlgorithmElement::INIT);
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::STABILIZATION:
+		el->setState(BaseAlgorithmElement::INIT);
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::TRACKING:
+		el->setState(BaseAlgorithmElement::INIT);
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::PANAROMA:
-		panaromaEl->setState(BaseAlgorithmElement::INIT);
+		el->setState(BaseAlgorithmElement::INIT);
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::FACE_DETECTION:
 		break;
@@ -127,23 +132,28 @@ grpc::Status AlgorithmGrpcServer::RunAlgorithm(grpc::ServerContext *context, con
 
 grpc::Status AlgorithmGrpcServer::StopAlgorithm(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfRequests *response)
 {
-	int chn = request->channel();
+	Q_UNUSED(context);
 	AlgorithmCommunication::TrackParameters trackpar = request->trackparam();
 	AlgorithmCommunication::MotionParameters motionpar = request->motionparam();
 	AlgorithmCommunication::PanaromaParameters panaromapar = request->panaromaparam();
 	AlgorithmCommunication::StabilizationParameters stabilizationpar = request->stabilizationparam();
 	AlgorithmCommunication::FaceDetectionParameters facedetectionpar = request->facedetectionparam();
 
+	BaseAlgorithmElement *el = algorithmElementManager(request->channel());
+	returnOnError(el);
+
 	switch (request->algorithmtype()) {
 	case AlgorithmCommunication::RequestForAlgorithm::MOTION:
-		motionEl->setState(BaseAlgorithmElement::STOPALGO);
+		el->setState(BaseAlgorithmElement::STOPALGO);
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::STABILIZATION:
+		el->setState(BaseAlgorithmElement::STOPALGO);
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::TRACKING:
+		el->setState(BaseAlgorithmElement::STOPALGO);
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::PANAROMA:
-		panaromaEl->setState(BaseAlgorithmElement::STOPALGO);
+		el->setState(BaseAlgorithmElement::STOPALGO);
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::FACE_DETECTION:
 		break;
@@ -155,19 +165,30 @@ grpc::Status AlgorithmGrpcServer::StopAlgorithm(grpc::ServerContext *context, co
 
 grpc::Status AlgorithmGrpcServer::SetAlgorithmParameters(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfRequests *response)
 {
+	Q_UNUSED(context);
 	AlgorithmCommunication::TrackParameters trackpar = request->trackparam();
 	AlgorithmCommunication::MotionParameters motionpar = request->motionparam();
 	AlgorithmCommunication::PanaromaParameters panaromapar = request->panaromaparam();
 	AlgorithmCommunication::StabilizationParameters stabilizationpar = request->stabilizationparam();
 	AlgorithmCommunication::FaceDetectionParameters facedetectionpar = request->facedetectionparam();
 
+	BaseAlgorithmElement *el = algorithmElementManager(request->channel());
+	returnOnError(el);
+
 	switch (request->algorithmtype()) {
 	case AlgorithmCommunication::RequestForAlgorithm::MOTION:
-		setMotionParameters(motionpar);
+		setMotionParameters((MotionAlgorithmElement *)el, motionpar);
 		break;
-	case AlgorithmCommunication::RequestForAlgorithm::STABILIZATION:
+	case AlgorithmCommunication::RequestForAlgorithm::STABILIZATION: {
+		StabilizationAlgorithmElement *s = (StabilizationAlgorithmElement*)el;
+		s->setSensitivity(stabilizationpar.sensitivity());
+		s->setStabilization(stabilizationpar.stabilization());
+		s->setPrivacy(stabilizationpar.privacy());
+		s->savetoJson();
 		break;
+	}
 	case AlgorithmCommunication::RequestForAlgorithm::TRACKING:
+		setTrackParameters((TrackAlgorithmElement*)el, trackpar);
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::PANAROMA:
 		break;
@@ -181,17 +202,46 @@ grpc::Status AlgorithmGrpcServer::SetAlgorithmParameters(grpc::ServerContext *co
 
 grpc::Status AlgorithmGrpcServer::GetAlgorithmParameters(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfParameterRequests *response)
 {
-	AlgorithmCommunication::MotionParameters *p;
+	Q_UNUSED(context);
+	AlgorithmCommunication::TrackParameters *tp;
+	AlgorithmCommunication::MotionParameters *mp;
+	AlgorithmCommunication::StabilizationParameters *sp;
+
+	BaseAlgorithmElement *el = algorithmElementManager(request->channel());
+	returnOnError(el);
+
 	switch (request->algorithmtype()) {
-	case AlgorithmCommunication::RequestForAlgorithm::MOTION:
-		p = motionEl->loadROI();
-		p->set_sensitivity(motionEl->getSensitivity());
-		response->set_allocated_motionparam(p);
+	case AlgorithmCommunication::RequestForAlgorithm::MOTION: {
+		MotionAlgorithmElement* mo = (MotionAlgorithmElement*) el;
+		mp = mo->loadROI();
+		mp->set_sensitivity(mo->getSensitivity());
+		response->set_allocated_motionparam(mp);
 		break;
-	case AlgorithmCommunication::RequestForAlgorithm::STABILIZATION:
+	}
+	case AlgorithmCommunication::RequestForAlgorithm::STABILIZATION: {
+		StabilizationAlgorithmElement* sa = (StabilizationAlgorithmElement*) el;
+		sp = new AlgorithmCommunication::StabilizationParameters();
+		sp->set_privacy(sa->getPrivacy());
+		sp->set_sensitivity(sa->getSensitivity());
+		sp->set_stabilization(sa->getStabilization());
+		response->set_allocated_stabilizationparam(sp);
 		break;
-	case AlgorithmCommunication::RequestForAlgorithm::TRACKING:
+	}
+	case AlgorithmCommunication::RequestForAlgorithm::TRACKING: {
+		TrackAlgorithmElement* ta = (TrackAlgorithmElement*) el;
+		tp = new AlgorithmCommunication::TrackParameters();
+		tp->set_trackscore(ta->getTrackScore());
+		tp->set_trackinterval(ta->getTrackInterval());
+		float* objInfo = ta->getTrackObjInfo();
+		AlgorithmCommunication::TrackObject *to = new AlgorithmCommunication::TrackObject();
+		to->set_point_x(objInfo[0]);
+		to->set_point_y(objInfo[1]);
+		to->set_width(objInfo[2]);
+		to->set_height(objInfo[3]);
+		tp->set_allocated_target(to);
+		response->set_allocated_trackparam(tp);
 		break;
+	}
 	case AlgorithmCommunication::RequestForAlgorithm::PANAROMA:
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::FACE_DETECTION:
@@ -225,23 +275,55 @@ grpc::Status AlgorithmGrpcServer::GetScreenShotStream(grpc::ServerContext *conte
 	return grpc::Status::OK;
 }
 
-int AlgorithmGrpcServer::setMotionParameters(AlgorithmCommunication::MotionParameters p)
+int AlgorithmGrpcServer::setMotionParameters(MotionAlgorithmElement *el, AlgorithmCommunication::MotionParameters p)
 {
 	int ret = 0;
 	switch (p.settingchoice()) {
 	case AlgorithmCommunication::MotionParameters::SENSITIVITY:
-		motionEl->setSensitivity(p.sensitivity());
+		el->setSensitivity(p.sensitivity());
 		break;
 	case AlgorithmCommunication::MotionParameters::ROI:
-		ret = motionEl->saveROI(p.roilist());
+		ret = el->saveROI(p.roilist());
 		break;
 	case AlgorithmCommunication::MotionParameters::BOTH:
-		motionEl->setSensitivity(p.sensitivity());
-		ret = motionEl->saveROI(p.roilist());
+		el->setSensitivity(p.sensitivity());
+		ret = el->saveROI(p.roilist());
 		break;
 	default:
 		break;
 	}
+	el->savetoJson();
 	return ret;
 }
 
+int AlgorithmGrpcServer::setTrackParameters(TrackAlgorithmElement *el, AlgorithmCommunication::TrackParameters p)
+{
+	switch (p.tracktype()) {
+	case AlgorithmCommunication::TrackParameters::AUTO:
+		el->setMode(TrackAlgorithmElement::AUTO);
+		el->setTrackStyle(p.mode());
+		break;
+	case AlgorithmCommunication::TrackParameters::SEMI_AUTO:
+		// el->setMode(TrackAlgorithmElement::SEMIAUTO);
+		break;
+	case AlgorithmCommunication::TrackParameters::MANUAL: {
+		el->setMode(TrackAlgorithmElement::MANUAL);
+		el->setTrackObjInfo(p.target().point_x(), p.target().point_y(), p.target().width(), p.target().height());
+		break;
+	}
+	default:
+		break;
+	}
+	el->setTrackInterval(p.trackinterval());
+	el->setTrackScore(p.trackscore());
+	el->savetoJson();
+	return 0;
+}
+
+BaseAlgorithmElement* AlgorithmGrpcServer::algorithmElementManager(int chn)
+{
+	BaseAlgorithmElement *el = nullptr;
+	if (manif)
+		el = manif->getAlgo(chn);
+	return el;
+}
