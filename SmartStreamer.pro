@@ -37,33 +37,33 @@ include (proto/grpc.pri)
 include (algorithm/algorithm.pri)
 
 tx1 {
-    SOURCES += \
-        ipstreamer.cpp \
-        usbstreamer.cpp \
-        yamgozstreamer.cpp \
-        analogstreamer.cpp \
+	SOURCES += \
+		ipstreamer.cpp \
+		usbstreamer.cpp \
+		yamgozstreamer.cpp \
+		analogstreamer.cpp \
 		simpleipstreamer.cpp \
 		simpleapiserver.cpp \
 		tx1streamer.cpp \
 		kardelenapi.cpp
 
 
-    HEADERS += \
-        ipstreamer.h \
-        usbstreamer.h \
-        yamgozstreamer.h \
-        analogstreamer.h \
+	HEADERS += \
+		ipstreamer.h \
+		usbstreamer.h \
+		yamgozstreamer.h \
+		analogstreamer.h \
 		simpleipstreamer.h \
 		simpleapiserver.h \
 		tx1streamer.h \
 		kardelenapi.h
 
-    LIBS += -L/usr/local/cuda/lib64 -lcudart -lcufft
-    LIBS += -L/usr/lib/aarch64-linux-gnu/tegra/ -lv4l2 -lnvbuf_utils -lnvinfer -lnvparsers -lnvjpeg -lEGL -lX11
+	LIBS += -L/usr/local/cuda/lib64 -lcudart -lcufft
+	LIBS += -L/usr/lib/aarch64-linux-gnu/tegra/ -lv4l2 -lnvbuf_utils -lnvinfer -lnvparsers -lnvjpeg -lEGL -lX11
 
-    LIBS += -lopencv_imgcodecs -lboost_system -lboost_filesystem
-    CONFIG += third-party
-    DEFINES += HAVE_TX1
+	LIBS += -lopencv_imgcodecs -lboost_system -lboost_filesystem
+	CONFIG += third-party
+	DEFINES += HAVE_TX1 HAVE_VIA_MOTION
 }
 
 tk1 {
