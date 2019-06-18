@@ -1,6 +1,7 @@
 #ifndef APPLICATIONINFO_H
 #define APPLICATIONINFO_H
 
+#include <QHash>
 #include <QObject>
 #include <QJsonObject>
 #include <QCoreApplication>
@@ -43,7 +44,7 @@ public:
 	void checkStartupDelay();
 
 	QString algorithmSet();
-
+	QHash<int, BaseAlgorithmElement*> algoIndexes;
 protected:
 	ApplicationInfo();
 

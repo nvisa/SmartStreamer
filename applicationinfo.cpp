@@ -239,6 +239,7 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithm(const QString &type, int 
 	BaseAlgorithmElement *el = createAlgorithmFromJson(algo);
 	el->setJsonAlgorithmIndex(imap[index]);
 	el->reloadJson();
+	algoIndexes[imap[index]] = el;
 	return el;
 }
 
