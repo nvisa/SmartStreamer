@@ -2,22 +2,23 @@
 #define TX1STREAMER_H
 
 #include <lmm/players/basestreamer.h>
+#include <algorithm/algorithmgrpcserver.h>
 
 #include <QUrl>
 
 class SeiInserter;
 class RtpTransmitter;
 class BaseRtspServer;
-class AlgorithmGrpcServer;
 class BaseAlgorithmElement;
 
-class TX1Streamer : public BaseStreamer
+class TX1Streamer : public BaseStreamer, public AlgoManIface
 {
 	Q_OBJECT
 public:
 	explicit TX1Streamer(QObject *parent = 0);
 
 	virtual int start();
+	BaseAlgorithmElement *getAlgo(int channel);
 signals:
 
 protected slots:

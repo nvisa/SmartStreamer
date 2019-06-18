@@ -43,6 +43,8 @@ TX1Streamer::TX1Streamer(QObject *parent)
 {
 	grpcserv = AlgorithmGrpcServer::instance();
 	x.mode = 0;
+
+	AlgorithmGrpcServer::instance()->setAlgorithmManagementInterface(this);
 }
 
 int TX1Streamer::start()
@@ -55,6 +57,13 @@ int TX1Streamer::start()
 	}
 
 	return BaseStreamer::start();
+}
+
+BaseAlgorithmElement *TX1Streamer::getAlgo(int channel)
+{
+	if (!ApplicationInfo::instance()->algoIndexes.keys().contains(channel))
+		return nullptr;
+	return ApplicationInfo::instance()->algoIndexes[channel];
 }
 
 void TX1Streamer::apiUrlRequested(const QUrl &url)
