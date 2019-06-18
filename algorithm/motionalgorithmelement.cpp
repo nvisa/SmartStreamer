@@ -41,9 +41,9 @@ int MotionAlgorithmElement::processAlgo(const RawBuffer &buf)
 				  control.initialize, control.sensitivity);
 #elif HAVE_TX1
 	asel_via_base((uchar*)buf.constData(), width * height, width, height,
-				  v.rgb, v.record, v.shadow, v.ill, v.debug, v.stabilization, v.privacy,
+				  v.rgb, v.shadow, v.ill, v.debug, v.stabilization, v.privacy,
 				  control.meta, control.panTiltZoomRead, control.alarmFlag,
-				  control.initialize, control.sensitivity);
+				  control.initialize, control.sensitivity,control.classification, false);
 #endif // HAVE_TK1
 #endif // HAVE_VIA_MOTION
 
