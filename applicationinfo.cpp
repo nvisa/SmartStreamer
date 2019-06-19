@@ -26,6 +26,7 @@
 #include <ecl/ptzp/flirdriver.h>
 #include <ecl/ptzp/irdomedriver.h>
 #include <ecl/ptzp/yamgozdriver.h>
+#include <ecl/ptzp/swirdriver.h>
 #include <ecl/drivers/systeminfo.h>
 
 #include <unistd.h>
@@ -88,6 +89,8 @@ int ApplicationInfo::startPtzpDriver()
 		case FLIR_ORION:
 			driver = new FlirDriver;
 			break;
+		case MGEO_SWIR:
+			driver = new SwirDriver;
 		}
 		if (driver) {
 			fDebug("Starting PTZP driver for %s", qPrintable(obj["type"].toString()));
@@ -127,6 +130,8 @@ ApplicationInfo::Platform ApplicationInfo::getApplicationPlatform()
 			return YAMGOZ;
 		} else if (obj["type"] == QString("flir")) {
 			return FLIR_ORION;
+		} else if (obj["type"] == QString("mgeoswir")) {
+			return MGEO_SWIR;
 		}
 	}
 	return GENERIC;
