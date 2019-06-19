@@ -1,5 +1,6 @@
 #include "kardelenapi.h"
 #include "proto/KardelenAPI.pb.h"
+#include "algorithm/algorithmgrpcserver.h"
 
 #include <ecl/ptzp/ptzphead.h>
 #include <ecl/ptzp/ptzpdriver.h>
@@ -71,6 +72,47 @@ public:
 	{
 		getNumericParameter(index, value, bytes);
 	}
+
+	int getMode()
+	{
+		return _mymode;
+	}
+
+	int setMode(int mode)
+	{
+		AlgorithmGrpcServer *papi = AlgorithmGrpcServer::instance();
+		AlgorithmCommunication::RequestForAlgorithm req;
+		grpc::ServerContext ctx;
+		AlgorithmCommunication::ResponseOfRequests resp;
+
+		if (mode == CONTROL_MODE_JOYSTICK) {
+			/* we need to stop all algorithms */
+			req.set_channel(0);
+			req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::MOTION);
+			papi->StopAlgorithm(&ctx, &req, &resp);
+
+			req.set_channel(1);
+			req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::TRACKING);
+			papi->StopAlgorithm(&ctx, &req, &resp);
+		} else if (mode == CONTROL_MODE_DETECTION) {
+			req.set_channel(0);
+			req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::MOTION);
+			papi->RunAlgorithm(&ctx, &req, &resp);
+		} else if (mode == CONTROL_MODE_TRACK_WINDOW_SELECT) {
+			/* nothing to do on our side in this mode, TODO: this may change for auto track */
+		} else if (mode == CONTROL_MODE_TRACK_STARTED) {
+			req.set_channel(1);
+			req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::TRACKING);
+			papi->RunAlgorithm(&ctx, &req, &resp);
+		} else if (mode == CONTROL_MODE_DIGITAL_ZOOM_STARTED) {
+			/* TODO: handle digital zoom start */
+		} else if (mode == CONTROL_MODE_DIGITAL_ZOOM_WINDOW_SELECT) {
+			/* probably nothing to do on our side */
+		}
+		_mymode = mode;
+		return 0;
+	}
+	int _mymode;
 
 	virtual void setNumericParameterP(int index, double &value, int32_t bytes[3])
 	{
@@ -162,7 +204,7 @@ class KardelenAPIFalconEyeImpl : public KardelenAPIImpl
 public:
 	KardelenAPIFalconEyeImpl()
 	{
-		opMode = CONTROL_MODE_JOYSTICK;
+		setMode(CONTROL_MODE_JOYSTICK);
 	}
 
 	int64_t getCapabilities()
@@ -364,7 +406,7 @@ public:
 				return THERMAL;
 		}
 		if (index == ENUM_PARAM_OPERATIONAL_MODE)
-			return opMode;
+			return getMode();
 		if (index == ENUM_PARAM_DETECTION_CREATION_MODE)
 			return DETECTION_OPEN_MODE;
 		if (index == ENUM_PARAM_POLARITY) {
@@ -418,7 +460,7 @@ public:
 			else if (value == SYMBOLOGY_OFF)
 				ptzp->getHead(0)->setProperty(map["symbology"].toInt(), 0);
 		} else if (index == ENUM_PARAM_OPERATIONAL_MODE)
-			opMode = value;
+			setMode(value);
 		else if (index == ENUM_PARAM_FOV_LEVEL)
 			ptzp->getHead(0)->setProperty(4, value -1);
 	}
@@ -526,7 +568,6 @@ public:
 			ptzp->getHead(0)->setProperty(36, b);
 	}
 
-	int opMode;
 	QVariantMap map;
 };
 
@@ -649,7 +690,7 @@ public:
 				ptzp->getHead(2)->setProperty(2, 1);
 			}
 		} else if (index == ENUM_PARAM_OPERATIONAL_MODE)
-			opMode = value;
+			setMode(value);
 	}
 
 	virtual void setEnumCommand(int index, int32_t value)
@@ -669,7 +710,6 @@ public:
 
 	}
 
-	int opMode;
 	QVariantMap map;
 };
 
@@ -813,7 +853,6 @@ grpc::Status KardelenAPIServer::ScreenClick(grpc::ServerContext *, const ClickPa
 	return grpc::Status::OK;
 }
 
-
 grpc::Status KardelenAPIServer::SetMotionROI(grpc::ServerContext *, const MotionROIRequest *request, google::protobuf::Empty *)
 {
 	kaapi::Polygon r = request->roi();
@@ -825,6 +864,39 @@ grpc::Status KardelenAPIServer::SetMotionROI(grpc::ServerContext *, const Motion
 	kaapi::Rectangle far = request->far();
 	kaapi::Rectangle close = request->close();
 
+	AlgorithmGrpcServer *papi = AlgorithmGrpcServer::instance();
+	AlgorithmCommunication::RequestForAlgorithm req;
+	req.set_channel(0);
+	req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::MOTION);
+	AlgorithmCommunication::MotionParameters* mpars = req.mutable_motionparam();
+	mpars->set_settingchoice(AlgorithmCommunication::MotionParameters::BOTH);
+	auto roilist = mpars->mutable_roilist();
+	auto poly = roilist->add_polygon();
+	for (int i = 0; i < r.points_size(); i++) {
+		kaapi::Point p = r.points(i);
+		auto pt = poly->add_points();
+		pt->set_x(p.x());
+		pt->set_y(p.y());
+	}
+	auto rect = roilist->mutable_rect1();
+	auto pt = rect->mutable_upperleft();
+	pt->set_x(far.topleft().x());
+	pt->set_y(far.topleft().y());
+	pt = rect->mutable_bottomright();
+	pt->set_x(far.topleft().x() + far.width());
+	pt->set_y(far.topleft().y() + far.height());
+
+	rect = roilist->mutable_rect2();
+	pt = rect->mutable_upperleft();
+	pt->set_x(close.topleft().x());
+	pt->set_y(close.topleft().y());
+	pt = rect->mutable_bottomright();
+	pt->set_x(close.topleft().x() + close.width());
+	pt->set_y(close.topleft().y() + close.height());
+	grpc::ServerContext ctx;
+	AlgorithmCommunication::ResponseOfRequests resp;
+	papi->SetAlgorithmParameters(&ctx, &req, &resp);
+
 	qDebug() << "far" << far.topleft().x() << far.topleft().y() << far.width() << far.height();
 	qDebug() << "close" << close.topleft().x() << close.topleft().y() << close.width() << close.height();
 
@@ -835,9 +907,25 @@ grpc::Status KardelenAPIServer::SetTrackWindow(grpc::ServerContext *, const Rect
 {
 	qDebug() << "track" << request->topleft().x() << request->topleft().y() << request->width() << request->height();
 	// move to CONTROL_MODE_TRACK_WINDOW_SELECT, then move to CONTROL_MODE_TRACK_STARTED, return to CONTROL_MODE_TRACK_WINDOW_SELECT
+
+	AlgorithmGrpcServer *papi = AlgorithmGrpcServer::instance();
+	AlgorithmCommunication::RequestForAlgorithm req;
+	grpc::ServerContext ctx;
+	AlgorithmCommunication::ResponseOfRequests resp;
+
+	req.set_channel(1);
+	req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::TRACKING);
+	auto param = req.mutable_trackparam();
+	param->set_tracktype(AlgorithmCommunication::TrackParameters::MANUAL);
+	auto obj = param->mutable_target();
+	obj->set_point_x(request->topleft().x());
+	obj->set_point_y(request->topleft().y());
+	obj->set_width(request->width());
+	obj->set_height(request->height());
+	papi->SetAlgorithmParameters(&ctx, &req, &resp);
+
 	return grpc::Status::OK;
 }
-
 
 grpc::Status KardelenAPIServer::SetCalibration(grpc::ServerContext *, const CalibrationRequest *request, google::protobuf::Empty *)
 {
