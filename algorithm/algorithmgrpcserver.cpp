@@ -114,10 +114,12 @@ grpc::Status AlgorithmGrpcServer::RunAlgorithm(grpc::ServerContext *context, con
 			el->setState(BaseAlgorithmElement::INIT);
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::STABILIZATION:
-		el->setState(BaseAlgorithmElement::INIT);
+		if (!setStabilizationParameters((StabilizationAlgorithmElement*)el, stabilizationpar))
+			el->setState(BaseAlgorithmElement::INIT);
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::TRACKING:
-		el->setState(BaseAlgorithmElement::INIT);
+		if (!setTrackParameters((TrackAlgorithmElement*)el, trackpar))
+			el->setState(BaseAlgorithmElement::INIT);
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::PANAROMA:
 		el->setState(BaseAlgorithmElement::INIT);
@@ -180,11 +182,7 @@ grpc::Status AlgorithmGrpcServer::SetAlgorithmParameters(grpc::ServerContext *co
 		setMotionParameters((MotionAlgorithmElement *)el, motionpar);
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::STABILIZATION: {
-		StabilizationAlgorithmElement *s = (StabilizationAlgorithmElement*)el;
-		s->setSensitivity(stabilizationpar.sensitivity());
-		s->setStabilization(stabilizationpar.stabilization());
-		s->setPrivacy(stabilizationpar.privacy());
-		s->savetoJson();
+		setStabilizationParameters((StabilizationAlgorithmElement *)el, stabilizationpar);
 		break;
 	}
 	case AlgorithmCommunication::RequestForAlgorithm::TRACKING:
@@ -316,6 +314,15 @@ int AlgorithmGrpcServer::setTrackParameters(TrackAlgorithmElement *el, Algorithm
 	}
 	el->setTrackInterval(p.trackinterval());
 	el->setTrackScore(p.trackscore());
+	el->savetoJson();
+	return 0;
+}
+
+int AlgorithmGrpcServer::setStabilizationParameters(StabilizationAlgorithmElement *el, AlgorithmCommunication::StabilizationParameters p)
+{
+	el->setPrivacy(p.privacy());
+	el->setStabilization(p.stabilization());
+	el->setSensitivity(p.sensitivity());
 	el->savetoJson();
 	return 0;
 }
