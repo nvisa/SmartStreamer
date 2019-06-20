@@ -143,12 +143,12 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 	if (control.initialize)
 		control.initialize = 0;
 
-	return newOutputBuffer(buf);
+	return 0;
 }
 
 int TrackAlgorithmElement::semiAutoTrack(const RawBuffer &buf)
 {
-	return newOutputBuffer(buf);
+	return 0;
 }
 
 int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
@@ -207,7 +207,7 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 	if (control.initialize)
 		control.initialize = 0;
 
-	return newOutputBuffer(buf);
+	return 0;
 }
 
 int TrackAlgorithmElement::reloadJson(const QJsonObject &node)
