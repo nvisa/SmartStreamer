@@ -1,11 +1,11 @@
 #include "flirstreamer.h"
 
 #include "seiinserter.h"
+#include "tk1omxpipeline.h"
 #include "streamercommon.h"
 #include "applicationinfo.h"
 #include "algorithm/algorithmgrpcserver.h"
 #include "algorithm/motionalgorithmelement.h"
-#include "tk1omxpipeline.h"
 
 #include <lmm/debug.h>
 #include <lmm/bufferqueue.h>
@@ -102,10 +102,9 @@ int FlirStreamer::PerformSEI(const RawBuffer &buf)
 	return 0;
 }
 
-#include <lmm/tools/unittimestat.h>
-
 int FlirStreamer::pipelineOutput(BaseLmmPipeline *p, const RawBuffer &buf)
 {
-	qDebug() << p->getOutputQueue(0)->getFps() << dec->getProcessTimeStat()->last;
+	Q_UNUSED(p);
+	Q_UNUSED(buf);
 	return 0;
 }
