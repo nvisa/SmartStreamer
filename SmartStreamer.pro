@@ -63,7 +63,7 @@ tx1 {
 
 	LIBS += -lopencv_imgcodecs -lboost_system -lboost_filesystem
 	CONFIG += third-party
-	DEFINES += HAVE_TX1 HAVE_VIA_MOTION HAVE_VIA_STABILIZATION
+	DEFINES += HAVE_TX1 HAVE_VIA_MOTION HAVE_VIA_STABILIZATION HAVE_VIA_TRACK
 }
 
 tk1 {

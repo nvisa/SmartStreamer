@@ -92,14 +92,14 @@ int TrackAlgorithmElement::release()
 {
 	PtzpHead *headpt = ApplicationInfo::instance()->getPtzpDriver(0)->getHead(1);
 	headpt->panTiltAbs(0, 0);
+#if HAVE_VIA_TRACK
 	if (mode == AUTO)
 		asel_via_track_release();
 	else if (mode == MANUAL)
 		asel_direct_track_release();
 	else
 		mDebug("No selected mode");
-	return 0;
-
+#endif
 	return 0;
 }
 
@@ -121,9 +121,11 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 		panTiltZoomRead[4] = fovv;
 	}
 
+#if HAVE_VIA_TRACK
 	asel_via_track((uchar *)buf.constData(), width * height, width , height,
 				   v.rgb,v.shadow, v.ill, v.debug, v.stabilization, v.privacy,
 				   control.meta,panTiltZoomRead,control.initialize,control.sensitivity,true);
+#endif
 
 	float speed_pan  = (float)control.meta[11];
 	float speed_tilt = (float)control.meta[12];
@@ -181,9 +183,12 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 	}
 
 	mInfo("start tracking %f %f %f %f\n", objProp[0], objProp[1], objProp[2], objProp[3]);
+
+#if HAVE_VIA_TRACK
 	asel_direct_track((uchar *)buf.constData(), width * height, width , height,
 					  v.debug, control.meta, panTiltZoomRead,
 					  objProp, control.initialize);
+#endif
 
 	if (migrateDebug) {
 		float speed_pan  = (float)control.meta[11];
