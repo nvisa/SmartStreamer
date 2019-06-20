@@ -242,9 +242,9 @@ QJsonObject TrackAlgorithmElement::resaveJson(const QJsonObject &node)
 	tr["interval"] = control.trackInterval;
 	tr["sensitivity"] = control.sensitivity;
 	if (mode == AUTO)
-		tr["mode"] = "auto";
+		tr["mode"] = QString("auto");
 	else if (mode == MANUAL)
-		tr["mode"] = "manual";
+		tr["mode"] = QString("manual");
 	return tr;
 }
 

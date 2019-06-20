@@ -76,8 +76,8 @@ QJsonObject StabilizationAlgorithmElement::resaveJson(const QJsonObject &node)
 {
 	QJsonObject tr = node;
 	tr["sensitivity"] = control.sensitivity;
-	tr["privacy"] = v.privacy ? "true" : "false";
-	tr["stabilization"] = v.stabilization ? "true" : "false";
+	tr["privacy"] = v.privacy ? QString("true") : QString("false");
+	tr["stabilization"] = v.stabilization ? QString("true") : QString("false");
 	return tr;
 }
 
