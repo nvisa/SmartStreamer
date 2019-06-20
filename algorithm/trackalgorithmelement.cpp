@@ -145,12 +145,12 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 	if (control.initialize)
 		control.initialize = 0;
 
-	return newOutputBuffer(buf);
+	return 0;
 }
 
 int TrackAlgorithmElement::semiAutoTrack(const RawBuffer &buf)
 {
-	return newOutputBuffer(buf);
+	return 0;
 }
 
 int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
@@ -212,7 +212,7 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 	if (control.initialize)
 		control.initialize = 0;
 
-	return newOutputBuffer(buf);
+	return 0;
 }
 
 int TrackAlgorithmElement::reloadJson(const QJsonObject &node)
@@ -253,13 +253,22 @@ QJsonObject TrackAlgorithmElement::resaveJson(const QJsonObject &node)
 	return tr;
 }
 
+int TrackAlgorithmElement::forwardToObjPropFromControl(const TrackAlgorithmElement::TrackControl &control)
+{
+	objProp[0] = control.obj.point_x;
+	objProp[1] = control.obj.point_y;
+	objProp[2] = control.obj.width;
+	objProp[3] = control.obj.height;
+	return 0;
+}
+
 int TrackAlgorithmElement::setTrackObjInfo(float x, float y, float w, float h)
 {
 	control.obj.point_x = x;
 	control.obj.point_y = y;
 	control.obj.width = w;
 	control.obj.height = h;
-	algoState = REALLOCATE;
+	forwardToObjPropFromControl(control);
 	return 0;
 }
 

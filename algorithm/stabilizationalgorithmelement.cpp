@@ -85,9 +85,8 @@ int StabilizationAlgorithmElement::init()
 {
 	v.debug = 0;
 	v.ill = 1;
-	v.privacy = 1;
 	v.record = 0;
-	v.rgb = 1;
+	v.rgb = 0;
 	v.shadow = 0;
 	control.initialize = 1;
 	return BaseAlgorithmElement::init();

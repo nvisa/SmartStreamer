@@ -58,7 +58,7 @@ public:
 	int ZoomLevelNo;
 	float zoomvalues[1000*3];
 	void zoom2degree_conversion(int zoomReadOut,float* HV_fovAngles);
-
+	int forwardToObjPropFromControl(const TrackControl &control);
 protected:
 	TrackMode mode;
 	TrackControl control;

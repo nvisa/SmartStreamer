@@ -44,6 +44,7 @@ protected:
 	int getMotionParameters(AlgorithmCommunication::MotionParameters p);
 	BaseAlgorithmElement *algorithmElementManager(int chn);
 	int setTrackParameters(TrackAlgorithmElement *el, AlgorithmCommunication::TrackParameters p);
+	int setStabilizationParameters(StabilizationAlgorithmElement *el, AlgorithmCommunication::StabilizationParameters p);
 private:
 	FaceAlgorithmElement *faceEl;
 	TrackAlgorithmElement *trackEl;
