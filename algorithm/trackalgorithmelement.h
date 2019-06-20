@@ -52,7 +52,7 @@ public:
 	void setSensitivity(int sens) { control.sensitivity = sens; }
 	void setMode(TrackMode m) { mode = m; }
 	int getMode() { return mode; }
-	float *getTrackObjInfo();
+	float *getTrackObjInfo() {return objProp;}
 
 	void setTrackStyle(int s) { control.style = (TrackStyle)s; }
 	int ZoomLevelNo;

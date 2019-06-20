@@ -263,8 +263,3 @@ int TrackAlgorithmElement::setTrackObjInfo(float x, float y, float w, float h)
 	return 0;
 }
 
-float* TrackAlgorithmElement::getTrackObjInfo()
-{
-	return objProp;
-}
-
