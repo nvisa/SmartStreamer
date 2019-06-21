@@ -18,6 +18,7 @@ public:
 		algorithmIsPerforming = 1,
 		algorithmIsCompletedMoveNextPoint = 2,
 		waitForGivenInterval = 3,
+		terminateAlgorithm = 4,
 	};
 
 
@@ -30,6 +31,7 @@ public:
 
 	uchar meta[4096];
 	int initROI;
+	bool secondTurn;
 
 protected:
 	state stateOfProcess;

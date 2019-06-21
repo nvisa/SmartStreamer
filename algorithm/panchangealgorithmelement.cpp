@@ -18,6 +18,9 @@ int PanChangeAlgorithmElement:: init()
 {
 	initROI = 1;
 	stateOfProcess = panIsGoingToLocation;
+	algoState = INIT;
+	secondTurn = false;
+	timer.restart();
 	return BaseAlgorithmElement::init();
 }
 
@@ -60,15 +63,23 @@ int PanChangeAlgorithmElement::processAlgo(const RawBuffer &buf)
 		}
 		++locationIndex;
 	} else if (stateOfProcess == waitForGivenInterval) {
+		if (secondTurn) {
+			stateOfProcess = terminateAlgorithm;
+			return 0;
+		}
 		if (!timer.isValid())
 			timer.start();
 		if (timer.elapsed() < time) {
 			return 0;
 		} else if (timer.elapsed() >= time) {
 			stateOfProcess = panIsGoingToLocation;
+			secondTurn = true;
 			return 0;
 		}
+	} else if (stateOfProcess == terminateAlgorithm) {
+		algoState = STOPALGO;
 	}
+
 	return 0;
 }
 
