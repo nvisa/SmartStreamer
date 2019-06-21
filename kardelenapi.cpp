@@ -855,6 +855,157 @@ class KardelenAPIMgeoSwirImpl : public KardelenAPIImpl
 	QVariantMap map;
 };
 
+class KardelenAPIMgeoFlirImpl : public KardelenAPIImpl
+{
+	KardelenAPIMgeoFlirImpl()
+	{
+
+	}
+
+	int64_t getCapabilities()
+	{
+		int64_t caps = 0;
+
+		addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
+		addcap(caps, CAPABILITY_DETECTION);
+		addcap(caps, CAPABILITY_ZOOM);
+		addcap(caps, CAPABILITY_PT);
+		addcap(caps, CAPABILITY_DAY_VIEW);
+		addcap(caps, CAPABILITY_FOCUS);
+
+		return caps;
+	}
+
+	void setPosi(kaapi::PosInfo *posi)
+	{
+		posi->set_panpos(ptzp->getHead(1)->getPanAngle());
+		posi->set_tiltpos(ptzp->getHead(1)->getTiltAngle());
+		posi->set_zoompos(ptzp->getHead(0)->getZoom());
+		float fovh, fovv;
+		ptzp->getHead(0)->getFOV(fovh, fovv);
+		posi->set_fovh(fovh);
+		posi->set_fovv(fovv);
+	}
+
+	void fillCameraStatus(kaapi::CameraStatus *response)
+	{
+		response->set_capabilities(getCapabilities());
+
+		int32_t v = 0;
+
+		/* numeric parameters */
+		addNumericParameter(v, NUM_PARAM_FOCUS, response);
+		addNumericParameter(v, NUM_PARAM_YAW, response);
+		addNumericParameter(v, NUM_PARAM_PITCH, response);
+		addNumericParameter(v, NUM_PARAM_HORIZONTAL_RES, response);
+		addNumericParameter(v, NUM_PARAM_VERTICAL_RES, response);
+		addNumericParameter(v, NUM_PARAM_ZOOM, response);
+		response->set_numericparametersvector(v);
+
+		/* enum parameters */
+		v = 0;
+		addEnumParameter(v, ENUM_PARAM_CAMERA_TYPE, response);
+		addEnumParameter(v, ENUM_PARAM_OPERATIONAL_MODE, response);
+		addEnumParameter(v, ENUM_PARAM_DETECTION_CREATION_MODE, response);
+		response->set_enumparametersvector(v);
+	}
+
+	void moveRelative(const kaapi::RelativeMoveParameters *request)
+	{
+		/* speed is no-op for flir */
+		if (request->zoomspeed() > 0)
+			ptzp->getHead(0)->startZoomIn(0);
+		else if (request->zoomspeed() < 0)
+			ptzp->getHead(0)->startZoomOut(0);
+		else
+			ptzp->getHead(0)->stopZoom();
+		ptzp->getHead(1)->panTiltAbs(request->panspeed() / 100.0, request->tiltspeed() / 100.0);
+	}
+
+	void moveAbsolute(const kaapi::AbsoluteMoveParameters *request)
+	{
+		ptzp->getHead(1)->panTiltGoPos(request->panpos(), request->tiltpos());
+	}
+
+	void setCamera(int32_t type)
+	{
+	}
+
+	virtual void getNumericParameter(int index, double &value, int32_t bytes[3])
+	{
+		if (map.isEmpty())
+			map = ptzp->getHead(0)->getSettings();
+
+		value = 0;
+
+		if (index == NUM_PARAM_FOCUS)
+			value = ptzp->getHead(0)->getProperty(6);
+		else if (index == NUM_PARAM_YAW) {
+			float pana = ptzp->getHead(1)->getPanAngle();
+			if (pana > 180)
+				value = pana - 360;
+			else
+				value = pana;
+		} else if (index == NUM_PARAM_PITCH)
+			value = ptzp->getHead(1)->getTiltAngle();
+		else if (index == NUM_PARAM_HORIZONTAL_RES)
+			value = 1920;
+		else if (index == NUM_PARAM_VERTICAL_RES)
+			value = 1080;
+		else if (index == NUM_PARAM_ZOOM)
+			ptzp->getHead(0)->getZoom();
+		else {
+			value = 100000;
+		}
+	}
+
+	virtual int32_t getEnumParameter(int index)
+	{
+		if (map.isEmpty())
+			map = ptzp->getHead(0)->getSettings();
+
+		if (index == ENUM_PARAM_CAMERA_TYPE)
+				return TV;
+		if (index == ENUM_PARAM_OPERATIONAL_MODE)
+			return getMode();
+		if (index == ENUM_PARAM_DETECTION_CREATION_MODE)
+			return DETECTION_OPEN_MODE;
+
+		/* API wants this */
+		return -1;
+	}
+
+	virtual void setNumericParameter(int index, double &value, int32_t bytes[3])
+	{
+		if (index == NUM_PARAM_FOCUS) {
+			if (value == 0)
+				ptzp->getHead(0)->setProperty(3, value);
+			else if (value == 1)
+				ptzp->getHead(0)->setProperty(0, value);
+			else if (value == 2)
+				ptzp->getHead(0)->setProperty(1, value);
+		}
+	}
+
+	virtual void setEnumParameter(int index, int32_t value)
+	{
+		qDebug() << index << value;
+
+		if (index == ENUM_PARAM_OPERATIONAL_MODE)
+			setMode(value);
+	}
+
+	virtual void setEnumCommand(int index, int32_t value)
+	{
+	}
+
+	virtual void screenClick(int x, int y, int action)
+	{
+	}
+
+	QVariantMap map;
+};
+
 KardelenAPIServer::KardelenAPIServer(PtzpDriver *ptzp, QString nodeType)
 {
 	KaapiThread *grpcServ = new KaapiThread(50060, this);
