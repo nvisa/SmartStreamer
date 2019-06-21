@@ -31,7 +31,6 @@ public:
 
 	uchar meta[4096];
 	int initROI;
-	bool secondTurn;
 
 protected:
 	state stateOfProcess;
