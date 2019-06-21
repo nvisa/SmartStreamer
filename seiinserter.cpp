@@ -219,6 +219,7 @@ const QByteArray SeiInserter::generateAlarm()
 
 void SeiInserter::setSeiField(RawBuffer buf)
 {
+	buf.pars()->metaData.clear();
 	QByteArray seiData = incomingSeiData;
 	if (isSeiNew == true) {
 		isSeiNew = false;
