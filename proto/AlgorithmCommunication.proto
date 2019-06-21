@@ -24,6 +24,19 @@ service DiagnosticService {
 	rpc GetDiagnosticStatus(DiagnosticQ) returns (DiagnosticInfo) {}
 }
 
+
+
+message LocationInformation {
+	float pan = 1;
+	float tilt = 2;
+	float zoom = 3;
+}
+
+message ListOfLocationInformation{
+	repeated LocationInformation locationInformation= 1;
+	int64 intervalForCirculation = 2;
+}
+
 message DiagnosticQ {
 	int32 value = 1;
 }
