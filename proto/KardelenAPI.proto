@@ -28,6 +28,17 @@ service CameraService {
 	rpc SetCalibration(CalibrationRequest) returns (google.protobuf.Empty) {}
 }
 
+message LocationInformation {
+	float pan = 1;
+	float tilt = 2;
+	float zoom = 3;
+}
+
+message ListOfLocationInformation{
+	repeated LocationInformation locationInformation= 1;
+	int64 intervalForCirculation = 2;
+}
+
 message CalibrationRequest {
 	float value1 = 1;
 	float value2 = 2;
