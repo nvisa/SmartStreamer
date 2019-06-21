@@ -29,6 +29,8 @@ public:
 	void setPanaromaAlgorithmElement(PanaromaAlgorithmElement *el) {panaromaEl = el;}
 	void setStabilizationAlgorithmElement(StabilizationAlgorithmElement *el) {stabilizationEl = el;}
 	void setSnapshotElement(SnapshotElement *el) {snapshotEl = el;}
+	void setAlarmField(const QString &key, const QString &value);
+	void removeAlarmField(const QString &key);
 	grpc::Status RunAlgorithm(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfRequests *response);
 	grpc::Status StopAlgorithm(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfRequests *response);
 
@@ -53,6 +55,12 @@ private:
 	StabilizationAlgorithmElement *stabilizationEl;
 	SnapshotElement *snapshotEl;
 	AlgoManIface *manif;
+	QMutex mutex;
+	QHash<QString, QString> alarms;
+
+	// Service interface
+public:
+	grpc::Status GetAlarm(grpc::ServerContext *context, ::grpc::ServerReaderWriter<AlgorithmCommunication::Alarms, AlgorithmCommunication::AlarmReqInfo> *stream) override;
 };
 
 #endif // ALGORITHMGRPCSERVER_H

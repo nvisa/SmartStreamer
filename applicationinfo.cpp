@@ -5,6 +5,7 @@
 #include "usbstreamer.h"
 #include "aryastreamer.h"
 #include "flirstreamer.h"
+#include "indevicetest.h"
 
 #include "algorithm/motionalgorithmelement.h"
 #include "algorithm/stabilizationalgorithmelement.h"
@@ -104,6 +105,8 @@ int ApplicationInfo::startPtzpDriver()
 			if (obj["kardelen"].toBool())
 				new KardelenAPIServer(driver, obj["type"].toString());
 #endif
+			idt = new InDeviceTest(true);
+			idt->addPtzpDriver("ptz_controller", driver);
 		}
 		/* we only support one ptzp driver at the moment */
 		break;
@@ -276,6 +279,11 @@ void ApplicationInfo::checkStartupDelay()
 	}
 }
 
+InDeviceTest *ApplicationInfo::getIDT()
+{
+	return idt;
+}
+
 QString ApplicationInfo::algorithmSet()
 {
 #if HAVE_TX1
@@ -288,4 +296,5 @@ QString ApplicationInfo::algorithmSet()
 
 ApplicationInfo::ApplicationInfo()
 {
+	idt = nullptr;
 }

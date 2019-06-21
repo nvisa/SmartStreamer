@@ -170,6 +170,15 @@ int TX1Streamer::frameGenerator(const RawBuffer &buf)
 	return 0;
 }
 
+int TX1Streamer::notifyGrpcForAlarm(const RawBuffer &buf)
+{
+	if (buf.constPars()->metaData.size())
+		AlgorithmGrpcServer::instance()->setAlarmField("motion_xml", QString::fromUtf8(buf.constPars()->metaData));
+	else
+		AlgorithmGrpcServer::instance()->removeAlarmField("motion_xml");
+	return 0;
+}
+
 int TX1Streamer::processBuffer(const RawBuffer &buf)
 {
 	Q_UNUSED(buf);
@@ -227,6 +236,7 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	p1->append(queue);
 	p1->append(enc0);
 	p1->append(sei);
+	p1->append(newFunctionPipe(TX1Streamer, this, TX1Streamer::notifyGrpcForAlarm));
 	p1->append(rtpout);
 	p1->end();
 

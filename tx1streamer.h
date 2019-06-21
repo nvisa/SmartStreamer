@@ -27,6 +27,7 @@ protected slots:
 protected:
 	int checkSeiAlarm(const RawBuffer &buf);
 	int frameGenerator(const RawBuffer &buf);
+	int notifyGrpcForAlarm(const RawBuffer &buf);
 	int processBuffer(const RawBuffer &buf);
 
 	virtual BaseLmmPipeline * createYUV420Pipeline(QSize &res0) = 0;

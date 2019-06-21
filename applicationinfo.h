@@ -8,6 +8,7 @@
 
 class PtzpDriver;
 class BaseStreamer;
+class InDeviceTest;
 class BaseAlgorithmElement;
 
 class ApplicationInfo
@@ -43,12 +44,14 @@ public:
 	BaseAlgorithmElement * createAlgorithmFromJson(const QJsonObject &algo);
 	BaseAlgorithmElement * createAlgorithm(const QString &type, int index = 0);
 	void checkStartupDelay();
+	InDeviceTest * getIDT();
 
 	QString algorithmSet();
 	QHash<int, BaseAlgorithmElement*> algoIndexes;
 protected:
 	ApplicationInfo();
 
+	InDeviceTest *idt;
 	QList<PtzpDriver *> drivers;
 
 };

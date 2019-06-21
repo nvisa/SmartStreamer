@@ -12,6 +12,7 @@
 #include "algorithmmanager.h"
 #include "algorithm/algorithmgrpcserver.h"
 #include "applicationinfo.h"
+#include "indevicetest.h"
 
 #include <lmm/lmmcommon.h>
 
@@ -265,6 +266,30 @@ static int testGrpc(const QString &action)
 		req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm_Algorithm_FACE_DETECTION);
 		AlgorithmCommunication::ResponseOfRequests resp;
 		status = stub->StopAlgorithm(&ctx, req, &resp);
+	} else if (action == "alarm") {
+		AlgorithmCommunication::AlarmReqInfo req;
+		req.set_intervalmsecs(1000);
+		auto stream = stub->GetAlarm(&ctx);
+		if (!stream->Write(req)) {
+			qDebug("Error starting getalarm request");
+			return -1;
+		}
+		AlgorithmCommunication::Alarms res;
+		while (stream->Read(&res)) {
+			QDateTime dt = QDateTime::fromMSecsSinceEpoch(res.ts());
+			qDebug("%d alarms at %s", res.alarms_size(), qPrintable(dt.toString()));
+			for (int i = 0; i < res.alarms_size(); i++) {
+				const AlgorithmCommunication::Alarm &alarm = res.alarms(i);
+				qDebug("Alarm %d type is '%s'", i, alarm.type().data());
+				if (alarm.type() == "cit") {
+					const AlgorithmCommunication::CITInfo ci = alarm.cit();
+					qDebug("module %d, pt %d, usb %d", ci.moduleinfo(), ci.motorinfo(), ci.usbinfo());
+				}
+			}
+
+			req.set_intervalmsecs(1000);
+			stream->Write(req);
+		}
 	}
 	if (status.error_code() != grpc::OK) {
 		qDebug("error '%d' in grpc call", status.error_code());
@@ -416,6 +441,8 @@ int main(int argc, char *argv[])
 {
 	if (QString::fromLatin1(argv[0]).contains("kaapic"))
 		return kaapiClient(argc, argv);
+	if (QString::fromLatin1(argv[0]).contains("apic"))
+		return testGrpc(argv[1]);
 
 	ApplicationInfo *info = ApplicationInfo::instance();
 	QCoreApplication *a;
@@ -465,9 +492,11 @@ int main(int argc, char *argv[])
 	info->startPtzpDriver();
 
 	BaseStreamer *streamer = info->createAppStreamer();
-	if (streamer)
+	if (streamer) {
 		streamer->start();
-	else {
+		if (info->getIDT())
+			info->getIDT()->addPipeline("video_source0", streamer->getPipeline(0));
+	} else {
 		qDebug() << "no suitable streamer found for your config";
 		qDebug() << "starting grpctest";
 		return testGrpc(argv[1]);

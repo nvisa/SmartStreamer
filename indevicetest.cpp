@@ -19,7 +19,7 @@ InDeviceTest::InDeviceTest(bool enableOnline, QObject *parent)
 	pipelineFaultTime = 10000;
 	if (online) {
 		QTimer *timer = new QTimer(this);
-		timer->start(headPingFaultTime);
+		timer->start(checkTime);
 		connect(timer, SIGNAL(timeout()), SLOT(timeout()));
 	}
 }
@@ -53,10 +53,11 @@ void InDeviceTest::timeout()
 	QHashIterator<QString, PtzpDriver *> dit(drivers);
 	while (dit.hasNext()) {
 		dit.next();
-		mDebug();
+		mInfo("Checking PTZP driver %s", qPrintable(dit.key()));
 		PtzpDriver *d = dit.value();
 		for (int i = 0; i < d->getHeadCount(); i++) {
 			int lastPing = d->getHead(i)->communicationElapsed();
+			mInfo("Checking head %d (%d)", i, lastPing);
 			if (lastPing > headPingFaultTime)
 				faults.append(addHeadFault(dit.key(), i, lastPing));
 		}
@@ -68,6 +69,7 @@ void InDeviceTest::timeout()
 		pit.next();
 		BaseLmmPipeline *p = pit.value();
 		qint64 ping = p->getOutputQueue(0)->getElapsedSinceLastAdd();
+		mInfo("Checking pipeline %s (%d)", qPrintable(pit.key()), ping);
 		if (ping > pipelineFaultTime)
 			faults.append(addPipelineFault(pit.key(), ping));
 	}

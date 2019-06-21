@@ -1,5 +1,6 @@
 #include "algorithmgrpcserver.h"
 #include "diagnosticserviceimpl.h"
+#include "indevicetest.h"
 
 #include <lmm/debug.h>
 
@@ -33,6 +34,8 @@ using namespace std;
 #include <QFile>
 #include <QImage>
 #include <QBuffer>
+#include <QDateTime>
+
 #include <unistd.h>
 
 #define returnOnError(x) \
@@ -94,6 +97,18 @@ AlgorithmGrpcServer *AlgorithmGrpcServer::instance()
 void AlgorithmGrpcServer::setAlgorithmManagementInterface(AlgoManIface *i)
 {
 	manif = i;
+}
+
+void AlgorithmGrpcServer::setAlarmField(const QString &key, const QString &value)
+{
+	QMutexLocker ml(&mutex);
+	alarms[key] = value;
+}
+
+void AlgorithmGrpcServer::removeAlarmField(const QString &key)
+{
+	QMutexLocker ml(&mutex);
+	alarms.clear();
 }
 
 grpc::Status AlgorithmGrpcServer::RunAlgorithm(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfRequests *response)
@@ -333,4 +348,60 @@ BaseAlgorithmElement* AlgorithmGrpcServer::algorithmElementManager(int chn)
 	if (manif)
 		el = manif->getAlgo(chn);
 	return el;
+}
+
+grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc::ServerReaderWriter<AlgorithmCommunication::Alarms, AlgorithmCommunication::AlarmReqInfo> *stream)
+{
+	InDeviceTest *idt = ApplicationInfo::instance()->getIDT();
+	while (1) {
+		AlgorithmCommunication::Alarms res;
+		AlgorithmCommunication::AlarmReqInfo req;
+		bool success = stream->Read(&req);
+		if (!success)
+			return Status::OK;
+
+		std::string filter = req.filter();
+		int32_t interval = req.intervalmsecs();
+		usleep(interval * 1000);
+		res.set_ts(QDateTime::currentMSecsSinceEpoch());
+		if (idt) {
+			QJsonObject cit = idt->getLastCheckResults();
+			if (cit.contains("faults")) {
+				AlgorithmCommunication::Alarm *alarm = res.add_alarms();
+				alarm->set_type("cit");
+				AlgorithmCommunication::CITInfo *citinfo = alarm->mutable_cit();
+				citinfo->set_moduleinfo(AlgorithmCommunication::CITInfo_Info_OK);
+				citinfo->set_motorinfo(AlgorithmCommunication::CITInfo_Info_OK);
+				citinfo->set_usbinfo(AlgorithmCommunication::CITInfo_Info_OK);
+				foreach (QJsonValue v, cit["faults"].toArray()) {
+					QJsonObject obj = v.toObject();
+					if (obj["type"] == "control_module" && obj["index"].toInt() == 0)
+						citinfo->set_moduleinfo(AlgorithmCommunication::CITInfo_Info_NOK);
+					if (obj["type"] == "control_module" && obj["index"].toInt() == 1)
+						citinfo->set_motorinfo(AlgorithmCommunication::CITInfo_Info_NOK);
+					if (obj["type"] == "video_module")
+						citinfo->set_usbinfo(AlgorithmCommunication::CITInfo_Info_NOK);
+				}
+			}
+		}
+
+		mutex.lock();
+		if (alarms.size()) {
+			AlgorithmCommunication::Alarm *alarm = res.add_alarms();
+			alarm->set_type("motion_detection");
+			QHashIterator<QString, QString> ait(alarms);
+			while (ait.hasNext()) {
+				ait.next();
+				alarm->add_key(ait.key().toStdString());
+				alarm->add_value(ait.value().toStdString());
+			}
+		}
+		mutex.unlock();
+
+		success = stream->Write(res);
+		if (!success)
+			return Status::OK;
+	}
+
+	return Status::OK;
 }
