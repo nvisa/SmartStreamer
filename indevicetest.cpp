@@ -44,9 +44,9 @@ void InDeviceTest::timeout()
 {
 	QJsonArray checks;
 	foreach (const QString &key, drivers.keys())
-		checks << QJsonValue(key);
+		checks.append(QJsonValue(key));
 	foreach (const QString &key, pipelines.keys())
-		checks << QJsonValue(key);
+		checks.append(QJsonValue(key));
 	QJsonArray faults;
 
 	/* check drivers */
@@ -58,7 +58,7 @@ void InDeviceTest::timeout()
 		for (int i = 0; i < d->getHeadCount(); i++) {
 			int lastPing = d->getHead(i)->communicationElapsed();
 			if (lastPing > headPingFaultTime)
-				faults << addHeadFault(dit.key(), i, lastPing);
+				faults.append(addHeadFault(dit.key(), i, lastPing));
 		}
 	}
 
@@ -69,7 +69,7 @@ void InDeviceTest::timeout()
 		BaseLmmPipeline *p = pit.value();
 		qint64 ping = p->getOutputQueue(0)->getElapsedSinceLastAdd();
 		if (ping > pipelineFaultTime)
-			faults << addPipelineFault(pit.key(), ping);
+			faults.append(addPipelineFault(pit.key(), ping));
 	}
 
 	QJsonObject obj;
