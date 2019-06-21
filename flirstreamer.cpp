@@ -43,6 +43,8 @@ FlirStreamer::FlirStreamer(const QJsonObject &config, QObject *parent)
 	grpcserv = AlgorithmGrpcServer::instance();
 	if (generatePipeline(priv->url))
 		mDebug("Defination is missing, please set flir url configuration");
+
+	AlgorithmGrpcServer::instance()->setAlgorithmManagementInterface(this);
 }
 
 int FlirStreamer::generatePipeline(const QString &url)
@@ -86,6 +88,13 @@ int FlirStreamer::generatePipeline(const QString &url)
 	p2->end();
 
 	return 0;
+}
+
+BaseAlgorithmElement *FlirStreamer::getAlgo(int channel)
+{
+	if (!ApplicationInfo::instance()->algoIndexes.keys().contains(channel))
+		return nullptr;
+	return ApplicationInfo::instance()->algoIndexes[channel];
 }
 
 int FlirStreamer::PerformSEI(const RawBuffer &buf)
