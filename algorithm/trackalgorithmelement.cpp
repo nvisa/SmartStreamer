@@ -139,8 +139,11 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 		speed_tilt = 0;
 		//TODO: stop algorithm
 	}
-	printf("final speeds MA track: %d %d\n",(int)speed_pan,(int)(speed_tilt));
-	headpt->panTiltAbs((float)speed_pan/63.0, (float)speed_tilt/63.0);
+//	printf("final speeds MA track: %d %d\n",(int)speed_pan,(int)(speed_tilt));
+//	headpt->panTiltAbs((float)speed_pan/63.0, (float)speed_tilt/63.0);
+
+	qDebug() << "Pan&Tilt degree values are " << panTiltZoomRead[3] <<  panTiltZoomRead[4];
+	headpt->panTiltDegree(panTiltZoomRead[3], panTiltZoomRead[4]);
 
 	if (control.initialize)
 		control.initialize = 0;

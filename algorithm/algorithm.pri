@@ -14,6 +14,7 @@ HEADERS += \
 	$$PWD/stabilizationalgorithmelement.h \
 	$$PWD/panaromaalgorithmelement.h \
 	$$PWD/trackalgorithmelement.h \
+	$$PWD/panchangealgorithmelement.h
 
 SOURCES += \
 	$$PWD/basealgorithmelement.cpp \
@@ -22,3 +23,4 @@ SOURCES += \
 	$$PWD/stabilizationalgorithmelement.cpp \
 	$$PWD/panaromaalgorithmelement.cpp \
 	$$PWD/trackalgorithmelement.cpp \
+	$$PWD/panchangealgorithmelement.cpp

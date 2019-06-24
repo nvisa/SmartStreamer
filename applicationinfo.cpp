@@ -220,6 +220,8 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithmFromJson(const QJsonObject
 	} else if (algo["type"] == QString("panaroma")) {
 		return new PanaromaAlgorithmElement;
 #endif
+	} else if (algo["type"] == QString("panchange")) {
+		return new PanChangeAlgorithmElement;
 	}
 	return new BaseAlgorithmElement;
 }

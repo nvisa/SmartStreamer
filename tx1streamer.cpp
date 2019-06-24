@@ -3,7 +3,9 @@
 #include "mjpegserver.h"
 #include "applicationinfo.h"
 #include "mjpegserver.h"
+#include "kardelenapi.h"
 #include "simpleapiserver.h"
+#include "alarmgeneratorelement.h"
 #include "algorithm/algorithmgrpcserver.h"
 #include "algorithm/basealgorithmelement.h"
 
@@ -44,6 +46,7 @@ TX1Streamer::TX1Streamer(QObject *parent)
 	grpcserv = AlgorithmGrpcServer::instance();
 	x.mode = 0;
 
+	algen = new alarmGeneratorElement;
 	AlgorithmGrpcServer::instance()->setAlgorithmManagementInterface(this);
 }
 
@@ -124,6 +127,13 @@ int TX1Streamer::checkSeiAlarm(const RawBuffer &buf)
 		sei->processMessage(seiData);
 		if (seiData.size() == 0)
 			sei->clearLastSEIMessage();
+
+		/* notify kardelen as well */
+		algen->generateAlarmStructure((uchar *)seiData.constData(), alarmGeneratorElement::MOTION);
+		alarmGeneratorElement::AlarmInfo *info = algen->getAlarmInfo();
+		if (info->target.size())
+			KardelenAPIServer::instance()->setMotionObjects(info->target);
+
 	} else if (buf.constPars()->metaData.size() == 0) {
 		sei->clearLastSEIMessage();
 	}
@@ -192,6 +202,7 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	privacy = ApplicationInfo::instance()->createAlgorithm("privacy");
 	motion = ApplicationInfo::instance()->createAlgorithm("motion");
 	track = ApplicationInfo::instance()->createAlgorithm("track");
+	panchange = ApplicationInfo::instance()->createAlgorithm("panchange");
 
 	enc0 = StreamerCommon::createEncoder(0);
 	((TX1VideoEncoder *)enc0)->setOutputResolution(res0.width(), res0.height());
@@ -231,6 +242,7 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	p1->append(privacy);
 	p1->append(motion);
 	p1->append(track);
+	p1->append(panchange);
 	p1->append(newFunctionPipe(TX1Streamer, this, TX1Streamer::checkSeiAlarm));
 	p1->append(textOverlay);
 	p1->append(queue);

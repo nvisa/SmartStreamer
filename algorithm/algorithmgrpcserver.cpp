@@ -81,6 +81,7 @@ AlgorithmGrpcServer::AlgorithmGrpcServer(QObject *parent)
 	motionEl = NULL;
 	panaromaEl = NULL;
 	stabilizationEl = NULL;
+	panChangeEl = NULL;
 	snapshotEl = NULL;
 
 	GrpcThreadAlg1 *grpcServ = new GrpcThreadAlg1(50059, this);
@@ -141,6 +142,10 @@ grpc::Status AlgorithmGrpcServer::RunAlgorithm(grpc::ServerContext *context, con
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::FACE_DETECTION:
 		break;
+	case AlgorithmCommunication::RequestForAlgorithm::PAN_CHANGE:
+		if(!setPanChangeParameters((PanChangeAlgorithmElement*)el,panchangepar))
+			el->setState(BaseAlgorithmElement::INIT);
+		break;
 	default:
 		break;
 	}
@@ -155,6 +160,7 @@ grpc::Status AlgorithmGrpcServer::StopAlgorithm(grpc::ServerContext *context, co
 	AlgorithmCommunication::PanaromaParameters panaromapar = request->panaromaparam();
 	AlgorithmCommunication::StabilizationParameters stabilizationpar = request->stabilizationparam();
 	AlgorithmCommunication::FaceDetectionParameters facedetectionpar = request->facedetectionparam();
+	AlgorithmCommunication::PanChangeParameters panchangepar = request->panchangeparam();
 
 	BaseAlgorithmElement *el = algorithmElementManager(request->channel());
 	returnOnError(el);
@@ -174,6 +180,9 @@ grpc::Status AlgorithmGrpcServer::StopAlgorithm(grpc::ServerContext *context, co
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::FACE_DETECTION:
 		break;
+	case AlgorithmCommunication::RequestForAlgorithm::PAN_CHANGE:
+		el->setState(BaseAlgorithmElement::STOPALGO);
+		break;
 	default:
 		break;
 	}
@@ -188,6 +197,7 @@ grpc::Status AlgorithmGrpcServer::SetAlgorithmParameters(grpc::ServerContext *co
 	AlgorithmCommunication::PanaromaParameters panaromapar = request->panaromaparam();
 	AlgorithmCommunication::StabilizationParameters stabilizationpar = request->stabilizationparam();
 	AlgorithmCommunication::FaceDetectionParameters facedetectionpar = request->facedetectionparam();
+	AlgorithmCommunication::PanChangeParameters panchangepar = request->panchangeparam();
 
 	BaseAlgorithmElement *el = algorithmElementManager(request->channel());
 	returnOnError(el);
@@ -206,6 +216,9 @@ grpc::Status AlgorithmGrpcServer::SetAlgorithmParameters(grpc::ServerContext *co
 	case AlgorithmCommunication::RequestForAlgorithm::PANAROMA:
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::FACE_DETECTION:
+		break;
+	case AlgorithmCommunication::RequestForAlgorithm::PAN_CHANGE:
+		setPanChangeParameters((PanChangeAlgorithmElement*)el, panchangepar);
 		break;
 	default:
 		break;
@@ -338,6 +351,13 @@ int AlgorithmGrpcServer::setStabilizationParameters(StabilizationAlgorithmElemen
 	el->setPrivacy(p.privacy());
 	el->setStabilization(p.stabilization());
 	el->setSensitivity(p.sensitivity());
+	el->savetoJson();
+	return 0;
+}
+
+int AlgorithmGrpcServer::setPanChangeParameters(PanChangeAlgorithmElement *el, AlgorithmCommunication::PanChangeParameters &p)
+{
+	el->setPanChangeInfoFrom(p.locationinformation());
 	el->savetoJson();
 	return 0;
 }

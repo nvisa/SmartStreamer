@@ -15,7 +15,8 @@ SOURCES += main.cpp \
     applicationinfo.cpp \
     diagnosticserviceimpl.cpp \
     snapshotelement.cpp \
-    indevicetest.cpp
+    indevicetest.cpp \
+    alarmgeneratorelement.cpp
 
 HEADERS += \
     moxadriver.h \
@@ -27,7 +28,8 @@ HEADERS += \
     applicationinfo.h \
     diagnosticserviceimpl.h \
     snapshotelement.h \
-    indevicetest.h
+    indevicetest.h \
+    alarmgeneratorelement.h
 
 websockets {
     SOURCES += websocketstreamer.cpp

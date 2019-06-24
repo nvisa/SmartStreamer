@@ -4,6 +4,7 @@
 #include "basealgorithmelement.h"
 #include "proto/KardelenAPI.grpc.pb.h"
 #include "proto/KardelenAPI.pb.h"
+#include "proto/AlgorithmCommunication.grpc.pb.h"
 #include <QElapsedTimer>
 
 class PanChangeAlgorithmElement : public BaseAlgorithmElement
@@ -18,14 +19,20 @@ public:
 		algorithmIsPerforming = 1,
 		algorithmIsCompletedMoveNextPoint = 2,
 		waitForGivenInterval = 3,
-		terminateAlgorithm = 4,
 	};
 
+	enum API
+	{
+		ALGORITHMCOMM = 0,
+		KARDELEN = 1,
+	};
 
 	int init() override;
 	int processAlgo(const RawBuffer &buf);
 	int release();
 	int setPanChangeInfo(kaapi::ListOfLocationInformation *listOfLocInfo);
+	int setPanChangeInfoFrom(const AlgorithmCommunication::ListOfLocationInformation &listOfLocInfo);
+
 
 	virtual QString getTypeString();
 
@@ -37,6 +44,8 @@ protected:
 
 	QElapsedTimer timer;
 	kaapi::ListOfLocationInformation *listOfLocationInformation;
+	AlgorithmCommunication::ListOfLocationInformation *listOfLocationInformationFromAlgComm;
+	API api;
 };
 
-#endif // PANCHANGEALGORITHMELEMENT_H
+#endif // PANCHANGEALGORITHMELEMENT_

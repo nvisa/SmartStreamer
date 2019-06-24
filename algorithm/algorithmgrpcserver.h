@@ -11,6 +11,7 @@
 #include "algorithm/motionalgorithmelement.h"
 #include "algorithm/panaromaalgorithmelement.h"
 #include "algorithm/stabilizationalgorithmelement.h"
+#include "algorithm/panchangealgorithmelement.h"
 
 class AlgoManIface
 {
@@ -28,6 +29,7 @@ public:
 	void setMotionAlgorithmElement(MotionAlgorithmElement *el) {motionEl = el;}
 	void setPanaromaAlgorithmElement(PanaromaAlgorithmElement *el) {panaromaEl = el;}
 	void setStabilizationAlgorithmElement(StabilizationAlgorithmElement *el) {stabilizationEl = el;}
+	void setPanChangeAlgorithmElement(PanChangeAlgorithmElement *el) {panChangeEl = el;}
 	void setSnapshotElement(SnapshotElement *el) {snapshotEl = el;}
 	void setAlarmField(const QString &key, const QString &value);
 	void removeAlarmField(const QString &key);
@@ -47,12 +49,14 @@ protected:
 	BaseAlgorithmElement *algorithmElementManager(int chn);
 	int setTrackParameters(TrackAlgorithmElement *el, AlgorithmCommunication::TrackParameters p);
 	int setStabilizationParameters(StabilizationAlgorithmElement *el, AlgorithmCommunication::StabilizationParameters p);
+	int setPanChangeParameters(PanChangeAlgorithmElement *el, AlgorithmCommunication::PanChangeParameters &p);
 private:
 	FaceAlgorithmElement *faceEl;
 	TrackAlgorithmElement *trackEl;
 	MotionAlgorithmElement *motionEl;
 	PanaromaAlgorithmElement *panaromaEl;
 	StabilizationAlgorithmElement *stabilizationEl;
+	PanChangeAlgorithmElement *panChangeEl;
 	SnapshotElement *snapshotEl;
 	AlgoManIface *manif;
 	QMutex mutex;

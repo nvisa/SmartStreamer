@@ -10,6 +10,7 @@ class SeiInserter;
 class RtpTransmitter;
 class BaseRtspServer;
 class BaseAlgorithmElement;
+class alarmGeneratorElement;
 
 class TX1Streamer : public BaseStreamer, public AlgoManIface
 {
@@ -36,12 +37,14 @@ protected:
 	BaseAlgorithmElement *privacy;
 	BaseAlgorithmElement *motion;
 	BaseAlgorithmElement *track;
+	BaseAlgorithmElement *panchange;
 	BaseLmmElement *enc0;
 	BaseLmmElement *enc1;
 	BaseLmmElement *enc2;
 	BaseLmmElement *enc3;
 	BaseLmmElement *textOverlay;
 	AlgorithmGrpcServer *grpcserv;
+	alarmGeneratorElement *algen;
 
 private:
 	void finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res0);
