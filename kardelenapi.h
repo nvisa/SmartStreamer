@@ -1,8 +1,10 @@
 #ifndef KARDELENAPI_H
 #define KARDELENAPI_H
 
+#include "alarmgeneratorelement.h"
 #include "proto/KardelenAPI.grpc.pb.h"
 
+#include <QMutex>
 #include <QString>
 
 class PtzpDriver;
@@ -87,6 +89,7 @@ const static int NUM_PARAM_PREDEFINED_FOV_COUNT = 25; //
 const static int NUM_PARAM_BULLET_COUNT = 26;
 const static int NUM_PARAM_HPF_GAIN = 27;
 const static int NUM_PARAM_HPF_SPATIAL = 28;
+const static int NUM_PARAM_PREDEFINED_GAIN_COUNT = 29; //
 
 const static int VALUE_NO_CHANGE = 0;
 const static int VALUE_INCREASE = 1;
@@ -167,6 +170,14 @@ const static int ENUM_PARAM_LAST_BULLET_WARNING = 12;
 const static byte PASSIVE_WARNING = (byte) 0x00;
 const static byte ACTIVE_WARNING = (byte) 0x01;
 
+const static int ENUM_PARAM_GAIN_LEVEL = 13; //
+const static byte GAIN_LEVEL_1 = (byte) 0x01;
+const static byte GAIN_LEVEL_2 = (byte) 0x02;
+const static byte GAIN_LEVEL_3 = (byte) 0x03;
+const static byte GAIN_LEVEL_4 = (byte) 0x04;
+const static byte GAIN_LEVEL_5 = (byte) 0x05;
+const static byte GAIN_LEVEL_6 = (byte) 0x06;
+
 // ENUM COMMANDS
 const static int ENUM_COMMAND_TRACK = 0;
 const static byte TRACK_START = (byte) 0x01;
@@ -211,8 +222,12 @@ class KardelenAPIServer : public kaapi::CameraService::Service
 public:
 	KardelenAPIServer(PtzpDriver *ptzp, QString nodeType);
 
+	static KardelenAPIServer * instance();
+	void setMotionObjects(const std::vector<alarmGeneratorElement::TargetStruct> &v);
+
 protected:
 	KardelenAPIImpl *impl;
+
 
 	// Service interface
 public:
@@ -233,6 +248,10 @@ public:
 	grpc::Status SetMotionROI(grpc::ServerContext *context, const kaapi::MotionROIRequest *request, google::protobuf::Empty *) override;
 	grpc::Status SetTrackWindow(grpc::ServerContext *, const kaapi::Rectangle *request, google::protobuf::Empty *) override;
 	grpc::Status SetCalibration(grpc::ServerContext *, const kaapi::CalibrationRequest *request, google::protobuf::Empty *) override;
+
+protected:
+	QMutex mutex;
+	std::vector<alarmGeneratorElement::TargetStruct> lastMotionObjects;
 };
 
 #endif // KARDELENAPI_H

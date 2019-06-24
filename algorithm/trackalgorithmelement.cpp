@@ -209,7 +209,7 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 		mDebug("######################### cevo speed pan=%d tilt=%d", speed_pan, speed_tilt);
 		mDebug("######################### ptzp head pan=%d tilt=%d", panTiltZoomRead[3], panTiltZoomRead[4]);
 	}
-
+	qDebug() << "Pan&Tilt degree values are " << panTiltZoomRead[3] <<  panTiltZoomRead[4];
 	headpt->panTiltDegree(panTiltZoomRead[3], panTiltZoomRead[4]);
 
 	if (control.initialize)

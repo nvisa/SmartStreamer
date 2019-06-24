@@ -44,10 +44,10 @@ using namespace std;
 		return grpc::Status::CANCELLED; \
 	}
 
-class GrpcThreadAlg1 : public QThread
+class AlgorithmGrpcServerGrpcThreadAlg : public QThread
 {
 public:
-	GrpcThreadAlg1(quint16 port, AlgorithmGrpcServer *s)
+	AlgorithmGrpcServerGrpcThreadAlg(quint16 port, AlgorithmGrpcServer *s)
 	{
 		servicePort = port;
 		algorithm = s;
@@ -84,7 +84,7 @@ AlgorithmGrpcServer::AlgorithmGrpcServer(QObject *parent)
 	panChangeEl = NULL;
 	snapshotEl = NULL;
 
-	GrpcThreadAlg1 *grpcServ = new GrpcThreadAlg1(50059, this);
+	AlgorithmGrpcServerGrpcThreadAlg *grpcServ = new AlgorithmGrpcServerGrpcThreadAlg(50059, this);
 	grpcServ->start();
 }
 
@@ -120,6 +120,8 @@ grpc::Status AlgorithmGrpcServer::RunAlgorithm(grpc::ServerContext *context, con
 	AlgorithmCommunication::PanaromaParameters panaromapar = request->panaromaparam();
 	AlgorithmCommunication::StabilizationParameters stabilizationpar = request->stabilizationparam();
 	AlgorithmCommunication::FaceDetectionParameters facedetectionpar = request->facedetectionparam();
+	AlgorithmCommunication::PanChangeParameters panchangepar = request->panchangeparam();
+
 
 	BaseAlgorithmElement *el = algorithmElementManager(request->channel());
 	returnOnError(el);

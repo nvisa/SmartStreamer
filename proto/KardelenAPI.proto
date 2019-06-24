@@ -166,6 +166,7 @@ message CameraStatus {
 	Boresight boresight = 9;
 	ROI roi = 10;
 	ROI fence = 11;
+	repeated Rectangle objectDetections = 12;
 }
 
 message Rectangle {

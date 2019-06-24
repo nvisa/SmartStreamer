@@ -29,10 +29,10 @@ using namespace std;
 #include <QFile>
 #include <unistd.h>
 
-class GrpcThreadAlg1 : public QThread
+class GrpcThreadAlg2 : public QThread
 {
 public:
-	GrpcThreadAlg1(quint16 port, OrionCommunicationServer *s)
+	GrpcThreadAlg2(quint16 port, OrionCommunicationServer *s)
 	{
 		servicePort = port;
 		orion = s;
@@ -231,6 +231,6 @@ OrionCommunicationServer::OrionCommunicationServer()
 	motionEl = NULL;
 	panaromaEl = NULL;
 	snapshotEl = NULL;
-	GrpcThreadAlg1 *grpcServer = new GrpcThreadAlg1(50060, this);
+	GrpcThreadAlg2 *grpcServer = new GrpcThreadAlg2(50060, this);
 	grpcServer->start();
 }

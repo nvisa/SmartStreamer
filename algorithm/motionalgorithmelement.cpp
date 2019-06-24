@@ -50,6 +50,7 @@ int MotionAlgorithmElement::processAlgo(const RawBuffer &buf)
 	if (control.initialize)
 		control.initialize = 0;
 	QByteArray ba = QByteArray((char *)control.meta, 4096);
+
 	hash.insert("motion_results", ba);
 	((RawBuffer *)&buf)->pars()->metaData = RawBuffer::serializeMetadata(hash);
 

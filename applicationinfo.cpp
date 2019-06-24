@@ -241,7 +241,6 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithm(const QString &type, int 
 		filtered.append(alg);
 		imap.insert(filtered.size() - 1, i - 1);
 	}
-
 	if (filtered.size() <= index)
 		return new BaseAlgorithmElement;
 
@@ -268,7 +267,7 @@ void ApplicationInfo::checkStartupDelay()
 			relayConfig << 6;
 		}
 		QProcess::execute("i2cset -f -y 1 0x70 0x03 0x00");
-		QProcess::execute(QString("i2cset -f -y 1 0x70 0x01 0x%1").arg((1 << (relayConfig[0] - 1)), 2, 16));
+		//QProcess::execute(QString("i2cset -f -y 1 0x70 0x01 0x%1").arg((1 << (relayConfig[0] - 1)), 2, 16));
 
 	}
 	QJsonObject obj = readJson("/etc/smartstreamer/smartconfig.json");

@@ -20,6 +20,8 @@
 #include <grpc++/security/credentials.h>
 #include <grpc++/security/server_credentials.h>
 
+#include <unistd.h>
+
 using namespace kaapi;
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -30,6 +32,8 @@ using grpc::Status;
 using grpc::StatusCode;
 
 #define NOT_SUPP 100000
+
+static KardelenAPIServer *apiinst = nullptr;
 
 class KaapiThread : public QThread
 {
@@ -96,6 +100,7 @@ public:
 			papi->StopAlgorithm(&ctx, &req, &resp);
 		} else if (mode == CONTROL_MODE_DETECTION) {
 			req.set_channel(0);
+			req.mutable_motionparam()->set_sensitivity(80);
 			req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::MOTION);
 			papi->RunAlgorithm(&ctx, &req, &resp);
 		} else if (mode == CONTROL_MODE_TRACK_WINDOW_SELECT) {
@@ -152,19 +157,20 @@ public:
 				req.set_tiltpos(lastTiltPos);
 				moveAbsolute(&req);
 			}
-		} else if (index == NUM_PARAM_FOV) {
+		} else if (index == NUM_PARAM_ZOOM) {
 			/* NOTE: zoom speed is no-op for falconeye */
-			lastZoomSpeed = value;
 			kaapi::RelativeMoveParameters req;
 			req.set_panspeed(lastPanSpeed);
 			req.set_tiltspeed(lastTiltSpeed);
-			req.set_zoomspeed(lastZoomSpeed);
-			moveRelative(&req);
 			if (bytes[2] == VALUE_NO_CHANGE) {
 			} else if (bytes[2] == VALUE_INCREASE) {
+				lastZoomSpeed = value;
 			} else if (bytes[2] == VALUE_DECREASE) {
+				lastZoomSpeed = -1 * value;
 			} else if (bytes[2] == VALUE_SET) {
 			}
+			req.set_zoomspeed(lastZoomSpeed);
+			moveRelative(&req);
 		} else
 			setNumericParameter(index, value, bytes);
 	}
@@ -204,7 +210,8 @@ class KardelenAPIFalconEyeImpl : public KardelenAPIImpl
 public:
 	KardelenAPIFalconEyeImpl()
 	{
-		setMode(CONTROL_MODE_JOYSTICK);
+		_mymode = CONTROL_MODE_JOYSTICK;
+		//setMode(CONTROL_MODE_JOYSTICK);
 	}
 
 	int64_t getCapabilities()
@@ -303,6 +310,17 @@ public:
 
 	void moveRelative(const kaapi::RelativeMoveParameters *request)
 	{
+		ptzp->getHead(1)->panTiltAbs(request->panspeed() / 100.0, -1 * request->tiltspeed() / 100.0);
+
+		static bool zoomHackMode = false;
+		if (zoomHackMode && qAbs(request->zoomspeed()))
+			return;
+		if (!zoomHackMode && !qAbs(request->zoomspeed()))
+			return;
+		if (request->zoomspeed())
+			zoomHackMode = true;
+		else
+			zoomHackMode = false;
 		/* speed is no-op for falcon-eye */
 		if (request->zoomspeed() > 0)
 			ptzp->getHead(0)->startZoomIn(0);
@@ -310,7 +328,6 @@ public:
 			ptzp->getHead(0)->startZoomOut(0);
 		else
 			ptzp->getHead(0)->stopZoom();
-		ptzp->getHead(1)->panTiltAbs(request->panspeed() / 100.0, request->tiltspeed() / 100.0);
 	}
 
 	void moveAbsolute(const kaapi::AbsoluteMoveParameters *request)
@@ -472,8 +489,10 @@ public:
 		qDebug() << index << value;
 		/* digital zoom operational mode digital window select'e bağlanacak */
 		if (index == ENUM_COMMAND_DIGITAL_ZOOM){
-			if (value == DIGITAL_ZOOM_START )
+			if (value == DIGITAL_ZOOM_START ){
+//				setMode(CONTROL_MODE_DIGITAL_ZOOM_STARTED);
 				ptzp->getHead(0)->setProperty(6, 1);
+			}
 			else if(value == DIGITAL_ZOOM_STOP)
 				ptzp->getHead(0)->setProperty(6, 0);
 		}
@@ -715,6 +734,7 @@ public:
 
 class KardelenAPIMgeoSwirImpl : public KardelenAPIImpl
 {
+public:
 	KardelenAPIMgeoSwirImpl()
 	{
 
@@ -723,8 +743,11 @@ class KardelenAPIMgeoSwirImpl : public KardelenAPIImpl
 	int64_t getCapabilities()
 	{
 		int64_t caps= 0;
+		addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
+		addcap(caps, CAPABILITY_NIGHT_VIEW);
 		addcap(caps, CAPABILITY_ZOOM);
 		addcap(caps, CAPABILITY_FOCUS);
+		addcap(caps, CAPABILITY_HPF_GAIN);
 
 		addcap(caps, CAPABILITY_DETECTION);
 		addcap(caps, CAPABILITY_PT);
@@ -756,6 +779,7 @@ class KardelenAPIMgeoSwirImpl : public KardelenAPIImpl
 		addNumericParameter(v, NUM_PARAM_HORIZONTAL_RES, response);
 		addNumericParameter(v, NUM_PARAM_VERTICAL_RES, response);
 		addNumericParameter(v, NUM_PARAM_ZOOM, response);
+		addNumericParameter(v, NUM_PARAM_PREDEFINED_GAIN_COUNT, response);
 		response->set_numericparametersvector(v);
 
 		/* enum parameters */
@@ -763,6 +787,7 @@ class KardelenAPIMgeoSwirImpl : public KardelenAPIImpl
 		addEnumParameter(v, ENUM_PARAM_OPERATIONAL_MODE, response);
 		addEnumParameter(v, ENUM_PARAM_DETECTION_CREATION_MODE, response);
 		addEnumParameter(v, ENUM_PARAM_SEMBOLOGY, response);
+		addEnumParameter(v, ENUM_PARAM_GAIN_LEVEL, response);
 		response->set_enumparametersvector(v);
 	}
 
@@ -775,7 +800,7 @@ class KardelenAPIMgeoSwirImpl : public KardelenAPIImpl
 			ptzp->getHead(0)->startZoomOut(0);
 		else
 			ptzp->getHead(0)->stopZoom();
-		ptzp->getHead(1)->panTiltAbs(request->panspeed() / 100.0, request->tiltspeed() / 100.0);
+		ptzp->getHead(1)->panTiltAbs(request->panspeed() / 100.0, -1 * request->tiltspeed() / 100.0);
 	}
 
 	void moveAbsolute(const kaapi::AbsoluteMoveParameters *request)
@@ -811,6 +836,10 @@ class KardelenAPIMgeoSwirImpl : public KardelenAPIImpl
 			value = 576;
 		else if (index == NUM_PARAM_ZOOM)
 			value = ptzp->getHead(0)->getZoom();
+		else if (index == NUM_PARAM_PREDEFINED_GAIN_COUNT)
+			value = 3;
+		else if (index == NUM_PARAM_HPF_GAIN)
+			value = (ptzp->getHead(0)->getProperty(2) + 1) * 33;
 		else
 			value = 100000;
 	}
@@ -824,6 +853,8 @@ class KardelenAPIMgeoSwirImpl : public KardelenAPIImpl
 			return getMode();
 		if (index == ENUM_PARAM_DETECTION_CREATION_MODE)
 			return DETECTION_OPEN_MODE;
+		if (index == ENUM_PARAM_GAIN_LEVEL)
+			return ptzp->getHead(0)->getProperty(2) + 1;
 
 		/* API wants this */
 		return -1;
@@ -833,6 +864,8 @@ class KardelenAPIMgeoSwirImpl : public KardelenAPIImpl
 	{
 		if (index == NUM_PARAM_FOCUS)
 			ptzp->getHead(0)->setProperty(1, value);
+		else if (index == NUM_PARAM_HPF_GAIN)
+			ptzp->getHead(0)->setProperty(2, (int)(value / 33));
 	}
 
 	virtual void setEnumParameter(int index, int32_t value)
@@ -841,6 +874,8 @@ class KardelenAPIMgeoSwirImpl : public KardelenAPIImpl
 
 		if (index == ENUM_PARAM_OPERATIONAL_MODE)
 			setMode(value);
+		if (index == ENUM_PARAM_GAIN_LEVEL)
+			ptzp->getHead(0)->setProperty(2, value - 1);
 	}
 
 	virtual void setEnumCommand(int index, int32_t value)
@@ -1014,7 +1049,21 @@ KardelenAPIServer::KardelenAPIServer(PtzpDriver *ptzp, QString nodeType)
 		impl = new KardelenAPIFalconEyeImpl;
 	else if (nodeType == "yamgoz")
 		impl = new KardelenAPIYamgozImpl;
+	else if (nodeType == "mgeoswir")
+		impl = new KardelenAPIMgeoSwirImpl;
 	impl->ptzp = ptzp;
+	apiinst = this;
+}
+
+KardelenAPIServer *KardelenAPIServer::instance()
+{
+	return apiinst;
+}
+
+void KardelenAPIServer::setMotionObjects(const std::vector<alarmGeneratorElement::TargetStruct> &v)
+{
+	QMutexLocker ml(&mutex);
+	lastMotionObjects = v;
 }
 
 grpc::Status KardelenAPIServer::GetPosition(grpc::ServerContext *, const google::protobuf::Empty *, kaapi::PosInfo *response)
@@ -1056,6 +1105,30 @@ grpc::Status KardelenAPIServer::CommunicationChannel(grpc::ServerContext *, ::gr
 		kaapi::CommWrite msgw;
 		stream->Read(&msgw);
 
+		kaapi::CommRead msgr;
+
+		mutex.lock();
+		int objCount = lastMotionObjects.size();
+		while (!objCount) {
+			mutex.unlock();
+			usleep(50 * 1000);
+			mutex.lock();
+			objCount = lastMotionObjects.size();
+		}
+		/* we have the lock */
+		for (uint i = 0; i < lastMotionObjects.size(); i++) {
+			alarmGeneratorElement::TargetStruct ts = lastMotionObjects[i];
+			kaapi::Rectangle* rect = msgr.mutable_status()->add_objectdetections();
+			kaapi::Point *pt = rect->mutable_topleft();
+			pt->set_x(ts.topLeftX);
+			pt->set_y(ts.topLeftY);
+			rect->set_width(ts.widthOfTarget);
+			rect->set_height(ts.heightOfTarget);
+			qDebug() << "detection" << ts.topLeftX << ts.topLeftY << ts.widthOfTarget << ts.heightOfTarget;
+		}
+		lastMotionObjects.clear();
+		mutex.unlock();
+
 		/* TODO: handle actions */
 		if (msgw.action() == kaapi::CommWrite_Action_MOVE_ABS) {
 
@@ -1069,7 +1142,6 @@ grpc::Status KardelenAPIServer::CommunicationChannel(grpc::ServerContext *, ::gr
 
 		}
 
-		kaapi::CommRead msgr;
 		impl->setPosi(msgr.mutable_posinfo());
 		impl->fillCameraStatus(msgr.mutable_status());
 		stream->Write(msgr);
@@ -1216,7 +1288,7 @@ grpc::Status KardelenAPIServer::SetTrackWindow(grpc::ServerContext *, const Rect
 	obj->set_width(request->width());
 	obj->set_height(request->height());
 	papi->SetAlgorithmParameters(&ctx, &req, &resp);
-
+	papi->RunAlgorithm(&ctx, &req, &resp);
 	return grpc::Status::OK;
 }
 
