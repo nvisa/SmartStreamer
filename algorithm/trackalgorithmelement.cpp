@@ -117,10 +117,10 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 	//zoom2degree_conversion(headz->getZoom(),panTiltZoomRead);
 	float fovh = 0, fovv = 0;
 	if (!headz->getFOV(fovh, fovv)) {
-		panTiltZoomRead[3] = fovh;
-		panTiltZoomRead[4] = fovv;
+		panTiltZoomRead[3] = 2.0;
+		panTiltZoomRead[4] = 1.5;
 	}
-
+	qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~fov values are  are " << panTiltZoomRead[0] <<  panTiltZoomRead[1] << panTiltZoomRead[3] <<  panTiltZoomRead[4];
 #if HAVE_VIA_TRACK
 	asel_via_track((uchar *)buf.constData(), width * height, width , height,
 				   v.rgb,v.shadow, v.ill, v.debug, v.stabilization, v.privacy,
@@ -143,7 +143,8 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 //	headpt->panTiltAbs((float)speed_pan/63.0, (float)speed_tilt/63.0);
 
 	qDebug() << "Pan&Tilt degree values are " << panTiltZoomRead[3] <<  panTiltZoomRead[4];
-	headpt->panTiltDegree(panTiltZoomRead[3], panTiltZoomRead[4]);
+	if (control.initialize == 0 && (panTiltZoomRead[3] != 2.0))
+		headpt->panTiltDegree(panTiltZoomRead[3], panTiltZoomRead[4]);
 
 	if (control.initialize)
 		control.initialize = 0;
@@ -175,8 +176,8 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 	float panTiltZoomRead[] = {headpt->getPanAngle(), ta, 0, 12, 12};
 	float fovh = 0, fovv = 0;
 	if (!headz->getFOV(fovh, fovv)) {
-		panTiltZoomRead[3] = fovh;
-		panTiltZoomRead[4] = fovv;
+		panTiltZoomRead[3] = 25.0;
+		panTiltZoomRead[4] = 20.0;
 	}
 	bool migrateDebug = false;
 	if (migrateDebug) {
@@ -209,8 +210,9 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 		mDebug("######################### cevo speed pan=%d tilt=%d", speed_pan, speed_tilt);
 		mDebug("######################### ptzp head pan=%d tilt=%d", panTiltZoomRead[3], panTiltZoomRead[4]);
 	}
-	qDebug() << "Pan&Tilt degree values are " << panTiltZoomRead[3] <<  panTiltZoomRead[4];
-	headpt->panTiltDegree(panTiltZoomRead[3], panTiltZoomRead[4]);
+	qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~Pan&Tilt degree values are " << panTiltZoomRead[3] <<  panTiltZoomRead[4];
+	if (control.initialize == 0)
+		headpt->panTiltDegree(panTiltZoomRead[3], panTiltZoomRead[4]);
 
 	if (control.initialize)
 		control.initialize = 0;

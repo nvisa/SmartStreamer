@@ -16,9 +16,10 @@ public:
 	enum state
 	{
 		panIsGoingToLocation = 0,
-		algorithmIsPerforming = 1,
-		algorithmIsCompletedMoveNextPoint = 2,
-		waitForGivenInterval = 3,
+		waitForStabilView = 1,
+		algorithmIsPerforming = 2,
+		algorithmIsCompletedMoveNextPoint = 3,
+		waitForGivenInterval = 4,
 	};
 
 	enum API

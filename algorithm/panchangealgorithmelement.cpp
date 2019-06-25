@@ -60,8 +60,18 @@ int PanChangeAlgorithmElement::processAlgo(const RawBuffer &buf)
 				stateOfProcess = panIsGoingToLocation;
 				return 0;
 			} else {
-				stateOfProcess = algorithmIsPerforming;
+				stateOfProcess = waitForStabilView;
 			}
+		}
+	} else if (stateOfProcess == waitForStabilView) {
+		static int counter = 0;
+		qDebug() << "counter is " << counter;
+		if (counter < 80) {
+			stateOfProcess = waitForStabilView;
+			counter++;
+		} else {
+			stateOfProcess = algorithmIsPerforming;
+			counter = 0;
 		}
 	}
 	else if (stateOfProcess == algorithmIsPerforming) {
