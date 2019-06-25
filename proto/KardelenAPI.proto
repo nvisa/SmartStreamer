@@ -35,18 +35,7 @@ message LocationInformation {
 	float zoom = 3;
 }
 
-message ListOfLocationInformation{
-	repeated LocationInformation locationInformation= 1;
-	int64 intervalForCirculation = 2;
-}
-
-message LocationInformation {
-	float pan = 1;
-	float tilt = 2;
-	float zoom = 3;
-}
-
-message ListOfLocationInformation{
+message ListOfLocationInformation {
 	repeated LocationInformation locationInformation= 1;
 	int64 intervalForCirculation = 2;
 }
