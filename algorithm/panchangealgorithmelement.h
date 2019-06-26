@@ -31,7 +31,7 @@ public:
 	int init() override;
 	int processAlgo(const RawBuffer &buf);
 	int release();
-	int setPanChangeInfo(kaapi::ListOfLocationInformation *listOfLocInfo);
+	int setPanChangeInfo(const kaapi::ListOfLocationInformation &listOfLocInfo);
 	int setPanChangeInfoFrom(const AlgorithmCommunication::ListOfLocationInformation &listOfLocInfo);
 
 

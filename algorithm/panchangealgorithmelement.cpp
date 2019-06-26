@@ -24,7 +24,7 @@ int PanChangeAlgorithmElement::processAlgo(const RawBuffer &buf)
 {
 	mInfo("Processing Algorithm %d", buf.constPars()->videoHeight);
 	PtzpHead *headpt = ApplicationInfo::instance()->getPtzpDriver(0)->getHead(1);
-
+	PtzpHead *headz = ApplicationInfo::instance()->getPtzpDriver(0)->getHead(0);
 	int width = buf.constPars()->videoWidth;
 	int height = buf.constPars()->videoHeight;
 	static int locationSize;
@@ -45,6 +45,7 @@ int PanChangeAlgorithmElement::processAlgo(const RawBuffer &buf)
 			kaapi::LocationInformation myLocation = *(listOfLocationInformation->mutable_locationinformation(locationIndex));
 			panTiltRead[0] = (float)myLocation.pan(); panTiltRead[1] = (float)myLocation.tilt();
 			headpt->panTiltGoPos(panTiltRead[0],panTiltRead[1]);
+			headz->setProperty(4,myLocation.zoom());
 			if (abs(headpt->getPanAngle() - myLocation.pan()) > 0.05) {
 				stateOfProcess = panIsGoingToLocation;
 				return 0;
@@ -55,6 +56,7 @@ int PanChangeAlgorithmElement::processAlgo(const RawBuffer &buf)
 			AlgorithmCommunication::LocationInformation myLocation = *(listOfLocationInformationFromAlgComm->mutable_locationinformation(locationIndex));
 			panTiltRead[0] = (float)myLocation.pan(); panTiltRead[1] = (float)myLocation.tilt();
 			headpt->panTiltGoPos(panTiltRead[0],panTiltRead[1]);
+			headz->setProperty(4,myLocation.zoom());
 			if (abs(headpt->getPanAngle() - myLocation.pan()) > 0.001) {
 				qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~Pan of Hawkeye and desired pan is " << headpt->getPanAngle() << myLocation.pan();
 				stateOfProcess = panIsGoingToLocation;
@@ -75,10 +77,17 @@ int PanChangeAlgorithmElement::processAlgo(const RawBuffer &buf)
 		}
 	}
 	else if (stateOfProcess == algorithmIsPerforming) {
-		AlgorithmCommunication::LocationInformation myLocation = *(listOfLocationInformationFromAlgComm->mutable_locationinformation(locationIndex));
-		panTiltRead[0] = (float)myLocation.pan(); panTiltRead[1] = (float)myLocation.tilt();
-		qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~Algorithm will be performed" << panTiltRead[0] << panTiltRead[1] << locationIndex << initROI;
-		asel_pan_change((uchar*)buf.constData(), width, height, panTiltRead[0], panTiltRead[1], locationIndex, initROI);
+		if (api == API::ALGORITHMCOMM) {
+			AlgorithmCommunication::LocationInformation myLocation = *(listOfLocationInformationFromAlgComm->mutable_locationinformation(locationIndex));
+			panTiltRead[0] = (float)myLocation.pan(); panTiltRead[1] = (float)myLocation.tilt();
+			qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~Algorithm will be performed" << panTiltRead[0] << panTiltRead[1] << locationIndex << initROI;
+			asel_pan_change((uchar*)buf.constData(), width, height, panTiltRead[0], panTiltRead[1], locationIndex, initROI);
+		} else if (api == API::KARDELEN) {
+			kaapi::LocationInformation myLocation = *(listOfLocationInformation->mutable_locationinformation(locationIndex));
+			panTiltRead[0] = (float)myLocation.pan(); panTiltRead[1] = (float)myLocation.tilt();
+			qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~Algorithm will be performed" << panTiltRead[0] << panTiltRead[1] << locationIndex << initROI;
+			asel_pan_change((uchar*)buf.constData(), width, height, panTiltRead[0], panTiltRead[1], locationIndex, initROI);
+		}
 		initROI = 0;
 		stateOfProcess = algorithmIsCompletedMoveNextPoint;
 		return 0;
@@ -110,15 +119,25 @@ int PanChangeAlgorithmElement::release()
 	return 0;
 }
 
-int PanChangeAlgorithmElement::setPanChangeInfo(kaapi::ListOfLocationInformation* listOfLocInfo)
+int PanChangeAlgorithmElement::setPanChangeInfo(const kaapi::ListOfLocationInformation &listOfLocInfo)
 {
-	listOfLocationInformation->set_intervalforcirculation(listOfLocInfo->locationinformation_size());
-	foreach(kaapi::LocationInformation loI , listOfLocInfo->locationinformation()) {
-		kaapi::LocationInformation *loc = &loI;
-		loc = listOfLocationInformation->add_locationinformation();
+//	listOfLocationInformation->set_intervalforcirculation(listOfLocInfo->locationinformation_size());
+//	foreach(kaapi::LocationInformation loI , listOfLocInfo->locationinformation()) {
+//		kaapi::LocationInformation *loc = &loI;
+//		loc = listOfLocationInformation->add_locationinformation();
+//	}
+//	api = API::KARDELEN;
+
+	kaapi::ListOfLocationInformation loI = listOfLocInfo;
+	listOfLocationInformation->clear_locationinformation();
+	listOfLocationInformation->set_intervalforcirculation(loI.intervalforcirculation());
+	for (int i = 0; i < listOfLocInfo.locationinformation().size(); ++i) {
+		kaapi::LocationInformation *loc = listOfLocationInformation->add_locationinformation();
+		loc->set_pan(loI.locationinformation(i).pan());loc->set_tilt(loI.locationinformation(i).tilt());loc->set_zoom(loI.locationinformation(i).zoom());
 	}
-	api = API::KARDELEN;
+	api = API::ALGORITHMCOMM;
 	return 0;
+
 }
 
 int PanChangeAlgorithmElement::setPanChangeInfoFrom(const AlgorithmCommunication::ListOfLocationInformation &listOfLocInfo)

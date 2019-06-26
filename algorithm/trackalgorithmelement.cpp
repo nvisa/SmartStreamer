@@ -116,10 +116,52 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 	float panTiltZoomRead[] = {headpt->getPanAngle(), headpt->getTiltAngle(), 0, 12, 12};
 	//zoom2degree_conversion(headz->getZoom(),panTiltZoomRead);
 	float fovh = 0, fovv = 0;
-	if (!headz->getFOV(fovh, fovv)) {
-		panTiltZoomRead[3] = 2.0;
-		panTiltZoomRead[4] = 1.5;
+//	if (!headz->getFOV(fovh, fovv)) {
+//		panTiltZoomRead[3] = 2.0;
+//		panTiltZoomRead[4] = 1.5;
+//	}
+
+	int fov_type = headz->getProperty(2);
+	qDebug() << "fov_type is " << fov_type << headz->getProperty(61) << headz->getProperty(3);
+	if (headz->getProperty(61) == 0) {
+		if (headz->getProperty(3) == 0) {
+			if (fov_type == 0) {
+				panTiltZoomRead[3] = 11.0, panTiltZoomRead[4] = 8.25;
+			} else if (fov_type == 1) {
+				panTiltZoomRead[3] = 6.0, panTiltZoomRead[4] = 4.5;
+			} else {
+				panTiltZoomRead[3] = 2.0, panTiltZoomRead[4] = 1.5;
+			}
+		} else {
+			if (fov_type == 0) {
+				panTiltZoomRead[3] = 25.0, panTiltZoomRead[4] = 20.0;
+			} else if (fov_type == 1) {
+				panTiltZoomRead[3] = 6.0, panTiltZoomRead[4] = 4.8;
+			} else {
+				panTiltZoomRead[3] = 2.0, panTiltZoomRead[4] = 1.6;
+			}
+		}
+	} else if (headz->getProperty(61) == 1) {
+		if (headz->getProperty(3) == 0) {
+			if (fov_type == 0) {
+				panTiltZoomRead[3] = 11.0, panTiltZoomRead[4] = 8.25;
+			} else if (fov_type == 1) {
+				panTiltZoomRead[3] = 6.0, panTiltZoomRead[4] = 4.5;
+			} else {
+				panTiltZoomRead[3] = 2.0, panTiltZoomRead[4] = 1.5;
+			}
+		} else {
+			if (fov_type == 0) {
+				panTiltZoomRead[3] = 25.0, panTiltZoomRead[4] = 20.0;
+			} else if (fov_type == 1) {
+				panTiltZoomRead[3] = 6.0, panTiltZoomRead[4] = 4.8;
+			} else {
+				panTiltZoomRead[3] = 2.0, panTiltZoomRead[4] = 1.6;
+			}
+		}
 	}
+
+
 	qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~fov values are  are " << panTiltZoomRead[0] <<  panTiltZoomRead[1] << panTiltZoomRead[3] <<  panTiltZoomRead[4];
 #if HAVE_VIA_TRACK
 	asel_via_track((uchar *)buf.constData(), width * height, width , height,
@@ -143,7 +185,7 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 //	headpt->panTiltAbs((float)speed_pan/63.0, (float)speed_tilt/63.0);
 
 	qDebug() << "Pan&Tilt degree values are " << panTiltZoomRead[3] <<  panTiltZoomRead[4];
-	if (control.initialize == 0 && (panTiltZoomRead[3] != 2.0))
+	if (control.initialize == 0 && (control.meta[31] != 0))
 		headpt->panTiltDegree(panTiltZoomRead[3], panTiltZoomRead[4]);
 
 	if (control.initialize)
@@ -175,9 +217,47 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 	/* if we do not support fov reading for some reason, 12/12 are sane defaults */
 	float panTiltZoomRead[] = {headpt->getPanAngle(), ta, 0, 12, 12};
 	float fovh = 0, fovv = 0;
-	if (!headz->getFOV(fovh, fovv)) {
-		panTiltZoomRead[3] = 25.0;
-		panTiltZoomRead[4] = 20.0;
+//	if (!headz->getFOV(fovh, fovv)) {
+//		panTiltZoomRead[3] = 25.0;
+//		panTiltZoomRead[4] = 20.0;
+//	}
+	int fov_type = headz->getProperty(4);
+	if (headz->getProperty(61) == 0) {
+		if (headz->getProperty(3) == 0) {
+			if (fov_type == 0) {
+				panTiltZoomRead[3] = 11.0, panTiltZoomRead[4] = 8.25;
+			} else if (fov_type == 1) {
+				panTiltZoomRead[3] = 6.0, panTiltZoomRead[4] = 4.5;
+			} else {
+				panTiltZoomRead[3] = 2.0, panTiltZoomRead[4] = 1.5;
+			}
+		} else {
+			if (fov_type == 0) {
+				panTiltZoomRead[3] = 25.0, panTiltZoomRead[4] = 20.0;
+			} else if (fov_type == 1) {
+				panTiltZoomRead[3] = 6.0, panTiltZoomRead[4] = 4.8;
+			} else {
+				panTiltZoomRead[3] = 2.0, panTiltZoomRead[4] = 1.6;
+			}
+		}
+	} else if (headz->getProperty(61) == 1) {
+		if (headz->getProperty(3) == 0) {
+			if (fov_type == 0) {
+				panTiltZoomRead[3] = 11.0, panTiltZoomRead[4] = 8.25;
+			} else if (fov_type == 1) {
+				panTiltZoomRead[3] = 6.0, panTiltZoomRead[4] = 4.5;
+			} else {
+				panTiltZoomRead[3] = 2.0, panTiltZoomRead[4] = 1.5;
+			}
+		} else {
+			if (fov_type == 0) {
+				panTiltZoomRead[3] = 25.0, panTiltZoomRead[4] = 20.0;
+			} else if (fov_type == 1) {
+				panTiltZoomRead[3] = 6.0, panTiltZoomRead[4] = 4.8;
+			} else {
+				panTiltZoomRead[3] = 2.0, panTiltZoomRead[4] = 1.6;
+			}
+		}
 	}
 	bool migrateDebug = false;
 	if (migrateDebug) {
