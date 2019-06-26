@@ -117,7 +117,7 @@ const static byte CONTROL_MODE_MISSION = (byte) 0x06;
 const static byte CONTROL_MODE_DIGITAL_ZOOM_WINDOW_SELECT = (byte) 0x07;
 const static byte CONTROL_MODE_DIGITAL_ZOOM_STARTED = (byte) 0x08;
 const static byte CONTROL_MODE_VIRTUAL_FENCE = (byte) 0x09;
-
+const static byte CONTROL_MODE_PAN_CHANGE_STARTED = (byte) 0x0a;
 /* IYAKIN:CAMERA */
 const static int ENUM_PARAM_DETECTION_CREATION_MODE = 3;
 const static byte DETECTION_OPEN_MODE = (byte) 0x01;
@@ -248,6 +248,8 @@ public:
 	grpc::Status SetMotionROI(grpc::ServerContext *context, const kaapi::MotionROIRequest *request, google::protobuf::Empty *) override;
 	grpc::Status SetTrackWindow(grpc::ServerContext *, const kaapi::Rectangle *request, google::protobuf::Empty *) override;
 	grpc::Status SetCalibration(grpc::ServerContext *, const kaapi::CalibrationRequest *request, google::protobuf::Empty *) override;
+	grpc::Status SetAselChangeLocations(grpc::ServerContext *context, const kaapi::ListOfLocationInformation *request, google::protobuf::Empty *response);
+
 
 protected:
 	QMutex mutex;

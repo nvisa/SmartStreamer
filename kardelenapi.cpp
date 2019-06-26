@@ -109,7 +109,12 @@ public:
 			req.set_channel(1);
 			req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::TRACKING);
 			papi->RunAlgorithm(&ctx, &req, &resp);
-		} else if (mode == CONTROL_MODE_DIGITAL_ZOOM_STARTED) {
+		} else if (mode == CONTROL_MODE_PAN_CHANGE_STARTED){
+			req.set_channel(3);
+			req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::PAN_CHANGE);
+			papi->RunAlgorithm(&ctx,&req, &resp);
+		}
+		else if (mode == CONTROL_MODE_DIGITAL_ZOOM_STARTED) {
 			/* TODO: handle digital zoom start */
 		} else if (mode == CONTROL_MODE_DIGITAL_ZOOM_WINDOW_SELECT) {
 			/* probably nothing to do on our side */
@@ -606,9 +611,16 @@ public:
 			addcap(caps, CAPABILITY_NUC);
 			addcap(caps, CAPABILITY_DAY_VIEW);
 			addcap(caps, CAPABILITY_NIGHT_VIEW);
+			addcap(caps, CAPABILITY_DETECTION);
+			addcap(caps, CAPABILITY_SENSITIVITY_ADJUSTMENT);
+			addcap(caps, CAPABILITY_ROI);
+
 		} else {
 			addcap(caps, CAPABILITY_DAY_VIEW);
 			addcap(caps, CAPABILITY_NIGHT_VIEW);
+			addcap(caps, CAPABILITY_DETECTION);
+			addcap(caps, CAPABILITY_SENSITIVITY_ADJUSTMENT);
+			addcap(caps, CAPABILITY_ROI);
 		}
 		/* todo: algorithm capabilities */
 
@@ -631,6 +643,9 @@ public:
 
 		/* todo addEnumCommand */
 
+		addEnumParameter(v, ENUM_PARAM_DETECTION_CREATION_MODE, response);
+		addEnumParameter(v, ENUM_PARAM_OPERATIONAL_MODE, response);
+		response->set_enumparametersvector(v);
 
 	}
 
@@ -679,6 +694,10 @@ public:
 			else
 				return THERMAL;
 		}
+		if (index == ENUM_PARAM_OPERATIONAL_MODE)
+			return getMode();
+		if (index == ENUM_PARAM_DETECTION_CREATION_MODE)
+			return DETECTION_OPEN_MODE;
 
 		if (index == ENUM_PARAM_POLARITY) {
 			if (ptzp->getHead(0)->getProperty(2))
@@ -1268,6 +1287,29 @@ grpc::Status KardelenAPIServer::SetMotionROI(grpc::ServerContext *, const Motion
 	return grpc::Status::OK;
 }
 
+grpc::Status KardelenAPIServer::SetAselChangeLocations(grpc::ServerContext *context, const ListOfLocationInformation *request, google::protobuf::Empty *response)
+{
+	kaapi::ListOfLocationInformation listOfLocation = *request;
+	AlgorithmGrpcServer *papi = AlgorithmGrpcServer::instance();
+	AlgorithmCommunication::RequestForAlgorithm req;
+	AlgorithmCommunication::ResponseOfRequests resp;
+	req.set_channel(3);
+	req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::PAN_CHANGE);
+	AlgorithmCommunication::PanChangeParameters* panchange_pars = req.mutable_panchangeparam();
+	auto locationList = panchange_pars->mutable_locationinformation();
+	locationList->set_intervalforcirculation(listOfLocation.intervalforcirculation());
+	for (int i = 0 ; i < listOfLocation.locationinformation().size(); ++i) {
+		AlgorithmCommunication::LocationInformation *loI = locationList->add_locationinformation();
+		loI->set_pan(listOfLocation.locationinformation(i).pan());
+		loI->set_tilt(listOfLocation.locationinformation(i).tilt());
+		loI->set_zoom(listOfLocation.locationinformation(i).zoom());
+	}
+	grpc::ServerContext ctx;
+	papi->SetAlgorithmParameters(&ctx,&req,&resp);
+
+	return grpc::Status::OK;
+}
+
 grpc::Status KardelenAPIServer::SetTrackWindow(grpc::ServerContext *, const Rectangle *request, google::protobuf::Empty *)
 {
 	qDebug() << "track" << request->topleft().x() << request->topleft().y() << request->width() << request->height();
@@ -1288,7 +1330,7 @@ grpc::Status KardelenAPIServer::SetTrackWindow(grpc::ServerContext *, const Rect
 	obj->set_width(request->width());
 	obj->set_height(request->height());
 	papi->SetAlgorithmParameters(&ctx, &req, &resp);
-	papi->RunAlgorithm(&ctx, &req, &resp);
+	//papi->RunAlgorithm(&ctx, &req, &resp);
 	return grpc::Status::OK;
 }
 
