@@ -3,6 +3,7 @@
 
 #include "alarmgeneratorelement.h"
 #include "proto/KardelenAPI.grpc.pb.h"
+#include "algorithm/algorithmgrpcserver.h"
 
 #include <QMutex>
 #include <QString>
@@ -254,6 +255,8 @@ public:
 protected:
 	QMutex mutex;
 	std::vector<alarmGeneratorElement::TargetStruct> lastMotionObjects;
+	AlgorithmCommunication::RequestForAlgorithm req;
+	AlgorithmCommunication::ResponseOfRequests resp;
 };
 
 #endif // KARDELENAPI_H

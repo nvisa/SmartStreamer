@@ -98,6 +98,11 @@ public:
 			req.set_channel(1);
 			req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::TRACKING);
 			papi->StopAlgorithm(&ctx, &req, &resp);
+
+			req.set_channel(3);
+			req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::PAN_CHANGE);
+			papi->StopAlgorithm(&ctx, &req, &resp);
+
 		} else if (mode == CONTROL_MODE_DETECTION) {
 			req.set_channel(0);
 			req.mutable_motionparam()->set_sensitivity(80);
@@ -222,7 +227,8 @@ public:
 	int64_t getCapabilities()
 	{
 		int64_t caps = 0;
-		if (THERMAL) {
+		if (!ptzp->getHead(0)->getProperty(3)) {
+			qDebug() << "capabilities of thermal";
 			addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
 			addcap(caps, CAPABILITY_DETECTION);
 			addcap(caps, CAPABILITY_TRACKING);
@@ -245,6 +251,7 @@ public:
 			addcap(caps, CAPABILITY_CALIBRATION);
 			addcap(caps, CAPABILITY_HARD_CALIBRATION);
 		} else {
+			qDebug() << "capabilities of day";
 			addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
 			addcap(caps, CAPABILITY_DETECTION);
 			addcap(caps, CAPABILITY_TRACKING);
@@ -269,8 +276,7 @@ public:
 
 		return caps;
 	}
-
-	void setPosi(kaapi::PosInfo *posi)
+ void setPosi(kaapi::PosInfo *posi)
 	{
 		posi->set_panpos(ptzp->getHead(1)->getPanAngle());
 		posi->set_tiltpos(ptzp->getHead(1)->getTiltAngle());
@@ -359,8 +365,36 @@ public:
 		value = 0;
 
 		if (index == NUM_PARAM_FOV) {
-			value = ptzp->getHead(0)->getProperty(map["fov_pos"].toUInt()); //TODO: convert to degrees
+			int fov_type = ptzp->getHead(0)->getProperty(2);
+			if (ptzp->getHead(0)->getProperty(61) == 0) {
+				if (ptzp->getHead(0)->getProperty(3) == 1) { //day tv
+					if (fov_type == 0) {
+						value = 8.25;
+					} else if (fov_type == 1) {
+						value = 4.5;
+					} else {
+						value = 1.5;
+					}
+				} else {
+					if (fov_type == 0) { // thermal
+						value = 20.0;
+					} else if (fov_type == 1) {
+						value = 4.8;
+					} else {
+						value = 1.6;
+					}
+				}
+			} else if (ptzp->getHead(0)->getProperty(61) == 1) {
+				if (fov_type == 0) {
+					value = 8.25;
+				} else if (fov_type == 1) {
+					value = 4.5;
+				} else {
+					value = 1.5;
+				}
+			}
 		}
+
 		/* else if (index == NUM_PARAM_FOCUS) {
 			value = ptzp->getHead(0)->getProperty(map["focus_pos_set"].toUInt());
 		}
@@ -460,6 +494,32 @@ public:
 			ptzp->getHead(0)->setProperty("fov_pos", value); /* TODO: what is this? an enum */
 		else if (index == NUM_PARAM_FOCUS)
 			ptzp->getHead(0)->setProperty("focus_in", value);
+		else if (index == NUM_PARAM_ZOOM) {
+			if (ptzp->getHead(0)->getProperty(61)){
+				if (value <= 40)
+					ptzp->getHead(0)->setProperty(4, 0);
+				else if (40 < value <= 80)
+					ptzp->getHead(0)->setProperty(4, 1);
+				else if (80 < value)
+					ptzp->getHead(0)->setProperty(4, 2);
+			} else {
+				if (ptzp->getHead(0)->getProperty(61)){
+					if (value <= 40)
+						ptzp->getHead(0)->setProperty(4, 0);
+					else if (40 < value <= 80)
+						ptzp->getHead(0)->setProperty(4, 1);
+					else if (80 < value)
+						ptzp->getHead(0)->setProperty(4, 2);
+				} else {
+					if (value <= 40)
+						ptzp->getHead(0)->setProperty(4, 0);
+					else if (40 < value <= 90)
+						ptzp->getHead(0)->setProperty(4, 1);
+					else if (90 < value)
+						ptzp->getHead(0)->setProperty(4, 2);
+				}
+			}
+		}
 	}
 
 	virtual void setEnumParameter(int index, int32_t value)
@@ -497,9 +557,11 @@ public:
 			if (value == DIGITAL_ZOOM_START ){
 //				setMode(CONTROL_MODE_DIGITAL_ZOOM_STARTED);
 				ptzp->getHead(0)->setProperty(6, 1);
+				_mymode = CONTROL_MODE_DIGITAL_ZOOM_STARTED;
 			}
 			else if(value == DIGITAL_ZOOM_STOP)
 				ptzp->getHead(0)->setProperty(6, 0);
+			_mymode = CONTROL_MODE_DIGITAL_ZOOM_WINDOW_SELECT;
 		}
 		else if (index == ENUM_COMMAND_SYSTEM) {
 			if (value == SYSTEM_NUC)
@@ -606,7 +668,7 @@ public:
 	int64_t getCapabilities()
 	{
 		int64_t caps = 0;
-		if (THERMAL){
+		if (!ptzp->getHead(0)->getProperty(3)){
 			addcap(caps, CAPABILITY_POLARITY);
 			addcap(caps, CAPABILITY_NUC);
 			addcap(caps, CAPABILITY_DAY_VIEW);
@@ -1300,13 +1362,19 @@ grpc::Status KardelenAPIServer::SetAselChangeLocations(grpc::ServerContext *cont
 	locationList->set_intervalforcirculation(listOfLocation.intervalforcirculation());
 	for (int i = 0 ; i < listOfLocation.locationinformation().size(); ++i) {
 		AlgorithmCommunication::LocationInformation *loI = locationList->add_locationinformation();
+		qDebug() << "location information of " << i << "th object is " << listOfLocation.locationinformation(i).pan() << listOfLocation.locationinformation(i).tilt() << listOfLocation.locationinformation(i).zoom();
 		loI->set_pan(listOfLocation.locationinformation(i).pan());
 		loI->set_tilt(listOfLocation.locationinformation(i).tilt());
-		loI->set_zoom(listOfLocation.locationinformation(i).zoom());
+		if (listOfLocation.locationinformation(i).zoom() >= 8.25)
+			loI->set_zoom(0);
+		else if (listOfLocation.locationinformation(i).zoom() >= 4.5 || listOfLocation.locationinformation(i).zoom() < 8.25)
+			loI->set_zoom(1);
+		else if (listOfLocation.locationinformation(i).zoom() < 1.6)
+			loI->set_zoom(2);
 	}
 	grpc::ServerContext ctx;
 	papi->SetAlgorithmParameters(&ctx,&req,&resp);
-
+	qDebug() << "Set algorithm is finished";
 	return grpc::Status::OK;
 }
 
@@ -1323,14 +1391,18 @@ grpc::Status KardelenAPIServer::SetTrackWindow(grpc::ServerContext *, const Rect
 	req.set_channel(1);
 	req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::TRACKING);
 	auto param = req.mutable_trackparam();
-	param->set_tracktype(AlgorithmCommunication::TrackParameters::MANUAL);
 	auto obj = param->mutable_target();
 	obj->set_point_x(request->topleft().x());
 	obj->set_point_y(request->topleft().y());
 	obj->set_width(request->width());
 	obj->set_height(request->height());
+	if (request->width() != 0 && request->height() != 0)
+		param->set_tracktype(AlgorithmCommunication::TrackParameters::MANUAL);
+	else if (request->width() == 0 && request->height() == 0)
+		param->set_tracktype(AlgorithmCommunication::TrackParameters::AUTO);
 	papi->SetAlgorithmParameters(&ctx, &req, &resp);
-	//papi->RunAlgorithm(&ctx, &req, &resp);
+	papi->RunAlgorithm(&ctx, &req, &resp);
+	qDebug() << "Run algorithm is sent";
 	return grpc::Status::OK;
 }
 
