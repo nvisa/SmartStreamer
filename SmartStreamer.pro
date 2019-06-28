@@ -29,7 +29,8 @@ HEADERS += \
     diagnosticserviceimpl.h \
     snapshotelement.h \
     indevicetest.h \
-    alarmgeneratorelement.h
+    alarmgeneratorelement.h \
+    algorithmparameters.h
 
 websockets {
     SOURCES += websocketstreamer.cpp

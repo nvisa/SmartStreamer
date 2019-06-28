@@ -215,6 +215,8 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithmFromJson(const QJsonObject
 		return new StabilizationAlgorithmElement;
 	} else if (algo["type"] == QString("track")) {
 		return new TrackAlgorithmElement;
+	} else if (algo["type"] == QString("faceDetection")) {
+		return new FaceAlgorithmElement;
 #endif
 #if HAVE_TK1
 	} else if (algo["type"] == QString("panaroma")) {
