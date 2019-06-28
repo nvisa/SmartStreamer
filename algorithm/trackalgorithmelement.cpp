@@ -189,8 +189,13 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 //	headpt->panTiltAbs((float)speed_pan/63.0, (float)speed_tilt/63.0);
 
 	qDebug() << "Pan&Tilt degree values are " << panTiltZoomRead[3] <<  panTiltZoomRead[4];
-	if (control.initialize == 0 && (control.meta[31] != 0))
+	if (control.initialize == 0 && (control.meta[31] != 0) && (control.meta[31] != 1))
 		headpt->panTiltDegree(panTiltZoomRead[3], panTiltZoomRead[4]);
+
+	if (control.initialize == 0 && control.meta[31] == 1) {
+		headpt->panTiltStop();
+		ApplicationInfo::instance()->algoIndexes.value(2)->setState(BaseAlgorithmElement::AlgoState::STOPALGO);
+	}
 
 	if (control.initialize)
 		control.initialize = 0;
@@ -299,6 +304,11 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 	qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~Pan&Tilt degree values are " << panTiltZoomRead[3] <<  panTiltZoomRead[4];
 	if (control.initialize == 0)
 		headpt->panTiltDegree(panTiltZoomRead[3], panTiltZoomRead[4]);
+
+	if (control.initialize == 0 && control.meta[31] == 1) {
+		headpt->panTiltStop();
+		ApplicationInfo::instance()->algoIndexes.value(2)->setState(BaseAlgorithmElement::AlgoState::STOPALGO);
+	}
 
 	if (control.initialize)
 		control.initialize = 0;
