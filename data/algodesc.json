@@ -34,7 +34,8 @@
 		{
 			"type": "privacy",
 			"enabled": false,
-			"stabilization": false
+			"stabilization": false,
+			"privacy": true
 		}
 	]
 }
