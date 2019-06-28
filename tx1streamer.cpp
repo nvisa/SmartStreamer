@@ -128,11 +128,13 @@ int TX1Streamer::checkSeiAlarm(const RawBuffer &buf)
 		if (seiData.size() == 0)
 			sei->clearLastSEIMessage();
 
-		/* notify kardelen as well */
-		algen->generateAlarmStructure((uchar *)seiData.constData(), alarmGeneratorElement::MOTION);
-		alarmGeneratorElement::AlarmInfo *info = algen->getAlarmInfo();
-		if (info->target.size())
-			KardelenAPIServer::instance()->setMotionObjects(info->target);
+		if (KardelenAPIServer::instance()) {
+			/* notify kardelen as well */
+			algen->generateAlarmStructure((uchar *)seiData.constData(), alarmGeneratorElement::MOTION);
+			alarmGeneratorElement::AlarmInfo *info = algen->getAlarmInfo();
+			if (info->target.size())
+				KardelenAPIServer::instance()->setMotionObjects(info->target);
+		}
 
 	} else if (buf.constPars()->metaData.size() == 0) {
 		sei->clearLastSEIMessage();
