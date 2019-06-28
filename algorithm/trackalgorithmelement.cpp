@@ -10,6 +10,7 @@
 TrackAlgorithmElement::TrackAlgorithmElement(QObject *parent)
 	: BaseAlgorithmElement(parent)
 {
+	reverseTilt = false;
 	//printf("start zoom reading\n");
 	ZoomLevelNo = 258;
 	FILE *file_alg_params = fopen("/etc/smartstreamer/Zoom_value.txt", "r");
@@ -113,7 +114,10 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 	PtzpHead *headpt = ApplicationInfo::instance()->getPtzpDriver(0)->getHead(1);
 	if (headpt == nullptr)
 		headpt = headz;
-	float panTiltZoomRead[] = {headpt->getPanAngle(), headpt->getTiltAngle(), 0, 12, 12};
+	float ta = headpt->getTiltAngle();
+	if (reverseTilt)
+		ta *= -1;
+	float panTiltZoomRead[] = {headpt->getPanAngle(), ta, 0, 12, 12};
 	//zoom2degree_conversion(headz->getZoom(),panTiltZoomRead);
 	float fovh = 0, fovv = 0;
 //	if (!headz->getFOV(fovh, fovv)) {
@@ -213,6 +217,8 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 	float ta = headpt->getTiltAngle();
 	if (ta > 180)
 		ta -= 360;
+	if (reverseTilt)
+		ta *= -1;
 
 	/* if we do not support fov reading for some reason, 12/12 are sane defaults */
 	float panTiltZoomRead[] = {headpt->getPanAngle(), ta, 0, 12, 12};

@@ -53,6 +53,7 @@ public:
 	void setMode(TrackMode m) { mode = m; }
 	int getMode() { return mode; }
 	float *getTrackObjInfo() {return objProp;}
+	void setTiltReversing(bool on) { reverseTilt = on; }
 
 	void setTrackStyle(int s) { control.style = (TrackStyle)s; }
 	int ZoomLevelNo;
@@ -68,6 +69,7 @@ protected:
 	int reloadJson(const QJsonObject &node);
 	QJsonObject resaveJson(const QJsonObject &node);
 	float objProp[4];
+	bool reverseTilt;
 };
 
 #endif // TRACKALGORITHMELEMENT_H
