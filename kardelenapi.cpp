@@ -557,6 +557,10 @@ public:
 			setMode(value);
 		else if (index == ENUM_PARAM_FOV_LEVEL)
 			ptzp->getHead(0)->setProperty(4, value -1);
+		else if (index == ENUM_PARAM_THERMAL_MODE){
+			ptzp->getHead(0)->setProperty(37, value - 1);
+			ptzp->getHead(0)->setProperty(5, value - 1);
+		}
 	}
 
 	virtual void setEnumCommand(int index, int32_t value)
