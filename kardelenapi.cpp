@@ -110,6 +110,9 @@ public:
 			papi->RunAlgorithm(&ctx, &req, &resp);
 		} else if (mode == CONTROL_MODE_TRACK_WINDOW_SELECT) {
 			/* nothing to do on our side in this mode, TODO: this may change for auto track */
+			req.set_channel(1);
+			req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::TRACKING);
+			papi->StopAlgorithm(&ctx, &req, &resp);
 		} else if (mode == CONTROL_MODE_TRACK_STARTED) {
 			req.set_channel(1);
 			req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::TRACKING);
@@ -559,13 +562,17 @@ public:
 				ptzp->getHead(0)->setProperty(6, 1);
 				_mymode = CONTROL_MODE_DIGITAL_ZOOM_STARTED;
 			}
-			else if(value == DIGITAL_ZOOM_STOP)
+			else if(value == DIGITAL_ZOOM_STOP) {
 				ptzp->getHead(0)->setProperty(6, 0);
-			_mymode = CONTROL_MODE_DIGITAL_ZOOM_WINDOW_SELECT;
+				_mymode = CONTROL_MODE_DIGITAL_ZOOM_WINDOW_SELECT;
+			}
 		}
 		else if (index == ENUM_COMMAND_SYSTEM) {
 			if (value == SYSTEM_NUC)
 				ptzp->getHead(0)->setProperty(17,8);
+		} else if (index == ENUM_COMMAND_TRACK) {
+			if (value == TRACK_STOP)
+				setMode(CONTROL_MODE_JOYSTICK);
 		}
 
 	}
@@ -1402,6 +1409,7 @@ grpc::Status KardelenAPIServer::SetTrackWindow(grpc::ServerContext *, const Rect
 		param->set_tracktype(AlgorithmCommunication::TrackParameters::AUTO);
 	papi->SetAlgorithmParameters(&ctx, &req, &resp);
 	papi->RunAlgorithm(&ctx, &req, &resp);
+	impl->_mymode = CONTROL_MODE_TRACK_STARTED;
 	qDebug() << "Run algorithm is sent";
 	return grpc::Status::OK;
 }
