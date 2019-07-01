@@ -253,6 +253,7 @@ public:
 			addcap(caps, CAPABILITY_SENSITIVITY_ADJUSTMENT);
 			addcap(caps, CAPABILITY_CALIBRATION);
 			addcap(caps, CAPABILITY_HARD_CALIBRATION);
+			addcap(caps, CAPABILITY_THERMAL_STANDBY_MODE);
 		} else {
 			qDebug() << "capabilities of day";
 			addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
@@ -275,6 +276,7 @@ public:
 			addcap(caps, CAPABILITY_SENSITIVITY_ADJUSTMENT);
 			addcap(caps, CAPABILITY_CALIBRATION);
 			addcap(caps, CAPABILITY_HARD_CALIBRATION);
+			addcap(caps, CAPABILITY_THERMAL_STANDBY_MODE);
 		}
 
 		return caps;
@@ -486,6 +488,13 @@ public:
 		if (index == ENUM_PARAM_CALIBRATION_TYPE) {
 			return CALIBRATION_YAW_PITCH;
 		}
+		if (index == ENUM_PARAM_THERMAL_MODE) {
+			if (ptzp->getHead(0)->getProperty(61) == 0)
+				return THERMAL_ONLINE;
+			else
+				return THERMAL_OFFLINE;
+		}
+
 
 		/* API wants this */
 		return -1;

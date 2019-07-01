@@ -60,6 +60,7 @@ const static int CAPABILITY_SCENARIO = 36;
 const static int CAPABILITY_FIRE = 37;
 const static int CAPABILITY_HPF_GAIN = 38;
 const static int CAPABILITY_HPF_SPATIAL = 39;
+const static int CAPABILITY_THERMAL_STANDBY_MODE = 40;
 
 const static int NUM_PARAM_SENSITIVITY = 0;
 const static int NUM_PARAM_RANGE = 1;
@@ -178,6 +179,10 @@ const static byte GAIN_LEVEL_3 = (byte) 0x03;
 const static byte GAIN_LEVEL_4 = (byte) 0x04;
 const static byte GAIN_LEVEL_5 = (byte) 0x05;
 const static byte GAIN_LEVEL_6 = (byte) 0x06;
+
+const static int ENUM_PARAM_THERMAL_MODE = 14;
+const static byte THERMAL_ONLINE = (byte) 0x01;
+const static byte THERMAL_OFFLINE = (byte) 0x02;
 
 // ENUM COMMANDS
 const static int ENUM_COMMAND_TRACK = 0;
