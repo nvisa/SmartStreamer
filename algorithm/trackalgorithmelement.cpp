@@ -30,6 +30,7 @@ TrackAlgorithmElement::TrackAlgorithmElement(QObject *parent)
 
 	printf("end zoom reading\n");
 }
+
 void TrackAlgorithmElement::zoom2degree_conversion(int zoomReadOut,float* HV_fovAngles)
 {
 	int index = 0;
@@ -64,6 +65,7 @@ void TrackAlgorithmElement::zoom2degree_conversion(int zoomReadOut,float* HV_fov
 	}
 	printf("H-F angles: %f %f\n",HV_fovAngles[3],HV_fovAngles[4]);
 }
+
 int TrackAlgorithmElement::init()
 {
 	v.rgb = 1;
@@ -120,51 +122,10 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 	float panTiltZoomRead[] = {headpt->getPanAngle(), ta, 0, 12, 12};
 	//zoom2degree_conversion(headz->getZoom(),panTiltZoomRead);
 	float fovh = 0, fovv = 0;
-//	if (!headz->getFOV(fovh, fovv)) {
-//		panTiltZoomRead[3] = 2.0;
-//		panTiltZoomRead[4] = 1.5;
-//	}
-
-	int fov_type = headz->getProperty(2);
-	qDebug() << "fov_type is " << fov_type << headz->getProperty(61) << headz->getProperty(3);
-	if (headz->getProperty(61) == 0) {
-		if (headz->getProperty(3) == 0) {
-			if (fov_type == 0) {
-				panTiltZoomRead[3] = 11.0, panTiltZoomRead[4] = 8.25;
-			} else if (fov_type == 1) {
-				panTiltZoomRead[3] = 6.0, panTiltZoomRead[4] = 4.5;
-			} else {
-				panTiltZoomRead[3] = 2.0, panTiltZoomRead[4] = 1.5;
-			}
-		} else {
-			if (fov_type == 0) {
-				panTiltZoomRead[3] = 25.0, panTiltZoomRead[4] = 20.0;
-			} else if (fov_type == 1) {
-				panTiltZoomRead[3] = 6.0, panTiltZoomRead[4] = 4.8;
-			} else {
-				panTiltZoomRead[3] = 2.0, panTiltZoomRead[4] = 1.6;
-			}
-		}
-	} else if (headz->getProperty(61) == 1) {
-		if (headz->getProperty(3) == 0) {
-			if (fov_type == 0) {
-				panTiltZoomRead[3] = 11.0, panTiltZoomRead[4] = 8.25;
-			} else if (fov_type == 1) {
-				panTiltZoomRead[3] = 6.0, panTiltZoomRead[4] = 4.5;
-			} else {
-				panTiltZoomRead[3] = 2.0, panTiltZoomRead[4] = 1.5;
-			}
-		} else {
-			if (fov_type == 0) {
-				panTiltZoomRead[3] = 25.0, panTiltZoomRead[4] = 20.0;
-			} else if (fov_type == 1) {
-				panTiltZoomRead[3] = 6.0, panTiltZoomRead[4] = 4.8;
-			} else {
-				panTiltZoomRead[3] = 2.0, panTiltZoomRead[4] = 1.6;
-			}
-		}
+	if (!headz->getFOV(fovh, fovv)) {
+		panTiltZoomRead[3] = fovh;
+		panTiltZoomRead[4] = fovv;
 	}
-
 
 	qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~fov values are  are " << panTiltZoomRead[0] <<  panTiltZoomRead[1] << panTiltZoomRead[3] <<  panTiltZoomRead[4];
 #if HAVE_VIA_TRACK
@@ -179,14 +140,6 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 		speed_pan = -(speed_pan-64);
 	if(speed_tilt>64)
 		speed_tilt = -(speed_tilt-64);
-	if((int)control.meta[31]==0)//track score
-	{
-		speed_pan  = 0;
-		speed_tilt = 0;
-		//TODO: stop algorithm
-	}
-//	printf("final speeds MA track: %d %d\n",(int)speed_pan,(int)(speed_tilt));
-//	headpt->panTiltAbs((float)speed_pan/63.0, (float)speed_tilt/63.0);
 
 	qDebug() << "Pan&Tilt degree values are " << panTiltZoomRead[3] <<  panTiltZoomRead[4];
 	if (control.initialize == 0 && (control.meta[31] != 0) && (control.meta[31] != 1))
@@ -301,7 +254,7 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 		mDebug("######################### cevo speed pan=%d tilt=%d", speed_pan, speed_tilt);
 		mDebug("######################### ptzp head pan=%d tilt=%d", panTiltZoomRead[3], panTiltZoomRead[4]);
 	}
-	qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~Pan&Tilt degree values are " << panTiltZoomRead[3] <<  panTiltZoomRead[4];
+//	qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~Pan&Tilt degree values are " << panTiltZoomRead[3] <<  panTiltZoomRead[4];
 	if (control.initialize == 0)
 		headpt->panTiltDegree(panTiltZoomRead[3], panTiltZoomRead[4]);
 
