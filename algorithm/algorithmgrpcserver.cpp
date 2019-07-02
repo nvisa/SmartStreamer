@@ -2,6 +2,8 @@
 #include "diagnosticserviceimpl.h"
 #include "indevicetest.h"
 
+#include <ecl/drivers/patternng.h>
+
 #include <lmm/debug.h>
 
 #include <grpc/grpc.h>
@@ -69,9 +71,25 @@ protected:
 	AlgorithmGrpcServer *algorithm;
 };
 
+class PtzNotification : public PatternNg
+{
+public:
+	PtzNotification(AlgorithmGrpcServer *s, PtzpDriver *driver)
+		: PatternNg(driver)
+	{
+		this->s = s;
+	}
+
+	virtual void commandUpdate(int pan, int tilt, int zoom, int c, float par1, float par2)
+	{
+		s->ptzCommandRecved(c);
+		PatternNg::commandUpdate(pan, tilt, zoom, c, par1, par2);
+	}
+
+	AlgorithmGrpcServer *s;
+};
 
 static AlgorithmGrpcServer *inst = NULL;
-
 
 AlgorithmGrpcServer::AlgorithmGrpcServer(QObject *parent)
 	: AlgorithmCommunication::AlgorithmService::Service()
@@ -301,6 +319,29 @@ grpc::Status AlgorithmGrpcServer::GetScreenShotStream(grpc::ServerContext *conte
 		usleep(10000);
 	}
 	return grpc::Status::OK;
+}
+
+void AlgorithmGrpcServer::enableTrackAutoStopping()
+{
+	PtzpDriver *ptzp = ApplicationInfo::instance()->getPtzpDriver(0);
+	ptzp->setPatternHandler(new PtzNotification(this, ptzp));
+}
+
+void AlgorithmGrpcServer::ptzCommandRecved(int cmd)
+{
+	//zoom stop -> 6     pan-tilt -> stop
+	if (cmd == 7 || cmd == 6) {
+		//TODO: decide which algorithm to start (if any)
+	} else {
+		BaseAlgorithmElement *el = algorithmElementManager(1);
+		if (el->getState() == BaseAlgorithmElement::PROCESS) {
+			if (cmd == 4 || cmd == 5) {
+				//TODO: do not hardcode PT head
+				ApplicationInfo::instance()->getPtzpDriver(0)->getHead(1)->panTiltStop();
+			}
+			el->setState(BaseAlgorithmElement::STOPALGO);
+		}
+	}
 }
 
 int AlgorithmGrpcServer::setMotionParameters(MotionAlgorithmElement *el, AlgorithmCommunication::MotionParameters p)

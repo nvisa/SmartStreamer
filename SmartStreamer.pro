@@ -31,7 +31,8 @@ HEADERS += \
     snapshotelement.h \
     indevicetest.h \
     alarmgeneratorelement.h \
-    kardelenapi.h
+	kardelenapi.h \
+	algorithmparameters.h
 
 websockets {
     SOURCES += websocketstreamer.cpp

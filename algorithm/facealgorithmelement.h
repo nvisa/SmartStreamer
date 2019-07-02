@@ -2,7 +2,11 @@
 #define FACEALGORITHMELEMENT_H
 
 #include "basealgorithmelement.h"
+#include <iostream>
+#include "algorithmparameters.h"
 #include <QJsonObject>
+
+using namespace std;
 
 class FaceAlgorithmElement : public BaseAlgorithmElement
 {
@@ -11,21 +15,25 @@ public:
 	int init();
 	int reallocate();
 	int processAlgo(const RawBuffer &buf);
-	int baseAlgorithmProcess(const RawBuffer &buf);
 	int release();
+	virtual QString getTypeString();
+
 	struct FaceControl {
 		uchar meta[4096];
 		int initialize;
-		int camid;
+		int camId;
 		int numface;
 		int frameRate;
 		int counter;
+		int debug;
 	};
+	FaceDetection getFaceParams();
+	void setFaceParams(const QJsonObject &node);
 
 protected:
 	FaceControl control;
+	FaceDetection faceParams;
 	int reloadJson(const QJsonObject &node);
-	QJsonObject resaveJson(const QJsonObject &node);
 };
 
 #endif // FACEALGORITHMELEMENT_H
