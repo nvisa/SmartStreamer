@@ -18,22 +18,28 @@
 		"ch1": 1,
 		"ch2": 2,
 		"crop0": {
-			"x": 30,
-			"y": 0,
+			"x": 35,
+			"x_day": 30,
+			"y": 100,
+			"y_day": 100,
 			"width": 640,
-			"height": 576
+			"height": 400
 		},
 		"crop1": {
-			"x": 40,
-			"y": 0,
+			"x": 35,
+			"x_day": 60,
+			"y": 100,
+			"y_day": 100,
 			"width": 640,
-			"height": 576
+			"height": 400
 		},
 		"crop2": {
-			"x": 30,
-			"y": 0,
+			"x": 35,
+			"x_day": 30,
+			"y": 100,
+			"y_day": 50,
 			"width": 640,
-			"height": 576
+			"height": 400
 		}
 	},
 	"arya_config": {

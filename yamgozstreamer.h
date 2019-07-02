@@ -14,6 +14,7 @@ public:
 	explicit YamgozStreamer(const QJsonObject &config = QJsonObject(), QObject *parent = 0);
 
 protected:
+	void changeStichPars(int day);
 	QSize getStichSize();
 	int stichFrames(const RawBuffer &buf);
 	virtual BaseLmmPipeline * createYUV420Pipeline(QSize &res0);

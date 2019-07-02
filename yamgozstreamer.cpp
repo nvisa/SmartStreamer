@@ -2,6 +2,10 @@
 #include "streamercommon.h"
 #include "mjpegserver.h"
 #include "algorithm/basealgorithmelement.h"
+#include "applicationinfo.h"
+
+#include <ecl/ptzp/ptzpdriver.h>
+#include <ecl/ptzp/ptzphead.h>
 
 #include <lmm/debug.h>
 #include <lmm/v4l2input.h>
@@ -72,46 +76,24 @@ class YamgozStreamerPriv
 public:
 	QList<int> stichChannels;
 	QList<QRect> stichRects;
+	int currDayMode;
+	QJsonObject yconfig;
 };
 
 YamgozStreamer::YamgozStreamer(const QJsonObject &config, QObject *parent)
 	: TX1Streamer(parent)
 {
 	priv = new YamgozStreamerPriv;
+	priv->yconfig = config;
 	if (config.isEmpty()) {
 		priv->stichChannels << 0 << 1 << 2;
 		priv->stichRects << QRect();
 		priv->stichRects << QRect();
 		priv->stichRects << QRect();
 	} else {
+		priv->currDayMode = 0;
 		priv->stichChannels << config["ch0"].toInt() << config["ch1"].toInt() << config["ch2"].toInt();
-		if (config["crop0"].isObject()) {
-			QJsonObject obj = config["crop0"].toObject();
-			priv->stichRects << QRect(obj["x"].toInt(),
-					obj["y"].toInt(),
-					obj["width"].toInt(),
-					obj["height"].toInt()
-					);
-		} else
-			priv->stichRects << QRect();
-		if (config["crop1"].isObject()) {
-			QJsonObject obj = config["crop1"].toObject();
-			priv->stichRects << QRect(obj["x"].toInt(),
-					obj["y"].toInt(),
-					obj["width"].toInt(),
-					obj["height"].toInt()
-					);
-		} else
-			priv->stichRects << QRect();
-		if (config["crop2"].isObject()) {
-			QJsonObject obj = config["crop2"].toObject();
-			priv->stichRects << QRect(obj["x"].toInt(),
-					obj["y"].toInt(),
-					obj["width"].toInt(),
-					obj["height"].toInt()
-					);
-		} else
-			priv->stichRects << QRect();
+		changeStichPars(priv->currDayMode);
 	}
 
 #if 0
@@ -128,6 +110,63 @@ YamgozStreamer::YamgozStreamer(const QJsonObject &config, QObject *parent)
 		p->end();
 	}
 #endif
+}
+
+void YamgozStreamer::changeStichPars(int day)
+{
+	const QJsonObject config = priv->yconfig;
+	priv->stichRects.clear();
+		if (config["crop0"].isObject()) {
+			QJsonObject obj = config["crop0"].toObject();
+			int x_crop = 0, y_crop = 0;
+			if (!day) {
+				x_crop = obj["x"].toInt();
+				y_crop = obj["y"].toInt();
+			} else {
+				x_crop = obj["x_day"].toInt();
+				y_crop = obj["y_day"].toInt();
+			}
+			priv->stichRects << QRect(x_crop,
+					y_crop,
+					obj["width"].toInt(),
+					obj["height"].toInt()
+					);
+		} else
+			priv->stichRects << QRect();
+		if (config["crop1"].isObject()) {
+			QJsonObject obj = config["crop1"].toObject();
+			int x_crop = 0, y_crop = 0;
+			if (!day) {
+				x_crop = obj["x"].toInt();
+				y_crop = obj["y"].toInt();
+			} else {
+				x_crop = obj["x_day"].toInt();
+				y_crop = obj["y_day"].toInt();
+			}
+			priv->stichRects << QRect(x_crop,
+					y_crop,
+					obj["width"].toInt(),
+					obj["height"].toInt()
+					);
+		} else
+			priv->stichRects << QRect();
+		if (config["crop2"].isObject()) {
+			QJsonObject obj = config["crop2"].toObject();
+			int x_crop = 0, y_crop = 0;
+			if (!day) {
+				x_crop = obj["x"].toInt();
+				y_crop = obj["y"].toInt();
+			} else {
+				x_crop = obj["x_day"].toInt();
+				y_crop = obj["y_day"].toInt();
+			}
+			priv->stichRects << QRect(x_crop,
+					y_crop,
+					obj["width"].toInt(),
+					obj["height"].toInt()
+					);
+		} else
+			priv->stichRects << QRect();
 }
 
 QSize YamgozStreamer::getStichSize()
@@ -160,6 +199,13 @@ int YamgozStreamer::stichFrames(const RawBuffer &buf)
 	RawBuffer ch0 = buf.constPars()->subbufs[priv->stichChannels[0]];
 	RawBuffer ch1 = buf.constPars()->subbufs[priv->stichChannels[1]];
 	RawBuffer ch2 = buf.constPars()->subbufs[priv->stichChannels[2]];
+
+	//0: thermal 1: day
+	int daymode = ApplicationInfo::instance()->getPtzpDriver(0)->getHead(0)->getProperty(3);
+	if (daymode != priv->currDayMode) {
+		changeStichPars(daymode);
+		priv->currDayMode = daymode;
+	}
 
 	VideoRect r0;
 	r0.data = (uchar *)ch0.data();
