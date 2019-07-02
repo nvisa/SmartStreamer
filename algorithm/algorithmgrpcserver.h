@@ -42,6 +42,9 @@ public:
 	grpc::Status GetScreenShot(grpc::ServerContext *context, const AlgorithmCommunication::ScreenshotInfo *request, AlgorithmCommunication::ScreenFrame *response);
 	grpc::Status GetScreenShotStream(grpc::ServerContext *context, const AlgorithmCommunication::ScreenshotInfo *request, ::grpc::ServerWriter<AlgorithmCommunication::ScreenFrame> *writer);
 
+	void enableTrackAutoStopping();
+	void ptzCommandRecved(int cmd);
+
 protected:
 	explicit AlgorithmGrpcServer(QObject *parent = 0);
 	int setMotionParameters(MotionAlgorithmElement *el, AlgorithmCommunication::MotionParameters p);
