@@ -2,7 +2,6 @@
 #include <QDirIterator>
 #include <QApplication>
 
-#include "smartstreamer.h"
 #include "moxadriver.h"
 #include "ipstreamer.h"
 #include "usbstreamer.h"

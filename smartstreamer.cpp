@@ -69,6 +69,90 @@ using namespace std;
 #define PRINT_BUFS 0
 #define PRINT_CUDA 1
 
+#define GPIO_WIPER			187
+#define GPIO_WATER			186
+#define GPIO_WIPER_STATUS	89
+#define GPIO_WATER_STATUS	202
+
+class LifeTimeTracker
+{
+public:
+	LifeTimeTracker(const QString &filename)
+	{
+		snapshot = 0;
+		snapshotFilename = filename;
+		QFile f(filename);
+		if (f.open(QIODevice::ReadOnly))
+			snapshot = QString::fromUtf8(f.readAll()).toLongLong();
+		elapsed.start();
+		saveTimer.restart();
+	}
+
+	qint64 lifetime()
+	{
+		return snapshot + elapsed.elapsed() / 1000;
+	}
+
+	qint64 save()
+	{
+		QFile f(snapshotFilename);
+		f.open(QIODevice::WriteOnly);
+		snapshot = lifetime();
+		f.write(QString::number(snapshot).toUtf8());
+		f.close();
+		elapsed.restart();
+		return lifetime();
+	}
+
+	qint64 saveInterval(qint64 interval = 60000)
+	{
+		if (saveTimer.elapsed() < interval)
+			return lifetime();
+		save();
+		saveTimer.restart();
+		return lifetime();
+	}
+
+protected:
+
+	QString snapshotFilename;
+	long long snapshot;
+	QElapsedTimer saveTimer;
+	QElapsedTimer elapsed;
+};
+
+class MyGlobalCallbacks : public Server::GlobalCallbacks
+{
+public:
+	virtual void PreSynchronousRequest(ServerContext*)
+	{
+		while (waiting) {
+			usleep(1000);
+		}
+		if (!enabled) {
+			waiting = true;
+			streamer->connectedToEvpu = false;
+			streamer->connectToEvpu = true;
+			QTimer::singleShot(0, streamer, SLOT(timeout()));
+			while (!streamer->connectedToEvpu) {
+				usleep(1000);
+			}
+			//streamer->ptzp->enableDriver(true);
+			enabled = true;
+			qDebug() << "haaaaaaaaaaaaaaaaaaaaaaaaaaahahahhahhhhhhhhhhhhhhhhhhhhhhaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahhhhhhhhhhhhaaaaaaaaaaaaaaaahaha";
+			waiting = false;
+		}
+	}
+
+	virtual void PostSynchronousRequest(ServerContext*)
+	{
+		//qDebug() << "yayayayyyyayaaaaaaaaaaaaaaayayaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaayaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+	}
+	bool enabled;
+	bool waiting;
+	SmartStreamer *streamer;
+};
+
 class GrpcThread : public QThread
 {
 public:
@@ -76,6 +160,11 @@ public:
 	{
 		servicePort = port;
 		streamer = s;
+		MyGlobalCallbacks *callbacks = new MyGlobalCallbacks;
+		callbacks->streamer = s;
+		callbacks->enabled = false;
+		callbacks->waiting = false;
+		Server::SetGlobalCallbacks(callbacks);
 	}
 	void run()
 	{
@@ -95,7 +184,8 @@ protected:
 class PtzNotification : public PatternNg
 {
 public:
-	PtzNotification(SmartStreamer *s)
+	PtzNotification(SmartStreamer *s, PtzpDriver *driver)
+		: PatternNg(driver)
 	{
 		streamer = s;
 	}
@@ -129,15 +219,11 @@ static void saveSettings(const QString &filename, const QJsonObject &obj)
 	f.close();
 }
 
-#define GPIO_WIPER 187
-#define GPIO_WATER 186
-
 SmartStreamer::SmartStreamer(QObject *parent)
 	: BaseStreamer(parent), OrionCommunication::OrionCommunicationService::Service()
 {
-	qDebug() << "aaaaaaaaaaaaaaaaaa";
-	if (PeerCheck::isAlive("192.168.1.34"))
-		PeerCheck::leaveEvpuAlone("192.168.1.34");
+	connectToEvpu = false;
+	quitOnStreamingError = true;
 	sets = loadSettings("settings.json");
 	if (!sets.contains("encoders")) {
 		/* default settings */
@@ -171,8 +257,12 @@ SmartStreamer::SmartStreamer(QObject *parent)
 	gpiocont = new GpioController;
 	gpiocont->requestGpio(GPIO_WATER, GpioController::OUTPUT);
 	gpiocont->requestGpio(GPIO_WIPER, GpioController::OUTPUT);
+	gpiocont->requestGpio(GPIO_WATER_STATUS, GpioController::INPUT);
+	gpiocont->requestGpio(GPIO_WIPER_STATUS, GpioController::INPUT);
 
 	connect(this, SIGNAL(rebootMe(int)), SLOT(rebootSlot(int)), Qt::QueuedConnection);
+
+	lifetime = new LifeTimeTracker("system.lifetime");
 }
 
 void SmartStreamer::reboot(int seconds)
@@ -589,7 +679,7 @@ void SmartStreamer::doStabilization(const RawBuffer &buf, ViaWrapper *wrap)
 		}
 		return;
 	} else {
-		if (wrap->stabil.stop && triggeredByTestAPI) {
+		if (wrap->stabil.stop && triggeredByTestAPI && !wrap->stabil.start) {
 			//ffDebug() << "re-initializing stabilization";
 			wrap->startStabilization();
 		} else if (wrap->stabil.start){
@@ -638,7 +728,7 @@ struct TbgthData
 					senc->setPreset("ultrafast");
 					senc->setThreadCount(2);
 					senc->setVideoResolution(QSize(pars.decWidth, pars.decHeight));
-					senc->setBitrate(bitrate);
+					senc->setBitrate(bitrate / 1000);
 					p1->append(senc);
 					enc = senc;
 				} else {
@@ -767,7 +857,7 @@ int SmartStreamer::setupRtspClient(const QString &rtspUrl)
 //	p1->append(rgbConvNv12);
 //	p1->append(v4l2);
 	RtpTransmitter *rtpout2 = NULL;
-	if (0) {
+	if (1) {
 		x264Encoder *enc = new x264Encoder;
 		enc->setVideoResolution(QSize(pars.decWidth, pars.decHeight));
 		enc->setBitrate(4000000);
@@ -889,14 +979,15 @@ void SmartStreamer::setupVideoAnalysis()
 void SmartStreamer::setupPanTiltZoomDriver(const QString &target)
 {
 	ptzp = new TbgthDriver(true);
-	if (ptzp->setTarget(target) != 0)
+	if (ptzp->setTarget(target) != 0) {
 		return;
+	}
 	ffDebug() << "Pan tilt sockets were set";
 //	ptzp->startSocketApi(8945);
 	ptzp->startGrpcApi(50058);
 	pt = ptzp->getHead(1);
 	thermalCam = ptzp->getHead(0);
-	ptzp->setPatternHandler(new PtzNotification(this));
+	ptzp->setPatternHandler(new PtzNotification(this, ptzp));
 	PtzpDriver::SpeedRegulation sreg = ptzp->getSpeedRegulation();
 	sreg.enable = true;
 	sreg.ipol = PtzpDriver::SpeedRegulation::LINEAR;
@@ -916,11 +1007,11 @@ void SmartStreamer::setupPanTiltZoomDriver(const QString &target)
 
 int SmartStreamer::processMainYUV(const RawBuffer &buf)
 {
-//	algMan->getBuffer(buf);
-	//qDebug() << "size of meta" << sizeof(algMan->algHandler.meta);
-	QByteArray ba = QByteArray((char *)algMan->algHandler.meta, 4096);
-	sei->processMessage(ba);
-	dayPipelineElapsed.restart();
+	int elapsed = dayPipelineElapsed.restart();
+	if (quitOnStreamingError && elapsed >= 10000) {
+		mDebug("Oooops thermal streaming error");
+		exit(31);
+	}
 	if (PRINT_BUFS)
 		ffDebug() << buf.getMimeType() << buf.size() << FFmpegColorSpace::getName(buf.constPars()->avPixelFormat)
 				  << buf.constPars()->videoWidth << buf.constPars()->videoHeight;
@@ -931,14 +1022,17 @@ int SmartStreamer::processMainYUV(const RawBuffer &buf)
 
 	doStabilization(buf,wrapDayTv);
 	doDirectTrack(buf, wrapDayTv);
-
 #endif
 	return 0;
 }
 
 int SmartStreamer::processMainYUVThermal(const RawBuffer &buf)
 {
-	thPipelineElapsed.restart();
+	int elapsed = thPipelineElapsed.restart();
+	if (quitOnStreamingError && elapsed >= 10000) {
+		mDebug("Oooops thermal streaming error");
+		exit(31);
+	}
 	if (PRINT_BUFS)
 		ffDebug() << buf.getMimeType() << buf.size() << FFmpegColorSpace::getName(buf.constPars()->avPixelFormat)
 				  << buf.constPars()->videoWidth << buf.constPars()->videoHeight;
@@ -1070,7 +1164,7 @@ void SmartStreamer::ptzCommandRecved(int cmd)
 int SmartStreamer::setupAlgorithmManager()
 {
 	qDebug() << "Inside the setup Algorithm Manager";
-	algMan = new AlgorithmManager(this);
+	algMan = new AlgorithmManager();
 }
 
 QByteArray SmartStreamer::doScreenShot(const RawBuffer &buf)
@@ -1500,7 +1594,9 @@ grpc::Status SmartStreamer::GetSensivityParameter(grpc::ServerContext *context, 
 	Q_UNUSED(request)
 	if (!wrap)
 		return Status::OK;
-	response->set_sensivity(wrap->motion.sensivity);
+	int ltime = lifetime->saveInterval(60000);
+	response->set_sensivity(ltime);
+	//response->set_sensivity(wrap->motion.sensivity);
 	return Status::OK;
 }
 
@@ -1640,8 +1736,8 @@ static float speedRegulateDay(float speed, int zoom)
 		return 1.0;
 	float zoomr = (fov - 0.8) / (float)(25.6 - 0.8);
 	speed *= zoomr;
-	if (speed < 0.1)
-		speed = 0.1;
+	if (speed < 0.01)
+		speed = 0.01;
 	if (speed > 1.0)
 		speed = 1.0;
 	qDebug() << "day speed" << speed << zoom;
@@ -1660,8 +1756,8 @@ static float speedRegulateThermal(float speed, int zoom)
 		return 1.0;
 	float zoomr = (fov - 0.82) / (float)(9.38 - 0.82);
 	speed *= zoomr;
-	if (speed < 0.1)
-		speed = 0.1;
+	if (speed < 0.01)
+		speed = 0.01;
 	if (speed > 1.0)
 		speed = 1.0;
 	qDebug() << "thermal speed" << speed << zoom;
@@ -1678,8 +1774,8 @@ grpc::Status SmartStreamer::GetFovValue(grpc::ServerContext *context, const Orio
 	} else if (request->device() == OrionCommunication::DevicedBasedInfo::Thermal) {
 		interpolate_FOVs_Thermal(ptzp->getHead(2)->getZoom(), fovs);
 	}
-	fovh = fovs[0] * 100;
-	fovv = fovs[1] * 100;
+	fovh = fovs[0] * 100; //anti-sevket technology
+	fovv = fovs[1] * 100; //anti-sevket technology
 	qDebug() << "fov value is " << (fovh + fovv * (int) 65536);
 	response->set_fovvalue(fovs[0]);// + fovv * (int)65536);
 
@@ -1772,8 +1868,8 @@ grpc::Status SmartStreamer::SetBitrate(grpc::ServerContext *context, const Orion
 	QJsonArray arr = sets["encoders"].toArray();
 	QJsonObject arr0 = arr.at(0).toObject();
 	QJsonObject arr1 = arr.at(1).toObject();
-	if (brt < 1000)
-		brt = 1234;
+	if (brt < 100)
+		brt = 123;
 	if (brt > 10000)
 		brt = 9999;
 	if (brd < 1000)
@@ -1805,6 +1901,7 @@ grpc::Status SmartStreamer::GetBitrate(grpc::ServerContext *context, const Orion
 
 grpc::Status SmartStreamer::RunCIT(grpc::ServerContext *context, const OrionCommunication::DummyInfo *request, ::grpc::ServerWriter<OrionCommunication::CitMessage> *writer)
 {
+	quitOnStreamingError = false;
 	Q_UNUSED(context);
 	int state = 0;
 	int sleepint = 10 * 1000;
@@ -1816,12 +1913,14 @@ grpc::Status SmartStreamer::RunCIT(grpc::ServerContext *context, const OrionComm
 	messages << QString("Termal kamera haberlesme testi - %1 / %2");
 	messages << QString("Gunduz kamera goruntu testi - %1 / %2");
 	messages << QString("Termal kamera goruntu testi - %1 / %2");
+	messages << QString("Suluk kontrol testi - %1 / %2");
+	messages << QString("Silecek kontrol testi - %1 / %2");
 	while (1) {
 		usleep(sleepint);
 		if (currentProgress++ >= progressTotal) {
 			currentProgress = 0;
 			state++;
-			if (state > 4)
+			if (state > 6)
 				break;
 		}
 		QString mes = messages[state].arg(currentProgress).arg(progressTotal);
@@ -1829,7 +1928,7 @@ grpc::Status SmartStreamer::RunCIT(grpc::ServerContext *context, const OrionComm
 		OrionCommunication::CitMessage citm;
 		citm.set_currentstepprogress(currentProgress);
 		citm.set_currentstepprogresstotal(progressTotal);
-		citm.set_stepcount(5);
+		citm.set_stepcount(7);
 		citm.set_currentstep(state);
 		citm.set_msg(mes.toStdString());
 		//panFrames.set_valid(true);
@@ -1840,7 +1939,7 @@ grpc::Status SmartStreamer::RunCIT(grpc::ServerContext *context, const OrionComm
 	OrionCommunication::CitMessage citm;
 	citm.set_currentstep(currentProgress);
 	citm.set_currentstepprogresstotal(progressTotal);
-	citm.set_stepcount(5);
+	citm.set_stepcount(7);
 	citm.set_currentstep(state);
 	//citm.set_msg(messages[0].toStdString());
 #if 0
@@ -1856,17 +1955,22 @@ grpc::Status SmartStreamer::RunCIT(grpc::ServerContext *context, const OrionComm
 	citm.add_citresult();
 	citm.add_citresult();
 	citm.add_citresult();
+	citm.add_citresult();
+	citm.add_citresult();
 	citm.set_citresult(0, QString("%1").arg(ptzp->getHead(0)->communicationElapsed() < 1000 ? "1" : "0").toStdString());
 	citm.set_citresult(1, QString("%1").arg(ptzp->getHead(1)->communicationElapsed() < 1000 ? "1" : "0").toStdString());
 	citm.set_citresult(2, QString("%1").arg(ptzp->getHead(2)->communicationElapsed() < 1000 ? "1" : "0").toStdString());
 	citm.set_citresult(3, QString("%1").arg(dayPipelineElapsed.elapsed() < 1000 ? "1" : "0").toStdString());
 	citm.set_citresult(4, QString("%1").arg(thPipelineElapsed.elapsed() < 1000 ? "1" : "0").toStdString());
+	citm.set_citresult(5, QString("%1").arg(gpiocont->getGpioValue(GPIO_WATER_STATUS) == 0 ? "1" : "0").toStdString());
+	citm.set_citresult(6, QString("%1").arg(gpiocont->getGpioValue(GPIO_WIPER_STATUS) == 1 ? "1" : "0").toStdString());
 #endif
 	//panFrames.set_valid(true);
 	//panFrames.set_progress((currentProgress + (state * progressTotal)) / (5 * progressTotal));
 	//panFrames.set_framedata();
 	writer->Write(citm);
 	ffDebug() << citm.citresult_size() << citm.stepcount();
+	quitOnStreamingError = true;
 	return Status::OK;
 }
 
@@ -1924,9 +2028,10 @@ grpc::Status SmartStreamer::RunAutoTrack(grpc::ServerContext *context, const Ori
 		mDebug("Mode request failed");
 		return Status::CANCELLED;
 	}
-
-	wrapThermal->stopStabilization();
-	wrapDayTv->stopStabilization();
+	if (wrapThermal->stabil.start)
+		wrapThermal->stopStabilization();
+	if (wrapDayTv->stabil.start)
+		wrapDayTv->stopStabilization();
 
 	tarwrap->startTrack();
 	wrap = tarwrap;
@@ -1941,15 +2046,27 @@ grpc::Status SmartStreamer::StopAutoTrack(grpc::ServerContext *context, const Or
 	if (wrap->track.start == true) {
 		wrap->stopTrack();
 		pt->panTiltStop();
-		//enableVideoStabilization = true;
-		//wrapThermal->startStabilization();
-		//wrapDayTv->startStabilization();
+		triggeredByTestAPI = false;
+		if (!wrapDayTv->stabil.stop)
+		{
+			wrapDayTv->stopStabilization();
+		}
+		if (!wrapThermal->stabil.stop)
+		{
+			wrapThermal->stopStabilization();
+		}
+		enableVideoStabilization = true;
 	}
 	return Status::OK;
 }
 
 void SmartStreamer::timeout()
 {
+	if (connectToEvpu) {
+		ptzp->enableDriver(true);
+		connectToEvpu = false;
+		connectedToEvpu = true;
+	}
 	//ffDebug() <<  ptzp->getHead(1)->getPanAngle() << " , " << ptzp->getHead(1)->getTiltAngle();
 	//ffDebug() << pt->panTiltGoPos(0,0);
 	//	if (PRINT_CUDA && wrap) {
@@ -1958,7 +2075,6 @@ void SmartStreamer::timeout()
 //	}
 //	if (!ptzpStatus)
 //		ffDebug() << "PTZP driver: Connection state halted" << pars.ptzUrl;
-
 #if 0
 	qDebug() << "CIIIIIIIIIIIIIIIIIIITTTTT"
 			 << ptzp->getHead(0)->communicationElapsed()
@@ -1967,6 +2083,7 @@ void SmartStreamer::timeout()
 					  << dayPipelineElapsed.elapsed()
 						 << thPipelineElapsed.elapsed();
 #endif
+	qDebug() << lifetime->saveInterval(60000);
 
 	PipelineManager::timeout();
 }

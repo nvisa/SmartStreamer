@@ -47,6 +47,53 @@ static QJsonObject readJson(const QString &filename)
 	return obj;
 }
 
+class LifeTimeTracker
+{
+public:
+	LifeTimeTracker(const QString &filename)
+	{
+		snapshot = 0;
+		snapshotFilename = filename;
+		QFile f(filename);
+		if (f.open(QIODevice::ReadOnly))
+			snapshot = QString::fromUtf8(f.readAll()).toLongLong();
+		elapsed.start();
+		saveTimer.restart();
+	}
+
+	qint64 lifetime()
+	{
+		return snapshot + elapsed.elapsed() / 1000;
+	}
+
+	qint64 save()
+	{
+		QFile f(snapshotFilename);
+		f.open(QIODevice::WriteOnly);
+		snapshot = lifetime();
+		f.write(QString::number(snapshot).toUtf8());
+		f.close();
+		elapsed.restart();
+		return lifetime();
+	}
+
+	qint64 saveInterval(qint64 interval = 60000)
+	{
+		if (saveTimer.elapsed() < interval)
+			return lifetime();
+		save();
+		saveTimer.restart();
+		return lifetime();
+	}
+
+protected:
+
+	QString snapshotFilename;
+	long long snapshot;
+	QElapsedTimer saveTimer;
+	QElapsedTimer elapsed;
+};
+
 bool ApplicationInfo::isGuiApplication()
 {
 	return false;
@@ -299,5 +346,6 @@ QString ApplicationInfo::algorithmSet()
 
 ApplicationInfo::ApplicationInfo()
 {
+	LifeTimeTracker *lifetime = new LifeTimeTracker("system.lifetime");
 	idt = nullptr;
 }

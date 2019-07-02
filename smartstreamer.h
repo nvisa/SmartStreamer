@@ -25,6 +25,8 @@ class TbgthData;
 class GpioController;
 class AlgorithmManager;
 
+class LifeTimeTracker;
+
 class SmartStreamer : public BaseStreamer, public OrionCommunication::OrionCommunicationService::Service
 {
 	Q_OBJECT
@@ -129,6 +131,10 @@ public:
 	Parameters pars;
 	Parameters pars2;
 	QJsonObject sets;
+	bool quitOnStreamingError;
+	TbgthDriver *ptzp;
+	bool connectToEvpu;
+	bool connectedToEvpu;
 
 	QByteArray doScreenShot(const RawBuffer &buf);
 signals:
@@ -154,7 +160,6 @@ protected:
 	GrpcThread *grpcServ;
 	RawBuffer screenBuf;
 	RawBuffer screenSecBuf;
-	TbgthDriver *ptzp;
 	PtzpHead *pt;
 	PtzpHead *thermalCam;
 	AlgorithmManager *algMan;
@@ -189,6 +194,7 @@ protected:
 	QElapsedTimer dayPipelineElapsed;
 	QElapsedTimer thPipelineElapsed;
 	GpioController *gpiocont;
+	LifeTimeTracker *lifetime;
 
 	friend class TbgthData;
 };

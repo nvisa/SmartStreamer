@@ -338,7 +338,6 @@ void AlgorithmGrpcServer::ptzCommandRecved(int cmd)
 			if (cmd == 4 || cmd == 5) {
 				//TODO: do not hardcode PT head
 				ApplicationInfo::instance()->getPtzpDriver(0)->getHead(1)->panTiltStop();
-				pt->panTiltStop();
 			}
 			el->setState(BaseAlgorithmElement::STOPALGO);
 		}
