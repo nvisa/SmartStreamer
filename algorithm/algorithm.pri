@@ -1,10 +1,9 @@
 tx1 {
     HEADERS += \
-	$$PWD/facealgorithmelement.h \
-	$$PWD/panchangealgorithmelement.h
+	    $$PWD/facealgorithmelement.h \
+
     SOURCES += \
-	$$PWD/facealgorithmelement.cpp \
-	$$PWD/panchangealgorithmelement.cpp
+	    $$PWD/facealgorithmelement.cpp \
 }
 
 HEADERS += \
@@ -14,6 +13,7 @@ HEADERS += \
 	$$PWD/stabilizationalgorithmelement.h \
 	$$PWD/panaromaalgorithmelement.h \
 	$$PWD/trackalgorithmelement.h \
+	$$PWD/panchangealgorithmelement.h
 
 SOURCES += \
 	$$PWD/basealgorithmelement.cpp \
@@ -22,3 +22,4 @@ SOURCES += \
 	$$PWD/stabilizationalgorithmelement.cpp \
 	$$PWD/panaromaalgorithmelement.cpp \
 	$$PWD/trackalgorithmelement.cpp \
+	$$PWD/panchangealgorithmelement.cpp

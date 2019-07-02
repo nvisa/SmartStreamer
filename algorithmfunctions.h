@@ -35,6 +35,7 @@ void asel_arya_calibration_release();
 
 void asel_face(unsigned char *buf, int &numFace, int debug_case,unsigned char* meta,int init_viaface, int camId);
 void asel_face_release();
-
+#if HAVE_TX1
 void asel_pan_change(unsigned char *buf,int width, int height,float longitude,float latitude,int ROI_id,int init_ROI);
 void asel_pan_change_release();
+#endif

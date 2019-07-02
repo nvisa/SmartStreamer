@@ -81,12 +81,16 @@ int PanChangeAlgorithmElement::processAlgo(const RawBuffer &buf)
 			AlgorithmCommunication::LocationInformation myLocation = *(listOfLocationInformationFromAlgComm->mutable_locationinformation(locationIndex));
 			panTiltRead[0] = (float)myLocation.pan(); panTiltRead[1] = (float)myLocation.tilt();
 			qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~Algorithm will be performed" << panTiltRead[0] << panTiltRead[1] << locationIndex << initROI;
+#if HAVE_TX1
 			asel_pan_change((uchar*)buf.constData(), width, height, panTiltRead[0], panTiltRead[1], locationIndex, initROI);
+#endif
 		} else if (api == API::KARDELEN) {
 			kaapi::LocationInformation myLocation = *(listOfLocationInformation->mutable_locationinformation(locationIndex));
 			panTiltRead[0] = (float)myLocation.pan(); panTiltRead[1] = (float)myLocation.tilt();
 			qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~Algorithm will be performed" << panTiltRead[0] << panTiltRead[1] << locationIndex << initROI;
+#if HAVE_TX1
 			asel_pan_change((uchar*)buf.constData(), width, height, panTiltRead[0], panTiltRead[1], locationIndex, initROI);
+#endif
 		}
 		initROI = 0;
 		stateOfProcess = algorithmIsCompletedMoveNextPoint;
@@ -115,7 +119,9 @@ int PanChangeAlgorithmElement::processAlgo(const RawBuffer &buf)
 
 int PanChangeAlgorithmElement::release()
 {
+#if HAVE_TX1
 	asel_pan_change_release();
+#endif
 	return 0;
 }
 
