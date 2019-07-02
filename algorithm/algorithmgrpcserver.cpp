@@ -397,11 +397,11 @@ grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc:
 				citinfo->set_usbinfo(AlgorithmCommunication::CITInfo_Info_OK);
 				foreach (QJsonValue v, cit["faults"].toArray()) {
 					QJsonObject obj = v.toObject();
-					if (obj["type"] == "control_module" && obj["index"].toInt() == 0)
+					if (obj["type"].toString() == "control_module" && obj["index"].toInt() == 0)
 						citinfo->set_moduleinfo(AlgorithmCommunication::CITInfo_Info_NOK);
-					if (obj["type"] == "control_module" && obj["index"].toInt() == 1)
+					if (obj["type"].toString() == "control_module" && obj["index"].toInt() == 1)
 						citinfo->set_motorinfo(AlgorithmCommunication::CITInfo_Info_NOK);
-					if (obj["type"] == "video_module")
+					if (obj["type"].toString() == "video_module")
 						citinfo->set_usbinfo(AlgorithmCommunication::CITInfo_Info_NOK);
 				}
 			}
