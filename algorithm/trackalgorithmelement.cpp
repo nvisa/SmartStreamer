@@ -117,6 +117,8 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 	if (headpt == nullptr)
 		headpt = headz;
 	float ta = headpt->getTiltAngle();
+	if (ta > 180.0)
+		ta -= 360.0;
 	if (reverseTilt)
 		ta *= -1;
 	float panTiltZoomRead[] = {headpt->getPanAngle(), ta, 0, 12, 12};
@@ -133,6 +135,9 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 				   v.rgb,v.shadow, v.ill, v.debug, v.stabilization, v.privacy,
 				   control.meta,panTiltZoomRead,control.initialize,control.sensitivity,true);
 #endif
+
+	if (reverseTilt)
+		panTiltZoomRead[4] *= -1;
 
 	float speed_pan  = (float)control.meta[11];
 	float speed_tilt = (float)control.meta[12];
@@ -173,8 +178,8 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 
 	/* algorithm doesn't want >180 pan values */
 	float ta = headpt->getTiltAngle();
-	if (ta > 180)
-		ta -= 360;
+	if (ta > 180.0)
+		ta -= 360.0;
 	if (reverseTilt)
 		ta *= -1;
 
@@ -200,6 +205,9 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 					  v.debug, control.meta, panTiltZoomRead,
 					  objProp, control.initialize);
 #endif
+
+	if (reverseTilt)
+		panTiltZoomRead[4] *= -1;
 
 	if (migrateDebug) {
 		float speed_pan  = (float)control.meta[11];
