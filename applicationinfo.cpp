@@ -7,6 +7,7 @@
 #include "flirstreamer.h"
 #include "indevicetest.h"
 #include "tbgthstreamer.h"
+#include "videotestsourcestreamer.h"
 
 #include "algorithm/motionalgorithmelement.h"
 #include "algorithm/stabilizationalgorithmelement.h"
@@ -219,6 +220,8 @@ BaseStreamer *ApplicationInfo::createAppStreamer()
 		streamer = new YamgozStreamer(obj["yamgoz_config"].toObject());
 	} else if (obj.value("tbgthstreamer").toBool()) {
 		streamer = new Tbgthstreamer(obj["tbgth_config"].toObject());
+	} else if (obj.value("teststreamer").toBool()) {
+		streamer = new VideoTestSourceStreamer(obj["test_config"].toObject());
 	} else {
 		qDebug() << "starting usb streamer";
 		UsbStreamer *usbStr = new UsbStreamer;
