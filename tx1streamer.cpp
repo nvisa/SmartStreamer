@@ -51,7 +51,7 @@ TX1Streamer::TX1Streamer(QObject *parent)
 	secondStream = true;
 	thirdStream = true;
 	fourthStream = true;
-	enablePreview = true;
+	enablePreview = false;
 }
 
 int TX1Streamer::start()
