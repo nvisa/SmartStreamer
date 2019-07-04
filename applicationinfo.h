@@ -10,6 +10,7 @@ class PtzpDriver;
 class BaseStreamer;
 class InDeviceTest;
 class BaseAlgorithmElement;
+class LifeTimeTracker;
 
 class ApplicationInfo
 {
@@ -48,6 +49,9 @@ public:
 
 	QString algorithmSet();
 	QHash<int, BaseAlgorithmElement*> algoIndexes;
+
+	LifeTimeTracker *lifetime;
+	qint64 getLifeTime();
 protected:
 	ApplicationInfo();
 

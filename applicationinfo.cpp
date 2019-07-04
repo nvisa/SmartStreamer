@@ -6,6 +6,7 @@
 #include "aryastreamer.h"
 #include "flirstreamer.h"
 #include "indevicetest.h"
+#include "tbgthstreamer.h"
 
 #include "algorithm/motionalgorithmelement.h"
 #include "algorithm/stabilizationalgorithmelement.h"
@@ -125,7 +126,7 @@ int ApplicationInfo::startPtzpDriver()
 			driver = new AryaDriver;
 			break;
 		case TBGTH:
-			driver = new TbgthDriver(true);
+			driver = new TbgthDriver(false);
 			break;
 		case YAMGOZ:
 			driver = new YamGozDriver;
@@ -216,6 +217,8 @@ BaseStreamer *ApplicationInfo::createAppStreamer()
 		streamer = new AnalogStreamer(obj["analog_config"].toObject());
 	} else if (obj.value("yamgozstreamer").toBool()) {
 		streamer = new YamgozStreamer(obj["yamgoz_config"].toObject());
+	} else if (obj.value("tbgthstreamer").toBool()) {
+		streamer = new Tbgthstreamer(obj["tbgth_config"].toObject());
 	} else {
 		qDebug() << "starting usb streamer";
 		UsbStreamer *usbStr = new UsbStreamer;
@@ -342,8 +345,13 @@ QString ApplicationInfo::algorithmSet()
 #endif
 }
 
+qint64 ApplicationInfo::getLifeTime()
+{
+	return lifetime->saveInterval(60000);
+}
+
 ApplicationInfo::ApplicationInfo()
 {
-	LifeTimeTracker *lifetime = new LifeTimeTracker("system.lifetime");
+	lifetime = new LifeTimeTracker("system.lifetime");
 	idt = nullptr;
 }
