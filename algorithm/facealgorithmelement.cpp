@@ -30,7 +30,7 @@ int FaceAlgorithmElement::processAlgo(const RawBuffer &buf)
 	if(control.counter % faceParams.skipFrame == 0)
 	{
 //		qDebug() << "Count " << control.counter;
-		asel_face((uchar *)buf.constData(), numFace, control.debug, control.meta, control.initialize, control.camId, faceParams);
+		//asel_face((uchar *)buf.constData(), numFace, control.debug, control.meta, control.initialize, control.camId, faceParams);
 		control.counter = 0;
 	}
 	control.counter++;
