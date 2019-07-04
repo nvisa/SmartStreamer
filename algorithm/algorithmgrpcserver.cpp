@@ -146,16 +146,13 @@ grpc::Status AlgorithmGrpcServer::RunAlgorithm(grpc::ServerContext *context, con
 
 	switch (request->algorithmtype()) {
 	case AlgorithmCommunication::RequestForAlgorithm::MOTION:
-		if (!setMotionParameters((MotionAlgorithmElement*)el, motionpar))
-			el->setState(BaseAlgorithmElement::INIT);
+		el->setState(BaseAlgorithmElement::INIT);
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::STABILIZATION:
-		if (!setStabilizationParameters((StabilizationAlgorithmElement*)el, stabilizationpar))
-			el->setState(BaseAlgorithmElement::INIT);
+		el->setState(BaseAlgorithmElement::INIT);
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::TRACKING:
-		if (!setTrackParameters((TrackAlgorithmElement*)el, trackpar))
-			el->setState(BaseAlgorithmElement::INIT);
+		el->setState(BaseAlgorithmElement::INIT);
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::PANAROMA:
 		el->setState(BaseAlgorithmElement::INIT);
@@ -163,8 +160,7 @@ grpc::Status AlgorithmGrpcServer::RunAlgorithm(grpc::ServerContext *context, con
 	case AlgorithmCommunication::RequestForAlgorithm::FACE_DETECTION:
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::PAN_CHANGE:
-		if(!setPanChangeParameters((PanChangeAlgorithmElement*)el,panchangepar))
-			el->setState(BaseAlgorithmElement::INIT);
+		el->setState(BaseAlgorithmElement::INIT);
 		break;
 	default:
 		break;
@@ -319,6 +315,98 @@ grpc::Status AlgorithmGrpcServer::GetScreenShotStream(grpc::ServerContext *conte
 		usleep(10000);
 	}
 	return grpc::Status::OK;
+}
+
+static QJsonDocument readJson(const QString &filename)
+{
+	QFile f(filename);
+	if (!f.open(QIODevice::ReadOnly))
+		return QJsonDocument();
+	QByteArray ba = f.readAll();
+	f.close();
+	QJsonDocument doc = QJsonDocument::fromJson(ba);
+	return doc;
+}
+
+static QJsonObject readJsonObj(const QString &filename)
+{
+	QJsonObject obj;
+	QFile f(filename);
+	if (!f.open(QIODevice::ReadOnly)) {
+		qDebug() << "File opening error: " << errno << filename;
+		return obj;
+	}
+	QByteArray ba = f.readAll();
+	f.close();
+	QJsonDocument doc = QJsonDocument::fromJson(ba);
+	obj = doc.object();
+	return obj;
+}
+
+static void saveSettings(const QString &filename, const QJsonObject &obj)
+{
+	QFile f(filename);
+	if (!f.open(QIODevice::WriteOnly))
+		return;
+	f.write(QJsonDocument(obj).toJson());
+	f.close();
+}
+#include <QJsonArray>
+
+grpc::Status AlgorithmGrpcServer::GetSystemFeature(grpc::ServerContext *context, const AlgorithmCommunication::SystemFeature *request, AlgorithmCommunication::SystemFeature *response)
+{
+	AlgorithmCommunication::SystemFeature *resp = response;
+	if (request->key() == "LifeTime") {
+		qint64 lifeTime = ApplicationInfo::instance()->getLifeTime();
+		response->set_value(QString("%1").arg(lifeTime).toStdString());
+		response->set_key("LifeTime");
+		return grpc::Status::OK;
+	} else if (request->key() == "Bitrate") {
+		QJsonArray arr = readJson("/etc/smartstreamer/encoders.json").array();
+		if (arr.size() <= 0)
+			return grpc::Status::CANCELLED;
+		QJsonObject obj = arr[0].toObject();
+		response->set_value(QString("%1").arg(obj["bitrate"].toInt()).toStdString());
+		response->set_key("bitrate");
+		return grpc::Status::OK;
+	}
+	return grpc::Status(StatusCode::NOT_FOUND, request->key());
+}
+
+grpc::Status AlgorithmGrpcServer::SetSystemFeature(grpc::ServerContext *context, const AlgorithmCommunication::SystemFeature *request, AlgorithmCommunication::SystemFeature *response)
+{
+	if (request->key() == "Bitrate") {
+		QJsonDocument doc = readJson("/etc/smartstreamer/encoders.json");
+		QJsonArray arr = doc.array();
+		if (arr.size() <= 0)
+			return grpc::Status::CANCELLED;
+		QJsonObject obj = arr[0].toObject();
+		bool isValid;
+		int btr = QString::fromStdString(request->value()).toInt(&isValid);
+		if (!isValid)
+			return grpc::Status(StatusCode::INVALID_ARGUMENT, request->value());
+		obj["bitrate"] = btr;
+		arr[0] = obj;
+		QJsonDocument docToSave(arr);
+		QFile f("/etc/smartstreamer/encoders.json");
+		if (!f.open(QIODevice::WriteOnly)) {
+			return grpc::Status::CANCELLED;
+		}
+		f.write(docToSave.toJson());
+		f.close();
+		return grpc::Status::OK;
+	} else if (request->key() == "Reboot") {
+		QProcess::startDetached("reboot");
+		return grpc::Status::OK;
+	} else if (request->key() == "grabPanTilt") {
+		if (request->value() == "disable") {
+			ApplicationInfo::instance()->getPtzpDriver(0)->enableDriver(false);
+			return grpc::Status(StatusCode::OK, "Pan-Tilt is disabled");
+		}
+		ApplicationInfo::instance()->getPtzpDriver(0)->enableDriver(true);
+		return grpc::Status::OK;
+	}
+	return grpc::Status(StatusCode::NOT_FOUND, "Request is not found");
 }
 
 void AlgorithmGrpcServer::enableTrackAutoStopping()

@@ -2,6 +2,8 @@
 #define ALGORITHMGRPCSERVER_H
 
 #include <QObject>
+#include <QJsonObject>
+#include <QProcess>
 
 #include "snapshotelement.h"
 #include "proto/AlgorithmCommunication.grpc.pb.h"
@@ -42,6 +44,8 @@ public:
 	grpc::Status GetScreenShot(grpc::ServerContext *context, const AlgorithmCommunication::ScreenshotInfo *request, AlgorithmCommunication::ScreenFrame *response);
 	grpc::Status GetScreenShotStream(grpc::ServerContext *context, const AlgorithmCommunication::ScreenshotInfo *request, ::grpc::ServerWriter<AlgorithmCommunication::ScreenFrame> *writer);
 
+	grpc::Status GetSystemFeature(grpc::ServerContext *context, const AlgorithmCommunication::SystemFeature *request, AlgorithmCommunication::SystemFeature *response);
+	grpc::Status SetSystemFeature(grpc::ServerContext *context, const AlgorithmCommunication::SystemFeature *request, AlgorithmCommunication::SystemFeature *response);
 	void enableTrackAutoStopping();
 	void ptzCommandRecved(int cmd);
 
