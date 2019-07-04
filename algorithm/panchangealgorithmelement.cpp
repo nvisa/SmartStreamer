@@ -5,6 +5,9 @@
 #include <ecl/ptzp/ptzpdriver.h>
 
 #include "lmm/debug.h"
+#include "kardelenapi.h"
+
+#include <QFile>
 
 PanChangeAlgorithmElement::PanChangeAlgorithmElement(QObject *parent)
 	: BaseAlgorithmElement(parent)
@@ -114,6 +117,16 @@ int PanChangeAlgorithmElement::processAlgo(const RawBuffer &buf)
 			return 0;
 		}
 	}
+
+#if 0
+	if (KardelenAPIServer::instance()) {
+		QFile f("/home/blabla/diff.png");
+		f.open(QIODevice::ReadOnly);
+		const QByteArray &imdata = f.readAll();
+		f.close();
+		KardelenAPIServer::instance()->setPanChangeFrame("", imdata);
+	}
+#endif
 	return 0;
 }
 
