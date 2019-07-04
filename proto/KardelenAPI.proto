@@ -133,6 +133,9 @@ message CommRead {
 	CameraStatus status = 2;
 	AbsoluteMoveResult absres = 3;
 	RelativeMoveResult relres = 4;
+	repeated string keys = 5;
+	repeated string values = 6;
+	bytes frameData = 7;
 }
 
 message UpdateCameraStatusParameters {

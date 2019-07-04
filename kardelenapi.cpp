@@ -1169,6 +1169,13 @@ void KardelenAPIServer::setMotionObjects(const std::vector<alarmGeneratorElement
 	lastMotionObjects = v;
 }
 
+void KardelenAPIServer::setPanChangeFrame(const string &tag, const QByteArray &image)
+{
+	QMutexLocker ml(&mutex);
+	lastImage = image;
+	lastImgTag = tag;
+}
+
 grpc::Status KardelenAPIServer::GetPosition(grpc::ServerContext *, const google::protobuf::Empty *, kaapi::PosInfo *response)
 {
 	impl->setPosi(response);
@@ -1217,6 +1224,9 @@ grpc::Status KardelenAPIServer::CommunicationChannel(grpc::ServerContext *, ::gr
 			usleep(50 * 1000);
 			mutex.lock();
 			objCount = lastMotionObjects.size();
+
+			if (lastImage.size())
+				break;
 		}
 		/* we have the lock */
 		for (uint i = 0; i < lastMotionObjects.size(); i++) {
@@ -1230,6 +1240,10 @@ grpc::Status KardelenAPIServer::CommunicationChannel(grpc::ServerContext *, ::gr
 			qDebug() << "detection" << ts.topLeftX << ts.topLeftY << ts.widthOfTarget << ts.heightOfTarget;
 		}
 		lastMotionObjects.clear();
+		if (lastImage.size()) {
+			msgr.set_framedata(std::string(lastImage.constData(), lastImage.size()));
+			lastImage.clear();
+		}
 		mutex.unlock();
 
 		/* TODO: handle actions */

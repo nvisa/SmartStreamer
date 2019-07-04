@@ -230,6 +230,7 @@ public:
 
 	static KardelenAPIServer * instance();
 	void setMotionObjects(const std::vector<alarmGeneratorElement::TargetStruct> &v);
+	void setPanChangeFrame(const std::string &tag, const QByteArray &image);
 
 protected:
 	KardelenAPIImpl *impl;
@@ -262,6 +263,8 @@ protected:
 	std::vector<alarmGeneratorElement::TargetStruct> lastMotionObjects;
 	AlgorithmCommunication::RequestForAlgorithm req;
 	AlgorithmCommunication::ResponseOfRequests resp;
+	QByteArray lastImage;
+	std::string lastImgTag;
 };
 
 #endif // KARDELENAPI_H
