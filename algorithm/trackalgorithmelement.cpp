@@ -181,48 +181,11 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 	/* if we do not support fov reading for some reason, 12/12 are sane defaults */
 	float panTiltZoomRead[] = {headpt->getPanAngle(), ta, 0, 12, 12};
 	float fovh = 0, fovv = 0;
-//	if (!headz->getFOV(fovh, fovv)) {
-//		panTiltZoomRead[3] = 25.0;
-//		panTiltZoomRead[4] = 20.0;
-//	}
-	int fov_type = headz->getProperty(4);
-	if (headz->getProperty(61) == 0) {
-		if (headz->getProperty(3) == 0) {
-			if (fov_type == 0) {
-				panTiltZoomRead[3] = 11.0, panTiltZoomRead[4] = 8.25;
-			} else if (fov_type == 1) {
-				panTiltZoomRead[3] = 6.0, panTiltZoomRead[4] = 4.5;
-			} else {
-				panTiltZoomRead[3] = 2.0, panTiltZoomRead[4] = 1.5;
-			}
-		} else {
-			if (fov_type == 0) {
-				panTiltZoomRead[3] = 25.0, panTiltZoomRead[4] = 20.0;
-			} else if (fov_type == 1) {
-				panTiltZoomRead[3] = 6.0, panTiltZoomRead[4] = 4.8;
-			} else {
-				panTiltZoomRead[3] = 2.0, panTiltZoomRead[4] = 1.6;
-			}
-		}
-	} else if (headz->getProperty(61) == 1) {
-		if (headz->getProperty(3) == 0) {
-			if (fov_type == 0) {
-				panTiltZoomRead[3] = 11.0, panTiltZoomRead[4] = 8.25;
-			} else if (fov_type == 1) {
-				panTiltZoomRead[3] = 6.0, panTiltZoomRead[4] = 4.5;
-			} else {
-				panTiltZoomRead[3] = 2.0, panTiltZoomRead[4] = 1.5;
-			}
-		} else {
-			if (fov_type == 0) {
-				panTiltZoomRead[3] = 25.0, panTiltZoomRead[4] = 20.0;
-			} else if (fov_type == 1) {
-				panTiltZoomRead[3] = 6.0, panTiltZoomRead[4] = 4.8;
-			} else {
-				panTiltZoomRead[3] = 2.0, panTiltZoomRead[4] = 1.6;
-			}
-		}
+	if (!headz->getFOV(fovh, fovv)) {
+		panTiltZoomRead[3] = fovh;
+		panTiltZoomRead[4] = fovv;
 	}
+	qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~fov values are " << panTiltZoomRead[3] <<  panTiltZoomRead[4] << headz->getZoom();
 	bool migrateDebug = false;
 	if (migrateDebug) {
 		mDebug("######################### ptzp head fovh=%f fovv=%f", fovv, fovh);
@@ -254,7 +217,7 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 		mDebug("######################### cevo speed pan=%d tilt=%d", speed_pan, speed_tilt);
 		mDebug("######################### ptzp head pan=%d tilt=%d", panTiltZoomRead[3], panTiltZoomRead[4]);
 	}
-//	qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~Pan&Tilt degree values are " << panTiltZoomRead[3] <<  panTiltZoomRead[4];
+	qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~speed values for pan&tilt are " << panTiltZoomRead[3] <<  panTiltZoomRead[4];
 	if (control.initialize == 0)
 		headpt->panTiltDegree(panTiltZoomRead[3], panTiltZoomRead[4]);
 
