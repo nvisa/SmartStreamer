@@ -46,6 +46,11 @@ protected:
 	AlgorithmGrpcServer *grpcserv;
 	alarmGeneratorElement *algen;
 
+	bool secondStream;
+	bool thirdStream;
+	bool fourthStream;
+	bool enablePreview;
+
 private:
 	void finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res0);
 };

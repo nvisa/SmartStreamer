@@ -48,6 +48,10 @@ TX1Streamer::TX1Streamer(QObject *parent)
 
 	algen = new alarmGeneratorElement;
 	AlgorithmGrpcServer::instance()->setAlgorithmManagementInterface(this);
+	secondStream = true;
+	thirdStream = true;
+	fourthStream = true;
+	enablePreview = true;
 }
 
 int TX1Streamer::start()
@@ -254,13 +258,15 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	p1->append(rtpout);
 	p1->end();
 
-	BaseLmmPipeline *p2 = addPipeline();
-	p2->append(queue);
-	if (res0 != res1)
-		p2->append(downScalar1);
-	p2->append(enc1);
-	p2->append(rtpout2);
-	p2->end();
+	if (secondStream) {
+		BaseLmmPipeline *p2 = addPipeline();
+		p2->append(queue);
+		if (res0 != res1)
+			p2->append(downScalar1);
+		p2->append(enc1);
+		p2->append(rtpout2);
+		p2->end();
+	}
 
 	BaseLmmPipeline *p3 = addPipeline();
 	p3->append(queue);
@@ -270,21 +276,41 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	p3->append(jpegel);
 	p3->end();
 
-	BaseLmmPipeline *p4 = addPipeline();
-	p4->append(queue);
-	if (res0 != res2)
-		p4->append(downScalar2);
-	p4->append(enc2);
-	p4->append(rtpout3);
-	p4->end();
+	if (thirdStream) {
+		BaseLmmPipeline *p4 = addPipeline();
+		p4->append(queue);
+		if (res0 != res2)
+			p4->append(downScalar2);
+		p4->append(enc2);
+		p4->append(rtpout3);
+		p4->end();
+	}
 
-	BaseLmmPipeline *p5 = addPipeline();
-	p5->append(queue);
-	if (res0 != res3)
-		p5->append(downScalar3);
-	p5->append(enc3);
-	p5->append(rtpout4);
-	p5->end();
+	if (fourthStream) {
+		BaseLmmPipeline *p5 = addPipeline();
+		p5->append(queue);
+		if (res0 != res3)
+			p5->append(downScalar3);
+		p5->append(enc3);
+		p5->append(rtpout4);
+		p5->end();
+	}
+
+	if (enablePreview) {
+		BaseLmmPipeline *p7 = addPipeline();
+		p7->append(queue);
+		VideoScaler *sc0 = new VideoScaler;
+		sc0->setOutputResolution(640, 360);
+		VideoScaler* rgbConv1 = new VideoScaler;
+		rgbConv1->setOutputFormat(AV_PIX_FMT_ARGB);
+		rgbConv1->setMode(1);
+		p7->append(sc0);
+		p7->append(rgbConv1);
+		QtVideoOutput *vout = new QtVideoOutput;
+		vout->getWidget()->setGeometry(0, 0, 640, 360);
+		p7->append(vout);
+		p7->end();
+	}
 
 	QList<RtpTransmitter *> rtplist;
 	rtplist << rtpout;
@@ -294,9 +320,12 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	StreamerCommon::createRtspServer(rtplist);
 
 	queue->getOutputQueue(0)->setRateReduction(25, fps0);
-	queue->getOutputQueue(1)->setRateReduction(25, fps1);
+	if (secondStream)
+		queue->getOutputQueue(1)->setRateReduction(25, fps1);
 	//queue->getOutputQueue(2)->setRateReduction(25, fps0);
-	queue->getOutputQueue(3)->setRateReduction(25, fps2);
-	queue->getOutputQueue(4)->setRateReduction(25, fps3);
+	if (thirdStream)
+		queue->getOutputQueue(3)->setRateReduction(25, fps2);
+	if (fourthStream)
+		queue->getOutputQueue(4)->setRateReduction(25, fps3);
 }
 
