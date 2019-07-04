@@ -89,6 +89,8 @@ public:
 		grpc::ServerContext ctx;
 		AlgorithmCommunication::ResponseOfRequests resp;
 
+		qDebug() << "Set modeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" << mode;
+
 		if (mode == CONTROL_MODE_JOYSTICK) {
 			/* we need to stop all algorithms */
 			req.set_channel(0);
@@ -536,7 +538,7 @@ public:
 
 	virtual void setEnumParameter(int index, int32_t value)
 	{
-		qDebug() << index << value;
+		qDebug() << "enum param setting" << index << value;
 
 		if (index == ENUM_PARAM_CAMERA_TYPE) {
 			if (value == TV)
@@ -567,7 +569,7 @@ public:
 	{
 		// TODO: implement digital zoom
 		// TODO: cache all enum and numeric values
-		qDebug() << index << value;
+		qDebug() << "set enum command" << index << value;
 		/* digital zoom operational mode digital window select'e bağlanacak */
 		if (index == ENUM_COMMAND_DIGITAL_ZOOM){
 			if (value == DIGITAL_ZOOM_START ){
@@ -971,7 +973,7 @@ public:
 
 	virtual void setEnumParameter(int index, int32_t value)
 	{
-		qDebug() << index << value;
+		qDebug() << "set enum" << index << value;
 
 		if (index == ENUM_PARAM_OPERATIONAL_MODE)
 			setMode(value);
@@ -1324,7 +1326,7 @@ grpc::Status KardelenAPIServer::SetMotionROI(grpc::ServerContext *, const Motion
 	kaapi::Polygon r = request->roi();
 	for (int i = 0; i < r.points_size(); i++) {
 		kaapi::Point p = r.points(i);
-		qDebug() << i << p.x() << p.y();
+		qDebug() << "motion roi" << i << p.x() << p.y();
 	}
 
 	kaapi::Rectangle far = request->far();
