@@ -158,7 +158,6 @@ int BaseAlgorithmElement::savetoJson()
 
 void BaseAlgorithmElement::setJsonAlgorithmIndex(int index)
 {
-	qDebug() << "Index of created algorithm is " << index;
 	algIndex = index;
 }
 
