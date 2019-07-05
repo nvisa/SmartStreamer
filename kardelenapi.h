@@ -61,6 +61,7 @@ const static int CAPABILITY_FIRE = 37;
 const static int CAPABILITY_HPF_GAIN = 38;
 const static int CAPABILITY_HPF_SPATIAL = 39;
 const static int CAPABILITY_THERMAL_STANDBY_MODE = 40;
+const static int CAPABILITY_PAN_CHANGE_DETECTION = 41;
 
 const static int NUM_PARAM_SENSITIVITY = 0;
 const static int NUM_PARAM_RANGE = 1;

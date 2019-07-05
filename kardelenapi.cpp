@@ -256,6 +256,7 @@ public:
 			addcap(caps, CAPABILITY_CALIBRATION);
 			addcap(caps, CAPABILITY_HARD_CALIBRATION);
 			addcap(caps, CAPABILITY_THERMAL_STANDBY_MODE);
+			addcap(caps, CAPABILITY_PAN_CHANGE_DETECTION);
 		} else {
 			qDebug() << "capabilities of day";
 			addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
@@ -279,6 +280,7 @@ public:
 			addcap(caps, CAPABILITY_CALIBRATION);
 			addcap(caps, CAPABILITY_HARD_CALIBRATION);
 			addcap(caps, CAPABILITY_THERMAL_STANDBY_MODE);
+			addcap(caps, CAPABILITY_PAN_CHANGE_DETECTION);
 		}
 
 		return caps;
