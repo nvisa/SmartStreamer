@@ -443,6 +443,31 @@ int main(int argc, char *argv[])
 	if (QString::fromLatin1(argv[0]).contains("apic"))
 		return testGrpc(argv[1]);
 
+	if (!QFile::exists("/etc/smartstreamer/smartconfig.json") && QFile::exists("/etc/aselsan_platform")) {
+		QFile f("/etc/aselsan_platform");
+		f.open(QIODevice::ReadOnly);
+		QString plat = QString::fromUtf8(f.readAll()).trimmed();
+		f.close();
+		qDebug("Auto-generating smartconfig for device '%s'", qPrintable(plat));
+		f.setFileName(":/data/platforms.json");
+		f.open(QIODevice::ReadOnly);
+		QJsonObject obj = QJsonDocument::fromJson(f.readAll()).object();
+		f.close();
+		if (obj.contains(plat)) {
+			qDebug("Found json config for platform");
+			QJsonObject config = obj[plat].toObject();
+			QJsonDocument doc(config);
+			f.setFileName("/etc/smartstreamer/smartconfig.json");
+			if (!f.open(QIODevice::WriteOnly)) {
+				qDebug("Cannot open %s for writing", qPrintable(f.fileName()));
+			} else {
+				f.write(doc.toJson());
+				f.close();
+			}
+		}
+
+	}
+
 	ApplicationInfo *info = ApplicationInfo::instance();
 	QCoreApplication *a;
 	if (info->isGuiApplication())
