@@ -36,6 +36,26 @@
             }
         ]
     },
+    "mgeoswir_odin": {
+        "analogstreamer": true,
+        "startup_delay": 180,
+        "analog_config": {
+            "devices": [
+                {
+                    "device": "/dev/video2"
+                }
+            ],
+            "out_mode": "ip"
+        },
+        "ptzp": [
+            {
+                "type": "mgeoswir",
+                "target": "ttyXRUSB0?baud=9600?protocol=422;ttyXRUSB1?baud=19200?protocol=422?parity=1?databits=7?stopbits=1",
+                "grpc_port": 50058,
+                "kardelen": true
+            }
+        ]
+    },
     "sahingoz_odin": {
         "analogstreamer": true,
         "startup_delay": 180,
