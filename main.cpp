@@ -298,6 +298,7 @@ static int testGrpc(const QString &action)
 }
 
 #include "kardelenapi.h"
+
 int kaapiClient(int argc, char *argv[])
 {
 	Q_UNUSED(argc);
@@ -442,6 +443,11 @@ int main(int argc, char *argv[])
 		return kaapiClient(argc, argv);
 	if (QString::fromLatin1(argv[0]).contains("apic"))
 		return testGrpc(argv[1]);
+
+	{
+		extern char* get_libgpu_version();
+		qDebug() << "libgpu.a version is" << get_libgpu_version();
+	}
 
 	if (!QFile::exists("/etc/smartstreamer/smartconfig.json") && QFile::exists("/etc/aselsan_platform")) {
 		QFile f("/etc/aselsan_platform");
