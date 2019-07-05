@@ -36,7 +36,7 @@
             }
         ]
     },
-    "sahingoz_tunga": {
+    "sahingoz_odin": {
         "analogstreamer": true,
         "startup_delay": 180,
         "analog_config": {
@@ -56,6 +56,31 @@
                     "thermal": 3,
                     "standby": 2,
                     "daycam": 1
+                },
+                "kardelen": true
+            }
+        ]
+    },
+    "sahingoz_tunga": {
+        "analogstreamer": true,
+        "startup_delay": 180,
+        "analog_config": {
+            "devices": [
+                {
+                    "device": "/dev/video2"
+                }
+            ],
+            "out_mode": "ip"
+        },
+        "ptzp": [
+            {
+                "type": "kayi",
+                "target": "ttyXRUSB2?baud=9600?protocol=422;ttyXRUSB3?baud=19200?protocol=422?parity=1?databits=7?stopbits=1",
+                "grpc_port": 50058,
+                "relay": {
+                    "thermal": 6,
+                    "standby": 5,
+                    "daycam": 4
                 },
                 "kardelen": true
             }
