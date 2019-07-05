@@ -44,7 +44,7 @@ int StreamerCommon::detectRtspPort()
 	return 9554;
 }
 
-RtpTransmitter *StreamerCommon::createRtpTransmitter(float fps)
+RtpTransmitter *StreamerCommon::createRtpTransmitter(float fps, int id)
 {
 	RtpTransmitter *rtpout = new RtpTransmitter();
 	rtpout->forwardRtpTs(false);
@@ -57,6 +57,9 @@ RtpTransmitter *StreamerCommon::createRtpTransmitter(float fps)
 	} else {
 		rtpout->setUseAbsoluteTimestamp(true);
 	}
+	rtpout->setProperty("commonTag", "rtptransmitter");
+	rtpout->setProperty("commonTagId", id);
+	reloadJson(rtpout);
 	return rtpout;
 }
 
@@ -184,6 +187,18 @@ int StreamerCommon::reloadJson(BaseLmmElement *el)
 		enc->setOutputResolution(w, h);
 		enc->setBitrate(obj["bitrate"].toInt() * 1000);
 		enc->setFps(obj["frameRate"].toInt());
+	} else if (tag == "rtptransmitter") {
+		RtpTransmitter *rtp = (RtpTransmitter *)el;
+		QJsonArray arr = readJson("/etc/smartstreamer/encoders.json").array();
+		if (arr.size() <= id)
+			return 0;
+		QJsonObject obj = arr[id].toObject();
+		if (obj.isEmpty())
+			return 0;
+		if (obj.contains("shaping")) {
+			QJsonObject sobj = obj["shaping"].toObject();
+			rtp->setTrafficShaping(sobj["enabled"].toBool(), sobj["bitrate"].toInt(), 0);
+		}
 	} else
 		return -ENOENT;
 	return 0;

@@ -12,7 +12,7 @@ public:
 	StreamerCommon();
 
 	static int detectRtspPort();
-	static RtpTransmitter * createRtpTransmitter(float fps);
+	static RtpTransmitter * createRtpTransmitter(float fps, int id = 0);
 	static BaseRtspServer * createRtspServer(RtpTransmitter *rtp0);
 	static BaseRtspServer * createRtspServer(RtpTransmitter *rtp0, RtpTransmitter *rtp1);
 	static BaseRtspServer * createRtspServer(QList<RtpTransmitter*> rtpout);

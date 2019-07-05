@@ -239,10 +239,10 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	sei = new SeiInserter;
 	sei->setAlarmTemplate("sei_alarm_template.xml");
 
-	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(fps0);
-	RtpTransmitter *rtpout2 = StreamerCommon::createRtpTransmitter(fps1);
-	RtpTransmitter *rtpout3 = StreamerCommon::createRtpTransmitter(fps2);
-	RtpTransmitter *rtpout4 = StreamerCommon::createRtpTransmitter(fps3);
+	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(fps0, 0);
+	RtpTransmitter *rtpout2 = StreamerCommon::createRtpTransmitter(fps1, 1);
+	RtpTransmitter *rtpout3 = StreamerCommon::createRtpTransmitter(fps2, 2);
+	RtpTransmitter *rtpout4 = StreamerCommon::createRtpTransmitter(fps3, 3);
 
 	p1->setQuitOnThreadError(true);
 	p1->append(privacy);
