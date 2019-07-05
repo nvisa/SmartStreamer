@@ -20,7 +20,6 @@ protected slots:
 
 protected:
 	virtual BaseLmmPipeline * createYUV420Pipeline(QSize &res0);
-	int generateFrame(const RawBuffer &buf);
 
 	VideoTestSourceStreamerPriv *priv;
 };

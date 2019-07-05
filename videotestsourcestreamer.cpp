@@ -77,6 +77,7 @@ void VideoTestSourceStreamer::frameTimeout()
 
 BaseLmmPipeline *VideoTestSourceStreamer::createYUV420Pipeline(QSize &res0)
 {
+	enablePreview = true;
 	res0.setWidth(1920);
 	res0.setHeight(1080);
 
@@ -85,13 +86,8 @@ BaseLmmPipeline *VideoTestSourceStreamer::createYUV420Pipeline(QSize &res0)
 	to420->setMode(1);
 
 	BaseLmmPipeline *p = addPipeline();
-	//p->append(newFunctionPipe(VideoTestSourceStreamer, this, VideoTestSourceStreamer::generateFrame));
 	p->append(to420);
 	return p;
 }
 
-int VideoTestSourceStreamer::generateFrame(const RawBuffer &buf)
-{
-	return 0;
-}
 
