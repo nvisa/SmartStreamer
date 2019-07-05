@@ -265,7 +265,10 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithmFromJson(const QJsonObject
 	} else if (algo["type"] == QString("privacy")) {
 		return new StabilizationAlgorithmElement;
 	} else if (algo["type"] == QString("track")) {
-		return new TrackAlgorithmElement;
+		TrackAlgorithmElement *track = new TrackAlgorithmElement;
+		if (getApplicationPlatform() == KAYI_SAHINGOZ)
+			track->setTiltReversing(true);
+		return track;
 	} else if (algo["type"] == QString("faceDetection")) {
 		return new FaceAlgorithmElement;
 #endif
