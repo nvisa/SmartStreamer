@@ -114,7 +114,7 @@ public:
 			/* nothing to do on our side in this mode, TODO: this may change for auto track */
 			req.set_channel(1);
 			req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::TRACKING);
-			papi->StopAlgorithm(&ctx, &req, &resp);
+			//papi->StopAlgorithm(&ctx, &req, &resp);
 		} else if (mode == CONTROL_MODE_TRACK_STARTED) {
 			req.set_channel(1);
 			req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::TRACKING);
@@ -256,7 +256,7 @@ public:
 			addcap(caps, CAPABILITY_CALIBRATION);
 			addcap(caps, CAPABILITY_HARD_CALIBRATION);
 			addcap(caps, CAPABILITY_THERMAL_STANDBY_MODE);
-			addcap(caps, CAPABILITY_PAN_CHANGE_DETECTION);
+			addcap(caps, CAPABILITY_CHANGE_DETECTION);
 		} else {
 			qDebug() << "capabilities of day";
 			addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
@@ -280,7 +280,7 @@ public:
 			addcap(caps, CAPABILITY_CALIBRATION);
 			addcap(caps, CAPABILITY_HARD_CALIBRATION);
 			addcap(caps, CAPABILITY_THERMAL_STANDBY_MODE);
-			addcap(caps, CAPABILITY_PAN_CHANGE_DETECTION);
+			addcap(caps, CAPABILITY_CHANGE_DETECTION);
 		}
 
 		return caps;
@@ -352,7 +352,13 @@ public:
 
 	void moveAbsolute(const kaapi::AbsoluteMoveParameters *request)
 	{
-		ptzp->getHead(1)->panTiltGoPos(request->panpos(), request->tiltpos());
+		qDebug() << "pan and tilt info is " << request->panpos() << request->tiltpos();
+		float adjustedPanVal = 0;
+		if (request->panpos() < 0)
+			adjustedPanVal = request->panpos() + 360;
+		else
+			adjustedPanVal = request->panpos();
+		ptzp->getHead(1)->panTiltGoPos(adjustedPanVal, request->tiltpos());
 	}
 
 	void setCamera(int32_t type)
@@ -1176,6 +1182,7 @@ void KardelenAPIServer::setPanChangeFrame(const string &tag, const QByteArray &i
 	QMutexLocker ml(&mutex);
 	lastImage = image;
 	lastImgTag = tag;
+	qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~frame is assigning into lastImage feature of KardelenAPIServer with size of " << image.size();
 }
 
 grpc::Status KardelenAPIServer::GetPosition(grpc::ServerContext *, const google::protobuf::Empty *, kaapi::PosInfo *response)
@@ -1356,6 +1363,7 @@ grpc::Status KardelenAPIServer::SetMotionROI(grpc::ServerContext *, const Motion
 	mpars->set_settingchoice(AlgorithmCommunication::MotionParameters::BOTH);
 	auto roilist = mpars->mutable_roilist();
 	auto poly = roilist->add_polygon();
+	poly->set_is_active(true);
 	for (int i = 0; i < r.points_size(); i++) {
 		kaapi::Point p = r.points(i);
 		auto pt = poly->add_points();
