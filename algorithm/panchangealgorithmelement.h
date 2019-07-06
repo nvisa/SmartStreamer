@@ -7,6 +7,9 @@
 #include "proto/AlgorithmCommunication.grpc.pb.h"
 #include <QElapsedTimer>
 
+#include "vector"
+#include <QMap>
+#include <QPair>
 class PanChangeAlgorithmElement : public BaseAlgorithmElement
 {
 	Q_OBJECT
@@ -47,6 +50,8 @@ protected:
 	kaapi::ListOfLocationInformation *listOfLocationInformation;
 	AlgorithmCommunication::ListOfLocationInformation *listOfLocationInformationFromAlgComm;
 	API api;
+	QMap<QPair<float,float>,int> turnIndexInfo;
+	std::vector<int> numberOfTurnAtGivenIndex;
 };
 
 #endif // PANCHANGEALGORITHMELEMENT_
