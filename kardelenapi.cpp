@@ -233,7 +233,7 @@ public:
 	{
 		int64_t caps = 0;
 		if (!ptzp->getHead(0)->getProperty(3)) {
-			qDebug() << "capabilities of thermal";
+			qDebug() << "capabilities of thermal" << ptzp->getHead(0)->getProperty(3) << "soft" << ptzp->getHead(0)->getProperty(61);
 			addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
 			addcap(caps, CAPABILITY_DETECTION);
 			addcap(caps, CAPABILITY_TRACKING);
@@ -460,7 +460,12 @@ public:
 //				 TODO: we have laser range but no laser height?
 			}
 		}
-*/		else {
+*/		else if (index == NUM_PARAM_LASER_RANGE){
+			QVariant range = ptzp->getHead(0)->getProperty("laser_reflections");
+			QStringList rangeStr = range.toString().split(",");
+			value = rangeStr.first().toInt();
+		}
+		else {
 			value = 100000;
 		}
 	}
@@ -471,7 +476,7 @@ public:
 			map = ptzp->getHead(0)->getSettings();
 
 		if (index == ENUM_PARAM_CAMERA_TYPE) {
-			if (ptzp->getHead(0)->getProperty(3))
+			if (ptzp->getHead(0)->getProperty(3) || ptzp->getHead(0)->getProperty(61))
 				return TV;
 			else
 				return THERMAL;
@@ -487,7 +492,7 @@ public:
 				return WHITE_HOT;
 		}
 		if (index == ENUM_PARAM_SEMBOLOGY) {
-			if (ptzp->getHead(0)->getProperty(map["symbology"].toInt()))
+			if (ptzp->getHead(0)->getProperty(9))
 				return SYMBOLOGY_ON;
 			else
 				return SYMBOLOGY_OFF;
@@ -550,9 +555,9 @@ public:
 
 		if (index == ENUM_PARAM_CAMERA_TYPE) {
 			if (value == TV)
-				ptzp->getHead(0)->setProperty("choose_cam", 1);
+				ptzp->getHead(0)->setProperty(5, 1);
 			else if (value == THERMAL)
-				ptzp->getHead(0)->setProperty("choose_cam", 0);
+				ptzp->getHead(0)->setProperty(5, 0);
 		} else if (index == ENUM_PARAM_POLARITY) {
 			if (value == (int)BLACK_HOT)
 				ptzp->getHead(0)->setProperty(7, 1);
@@ -560,9 +565,9 @@ public:
 				ptzp->getHead(0)->setProperty(7, 0);
 		} else if (index == ENUM_PARAM_SEMBOLOGY){
 			if (value == SYMBOLOGY_ON)
-				ptzp->getHead(0)->setProperty(map["symbology"].toInt(), 1);
+				ptzp->getHead(0)->setProperty(11, 1);
 			else if (value == SYMBOLOGY_OFF)
-				ptzp->getHead(0)->setProperty(map["symbology"].toInt(), 0);
+				ptzp->getHead(0)->setProperty(11, 0);
 		} else if (index == ENUM_PARAM_OPERATIONAL_MODE)
 			setMode(value);
 		else if (index == ENUM_PARAM_FOV_LEVEL)
@@ -596,6 +601,12 @@ public:
 		} else if (index == ENUM_COMMAND_TRACK) {
 			if (value == TRACK_STOP)
 				setMode(CONTROL_MODE_JOYSTICK);
+		}
+		else if (index == ENUM_COMMAND_LAZER_RANGE_FINDER){
+			ptzp->getHead(0)->setProperty(30, 1);
+			if (value == LAZER_COMPUTE_RANGE) {
+				ptzp->getHead(0)->setProperty(31, 1);
+			}
 		}
 
 	}
@@ -1250,6 +1261,7 @@ grpc::Status KardelenAPIServer::CommunicationChannel(grpc::ServerContext *, ::gr
 		}
 		lastMotionObjects.clear();
 		if (lastImage.size()) {
+			qDebug() << "sending the image to Kardelen side with size of " << lastImage.size();
 			msgr.set_framedata(std::string(lastImage.constData(), lastImage.size()));
 			lastImage.clear();
 		}
@@ -1413,9 +1425,9 @@ grpc::Status KardelenAPIServer::SetAselChangeLocations(grpc::ServerContext *cont
 		loI->set_tilt(listOfLocation.locationinformation(i).tilt());
 		if (listOfLocation.locationinformation(i).zoom() >= 8.25)
 			loI->set_zoom(0);
-		else if (listOfLocation.locationinformation(i).zoom() >= 4.5 || listOfLocation.locationinformation(i).zoom() < 8.25)
+		else if (listOfLocation.locationinformation(i).zoom() >= 4.5 && listOfLocation.locationinformation(i).zoom() < 8.25)
 			loI->set_zoom(1);
-		else if (listOfLocation.locationinformation(i).zoom() < 1.6)
+		else if (listOfLocation.locationinformation(i).zoom() < 4.5)
 			loI->set_zoom(2);
 	}
 	grpc::ServerContext ctx;
