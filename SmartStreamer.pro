@@ -125,5 +125,6 @@ RESOURCES += \
     resources.qrc
 
 DISTFILES += \
-    data/algodesc.json
+    data/algodesc.json \
+    build_config.pri
 
