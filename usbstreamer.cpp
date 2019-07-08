@@ -34,6 +34,7 @@ BaseLmmPipeline *UsbStreamer::createYUV420Pipeline(QSize &res0)
 	v4l2->setParameter("device", "/dev/video0");
 	res0.setWidth(1920);
 	res0.setHeight(1080);
+	v4l2->dropMalformed(true);
 
 	VideoScaler* rgbConv1 = new VideoScaler;
 	rgbConv1->setOutputFormat(AV_PIX_FMT_YUV420P);
