@@ -1,9 +1,14 @@
 #include "motionalgorithmelement.h"
+#include "applicationinfo.h"
+
 
 #include "lmm/debug.h"
 #include "algorithmfunctions.h"
 #include <QFile>
 #include <QJsonObject>
+
+#include <ecl/ptzp/ptzphead.h>
+#include <ecl/ptzp/ptzpdriver.h>
 
 MotionAlgorithmElement::MotionAlgorithmElement(QObject *parent)
 	: BaseAlgorithmElement(parent)
@@ -31,6 +36,11 @@ int MotionAlgorithmElement::processAlgo(const RawBuffer &buf)
 
 	int width = buf.constPars()->videoWidth;
 	int height = buf.constPars()->videoHeight;
+
+	PtzpHead *headz = ApplicationInfo::instance()->getPtzpDriver(0)->getHead(0);
+	v.ill = 1;
+	if(headz->whoAmI() == "thermal")
+		v.ill = 0;
 
 #if HAVE_VIA_MOTION
 #if HAVE_TK1

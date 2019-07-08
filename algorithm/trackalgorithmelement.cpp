@@ -114,6 +114,11 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 
 	PtzpHead *headz = ApplicationInfo::instance()->getPtzpDriver(0)->getHead(0);
 	PtzpHead *headpt = ApplicationInfo::instance()->getPtzpDriver(0)->getHead(1);
+
+	v.ill = 1;
+	if(headz->whoAmI() == "thermal")
+		v.ill = 0;
+
 	if (headpt == nullptr)
 		headpt = headz;
 	float ta = headpt->getTiltAngle();
@@ -226,7 +231,7 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 		mDebug("######################### ptzp head pan=%d tilt=%d", panTiltZoomRead[3], panTiltZoomRead[4]);
 	}
 	qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~speed values for pan&tilt are " << panTiltZoomRead[3] <<  panTiltZoomRead[4];
-	if (control.initialize == 0)
+	if (control.initialize == 0 && control.meta[31] != 1)
 		headpt->panTiltDegree(panTiltZoomRead[3], panTiltZoomRead[4]);
 
 	if (control.initialize == 0 && control.meta[31] == 1) {
