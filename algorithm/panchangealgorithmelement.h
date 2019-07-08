@@ -50,7 +50,7 @@ protected:
 	kaapi::ListOfLocationInformation *listOfLocationInformation;
 	AlgorithmCommunication::ListOfLocationInformation *listOfLocationInformationFromAlgComm;
 	API api;
-	QMap<QPair<float,float>,int> turnIndexInfo;
+	int locationIndex;
 	std::vector<int> numberOfTurnAtGivenIndex;
 };
 
