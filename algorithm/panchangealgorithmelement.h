@@ -52,6 +52,8 @@ protected:
 	API api;
 	int locationIndex;
 	std::vector<int> numberOfTurnAtGivenIndex;
+	int saveLocations();
+	int loadLocations();
 };
 
 #endif // PANCHANGEALGORITHMELEMENT_

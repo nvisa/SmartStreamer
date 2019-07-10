@@ -8,6 +8,8 @@
 #include "kardelenapi.h"
 
 #include <QFile>
+#include <QFileInfo>
+#include <string>
 
 PanChangeAlgorithmElement::PanChangeAlgorithmElement(QObject *parent)
 	: BaseAlgorithmElement(parent)
@@ -141,4 +143,30 @@ int PanChangeAlgorithmElement::setPanChangeInfoFrom(const AlgorithmCommunication
 QString PanChangeAlgorithmElement::getTypeString()
 {
 	return "change detection";
+}
+
+int PanChangeAlgorithmElement::saveLocations()
+{
+	std::string str;
+	listOfLocationInformationFromAlgComm->SerializeToString(&str);
+	QFile file("locations.bin");
+	if (!file.open(QIODevice::WriteOnly)) {
+		return -EPERM;
+	}
+	file.write(QByteArray::fromStdString(str));
+	return 0;
+}
+
+int PanChangeAlgorithmElement::loadLocations()
+{
+	if (!QFileInfo("locations.bin").exists()) {
+		mDebug("The file doesn't existed");
+		return -1;
+	}
+	QFile f("locations.bin");
+	if (!f.open(QIODevice::ReadOnly))
+		return -EPERM;
+	QByteArray ba = f.readAll();
+	listOfLocationInformationFromAlgComm->ParseFromString(ba.toStdString());
+	return 0;
 }
