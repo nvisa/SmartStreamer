@@ -242,19 +242,6 @@ BaseStreamer *ApplicationInfo::createAppStreamer()
 	return streamer;
 }
 
-BaseAlgorithmElement *ApplicationInfo::createAlgorithm(int index)
-{
-	QJsonObject obj = readJson("/etc/smartstreamer/algodesc.json");
-	QJsonArray arr = obj["algorithms"].toArray();
-	if (index >= arr.size())
-		return new BaseAlgorithmElement;
-	QJsonObject algo = arr[index].toObject();
-	BaseAlgorithmElement * el = createAlgorithmFromJson(algo);
-	el->setJsonAlgorithmIndex(index);
-	el->reloadJson();
-	return el;
-}
-
 BaseAlgorithmElement *ApplicationInfo::createAlgorithmFromJson(const QJsonObject &algo)
 {
 	if (algo["type"] == QString("motion")) {
