@@ -16,6 +16,7 @@ PanChangeAlgorithmElement::PanChangeAlgorithmElement(QObject *parent)
 {
 	algoState = UNKNOWN;
 	listOfLocationInformationFromAlgComm = new AlgorithmCommunication::ListOfLocationInformation();
+	loadLocations();
 }
 
 int PanChangeAlgorithmElement:: init()
@@ -37,6 +38,8 @@ int PanChangeAlgorithmElement::processAlgo(const RawBuffer &buf)
 
 	static long time;
 	locationSize = listOfLocationInformationFromAlgComm->locationinformation_size();
+	if (locationSize == 0)
+		return 0;
 	time = listOfLocationInformationFromAlgComm->intervalforcirculation();
 
 	float panTiltRead[2];
@@ -127,9 +130,12 @@ int PanChangeAlgorithmElement::release()
 int PanChangeAlgorithmElement::setPanChangeInfoFrom(const AlgorithmCommunication::ListOfLocationInformation &listOfLocInfo)
 {
 	AlgorithmCommunication::ListOfLocationInformation loI = listOfLocInfo;
+	numberOfTurnAtGivenIndex.clear();
+	if (listOfLocInfo.locationinformation().size() == 0) {
+		return -1;
+	}
 	listOfLocationInformationFromAlgComm->clear_locationinformation();
 	listOfLocationInformationFromAlgComm->set_intervalforcirculation(loI.intervalforcirculation());
-	numberOfTurnAtGivenIndex.clear();
 	for (int i = 0; i < listOfLocInfo.locationinformation().size(); ++i) {
 		qDebug() << " location information of " << i << " arrived";
 		AlgorithmCommunication::LocationInformation *loc = listOfLocationInformationFromAlgComm->add_locationinformation();
@@ -137,6 +143,7 @@ int PanChangeAlgorithmElement::setPanChangeInfoFrom(const AlgorithmCommunication
 		numberOfTurnAtGivenIndex.push_back(1);
 		qDebug() << " location information of " << i << " set";
 	}
+	saveLocations();
 	return 0;
 }
 
