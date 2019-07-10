@@ -45,6 +45,7 @@ public:
 	}
 	void run()
 	{
+		sleep(5);
 		std::string ep(qPrintable(QString("0.0.0.0:%1").arg(servicePort)));
 		ServerBuilder builder;
 		builder.AddListeningPort(ep, grpc::InsecureServerCredentials());
@@ -254,7 +255,6 @@ public:
 			addcap(caps, CAPABILITY_MISSION_EXECUTION);
 			addcap(caps, CAPABILITY_SENSITIVITY_ADJUSTMENT);
 			addcap(caps, CAPABILITY_CALIBRATION);
-			addcap(caps, CAPABILITY_HARD_CALIBRATION);
 			addcap(caps, CAPABILITY_THERMAL_STANDBY_MODE);
 			addcap(caps, CAPABILITY_CHANGE_DETECTION);
 		} else {
@@ -278,7 +278,6 @@ public:
 			addcap(caps, CAPABILITY_MISSION_EXECUTION);
 			addcap(caps, CAPABILITY_SENSITIVITY_ADJUSTMENT);
 			addcap(caps, CAPABILITY_CALIBRATION);
-			addcap(caps, CAPABILITY_HARD_CALIBRATION);
 			addcap(caps, CAPABILITY_THERMAL_STANDBY_MODE);
 			addcap(caps, CAPABILITY_CHANGE_DETECTION);
 		}
@@ -592,7 +591,7 @@ public:
 			}
 			else if(value == DIGITAL_ZOOM_STOP) {
 				ptzp->getHead(0)->setProperty(6, 0);
-				_mymode = CONTROL_MODE_DIGITAL_ZOOM_WINDOW_SELECT;
+				_mymode = CONTROL_MODE_JOYSTICK;
 			}
 		}
 		else if (index == ENUM_COMMAND_SYSTEM) {
@@ -703,7 +702,7 @@ class KardelenAPIYamgozImpl : public KardelenAPIImpl
 public:
 	KardelenAPIYamgozImpl()
 	{
-
+		_mymode = CONTROL_MODE_WATCH;
 	}
 
 	int64_t getCapabilities()
@@ -740,6 +739,9 @@ public:
 		response->set_capabilities(getCapabilities());
 
 		int32_t v = 0;
+
+		addNumericParameter(v, NUM_PARAM_HORIZONTAL_RES, response);
+		addNumericParameter(v, NUM_PARAM_VERTICAL_RES, response);
 
 		addEnumParameter(v, ENUM_PARAM_CAMERA_TYPE, response);
 		addEnumParameter(v, ENUM_PARAM_POLARITY, response);
@@ -781,6 +783,11 @@ public:
 
 	virtual void getNumericParameter(int index, double &value, int32_t bytes[3])
 	{
+		if (index == NUM_PARAM_HORIZONTAL_RES) {
+			value = 1920;
+		} else if (index == NUM_PARAM_VERTICAL_RES) {
+			value = 576;
+		}
 		value = 100000;
 	}
 
