@@ -10,6 +10,7 @@ class SeiInserter;
 class TK1OmxPipeline;
 class FlirStreamerPriv;
 class BaseAlgorithmElement;
+class alarmGeneratorElement;
 
 class FlirStreamer: public BaseStreamer
 {
@@ -27,6 +28,7 @@ private:
 	FlirStreamerPriv *priv;
 	BaseAlgorithmElement *motion;
 	AlgorithmGrpcServer *grpcserv;
+	alarmGeneratorElement *algen;
 };
 
 #endif // FLIRSTREAMER_H

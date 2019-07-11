@@ -1,9 +1,11 @@
 #include "flirstreamer.h"
 
+#include "kardelenapi.h"
 #include "seiinserter.h"
 #include "tk1omxpipeline.h"
 #include "streamercommon.h"
 #include "applicationinfo.h"
+#include "alarmgeneratorelement.h"
 #include "algorithm/algorithmgrpcserver.h"
 #include "algorithm/motionalgorithmelement.h"
 
@@ -45,6 +47,7 @@ FlirStreamer::FlirStreamer(const QJsonObject &config, QObject *parent)
 		mDebug("Defination is missing, please set flir url configuration");
 
 	AlgorithmGrpcServer::instance()->setAlgorithmManagementInterface(this);
+	algen = new alarmGeneratorElement;
 }
 
 int FlirStreamer::generatePipeline(const QString &url)
@@ -99,7 +102,15 @@ int FlirStreamer::PerformSEI(const RawBuffer &buf)
 			sei->processMessage(seiData);
 			if (seiData.size() == 0)
 				sei->clearLastSEIMessage();
-		} else sei->clearLastSEIMessage();
+
+			if (KardelenAPIServer::instance()) {
+				algen->generateAlarmStructure((uchar *)seiData.constData(), alarmGeneratorElement::MOTION);
+				alarmGeneratorElement::AlarmInfo *info = algen->getAlarmInfo();
+				if (info->target.size())
+					KardelenAPIServer::instance()->setMotionObjects(info->target);
+			}
+		} else
+			sei->clearLastSEIMessage();
 	}
 	return 0;
 }
