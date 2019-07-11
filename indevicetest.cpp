@@ -69,7 +69,7 @@ void InDeviceTest::timeout()
 		pit.next();
 		BaseLmmPipeline *p = pit.value();
 		qint64 ping = p->getOutputQueue(0)->getElapsedSinceLastAdd();
-		mInfo("Checking pipeline %s (%d)", qPrintable(pit.key()), ping);
+		mInfo("Checking pipeline %s (%lld)", qPrintable(pit.key()), ping);
 		if (ping > pipelineFaultTime)
 			faults.append(addPipelineFault(pit.key(), ping));
 	}

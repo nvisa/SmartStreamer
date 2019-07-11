@@ -42,7 +42,7 @@ using namespace std;
 
 #define returnOnError(x) \
 	if(!x) { \
-		qDebug() << "Algorithm elemenet didn't found :%d", x;\
+		qDebug() << "Algorithm elemenet didn't found :" << x;\
 		return grpc::Status::CANCELLED; \
 	}
 
