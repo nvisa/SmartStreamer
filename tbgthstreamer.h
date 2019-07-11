@@ -2,10 +2,6 @@
 #define TBGTHSTREAMER_H
 
 #include "tx1streamer.h"
-#include "lmm/rtp/rtpreceiver.h"
-#include "lmm/rtsp/rtspclient.h"
-#include "lmm/tx1/tx1videodecoder.h"
-#include "lmm/baselmmpipeline.h"
 
 #include "QJsonObject"
 #include "QSize"

@@ -1,5 +1,10 @@
 #include "tbgthstreamer.h"
 
+#include "lmm/rtp/rtpreceiver.h"
+#include "lmm/rtsp/rtspclient.h"
+#include "lmm/tx1/tx1videodecoder.h"
+#include "lmm/baselmmpipeline.h"
+
 Tbgthstreamer::Tbgthstreamer(const QJsonObject &config,QObject *parent) : TX1Streamer(parent)
 {
 	if (!config.isEmpty()) {

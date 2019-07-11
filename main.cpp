@@ -444,10 +444,14 @@ int main(int argc, char *argv[])
 	if (QString::fromLatin1(argv[0]).contains("apic"))
 		return testGrpc(argv[1]);
 
+#if HAVE_TX1
 	{
 		extern char* get_libgpu_version();
 		qDebug() << "libgpu.a version is" << get_libgpu_version();
 	}
+#else
+	qDebug() << "libgpu.a version is unknown";
+#endif
 
 	if (!QFile::exists("/etc/smartstreamer/smartconfig.json") && QFile::exists("/etc/aselsan_platform")) {
 		QFile f("/etc/aselsan_platform");

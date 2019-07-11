@@ -203,4 +203,21 @@ int StreamerCommon::reloadJson(BaseLmmElement *el)
 		return -ENOENT;
 	return 0;
 }
+#else
+BaseLmmElement *StreamerCommon::createOverlay()
+{
+	return nullptr;
+}
+
+BaseLmmElement *StreamerCommon::createEncoder(int id)
+{
+	Q_UNUSED(id);
+	return nullptr;
+}
+
+int StreamerCommon::reloadJson(BaseLmmElement *el)
+{
+	Q_UNUSED(el);
+	return 0;
+}
 #endif
