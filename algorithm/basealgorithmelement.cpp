@@ -170,11 +170,15 @@ void BaseAlgorithmElement::restart()
 void BaseAlgorithmElement::setState(BaseAlgorithmElement::AlgoState state)
 {
 	/* do not permit recursive algorithm stopping */
-	if (state == STOPALGO && algoState != PROCESS)
+	if (state == STOPALGO && algoState != PROCESS) {
+		mDebug("error stopping %s", qPrintable(getTypeString()));
 		return;
+	}
 	/* do not permit algorithm init on already running algorithm */
-	if (state == INIT && algoState == PROCESS)
+	if (state == INIT && algoState == PROCESS) {
+		mDebug("error starting %s", qPrintable(getTypeString()));
 		return;
+	}
 	algoState = state;
 }
 
