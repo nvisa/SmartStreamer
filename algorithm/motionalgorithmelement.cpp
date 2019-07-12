@@ -84,6 +84,12 @@ void MotionAlgorithmElement::setClassification(bool value)
 	control.classification = value;
 }
 
+void MotionAlgorithmElement::enableExtra(bool privacy, bool stabilization)
+{
+	v.privacy = privacy;
+	v.stabilization = stabilization;
+}
+
 QString MotionAlgorithmElement::getTypeString()
 {
 	return "motion";

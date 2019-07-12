@@ -18,6 +18,7 @@ public:
 	bool getClassification();
 	void setSensitivity(int value);
 	void setClassification(bool value);
+	void enableExtra(bool privacy, bool stabilization);
 
 	virtual QString getTypeString();
 
