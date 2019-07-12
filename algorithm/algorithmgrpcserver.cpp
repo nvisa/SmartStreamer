@@ -101,6 +101,7 @@ AlgorithmGrpcServer::AlgorithmGrpcServer(QObject *parent)
 	stabilizationEl = NULL;
 	panChangeEl = NULL;
 	snapshotEl = NULL;
+	manif = NULL;
 
 	AlgorithmGrpcServerGrpcThreadAlg *grpcServ = new AlgorithmGrpcServerGrpcThreadAlg(50059, this);
 	grpcServ->start();
@@ -140,7 +141,13 @@ grpc::Status AlgorithmGrpcServer::RunAlgorithm(grpc::ServerContext *context, con
 	AlgorithmCommunication::FaceDetectionParameters facedetectionpar = request->facedetectionparam();
 	AlgorithmCommunication::PanChangeParameters panchangepar = request->panchangeparam();
 
-
+	if (manif) {
+		int err = manif->runAlgorithm(request->channel());
+		if (!err)
+			return grpc::Status::OK;
+		if (err != -EAGAIN)
+			return grpc::Status::CANCELLED;
+	}
 	BaseAlgorithmElement *el = algorithmElementManager(request->channel());
 	returnOnError(el);
 
@@ -178,6 +185,13 @@ grpc::Status AlgorithmGrpcServer::StopAlgorithm(grpc::ServerContext *context, co
 	AlgorithmCommunication::FaceDetectionParameters facedetectionpar = request->facedetectionparam();
 	AlgorithmCommunication::PanChangeParameters panchangepar = request->panchangeparam();
 
+	if (manif) {
+		int err = manif->stopAlgorithm(request->channel());
+		if (!err)
+			return grpc::Status::OK;
+		if (err != -EAGAIN)
+			return grpc::Status::CANCELLED;
+	}
 	BaseAlgorithmElement *el = algorithmElementManager(request->channel());
 	returnOnError(el);
 

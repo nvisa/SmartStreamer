@@ -9,10 +9,6 @@ MotionAlgorithmElement::MotionAlgorithmElement(QObject *parent)
 	: BaseAlgorithmElement(parent)
 {
 	algoState = UNKNOWN;
-}
-
-int MotionAlgorithmElement::init()
-{
 	v.debug = 0;
 	v.ill = 1;
 	v.privacy = 0;
@@ -20,8 +16,11 @@ int MotionAlgorithmElement::init()
 	v.rgb = 1;
 	v.shadow = 0;
 	v.stabilization = 0;
-	control.initialize = 1;
+}
 
+int MotionAlgorithmElement::init()
+{
+	control.initialize = 1;
 	return BaseAlgorithmElement::init();
 }
 
