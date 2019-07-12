@@ -152,7 +152,7 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 
 	if (control.initialize == 0 && control.meta[31] == 1) {
 		headpt->panTiltStop();
-		ApplicationInfo::instance()->algoIndexes.value(2)->setState(BaseAlgorithmElement::AlgoState::STOPALGO);
+		setState(BaseAlgorithmElement::AlgoState::STOPALGO);
 	}
 
 	if (control.initialize)
@@ -231,7 +231,7 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 
 	if (control.initialize == 0 && control.meta[31] == 1) {
 		headpt->panTiltStop();
-		ApplicationInfo::instance()->algoIndexes.value(2)->setState(BaseAlgorithmElement::AlgoState::STOPALGO);
+		setState(BaseAlgorithmElement::AlgoState::STOPALGO);
 	}
 
 	if (control.initialize)

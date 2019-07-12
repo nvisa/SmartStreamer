@@ -12,6 +12,7 @@
 #include <lmm/debug.h>
 #include <lmm/v4l2input.h>
 #include <lmm/fileoutput.h>
+#include <lmm/textoverlay.h>
 #include <lmm/bufferqueue.h>
 #include <lmm/videoscaler.h>
 #include <lmm/qtvideooutput.h>
@@ -45,13 +46,15 @@ TX1Streamer::TX1Streamer(QObject *parent)
 {
 	grpcserv = AlgorithmGrpcServer::instance();
 	x.mode = 0;
-
+	algos = GPU_FREE;
+	algosPending = NONE;
 	algen = new alarmGeneratorElement;
 	AlgorithmGrpcServer::instance()->setAlgorithmManagementInterface(this);
 	secondStream = true;
 	thirdStream = true;
 	fourthStream = true;
 	enablePreview = false;
+	motionExtraEnabled = false;
 }
 
 int TX1Streamer::start()
@@ -66,11 +69,106 @@ int TX1Streamer::start()
 	return BaseStreamer::start();
 }
 
-BaseAlgorithmElement *TX1Streamer::getAlgo(int channel)
+/**
+ * @brief TX1Streamer::runAlgorithm
+ * @param channel
+ * @return
+ *
+ * Algorithm state management:
+ *
+ * We have some requirements on current algorithm state managemenet:
+ *	1. If both bypass and motion are selected, we need to enable motion with bypas features selected.
+ *	2. Track can not be openen with other algorithms.
+ *	3. We shouldn't init and use any algorithm, without completely releasing previous running one.
+ *
+ * We need to serialize these start/stop operations with algorithm state transitions. So we do not
+ * perform actual state transitions in run/stop functions (expect for very trivial cases)
+ *
+ * Real state transitions occur in checkAlgoState()
+ */
+int TX1Streamer::runAlgorithm(int channel)
 {
-	if (!ApplicationInfo::instance()->algoIndexes.keys().contains(channel))
-		return nullptr;
-	return ApplicationInfo::instance()->algoIndexes[channel];
+	BaseAlgorithmElement *el = ApplicationInfo::instance()->getAlgorithmInstance(channel);
+	if (el->getState() != BaseAlgorithmElement::UNKNOWN)
+		return -EBUSY;
+
+	ffDebug() << channel << el << motion << track << privacy;
+	if (el == track) {
+		/* checking for Requirement 2 */
+		if (motion->getState() != BaseAlgorithmElement::UNKNOWN)
+			return -EINVAL;
+		if (privacy->getState() != BaseAlgorithmElement::UNKNOWN)
+			return -EINVAL;
+		if (panchange->getState() != BaseAlgorithmElement::UNKNOWN)
+			return -EINVAL;
+		/* we have nothing running so track can start */
+		algosPending = TRACK_RUNNING;
+	} else if (el == motion) {
+		/* Checking for Requirement 2 */
+		if (track->getState() != BaseAlgorithmElement::UNKNOWN)
+			return -EINVAL;
+		if (panchange->getState() != BaseAlgorithmElement::UNKNOWN)
+			return -EINVAL;
+		if (privacy->getState() != BaseAlgorithmElement::UNKNOWN) {
+			/* Requirement 1 */
+			privacy->setState(BaseAlgorithmElement::STOPALGO);
+			algosPending = MOTION_RUNNING;
+			motionExtraEnabled = true;
+			return 0;
+		}
+		/* we have nothing running so motion can start */
+		algosPending = MOTION_RUNNING;
+	} else if (el == privacy) {
+		/* Checking for Requirement 2 */
+		if (track->getState() != BaseAlgorithmElement::UNKNOWN)
+			return -EINVAL;
+		if (panchange->getState() != BaseAlgorithmElement::UNKNOWN)
+			return -EINVAL;
+		if (motion->getState() != BaseAlgorithmElement::UNKNOWN) {
+			/* Requirement 1 */
+			motion->setState(BaseAlgorithmElement::STOPALGO);
+			algosPending = MOTION_RUNNING;
+			motionExtraEnabled = true;
+			return 0;
+		}
+		/* we have nothing running so bypass can start */
+		algosPending = PRIVACY_RUNNING;
+	} else if (el == panchange) {
+		/* checking for Requirement 2 */
+		if (motion->getState() != BaseAlgorithmElement::UNKNOWN)
+			return -EINVAL;
+		if (privacy->getState() != BaseAlgorithmElement::UNKNOWN)
+			return -EINVAL;
+		if (track->getState() != BaseAlgorithmElement::UNKNOWN)
+			return -EINVAL;
+		/* we have nothing running so track can start */
+		algosPending = DIFF_RUNNING;
+	}
+
+	return 0;
+}
+
+int TX1Streamer::stopAlgorithm(int channel)
+{
+	BaseAlgorithmElement *el = ApplicationInfo::instance()->getAlgorithmInstance(channel);
+	if (el->getState() != BaseAlgorithmElement::PROCESS) {
+		if (el == privacy) {
+			/* we may have privacy running thru motion */
+			if (!motionExtraEnabled)
+				return -EINVAL;
+			motion->setState(BaseAlgorithmElement::STOPALGO);
+			algosPending = MOTION_RUNNING;
+			motionExtraEnabled = false;
+			return 0;
+		}
+		return -EBUSY;
+	}
+	el->setState(BaseAlgorithmElement::STOPALGO);
+	if (el == motion && motionExtraEnabled) {
+		/* we need to enable privacy masking */
+		algosPending = PRIVACY_RUNNING;
+	}
+	return 0;
 }
 
 void TX1Streamer::apiUrlRequested(const QUrl &url)
@@ -90,22 +188,25 @@ void TX1Streamer::apiUrlRequested(const QUrl &url)
 		BaseAlgorithmElement *el = nullptr;
 		if (index == 0) {
 			el = motion;
+			index = 1;
 		} else if (index == 2) {
 			el = privacy;
+			index = 0;
 		}else if (index == 1) {
 			el = track;
+			index = 2;
 		} else
 			return;
 		if (action == "jsonreload")
 			el->reloadJson();
 		else if (action == "start")
-			el->setState(BaseAlgorithmElement::INIT);
+			runAlgorithm(index);
 		else if (action == "pause")
 			el->setPassThru(true);
 		else if (action == "resume")
 			el->setPassThru(false);
 		else if (action == "stop")
-			el->setState(BaseAlgorithmElement::STOPALGO);
+			stopAlgorithm(index);
 		else if (action == "restart")
 			el->restart();
 	} else if (actions[1] == "reload") {
@@ -125,6 +226,7 @@ void TX1Streamer::apiUrlRequested(const QUrl &url)
 
 int TX1Streamer::checkSeiAlarm(const RawBuffer &buf)
 {
+	checkAlgoState();
 	if (sei && buf.constPars()->metaData.size()) {
 		QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
 		QByteArray seiData = hash["motion_results"].toByteArray();
@@ -199,6 +301,94 @@ int TX1Streamer::processBuffer(const RawBuffer &buf)
 {
 	Q_UNUSED(buf);
 	return 0;
+}
+
+void TX1Streamer::checkAlgoState()
+{
+	//ffDebug() << algos;
+	switch (algos) {
+	case TO_GPU_FREE:
+		if (motion->getState() != BaseAlgorithmElement::UNKNOWN)
+			break;
+		if (privacy->getState() != BaseAlgorithmElement::UNKNOWN)
+			break;
+		if (panchange->getState() != BaseAlgorithmElement::UNKNOWN)
+			break;
+		if (track->getState() != BaseAlgorithmElement::UNKNOWN)
+			break;
+		algos = GPU_FREE;
+		break;
+	case GPU_FREE:
+		if (algosPending != NONE) {
+			if (algosPending == MOTION_RUNNING) {
+				StabilizationAlgorithmElement *sel = (StabilizationAlgorithmElement *)privacy;
+				ffDebug() << sel->getStabilization();
+				((MotionAlgorithmElement *)motion)->enableExtra(sel->getPrivacy(), sel->getStabilization());
+				algos = TO_MOTION_RUNNING;
+				motion->setState(BaseAlgorithmElement::INIT);
+			}
+			if (algosPending == PRIVACY_RUNNING) {
+				algos = TO_PRIVACY_RUNNING;
+				privacy->setState(BaseAlgorithmElement::INIT);
+			}
+			if (algosPending == TRACK_RUNNING) {
+				algos = TO_TRACK_RUNNING;
+				track->setState(BaseAlgorithmElement::INIT);
+			}
+			if (algosPending == DIFF_RUNNING) {
+				algos = TO_DIFF_RUNNING;
+				panchange->setState(BaseAlgorithmElement::INIT);
+			}
+			algosPending = NONE;
+		}
+		break;
+	case TO_PRIVACY_RUNNING:
+		if (privacy->getState() != BaseAlgorithmElement::PROCESS)
+			break;
+		algos = PRIVACY_RUNNING;
+		break;
+	case PRIVACY_RUNNING:
+		if (privacy->getState() != BaseAlgorithmElement::PROCESS)
+			algos = TO_GPU_FREE;
+		break;
+	case TO_MOTION_RUNNING:
+		if (motion->getState() != BaseAlgorithmElement::PROCESS)
+			break;
+		algos = MOTION_RUNNING;
+		break;
+	case MOTION_RUNNING:
+		if (motion->getState() != BaseAlgorithmElement::PROCESS)
+			algos = TO_GPU_FREE;
+		break;
+	case TO_TRACK_RUNNING:
+		if (track->getState() != BaseAlgorithmElement::PROCESS)
+			break;
+		algos = TRACK_RUNNING;
+		break;
+	case TRACK_RUNNING:
+		if (track->getState() != BaseAlgorithmElement::PROCESS)
+			algos = TO_GPU_FREE;
+		break;
+	case TO_DIFF_RUNNING:
+		if (panchange->getState() != BaseAlgorithmElement::PROCESS)
+			break;
+		algos = DIFF_RUNNING;
+	case DIFF_RUNNING:
+		if (panchange->getState() != BaseAlgorithmElement::PROCESS)
+			algos = TO_GPU_FREE;
+		break;
+	case NONE:
+		break;
+	}
+
+	((TextOverlay *)textOverlay)->setOverlayFieldText(3, QString("%1,%2").arg(algos).arg(algosPending));
+	((TextOverlay *)textOverlay)->setOverlayFieldText(4, QString("m=%1 t=%2 p=%3 diff=%4 p=%5")
+													  .arg(motion->getState())
+													  .arg(track->getState())
+													  .arg(privacy->getState())
+													  .arg(panchange->getState())
+													  .arg(motionExtraEnabled)
+													  );
 }
 
 void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res0)

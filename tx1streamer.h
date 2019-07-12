@@ -19,7 +19,9 @@ public:
 	explicit TX1Streamer(QObject *parent = 0);
 
 	virtual int start();
-	BaseAlgorithmElement *getAlgo(int channel);
+
+	int runAlgorithm(int channel);
+	int stopAlgorithm(int channel);
 signals:
 
 protected slots:
@@ -52,6 +54,25 @@ protected:
 	bool enablePreview;
 
 private:
+	enum AlgorithmState {
+		NONE,
+		TO_GPU_FREE,
+		GPU_FREE,
+		TO_PRIVACY_RUNNING,
+		PRIVACY_RUNNING,
+		TO_MOTION_RUNNING,
+		MOTION_RUNNING,
+		TO_TRACK_RUNNING,
+		TRACK_RUNNING,
+		TO_DIFF_RUNNING,
+		DIFF_RUNNING,
+	};
+
+	AlgorithmState algos;
+	AlgorithmState algosPending;
+	bool motionExtraEnabled;
+
+	void checkAlgoState();
 	void finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res0);
 };
 

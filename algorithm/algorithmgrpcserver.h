@@ -18,7 +18,8 @@
 class AlgoManIface
 {
 public:
-	virtual BaseAlgorithmElement * getAlgo(int channel) = 0;
+	virtual int runAlgorithm(int channel) = 0;
+	virtual int stopAlgorithm(int channel) = 0;
 };
 
 class AlgorithmGrpcServer : public AlgorithmCommunication::AlgorithmService::Service

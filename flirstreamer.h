@@ -11,13 +11,12 @@ class TK1OmxPipeline;
 class FlirStreamerPriv;
 class BaseAlgorithmElement;
 
-class FlirStreamer: public BaseStreamer, public AlgoManIface
+class FlirStreamer: public BaseStreamer
 {
 	Q_OBJECT
 public:
 	explicit FlirStreamer(const QJsonObject &config, QObject *parent = 0);
 	int generatePipeline(const QString &url);
-	BaseAlgorithmElement *getAlgo(int channel);
 protected:
 	int pipelineOutput(BaseLmmPipeline *p, const RawBuffer &buf);
 	int PerformSEI(const RawBuffer &buf);

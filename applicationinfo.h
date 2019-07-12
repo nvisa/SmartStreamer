@@ -47,7 +47,9 @@ public:
 	InDeviceTest * getIDT();
 
 	QString algorithmSet();
-	QHash<int, BaseAlgorithmElement*> algoIndexes;
+	BaseAlgorithmElement * getAlgorithmInstance(int index);
+	BaseAlgorithmElement * getAlgorithmInstance(const QString &type, int index);
+
 
 	LifeTimeTracker *lifetime;
 	qint64 getLifeTime();
@@ -56,6 +58,8 @@ protected:
 
 	InDeviceTest *idt;
 	QList<PtzpDriver *> drivers;
+	QList<BaseAlgorithmElement*> algorithms;
+	QHash<QString, QList<BaseAlgorithmElement*> > algoNameMapping;
 
 };
 

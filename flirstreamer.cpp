@@ -90,13 +90,6 @@ int FlirStreamer::generatePipeline(const QString &url)
 	return 0;
 }
 
-BaseAlgorithmElement *FlirStreamer::getAlgo(int channel)
-{
-	if (!ApplicationInfo::instance()->algoIndexes.keys().contains(channel))
-		return nullptr;
-	return ApplicationInfo::instance()->algoIndexes[channel];
-}
-
 int FlirStreamer::PerformSEI(const RawBuffer &buf)
 {
 	if (sei) {

@@ -509,10 +509,7 @@ int AlgorithmGrpcServer::setPanChangeParameters(PanChangeAlgorithmElement *el, A
 
 BaseAlgorithmElement* AlgorithmGrpcServer::algorithmElementManager(int chn)
 {
-	BaseAlgorithmElement *el = nullptr;
-	if (manif)
-		el = manif->getAlgo(chn);
-	return el;
+	return ApplicationInfo::instance()->getAlgorithmInstance(chn);
 }
 
 grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc::ServerReaderWriter<AlgorithmCommunication::Alarms, AlgorithmCommunication::AlarmReqInfo> *stream)

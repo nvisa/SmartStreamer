@@ -291,7 +291,8 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithm(const QString &type, int 
 	BaseAlgorithmElement *el = createAlgorithmFromJson(algo);
 	el->setJsonAlgorithmIndex(imap[index]);
 	el->reloadJson();
-	algoIndexes[imap[index]] = el;
+	algorithms << el;
+	algoNameMapping[type] << el;
 	return el;
 }
 
@@ -336,6 +337,16 @@ QString ApplicationInfo::algorithmSet()
 #if HAVE_TK1
 	return "tk1";
 #endif
+}
+
+BaseAlgorithmElement *ApplicationInfo::getAlgorithmInstance(int index)
+{
+	return algorithms[index];
+}
+
+BaseAlgorithmElement *ApplicationInfo::getAlgorithmInstance(const QString &type, int index)
+{
+	return algoNameMapping[type][index];
 }
 
 qint64 ApplicationInfo::getLifeTime()
