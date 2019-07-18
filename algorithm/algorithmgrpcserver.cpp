@@ -380,9 +380,37 @@ grpc::Status AlgorithmGrpcServer::GetSystemFeature(grpc::ServerContext *context,
 		QJsonArray arr = readJson("/etc/smartstreamer/encoders.json").array();
 		if (arr.size() <= 0)
 			return grpc::Status::CANCELLED;
-		QJsonObject obj = arr[0].toObject();
+		int device = request->device();
+		if (device >= arr.size())
+			return grpc::Status(StatusCode::NOT_FOUND, request->key());
+		QJsonObject obj = arr[device].toObject();
 		response->set_value(QString("%1").arg(obj["bitrate"].toInt()).toStdString());
-		response->set_key("bitrate");
+		response->set_key("Bitrate");
+		response->set_device(device);
+		return grpc::Status::OK;
+	}	else if (request->key() == "FrameRate") {
+		QJsonArray arr = readJson("/etc/smartstreamer/encoders.json").array();
+		if (arr.size() <= 0)
+			return grpc::Status::CANCELLED;
+		int device = request->device();
+		if (device >= arr.size())
+			return grpc::Status(StatusCode::NOT_FOUND, request->key());
+		QJsonObject obj = arr[device].toObject();
+		response->set_value(QString("%1").arg(obj["frameRate"].toInt()).toStdString());
+		response->set_key("FrameRate");
+		response->set_device(device);
+		return grpc::Status::OK;
+	}	else if (request->key() == "Resolution") {
+		QJsonArray arr = readJson("/etc/smartstreamer/encoders.json").array();
+		if (arr.size() <= 0)
+			return grpc::Status::CANCELLED;
+		int device = request->device();
+		if (device >= arr.size())
+			return grpc::Status(StatusCode::NOT_FOUND, request->key());
+		QJsonObject obj = arr[device].toObject();
+		response->set_value(QString("%1").arg(obj["resolution"].toInt()).toStdString());
+		response->set_key("Resolution");
+		response->set_device(device);
 		return grpc::Status::OK;
 	}
 	return grpc::Status(StatusCode::NOT_FOUND, request->key());
@@ -395,13 +423,14 @@ grpc::Status AlgorithmGrpcServer::SetSystemFeature(grpc::ServerContext *context,
 		QJsonArray arr = doc.array();
 		if (arr.size() <= 0)
 			return grpc::Status::CANCELLED;
-		QJsonObject obj = arr[0].toObject();
+		int device = request->device();
+		QJsonObject obj = arr[device].toObject();
 		bool isValid;
 		int btr = QString::fromStdString(request->value()).toInt(&isValid);
 		if (!isValid)
 			return grpc::Status(StatusCode::INVALID_ARGUMENT, request->value());
 		obj["bitrate"] = btr;
-		arr[0] = obj;
+		arr[device] = obj;
 		QJsonDocument docToSave(arr);
 		QFile f("/etc/smartstreamer/encoders.json");
 		if (!f.open(QIODevice::WriteOnly)) {
@@ -409,11 +438,65 @@ grpc::Status AlgorithmGrpcServer::SetSystemFeature(grpc::ServerContext *context,
 		}
 		f.write(docToSave.toJson());
 		f.close();
+		response->set_value(request->value());
+		response->set_key("Bitrate");
+		response->set_device(device);
+		return grpc::Status::OK;
+	} else if (request->key() == "FrameRate") {
+		QJsonDocument doc = readJson("/etc/smartstreamer/encoders.json");
+		QJsonArray arr = doc.array();
+		if (arr.size() <= 0)
+			return grpc::Status::CANCELLED;
+		int device = request->device();
+		QJsonObject obj = arr[device].toObject();
+		bool isValid;
+		int fps = QString::fromStdString(request->value()).toInt(&isValid);
+		if (!isValid)
+			return grpc::Status(StatusCode::INVALID_ARGUMENT, request->value());
+		obj["frameRate"] = fps;
+		arr[device] = obj;
+		QJsonDocument docToSave(arr);
+		QFile f("/etc/smartstreamer/encoders.json");
+		if (!f.open(QIODevice::WriteOnly)) {
+			return grpc::Status::CANCELLED;
+		}
+		f.write(docToSave.toJson());
+		f.close();
+		response->set_value(request->value());
+		response->set_key("FrameRate");
+		response->set_device(device);
+		return grpc::Status::OK;
+	} else if (request->key() == "Resolution") {
+		QJsonDocument doc = readJson("/etc/smartstreamer/encoders.json");
+		QJsonArray arr = doc.array();
+		if (arr.size() <= 0)
+			return grpc::Status::CANCELLED;
+		int device = request->device();
+		QJsonObject obj = arr[device].toObject();
+		bool isValid;
+		QString resolution = QString::fromStdString(request->value());
+		if (!isValid)
+			return grpc::Status(StatusCode::INVALID_ARGUMENT, request->value());
+		obj["resolution"] = resolution;
+		arr[device] = obj;
+		QJsonDocument docToSave(arr);
+		QFile f("/etc/smartstreamer/encoders.json");
+		if (!f.open(QIODevice::WriteOnly)) {
+			return grpc::Status::CANCELLED;
+		}
+		f.write(docToSave.toJson());
+		f.close();
+		response->set_value(request->value());
+		response->set_key("Resolution");
+		response->set_device(device);
 		return grpc::Status::OK;
 	} else if (request->key() == "Reboot") {
 		QProcess::startDetached("reboot");
 		return grpc::Status::OK;
-	} else if (request->key() == "grabPanTilt") {
+	} else if (request->key() == "Reset") {
+		QProcess::startDetached("killall SmartStreamer");
+		return grpc::Status::OK;
+	}  else if (request->key() == "grabPanTilt") {
 		if (request->value() == "disable") {
 			ApplicationInfo::instance()->getPtzpDriver(0)->enableDriver(false);
 			return grpc::Status(StatusCode::OK, "Pan-Tilt is disabled");
