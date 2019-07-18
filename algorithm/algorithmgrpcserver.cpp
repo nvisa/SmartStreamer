@@ -105,6 +105,7 @@ AlgorithmGrpcServer::AlgorithmGrpcServer(QObject *parent)
 
 	AlgorithmGrpcServerGrpcThreadAlg *grpcServ = new AlgorithmGrpcServerGrpcThreadAlg(50059, this);
 	grpcServ->start();
+	enableTrackAutoStopping();
 }
 
 AlgorithmGrpcServer *AlgorithmGrpcServer::instance()
