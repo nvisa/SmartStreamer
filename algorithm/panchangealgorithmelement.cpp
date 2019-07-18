@@ -161,6 +161,8 @@ int PanChangeAlgorithmElement::saveLocations()
 		return -EPERM;
 	}
 	file.write(QByteArray::fromStdString(str));
+	file.close();
+	qDebug() << "saving is completed";
 	return 0;
 }
 
@@ -175,5 +177,6 @@ int PanChangeAlgorithmElement::loadLocations()
 		return -EPERM;
 	QByteArray ba = f.readAll();
 	listOfLocationInformationFromAlgComm->ParseFromString(ba.toStdString());
+	f.close();
 	return 0;
 }
