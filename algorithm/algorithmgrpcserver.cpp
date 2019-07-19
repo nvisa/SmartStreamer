@@ -37,6 +37,7 @@ using namespace std;
 #include <QImage>
 #include <QBuffer>
 #include <QDateTime>
+#include <QJsonDocument>
 
 #include <unistd.h>
 
@@ -633,6 +634,9 @@ grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc:
 					if (obj["type"].toString() == "video_module")
 						citinfo->set_usbinfo(AlgorithmCommunication::CITInfo_Info_NOK);
 				}
+				alarm->add_key("details");
+				QByteArray alarmArr =  QJsonDocument(cit).toJson();
+				alarm->add_value(std::string(alarmArr.data(), alarmArr.size()));
 			}
 		}
 

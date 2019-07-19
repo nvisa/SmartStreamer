@@ -48,7 +48,7 @@ void InDeviceTest::timeout()
 	foreach (const QString &key, pipelines.keys())
 		checks.append(QJsonValue(key));
 	QJsonArray faults;
-
+	QJsonArray extras;
 	/* check drivers */
 	QHashIterator<QString, PtzpDriver *> dit(drivers);
 	while (dit.hasNext()) {
@@ -61,6 +61,9 @@ void InDeviceTest::timeout()
 			if (lastPing > headPingFaultTime)
 				faults.append(addHeadFault(dit.key(), i, lastPing));
 		}
+		QJsonObject extra = d->doExtraDeviceTests();
+		if (!extra.isEmpty())
+			extras.append(extra);
 	}
 
 	/* check pipelines */
@@ -76,6 +79,8 @@ void InDeviceTest::timeout()
 
 	QJsonObject obj;
 	obj.insert("device_checks", checks);
+	if (!extras.isEmpty())
+		obj.insert("extras", extras);
 	if (faults.size())
 		obj.insert("faults", faults);
 	mutex.lock();
