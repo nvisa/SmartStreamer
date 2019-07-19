@@ -8,6 +8,7 @@
 #include "indevicetest.h"
 #include "tbgthstreamer.h"
 #include "videotestsourcestreamer.h"
+#include "moxak1streamer.h"
 
 #include "algorithm/motionalgorithmelement.h"
 #include "algorithm/stabilizationalgorithmelement.h"
@@ -127,7 +128,10 @@ int ApplicationInfo::startPtzpDriver()
 			driver = new AryaDriver;
 			break;
 		case TBGTH:
-			driver = new TbgthDriver(false);
+			if (!obj["thermal"].toBool())
+				driver = new TbgthDriver(false);
+			else
+				driver = new TbgthDriver(true);
 			break;
 		case YAMGOZ:
 			driver = new YamGozDriver;
@@ -236,6 +240,9 @@ BaseStreamer *ApplicationInfo::createAppStreamer()
 		qDebug() << "starting flir streamer";
 		FlirStreamer *flirStr = new FlirStreamer(obj["flir_config"].toObject());
 		streamer = flirStr;
+	} else if (obj.value("moxak1streamer").toBool()) {
+		qDebug() << "Moxa driver is initializing";
+		streamer = new MoxaK1Streamer(obj["moxak1_config"].toObject());
 	}
 #endif
 	ffDebug() << "Starting application under path" << QDir::currentPath();
