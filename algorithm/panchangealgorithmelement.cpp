@@ -160,7 +160,7 @@ int PanChangeAlgorithmElement::saveLocations()
 	if (!file.open(QIODevice::WriteOnly)) {
 		return -EPERM;
 	}
-	file.write(QByteArray::fromStdString(str));
+	file.write(str.data(), str.size());
 	file.close();
 	qDebug() << "saving is completed";
 	return 0;
@@ -176,7 +176,7 @@ int PanChangeAlgorithmElement::loadLocations()
 	if (!f.open(QIODevice::ReadOnly))
 		return -EPERM;
 	QByteArray ba = f.readAll();
-	listOfLocationInformationFromAlgComm->ParseFromString(ba.toStdString());
+	listOfLocationInformationFromAlgComm->ParseFromString(std::string(ba.data(), ba.size()));
 	f.close();
 	return 0;
 }
