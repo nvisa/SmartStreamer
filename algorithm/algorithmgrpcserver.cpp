@@ -120,6 +120,11 @@ void AlgorithmGrpcServer::setAlgorithmManagementInterface(AlgoManIface *i)
 	manif = i;
 }
 
+AlgoManIface *AlgorithmGrpcServer::getAlgorithmManagementInterface()
+{
+	return manif;
+}
+
 void AlgorithmGrpcServer::setAlarmField(const QString &key, const QString &value)
 {
 	QMutexLocker ml(&mutex);

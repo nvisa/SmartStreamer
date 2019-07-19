@@ -27,6 +27,7 @@ class AlgorithmGrpcServer : public AlgorithmCommunication::AlgorithmService::Ser
 public:
 	static AlgorithmGrpcServer * instance();
 	void setAlgorithmManagementInterface(AlgoManIface *i);
+	AlgoManIface * getAlgorithmManagementInterface();
 	void setFaceAlgorithmElement(FaceAlgorithmElement *el) {faceEl = el;}
 	void setTrackAlgorithmElement(TrackAlgorithmElement *el) {trackEl = el;}
 	void setMotionAlgorithmElement(MotionAlgorithmElement *el) {motionEl = el;}
@@ -47,6 +48,7 @@ public:
 
 	grpc::Status GetSystemFeature(grpc::ServerContext *context, const AlgorithmCommunication::SystemFeature *request, AlgorithmCommunication::SystemFeature *response);
 	grpc::Status SetSystemFeature(grpc::ServerContext *context, const AlgorithmCommunication::SystemFeature *request, AlgorithmCommunication::SystemFeature *response);
+
 	void enableTrackAutoStopping();
 	void ptzCommandRecved(int cmd);
 
