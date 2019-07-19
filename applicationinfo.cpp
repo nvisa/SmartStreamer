@@ -253,7 +253,7 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithmFromJson(const QJsonObject
 {
 	if (algo["type"] == QString("motion")) {
 		return new MotionAlgorithmElement;
-#if HAVE_TX1
+#if 1
 	} else if (algo["type"] == QString("bypass")) {
 		return new StabilizationAlgorithmElement;
 	} else if (algo["type"] == QString("privacy")) {
@@ -264,7 +264,7 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithmFromJson(const QJsonObject
 			track->setTiltReversing(true);
 		return track;
 	} else if (algo["type"] == QString("faceDetection")) {
-		return new FaceAlgorithmElement;
+		return new BaseAlgorithmElement;
 #endif
 #if HAVE_TK1
 	} else if (algo["type"] == QString("panaroma")) {
