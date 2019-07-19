@@ -99,15 +99,15 @@ int MoxaK1Streamer::setPixelFormat(const RawBuffer &buf){
 	((RawBuffer *)&buf)->pars()->v4l2PixelFormat = V4L2_PIX_FMT_UYVY;
 }
 
-BaseAlgorithmElement* MoxaK1Streamer::getAlgo(int channel) {
-	qDebug() << "get channel" << channel;
-	foreach (BaseAlgorithmElement *el, ApplicationInfo::instance()->algoIndexes)
-		qDebug() << el;
-	if (!ApplicationInfo::instance()->algoIndexes.keys().contains(channel))
-		return nullptr;
-	return ApplicationInfo::instance()->algoIndexes[channel];
+int MoxaK1Streamer::runAlgorithm(int channel)
+{
+	return -EAGAIN;
 }
 
+int MoxaK1Streamer::stopAlgorithm(int channel)
+{
+	return -EAGAIN;
+}
 
 int MoxaK1Streamer::pipelineOutput(BaseLmmPipeline *p, const RawBuffer &buf) {
 

@@ -27,7 +27,8 @@ public:
 public:
 	explicit MoxaK1Streamer(const QJsonObject &config, QObject *parent = 0);
 	int generatePipeline(const QString &url);
-	BaseAlgorithmElement *getAlgo(int channel);
+	int runAlgorithm(int channel);
+	int stopAlgorithm(int channel);
 	int setPixelFormat(const RawBuffer &buf);
 
 	// PipelineManager interface

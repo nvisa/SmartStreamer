@@ -46,7 +46,6 @@ FlirStreamer::FlirStreamer(const QJsonObject &config, QObject *parent)
 	if (generatePipeline(priv->url))
 		mDebug("Defination is missing, please set flir url configuration");
 
-	AlgorithmGrpcServer::instance()->setAlgorithmManagementInterface(this);
 	algen = new alarmGeneratorElement;
 }
 
