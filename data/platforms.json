@@ -147,6 +147,22 @@
             }
         ]
     },
+	"tbgth_x1": {
+		"startup_delay": 180,
+		"tbgthstreamer": true,
+		"tbgth_config": {
+			"source": "rtsp://192.168.0.2/?inst=1",
+			"resolution_width": 1920,
+			"resolution_height": 1080
+		},
+		"ptzp": [
+			{
+				"type": "tbgth",
+				"target": "ttyTHS2?baud=19200;192.168.1.100:10000",
+				"grpc_port": 50058
+			}
+		]
+	},
     "flir": {
         "flirstreamer": true,
         "flir_config": {
