@@ -17,8 +17,8 @@ SOURCES += main.cpp \
     snapshotelement.cpp \
     indevicetest.cpp \
     alarmgeneratorelement.cpp \
-    kardelenapi.cpp \
-    moxak1streamer.cpp
+	kardelenapi.cpp
+
 
 HEADERS += \
     moxadriver.h \
@@ -33,8 +33,8 @@ HEADERS += \
     indevicetest.h \
     alarmgeneratorelement.h \
 	kardelenapi.h \
-	algorithmparameters.h \
-    moxak1streamer.h
+	algorithmparameters.h
+
 
 websockets {
     SOURCES += websocketstreamer.cpp
@@ -81,13 +81,15 @@ tk1 {
 		aryastreamer.cpp \
 		orioncommunicationserver.cpp \
 		flirstreamer.cpp \
-		tk1omxpipeline.cpp
+		tk1omxpipeline.cpp \
+		moxak1streamer.cpp
 
 	HEADERS += \
 		aryastreamer.h \
 		orioncommunicationserver.h \
 		flirstreamer.h \
-		tk1omxpipeline.h
+		tk1omxpipeline.h \
+		moxak1streamer.h
 
 	LIBS += -lvdpau -lX11 -lXv -lva-drm -lva-x11
 	INCLUDEPATH += /usr/include/gstreamer-1.0
