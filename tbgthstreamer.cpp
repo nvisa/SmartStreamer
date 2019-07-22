@@ -16,6 +16,10 @@ Tbgthstreamer::Tbgthstreamer(const QJsonObject &config,QObject *parent) : TX1Str
 
 BaseLmmPipeline *Tbgthstreamer::createYUV420Pipeline(QSize &res0)
 {
+	secondStream = false;
+	thirdStream = false;
+	fourthStream = false;
+
 	rtpReceiver = new RtpReceiver(this);
 	rtpReceiver->useThreadedReading(true);
 
