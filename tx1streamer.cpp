@@ -395,9 +395,9 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 {
 	BufferQueue* queue = new BufferQueue;
 
-	privacy = ApplicationInfo::instance()->createAlgorithm("privacy");
 	motion = ApplicationInfo::instance()->createAlgorithm("motion");
 	track = ApplicationInfo::instance()->createAlgorithm("track");
+	privacy = ApplicationInfo::instance()->createAlgorithm("privacy");
 	panchange = ApplicationInfo::instance()->createAlgorithm("panchange");
 
 	enc0 = StreamerCommon::createEncoder(0);
