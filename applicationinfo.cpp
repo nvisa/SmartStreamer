@@ -32,6 +32,7 @@
 #include <ecl/ptzp/yamgozdriver.h>
 #include <ecl/ptzp/swirdriver.h>
 #include <ecl/drivers/systeminfo.h>
+#include <ecl/ptzp/virtualptzpdriver.h>
 
 #include <unistd.h>
 
@@ -113,6 +114,7 @@ int ApplicationInfo::startPtzpDriver()
 		PtzpDriver *driver = NULL;
 		switch (plat) {
 		case GENERIC:
+			driver = new VirtualPtzpDriver;
 			break;
 		case KAYI_SAHINGOZ: {
 			QList<int> relayConfig;
