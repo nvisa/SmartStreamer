@@ -60,6 +60,7 @@ tx1 {
 		tx1streamer.cpp \
 		tbgthstreamer.cpp \
 		videotestsourcestreamer.cpp \
+		internalrecorder.cpp
 
 	HEADERS += \
 		ipstreamer.h \
@@ -71,6 +72,7 @@ tx1 {
 		tx1streamer.h \
 		tbgthstreamer.h \
 		videotestsourcestreamer.h \
+		internalrecorder.h
 
 	LIBS += -L/usr/local/cuda/lib64 -lcudart -lcufft
 	LIBS += -L/usr/lib/aarch64-linux-gnu/tegra/ -lv4l2 -lnvbuf_utils -lnvinfer -lnvparsers -lnvjpeg -lEGL -lX11
