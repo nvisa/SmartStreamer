@@ -377,6 +377,7 @@ void TX1Streamer::checkAlgoState()
 		break;
 	}
 
+#if 0
 	((TextOverlay *)textOverlay)->setOverlayFieldText(3, QString("%1,%2").arg(algos).arg(algosPending));
 	((TextOverlay *)textOverlay)->setOverlayFieldText(4, QString("m=%1 t=%2 p=%3 diff=%4 p=%5")
 													  .arg(motion->getState())
@@ -385,6 +386,7 @@ void TX1Streamer::checkAlgoState()
 													  .arg(panchange->getState())
 													  .arg(motionExtraEnabled)
 													  );
+#endif
 }
 
 void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res0)
