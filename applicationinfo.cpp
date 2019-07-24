@@ -150,6 +150,7 @@ int ApplicationInfo::startPtzpDriver()
 		}
 		if (driver) {
 			fDebug("Starting PTZP driver for %s", qPrintable(obj["type"].toString()));
+			driver->setRegisterSaving(obj["save_registers"].toBool(), obj["save_register_interval"].toInt());
 			driver->setTarget(obj["target"].toString());
 			if (obj.contains("grpc_port")) {
 				driver->startGrpcApi(obj["grpc_port"].toInt());
