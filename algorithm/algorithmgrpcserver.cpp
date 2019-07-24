@@ -37,6 +37,7 @@ using namespace std;
 #include <QImage>
 #include <QBuffer>
 #include <QDateTime>
+#include <QJsonArray>
 #include <QJsonDocument>
 
 #include <unistd.h>
@@ -372,7 +373,6 @@ static void saveSettings(const QString &filename, const QJsonObject &obj)
 	f.write(QJsonDocument(obj).toJson());
 	f.close();
 }
-#include <QJsonArray>
 
 grpc::Status AlgorithmGrpcServer::GetSystemFeature(grpc::ServerContext *context, const AlgorithmCommunication::SystemFeature *request, AlgorithmCommunication::SystemFeature *response)
 {
