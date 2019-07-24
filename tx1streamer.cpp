@@ -188,13 +188,10 @@ void TX1Streamer::apiUrlRequested(const QUrl &url)
 		BaseAlgorithmElement *el = nullptr;
 		if (index == 0) {
 			el = motion;
-			index = 1;
 		} else if (index == 2) {
 			el = privacy;
-			index = 0;
 		}else if (index == 1) {
 			el = track;
-			index = 2;
 		} else
 			return;
 		if (action == "jsonreload")
@@ -322,7 +319,6 @@ void TX1Streamer::checkAlgoState()
 		if (algosPending != NONE) {
 			if (algosPending == MOTION_RUNNING) {
 				StabilizationAlgorithmElement *sel = (StabilizationAlgorithmElement *)privacy;
-				ffDebug() << sel->getStabilization();
 				((MotionAlgorithmElement *)motion)->enableExtra(sel->getPrivacy(), sel->getStabilization());
 				algos = TO_MOTION_RUNNING;
 				motion->setState(BaseAlgorithmElement::INIT);
