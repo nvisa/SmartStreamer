@@ -126,14 +126,16 @@ void MjpegServer::transmitImage(const RawBuffer &buf)
 		int sd = sock->socketDescriptor();
 
 		/* send header */
-		send(sd, resp.constData(), resp.size(), 0);
+		int err = send(sd, resp.constData(), resp.size(), MSG_NOSIGNAL);
+		if (err < 0)
+			continue;
 
 		/* now the image itself */
 		const char *data = (const char *)buf.constData();
 		int left = buf.size();
 		while (left) {
-			int len = send(sd, data, left, 0);
-			if (len == -1)
+			int len = send(sd, data, left, MSG_NOSIGNAL);
+			if (len <= 0)
 				break;
 			data += len;
 			left -= len;
