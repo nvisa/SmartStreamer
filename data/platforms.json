@@ -21,7 +21,8 @@
             {
                 "type": "irdome",
                 "target": "ttyS0?baud=9600;ttyUSB0?baud=9600",
-                "grpc_port": 50058
+                "grpc_port": 50058,
+		"save_registers": true
             }
         ]
     },
@@ -32,7 +33,8 @@
             {
                 "type": "irdome",
                 "target": "ttyS0?baud=9600;null",
-                "grpc_port": 50058
+                "grpc_port": 50058,
+		"save_registers": true
             }
         ]
     },
