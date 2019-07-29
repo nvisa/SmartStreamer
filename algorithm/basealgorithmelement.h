@@ -44,6 +44,7 @@ public:
 	void setJsonAlgorithmIndex(int index);
 	int getAlgorithmIndex() { return algIndex; }
 	void restart();
+	bool isAutoStart() { return autoStart; }
 
 	/* TODO: state management should be private */
 	void setState(AlgoState state);
@@ -62,6 +63,7 @@ private:
 
 	int algIndex;
 	bool restarting;
+	bool autoStart;
 };
 
 #endif // BASEALGORITHMELEMENT_H

@@ -40,6 +40,7 @@ BaseAlgorithmElement::BaseAlgorithmElement(QObject *parent)
 	algoState = UNKNOWN;
 	algIndex = 0;
 	restarting = false;
+	autoStart = true;
 }
 
 int BaseAlgorithmElement::init()
@@ -134,8 +135,7 @@ int BaseAlgorithmElement::reloadJson()
 	if (arr.size() <= algIndex)
 		return -EINVAL;
 	QJsonObject node = arr[algIndex].toObject();
-	if (node["enabled"].toBool())
-		setState(INIT);
+	autoStart = node["enabled"].toBool();
 	return reloadJson(node);
 }
 
