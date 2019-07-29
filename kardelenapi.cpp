@@ -866,7 +866,7 @@ class KardelenAPIMgeoSwirImpl : public KardelenAPIImpl
 public:
 	KardelenAPIMgeoSwirImpl()
 	{
-
+		_mymode = CONTROL_MODE_JOYSTICK;
 	}
 
 	int64_t getCapabilities()
@@ -877,6 +877,7 @@ public:
 		addcap(caps, CAPABILITY_ZOOM);
 		addcap(caps, CAPABILITY_FOCUS);
 		addcap(caps, CAPABILITY_HPF_GAIN);
+		addcap(caps, CAPABILITY_SHOW_HIDE_SEMBOLOGY);
 
 		addcap(caps, CAPABILITY_DETECTION);
 		addcap(caps, CAPABILITY_PT);
@@ -958,7 +959,7 @@ public:
 		} else if (index == NUM_PARAM_PITCH)
 			value = ptzp->getHead(1)->getTiltAngle();
 		else if (index == NUM_PARAM_FOCUS)
-			value = ptzp->getHead(0)->getProperty(1);
+			value = (double(ptzp->getHead(0)->getProperty(1)) / 12604) * 100;
 		else if (index == NUM_PARAM_HORIZONTAL_RES)
 			value = 720;
 		else if (index == NUM_PARAM_VERTICAL_RES)
@@ -978,21 +979,34 @@ public:
 		if (map.isEmpty())
 			map = ptzp->getHead(0)->getSettings();
 
+		if (index == ENUM_PARAM_CAMERA_TYPE)
+			return THERMAL;
 		if (index == ENUM_PARAM_OPERATIONAL_MODE)
 			return getMode();
 		if (index == ENUM_PARAM_DETECTION_CREATION_MODE)
 			return DETECTION_OPEN_MODE;
 		if (index == ENUM_PARAM_GAIN_LEVEL)
 			return ptzp->getHead(0)->getProperty(2) + 1;
-
+		if (index == ENUM_PARAM_SEMBOLOGY) {
+			if (ptzp->getHead(0)->getProperty(4))
+				return SYMBOLOGY_ON;
+			else
+				return SYMBOLOGY_OFF;
+		}
 		/* API wants this */
 		return -1;
 	}
 
 	virtual void setNumericParameter(int index, double &value, int32_t bytes[3])
 	{
-		if (index == NUM_PARAM_FOCUS)
-			ptzp->getHead(0)->setProperty(1, value);
+		if (index == NUM_PARAM_FOCUS){
+			if (bytes[2] == 1)
+				ptzp->getHead(0)->focusIn(value);
+			else if (bytes[2] == 2)
+				ptzp->getHead(0)->focusOut(value);
+			if (value == 0)
+				ptzp->getHead(0)->focusStop();
+		}
 		else if (index == NUM_PARAM_HPF_GAIN)
 			ptzp->getHead(0)->setProperty(2, (int)(value / 33));
 	}
@@ -1005,6 +1019,12 @@ public:
 			setMode(value);
 		if (index == ENUM_PARAM_GAIN_LEVEL)
 			ptzp->getHead(0)->setProperty(2, value - 1);
+		if (index == ENUM_PARAM_SEMBOLOGY){
+			if (value == SYMBOLOGY_ON)
+				ptzp->getHead(0)->setProperty(4, 1);
+			else if (value == SYMBOLOGY_OFF)
+				ptzp->getHead(0)->setProperty(4, 0);
+		}
 	}
 
 	virtual void setEnumCommand(int index, int32_t value)
