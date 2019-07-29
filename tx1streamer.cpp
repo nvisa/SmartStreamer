@@ -64,6 +64,19 @@ int TX1Streamer::start()
 	if (p1) {
 		finishGeneric420Pipeline(p1, res0);
 		connect(SimpleApiServer::instance(), SIGNAL(urlRequested(QUrl)), this, SLOT(apiUrlRequested(QUrl)));
+		
+		if (motion->isAutoStart() && privacy->isAutoStart()) {
+			motionExtraEnabled = true;
+			runAlgorithm(0);
+		} else if (motion->isAutoStart()) {
+			runAlgorithm(0);
+		} else if (privacy->isAutoStart()) {
+			runAlgorithm(2);
+		} else if (track->isAutoStart()) {
+			runAlgorithm(1);
+		} else if (panchange->isAutoStart()) {
+			runAlgorithm(3);
+		}
 	}
 
 	return BaseStreamer::start();
