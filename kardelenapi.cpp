@@ -251,6 +251,7 @@ public:
 			addcap(caps, CAPABILITY_AUTO_TRACK_DETECTION);
 			addcap(caps, CAPABILITY_NUC);
 			addcap(caps, CAPABILITY_DIGITAL_ZOOM);
+			addcap(caps, CAPABILITY_FOCUS);
 
 			addcap(caps, CAPABILITY_MISSION_EXECUTION);
 			addcap(caps, CAPABILITY_SENSITIVITY_ADJUSTMENT);
@@ -552,8 +553,14 @@ public:
 	{
 		if (index == NUM_PARAM_FOV)
 			ptzp->getHead(0)->setProperty("fov_pos", value); /* TODO: what is this? an enum */
-		else if (index == NUM_PARAM_FOCUS)
-			ptzp->getHead(0)->setProperty("focus_in", value);
+		else if (index == NUM_PARAM_FOCUS){
+			if (bytes[2] == 1)
+				ptzp->getHead(0)->focusIn(value);
+			else if (bytes[2] == 2)
+				ptzp->getHead(0)->focusOut(value);
+			if (value == 0)
+				ptzp->getHead(0)->focusStop();
+		}
 		else if (index == NUM_PARAM_ZOOM) {
 			if (ptzp->getHead(0)->getProperty(61)){
 				if (value <= 40)
