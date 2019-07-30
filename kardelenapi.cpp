@@ -625,21 +625,21 @@ public:
 	double SIXTH_BUTTON_UP_LEFT_X = 0.793; //0.793
 	double SIXTH_BUTTON_UP_LEFT_Y = 0.602; //0.710
 
-	double ROUTING_LEFT_X1 = 0.815; //0.815
-	double ROUTING_LEFT_X2 = 0.84; //0.840
-	double ROUTING_RIGHT_X1 = 0.86; //0.861
-	double ROUTING_RIGHT_X2 = 0.887; //0.8875
-	double ROUTING_RIGHT_LEFT_Y1 = 0.871;  //0.871
-	double ROUTING_RIGHT_LEFT_Y2 = 0.9;  //0.9
-	double ROUTING_UP_DOWN_X1 = 0.84; //0.840
-	double ROUTING_UP_DOWN_X2 = 0.887; //0.0887
-	double ROUTING_UP_Y1 = 0.87; //0.871
-	double ROUTING_UP_Y2 = 0.84; //0.842
-	double ROUTING_DOWN_Y1 = 0.93; //0.930
-	double ROUTING_DOWN_Y2 = 0.90; //0.901
+	double ROUTING_LEFT_X1 = 0.794; //0.794
+	double ROUTING_LEFT_X2 = 0.825; //0.825
+	double ROUTING_RIGHT_X1 = 0.845; //0.845
+	double ROUTING_RIGHT_X2 = 0.872; //0.872
+	double ROUTING_RIGHT_LEFT_Y1 = 0.850;  //0.850
+	double ROUTING_RIGHT_LEFT_Y2 = 0.875;  //0.875
+	double ROUTING_UP_DOWN_X1 = 0.82; //0.82
+	double ROUTING_UP_DOWN_X2 = 0.857; //0.857
+	double ROUTING_UP_Y1 = 0.84; //0.84
+	double ROUTING_UP_Y2 = 0.82; //0.82
+	double ROUTING_DOWN_Y1 = 0.90; //0.90
+	double ROUTING_DOWN_Y2 = 0.88; //0.88
 
-	double ROUTING_AREA_TOP 	= 0.84; //0.840
-	double ROUTING_AREA_BOTTOM = 0.93; //0.930
+	double ROUTING_AREA_TOP 	= 0.82; //0.82
+	double ROUTING_AREA_BOTTOM = 0.90; //0.90
 	int L0 = 0;
 	int L1 = 1;
 	int L2 = 2;
