@@ -45,7 +45,7 @@ public:
 	}
 	void run()
 	{
-		sleep(5);
+		sleep(10);
 		std::string ep(qPrintable(QString("0.0.0.0:%1").arg(servicePort)));
 		ServerBuilder builder;
 		builder.AddListeningPort(ep, grpc::InsecureServerCredentials());
@@ -257,6 +257,7 @@ public:
 			addcap(caps, CAPABILITY_CALIBRATION);
 			addcap(caps, CAPABILITY_THERMAL_STANDBY_MODE);
 			addcap(caps, CAPABILITY_CHANGE_DETECTION);
+			addcap(caps, CAPABILITY_SHOW_RETICLE);
 		} else {
 			qDebug() << "capabilities of day";
 			addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
@@ -280,6 +281,7 @@ public:
 			addcap(caps, CAPABILITY_CALIBRATION);
 			addcap(caps, CAPABILITY_THERMAL_STANDBY_MODE);
 			addcap(caps, CAPABILITY_CHANGE_DETECTION);
+			addcap(caps, CAPABILITY_SHOW_RETICLE);
 		}
 
 		return caps;
@@ -312,6 +314,9 @@ public:
 		addNumericParameter(v, NUM_PARAM_VERTICAL_RES, response);
 		addNumericParameter(v, NUM_PARAM_ZOOM, response);
 		addNumericParameter(v, NUM_PARAM_PREDEFINED_FOV_COUNT, response);
+		addNumericParameter(v, NUM_PARAM_RETICLE_INTENSITY, response);
+		addNumericParameter(v, NUM_PARAM_TARGET_LAT, response);
+		addNumericParameter(v, NUM_PARAM_TARGET_LON, response);
 //		addNumericParameter(v, NUM_PARAM_HPF_GAIN, response);
 //		addNumericParameter(v, NUM_PARAM_HPF_SPATIAL, response);
 		response->set_numericparametersvector(v);
@@ -324,6 +329,8 @@ public:
 		addEnumParameter(v, ENUM_PARAM_POLARITY, response);
 		addEnumParameter(v, ENUM_PARAM_SEMBOLOGY, response);
 		addEnumParameter(v, ENUM_PARAM_FOV_LEVEL, response);
+		addEnumParameter(v, ENUM_PARAM_RETICLE_MODE, response);
+		addEnumParameter(v, ENUM_PARAM_RETICLE_TYPE, response);
 		response->set_enumparametersvector(v);
 	}
 
@@ -464,6 +471,23 @@ public:
 			QStringList rangeStr = range.toString().split(",");
 			value = rangeStr.first().toInt();
 		}
+		else if (index == NUM_PARAM_TARGET_LAT){
+			QVariant range = ptzp->getHead(0)->getProperty("laser_reflections");
+			QStringList rangeStr = range.toString().split(",");
+			if (!range.toString().isEmpty())
+				value = rangeStr.at(2).toDouble() + rangeStr.at(3).toDouble() / 60 + rangeStr.at(4).toDouble() / 3600;
+			else value = 0;
+		}
+		else if (index == NUM_PARAM_TARGET_LON){
+			QVariant range = ptzp->getHead(0)->getProperty("laser_reflections");
+			QStringList rangeStr = range.toString().split(",");
+			if (!range.toString().isEmpty())
+				value = rangeStr.at(5).toDouble() + rangeStr.at(6).toDouble() / 60 + rangeStr.at(7).toDouble() / 3600;
+			else value = 0;
+		}
+		else if (index == NUM_PARAM_RETICLE_INTENSITY)
+			value = ptzp->getHead(0)->getProperty(8);
+
 		else {
 			value = 100000;
 		}
@@ -508,6 +532,16 @@ public:
 			else
 				return THERMAL_OFFLINE;
 		}
+		if (index == ENUM_PARAM_RETICLE_MODE){
+			if (ptzp->getHead(0)->getProperty(6) == 0)
+				return RETICLE_OFF;
+			return RETICLE_ON;
+		}
+		if (index == ENUM_PARAM_RETICLE_TYPE){
+			if (ptzp->getHead(0)->getProperty(7) == 0)
+				return RETICLE_TYPE_MILLIEME;
+			return RETICLE_TYPE_TEST;
+		}
 
 
 		/* API wants this */
@@ -546,6 +580,8 @@ public:
 				}
 			}
 		}
+		else if (index == NUM_PARAM_RETICLE_INTENSITY)
+			ptzp->getHead(0)->setProperty(10, value);
 	}
 
 	virtual void setEnumParameter(int index, int32_t value)
@@ -574,6 +610,18 @@ public:
 		else if (index == ENUM_PARAM_THERMAL_MODE){
 			ptzp->getHead(0)->setProperty(37, value - 1);
 			ptzp->getHead(0)->setProperty(5, value - 1);
+		}
+		else if (index == ENUM_PARAM_RETICLE_MODE){
+			if (value == RETICLE_ON)
+				ptzp->getHead(0)->setProperty(8, 1);
+			else if (value == RETICLE_OFF)
+				ptzp->getHead(0)->setProperty(8, 0);
+		}
+		else if (index == ENUM_PARAM_RETICLE_TYPE){
+			if (value == RETICLE_TYPE_MILLIEME)
+				ptzp->getHead(0)->setProperty(9, 0);
+			else if (value == RETICLE_TYPE_TEST)
+				ptzp->getHead(0)->setProperty(9, 1);
 		}
 	}
 

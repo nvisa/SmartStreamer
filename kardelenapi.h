@@ -62,6 +62,7 @@ const static int CAPABILITY_HPF_GAIN = 38;
 const static int CAPABILITY_HPF_SPATIAL = 39;
 const static int CAPABILITY_THERMAL_STANDBY_MODE = 40;
 const static int CAPABILITY_CHANGE_DETECTION = 41;
+const static int CAPABILITY_SHOW_RETICLE = 42;
 
 const static int NUM_PARAM_SENSITIVITY = 0;
 const static int NUM_PARAM_RANGE = 1;
@@ -93,6 +94,9 @@ const static int NUM_PARAM_BULLET_COUNT = 26;
 const static int NUM_PARAM_HPF_GAIN = 27;
 const static int NUM_PARAM_HPF_SPATIAL = 28;
 const static int NUM_PARAM_PREDEFINED_GAIN_COUNT = 29; //
+const static int NUM_PARAM_RETICLE_INTENSITY = 30;
+const static int NUM_PARAM_TARGET_LAT = 31;
+const static int NUM_PARAM_TARGET_LON = 32;
 
 const static int VALUE_NO_CHANGE = 0;
 const static int VALUE_INCREASE = 1;
@@ -184,6 +188,14 @@ const static byte GAIN_LEVEL_6 = (byte) 0x06;
 const static int ENUM_PARAM_THERMAL_MODE = 14;
 const static byte THERMAL_ONLINE = (byte) 0x01;
 const static byte THERMAL_OFFLINE = (byte) 0x02;
+
+const static int ENUM_PARAM_RETICLE_MODE = 15;
+const static byte RETICLE_ON = 0x01;
+const static byte RETICLE_OFF = 0x02;
+
+const static int ENUM_PARAM_RETICLE_TYPE = 16;
+const static byte RETICLE_TYPE_MILLIEME = 0x01;
+const static byte RETICLE_TYPE_TEST = 0x02;
 
 // ENUM COMMANDS
 const static int ENUM_COMMAND_TRACK = 0;
