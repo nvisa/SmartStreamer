@@ -23,6 +23,7 @@ public:
 
 	int runAlgorithm(int channel);
 	int stopAlgorithm(int channel);
+	~TX1Streamer();
 signals:
 
 protected slots:

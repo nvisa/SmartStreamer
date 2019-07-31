@@ -172,6 +172,11 @@ int TX1Streamer::stopAlgorithm(int channel)
 	return 0;
 }
 
+TX1Streamer::~TX1Streamer()
+{
+
+}
+
 void TX1Streamer::apiUrlRequested(const QUrl &url)
 {
 	QString fname = url.toString();
@@ -306,7 +311,9 @@ int TX1Streamer::processBuffer(const RawBuffer &buf)
 
 int TX1Streamer::recordIfNvrDead(const RawBuffer &buf)
 {
-	recorder->startRecord(static_cast<char const*>(buf.constData()), buf.size());
+	if (!recorder->isNvrDead())
+		return 0;
+	recorder->record(static_cast<char const*>(buf.constData()), buf.size());
 	return 0;
 }
 
@@ -494,7 +501,6 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 		p5->append(rtpout4);
 		p5->end();
 	}
-
 	if (enablePreview) {
 		BaseLmmPipeline *p7 = addPipeline();
 		p7->append(queue);
@@ -526,6 +532,7 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 		queue->getOutputQueue(3)->setRateReduction(25, fps2);
 	if (fourthStream)
 		queue->getOutputQueue(4)->setRateReduction(25, fps3);
+
 	recorder->start();
 }
 
