@@ -20,7 +20,7 @@ SOURCES += main.cpp \
     kardelenapi.cpp \
     helper/datetime.cpp \
     helper/filewriter.cpp \
-    helper/simplebuffer.cpp
+    helper/nvrchecker.cpp
 
 HEADERS += \
     moxadriver.h \
@@ -38,7 +38,8 @@ HEADERS += \
 	algorithmparameters.h \
     helper/datetime.h \
     helper/filewriter.h \
-    helper/simplebuffer.h
+    helper/simplebuffer.h \
+    helper/nvrchecker.h
 
 websockets {
     SOURCES += websocketstreamer.cpp

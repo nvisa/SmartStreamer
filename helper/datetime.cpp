@@ -21,3 +21,8 @@ QString DateTime::currentTime()
 {
 	return QDateTime::currentDateTimeUtc().time().toString(QString("HH:mm:ss"));
 }
+
+qint64 DateTime::difference(const QString &lhs, const QString &rhs)
+{
+	return (QDateTime::fromString(lhs, QString("dd-MM-yyyy HH:mm:ss")).currentMSecsSinceEpoch() - QDateTime::fromString(rhs, QString("dd-MM-yyyy HH:mm:ss")).currentMSecsSinceEpoch()) / 1000;
+}

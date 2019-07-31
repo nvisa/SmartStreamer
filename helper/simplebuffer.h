@@ -8,47 +8,52 @@
 
 #include <QDebug>
 
+
 template <typename T>
 class simple_buffer
 {
 public:
 	simple_buffer(unsigned long long size)
-		: length(size),
-		  buffer_data()
+		: size(size),
+		  index(0),
+		  alloc(),
+		  begin(alloc.allocate(size)),
+		  end(begin + size) {}
+
+	T const* try_add(T const* data, unsigned long long& data_size)
 	{
-		buffer_data.reserve(size);
-	}
-	std::pair<bool, T const*> try_add(T const* data, unsigned long long& size)
-	{
-		auto inserter_iter = std::back_inserter(buffer_data);
-		if (used_portion + size < length) {
-			std::copy(data, data + size, inserter_iter);
-			used_portion += size;
-			size = 0;
-			return std::pair<bool, T const*>{true, nullptr};
+		T * const relative_begin = begin + index;
+		T const * data_end;
+		if (data_size + index < size) {
+			index += data_size;
+			data_end = data + data_size;
+			data_size = 0;
 		} else {
-			unsigned long long diff = length - used_portion;
-			std::copy(data, data + diff, inserter_iter);
-			used_portion = length;
-			size -= diff;
-			return std::pair<bool, T const*>{false, data + diff};
+			unsigned long long available = size - index;
+			index = size;
+			data_end = data + available;
+			data_size -= available;
 		}
+		std::copy(data, data_end, relative_begin);
+		return data_end;
 	}
-	std::pair<std::unique_ptr<T[]>, unsigned long long> flush()
+	using data_pair = std::pair<T const* const, unsigned long long>;
+	data_pair flush()
 	{
-		T* data = new T[used_portion];
-		std::copy(buffer_data.begin(), buffer_data.begin() + used_portion, data);
-		std::unique_ptr<T[]> ptr(data);
-		unsigned long long size = used_portion;
-		buffer_data.clear();
-		used_portion = 0;
-		return std::pair<std::unique_ptr<T[]>, unsigned long long>(std::move(ptr), size);
+		unsigned long long data_size = index;
+		index = 0;
+		return data_pair{begin, data_size};
 	}
-	~simple_buffer() {}
+	~simple_buffer()
+	{
+		alloc.deallocate(begin, size);
+	}
 private:
-	unsigned long long length;
-	unsigned long long used_portion = 0;
-	std::vector<T> buffer_data;
+	unsigned long long size;
+	unsigned long long index;
+	std::allocator<T> alloc;
+	T * const begin;
+	T * const end;
 };
 
 #endif // SIMPLEBUFFER_H

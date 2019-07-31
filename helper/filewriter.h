@@ -4,7 +4,11 @@
 #include <QString>
 #include <mutex>
 
+#include <memory>
+
 #include "simplebuffer.h"
+
+class QTimer;
 
 class FileWriter
 {
@@ -22,7 +26,9 @@ public:
 		Finished
 	};
 	explicit FileWriter(QString saveFolderPath);
-	void addData(char const* data, int size);
+	~FileWriter();
+	void addData(const char *data, int size);
+	void addData(const char *data, unsigned long long size);
 	void save();
 private:
 	QString folderPath = "/tmp/";
@@ -30,6 +36,8 @@ private:
 	simple_buffer<char> buffer;
 	Status status = Status::NotStarted;
 	std::mutex mutex;
+	unsigned int fpsCounter;
+	std::unique_ptr<QTimer> timer;
 };
 
 #endif // FILEWRITER_H

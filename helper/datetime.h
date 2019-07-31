@@ -10,6 +10,7 @@ public:
 	static QString currentDateTime(int addSecs = 0);
 	static QString currentDate();
 	static QString currentTime();
+	static qint64 difference(QString const& lhs, QString const& rhs);
 };
 
 #endif // DATETIME_H
