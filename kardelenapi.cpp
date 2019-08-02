@@ -1347,8 +1347,7 @@ grpc::Status KardelenAPIServer::CommunicationChannel(grpc::ServerContext *, ::gr
 		lastMotionObjects.clear();
 		if (lastImage.size()) {
 			qDebug() << "sending the image to Kardelen side with size of " << lastImage.size();
-			msgr.set_framedata(std::string(lastImage.constData(), lastImage.size()));
-			lastImage.clear();
+			msgr.set_framedata((const void *)lastImage.constData(), lastImage.size());
 		}
 		mutex.unlock();
 
@@ -1368,6 +1367,7 @@ grpc::Status KardelenAPIServer::CommunicationChannel(grpc::ServerContext *, ::gr
 		impl->setPosi(msgr.mutable_posinfo());
 		impl->fillCameraStatus(msgr.mutable_status());
 		stream->Write(msgr);
+		lastImage.clear();
 	}
 
 	return grpc::Status::OK;
