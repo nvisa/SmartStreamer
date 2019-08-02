@@ -757,13 +757,14 @@ class KardelenAPIYamgozImpl : public KardelenAPIImpl
 public:
 	KardelenAPIYamgozImpl()
 	{
-		_mymode = CONTROL_MODE_WATCH;
+		_mymode = CONTROL_MODE_JOYSTICK;
 	}
 
 	int64_t getCapabilities()
 	{
 		int64_t caps = 0;
 		if (!ptzp->getHead(0)->getProperty(3)){
+			addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
 			addcap(caps, CAPABILITY_POLARITY);
 			addcap(caps, CAPABILITY_NUC);
 			addcap(caps, CAPABILITY_DAY_VIEW);
@@ -773,6 +774,7 @@ public:
 			addcap(caps, CAPABILITY_ROI);
 
 		} else {
+			addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
 			addcap(caps, CAPABILITY_DAY_VIEW);
 			addcap(caps, CAPABILITY_NIGHT_VIEW);
 			addcap(caps, CAPABILITY_DETECTION);
@@ -841,9 +843,10 @@ public:
 		if (index == NUM_PARAM_HORIZONTAL_RES) {
 			value = 1920;
 		} else if (index == NUM_PARAM_VERTICAL_RES) {
-			value = 576;
+			value = 480;
 		}
-		value = 100000;
+		else
+			value = 100000;
 	}
 
 	virtual int32_t getEnumParameter(int index)
