@@ -10,7 +10,10 @@
 TrackAlgorithmElement::TrackAlgorithmElement(QObject *parent)
 	: BaseAlgorithmElement(parent)
 {
-	reverseTilt = false;
+	if (ApplicationInfo::instance()->KAYI_SAHINGOZ)
+		reverseTilt = true;
+	else
+		reverseTilt = false;
 	//printf("start zoom reading\n");
 	ZoomLevelNo = 258;
 	FILE *file_alg_params = fopen("/etc/smartstreamer/Zoom_value.txt", "r");
@@ -141,8 +144,10 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 				   control.meta,panTiltZoomRead,control.initialize,control.sensitivity,true);
 #endif
 
-	if (reverseTilt)
-		panTiltZoomRead[4] *= -1;
+	if (!ApplicationInfo::instance()->KAYI_SAHINGOZ) {
+		if (reverseTilt)
+			panTiltZoomRead[4] *= -1;
+	}
 
 	float speed_pan  = (float)control.meta[11];
 	float speed_tilt = (float)control.meta[12];
@@ -210,9 +215,10 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 					  v.debug, control.meta, panTiltZoomRead,
 					  objProp, control.initialize);
 #endif
-
-	if (reverseTilt)
-		panTiltZoomRead[4] *= -1;
+	if (!ApplicationInfo::instance()->KAYI_SAHINGOZ) {
+		if (reverseTilt)
+			panTiltZoomRead[4] *= -1;
+	}
 
 	if (migrateDebug) {
 		float speed_pan  = (float)control.meta[11];
