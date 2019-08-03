@@ -431,9 +431,8 @@ grpc::Status AlgorithmGrpcServer::SetSystemFeature(grpc::ServerContext *context,
 			return grpc::Status::CANCELLED;
 		int device = request->device();
 		QJsonObject obj = arr[device].toObject();
-		bool isValid;
-		int btr = QString::fromStdString(request->value()).toInt(&isValid);
-		if (!isValid)
+		int btr = atoi(request->value().c_str());
+		if (obj["bitrate_min"].toInt() > btr || obj["bitrate_max"].toInt() < btr)
 			return grpc::Status(StatusCode::INVALID_ARGUMENT, request->value());
 		obj["bitrate"] = btr;
 		arr[device] = obj;
@@ -455,9 +454,8 @@ grpc::Status AlgorithmGrpcServer::SetSystemFeature(grpc::ServerContext *context,
 			return grpc::Status::CANCELLED;
 		int device = request->device();
 		QJsonObject obj = arr[device].toObject();
-		bool isValid;
-		int fps = QString::fromStdString(request->value()).toInt(&isValid);
-		if (!isValid)
+		int fps = atoi(request->value().c_str());
+		if (obj["framerate_min"].toInt() > fps || obj["framerate_max"].toInt() < fps)
 			return grpc::Status(StatusCode::INVALID_ARGUMENT, request->value());
 		obj["frameRate"] = fps;
 		arr[device] = obj;
@@ -479,9 +477,9 @@ grpc::Status AlgorithmGrpcServer::SetSystemFeature(grpc::ServerContext *context,
 			return grpc::Status::CANCELLED;
 		int device = request->device();
 		QJsonObject obj = arr[device].toObject();
-		bool isValid;
 		QString resolution = QString::fromStdString(request->value());
-		if (!isValid)
+		QJsonArray array = obj["resolutions"].toArray();
+		if (!array.contains(resolution))
 			return grpc::Status(StatusCode::INVALID_ARGUMENT, request->value());
 		obj["resolution"] = resolution;
 		arr[device] = obj;
