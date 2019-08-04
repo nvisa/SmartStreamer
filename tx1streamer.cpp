@@ -8,6 +8,7 @@
 #include "alarmgeneratorelement.h"
 #include "algorithm/algorithmgrpcserver.h"
 #include "algorithm/basealgorithmelement.h"
+#include <ecl/ptzp/ptzpdriver.h>
 
 #include <lmm/debug.h>
 #include <lmm/v4l2input.h>
@@ -390,6 +391,20 @@ void TX1Streamer::checkAlgoState()
 		break;
 	}
 
+	int overlayCnt = ((TextOverlay *)textOverlay)->getFieldCount();
+
+	QStringList zrList;
+	if(overlayCnt == 4) {
+		PtzpDriver *driver = ApplicationInfo::instance()->getPtzpDriver(0);
+		int headCnt = driver->getHeadCount();
+		for (int i= 0; i < headCnt; ++i) {
+			PtzpHead *headpt = driver->getHead(i);
+			if(headpt->getCapabilities() & PtzpHead::CAP_ZOOM) {
+				zrList.append(QString("X%1").arg(headpt->getZoomRatio()));
+			}
+		}
+		((TextOverlay *)textOverlay)->setOverlayFieldText(1, zrList.join(" "));
+	}
 #if 0
 	((TextOverlay *)textOverlay)->setOverlayFieldText(3, QString("%1,%2").arg(algos).arg(algosPending));
 	((TextOverlay *)textOverlay)->setOverlayFieldText(4, QString("m=%1 t=%2 p=%3 diff=%4 p=%5")
