@@ -40,7 +40,7 @@ BaseAlgorithmElement::BaseAlgorithmElement(QObject *parent)
 	algoState = UNKNOWN;
 	algIndex = 0;
 	restarting = false;
-	autoStart = true;
+	autoStart = false;
 }
 
 int BaseAlgorithmElement::init()
