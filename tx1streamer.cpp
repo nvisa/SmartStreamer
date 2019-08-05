@@ -57,6 +57,7 @@ TX1Streamer::TX1Streamer(QObject *parent)
 	fourthStream = true;
 	enablePreview = false;
 	motionExtraEnabled = false;
+	videoRecordingEnabled = false;
 }
 
 int TX1Streamer::start()
@@ -322,9 +323,11 @@ int TX1Streamer::processBuffer(const RawBuffer &buf)
 
 int TX1Streamer::recordIfNvrDead(const RawBuffer &buf)
 {
+#if 0
 	if (!recorder->isNvrDead())
 		return 0;
 	recorder->record(static_cast<char const*>(buf.constData()), buf.size());
+#endif
 	return 0;
 }
 
@@ -464,7 +467,6 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 
 	TX1JpegEncoder *jenc = new TX1JpegEncoder;
 	MjpegElement *jpegel = new MjpegElement(13789);
-	recorder = new InternalRecorder;
 	textOverlay = StreamerCommon::createOverlay();
 
 	sei = new SeiInserter;
@@ -486,7 +488,8 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	p1->append(enc0);
 	p1->append(sei);
 	p1->append(newFunctionPipe(TX1Streamer, this, TX1Streamer::notifyGrpcForAlarm));
-	p1->append(newFunctionPipe(TX1Streamer, this, TX1Streamer::recordIfNvrDead));
+	if (videoRecordingEnabled)
+		p1->append(newFunctionPipe(TX1Streamer, this, TX1Streamer::recordIfNvrDead));
 	p1->append(rtpout);
 	p1->end();
 
@@ -559,6 +562,11 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	if (fourthStream)
 		queue->getOutputQueue(4)->setRateReduction(25, fps3);
 
-	recorder->start();
+#if 0
+	if (videoRecordingEnabled) {
+		recorder = new InternalRecorder;
+		recorder->start();
+	}
+#endif
 }
 

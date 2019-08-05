@@ -18,9 +18,6 @@ SOURCES += main.cpp \
     indevicetest.cpp \
     alarmgeneratorelement.cpp \
     kardelenapi.cpp \
-    helper/datetime.cpp \
-    helper/filewriter.cpp \
-    helper/nvrchecker.cpp
 
 HEADERS += \
     moxadriver.h \
@@ -36,10 +33,6 @@ HEADERS += \
     alarmgeneratorelement.h \
 	kardelenapi.h \
 	algorithmparameters.h \
-    helper/datetime.h \
-    helper/filewriter.h \
-    helper/simplebuffer.h \
-    helper/nvrchecker.h
 
 websockets {
     SOURCES += websocketstreamer.cpp
@@ -49,6 +42,19 @@ websockets {
 include (build_config.pri)
 include (proto/grpc.pri)
 include (algorithm/algorithm.pri)
+
+videoRecorder {
+	SOURCES += helper/datetime.cpp \
+		helper/filewriter.cpp \
+		helper/nvrchecker.cpp \
+		internalrecorder.cpp
+
+	HEADERS += helper/datetime.h \
+		helper/filewriter.h \
+		helper/simplebuffer.h \
+		helper/nvrchecker.h \
+		internalrecorder.h
+}
 
 tx1 {
 	SOURCES += \
@@ -61,7 +67,6 @@ tx1 {
 		tx1streamer.cpp \
 		tbgthstreamer.cpp \
 		videotestsourcestreamer.cpp \
-		internalrecorder.cpp
 
 	HEADERS += \
 		ipstreamer.h \
@@ -73,7 +78,6 @@ tx1 {
 		tx1streamer.h \
 		tbgthstreamer.h \
 		videotestsourcestreamer.h \
-		internalrecorder.h
 
 	LIBS += -L/usr/local/cuda/lib64 -lcudart -lcufft
 	LIBS += -L/usr/lib/aarch64-linux-gnu/tegra/ -lv4l2 -lnvbuf_utils -lnvinfer -lnvparsers -lnvjpeg -lEGL -lX11

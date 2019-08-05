@@ -56,6 +56,7 @@ protected:
 	bool thirdStream;
 	bool fourthStream;
 	bool enablePreview;
+	bool videoRecordingEnabled;
 
 private:
 	enum AlgorithmState {
