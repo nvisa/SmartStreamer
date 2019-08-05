@@ -11,6 +11,7 @@ class RtpTransmitter;
 class BaseRtspServer;
 class BaseAlgorithmElement;
 class alarmGeneratorElement;
+class InternalRecorder;
 
 class TX1Streamer : public BaseStreamer, public AlgoManIface
 {
@@ -22,6 +23,7 @@ public:
 
 	int runAlgorithm(int channel);
 	int stopAlgorithm(int channel);
+	~TX1Streamer();
 signals:
 
 protected slots:
@@ -32,6 +34,7 @@ protected:
 	int frameGenerator(const RawBuffer &buf);
 	int notifyGrpcForAlarm(const RawBuffer &buf);
 	int processBuffer(const RawBuffer &buf);
+	int recordIfNvrDead(const RawBuffer &buf);
 
 	virtual BaseLmmPipeline * createYUV420Pipeline(QSize &res0) = 0;
 
@@ -47,6 +50,7 @@ protected:
 	BaseLmmElement *textOverlay;
 	AlgorithmGrpcServer *grpcserv;
 	alarmGeneratorElement *algen;
+	InternalRecorder* recorder;
 
 	bool secondStream;
 	bool thirdStream;

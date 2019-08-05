@@ -1,10 +1,11 @@
 #include "tx1streamer.h"
 #include "seiinserter.h"
 #include "mjpegserver.h"
-#include "applicationinfo.h"
 #include "mjpegserver.h"
 #include "kardelenapi.h"
+#include "applicationinfo.h"
 #include "simpleapiserver.h"
+#include "internalrecorder.h"
 #include "alarmgeneratorelement.h"
 #include "algorithm/algorithmgrpcserver.h"
 #include "algorithm/basealgorithmelement.h"
@@ -185,6 +186,11 @@ int TX1Streamer::stopAlgorithm(int channel)
 	return 0;
 }
 
+TX1Streamer::~TX1Streamer()
+{
+
+}
+
 void TX1Streamer::apiUrlRequested(const QUrl &url)
 {
 	QString fname = url.toString();
@@ -311,6 +317,14 @@ int TX1Streamer::notifyGrpcForAlarm(const RawBuffer &buf)
 int TX1Streamer::processBuffer(const RawBuffer &buf)
 {
 	Q_UNUSED(buf);
+	return 0;
+}
+
+int TX1Streamer::recordIfNvrDead(const RawBuffer &buf)
+{
+	if (!recorder->isNvrDead())
+		return 0;
+	recorder->record(static_cast<char const*>(buf.constData()), buf.size());
 	return 0;
 }
 
@@ -450,6 +464,7 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 
 	TX1JpegEncoder *jenc = new TX1JpegEncoder;
 	MjpegElement *jpegel = new MjpegElement(13789);
+	recorder = new InternalRecorder;
 	textOverlay = StreamerCommon::createOverlay();
 
 	sei = new SeiInserter;
@@ -471,6 +486,7 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	p1->append(enc0);
 	p1->append(sei);
 	p1->append(newFunctionPipe(TX1Streamer, this, TX1Streamer::notifyGrpcForAlarm));
+	p1->append(newFunctionPipe(TX1Streamer, this, TX1Streamer::recordIfNvrDead));
 	p1->append(rtpout);
 	p1->end();
 
@@ -511,7 +527,6 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 		p5->append(rtpout4);
 		p5->end();
 	}
-
 	if (enablePreview) {
 		BaseLmmPipeline *p7 = addPipeline();
 		p7->append(queue);
@@ -543,5 +558,7 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 		queue->getOutputQueue(3)->setRateReduction(25, fps2);
 	if (fourthStream)
 		queue->getOutputQueue(4)->setRateReduction(25, fps3);
+
+	recorder->start();
 }
 
