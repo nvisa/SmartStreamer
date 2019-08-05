@@ -1023,7 +1023,7 @@ public:
 		else if (index == NUM_PARAM_VERTICAL_RES)
 			value = 576;
 		else if (index == NUM_PARAM_ZOOM)
-			value = ptzp->getHead(0)->getZoom();
+			value = (double(ptzp->getHead(0)->getZoom()) / 36796) * 100;
 		else if (index == NUM_PARAM_PREDEFINED_GAIN_COUNT)
 			value = 3;
 		else if (index == NUM_PARAM_HPF_GAIN)
@@ -1058,11 +1058,13 @@ public:
 	virtual void setNumericParameter(int index, double &value, int32_t bytes[3])
 	{
 		if (index == NUM_PARAM_FOCUS){
-			if (bytes[2] == 1)
-				ptzp->getHead(0)->focusIn(value);
-			else if (bytes[2] == 2)
-				ptzp->getHead(0)->focusOut(value);
-			if (value == 0)
+			if (value > 0){
+				if (bytes[2] == 1)
+					ptzp->getHead(0)->focusIn(value);
+				else if (bytes[2] == 2)
+					ptzp->getHead(0)->focusOut(value);
+			}
+			else if (value == 0)
 				ptzp->getHead(0)->focusStop();
 		}
 		else if (index == NUM_PARAM_HPF_GAIN)
