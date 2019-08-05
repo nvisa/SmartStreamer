@@ -294,13 +294,16 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithm(const QString &type, int 
 		filtered.append(alg);
 		imap.insert(filtered.size() - 1, i - 1);
 	}
+	BaseAlgorithmElement *el = nullptr;
 	if (filtered.size() <= index)
-		return new BaseAlgorithmElement;
+		el = new BaseAlgorithmElement;
+	else {
+		QJsonObject algo = filtered[index].toObject();
+		el = createAlgorithmFromJson(algo);
+		el->setJsonAlgorithmIndex(imap[index]);
+		el->reloadJson();
+	}
 
-	QJsonObject algo = filtered[index].toObject();
-	BaseAlgorithmElement *el = createAlgorithmFromJson(algo);
-	el->setJsonAlgorithmIndex(imap[index]);
-	el->reloadJson();
 	algorithms << el;
 	algoNameMapping[type] << el;
 	return el;
