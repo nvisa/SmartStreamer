@@ -369,6 +369,6 @@ qint64 ApplicationInfo::getLifeTime()
 
 ApplicationInfo::ApplicationInfo()
 {
-	lifetime = new LifeTimeTracker("system.lifetime");
+	lifetime = new LifeTimeTracker("/etc/system.lifetime");
 	idt = nullptr;
 }
