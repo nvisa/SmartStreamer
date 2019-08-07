@@ -204,7 +204,10 @@
                 "target": "50.23.169.213",
                 "grpc_port": 50058,
                 "save_registers": true,
-                "save_register_interval": 10000
+                "save_register_interval": 10000,
+                "moxa_day": "50.23.169.212?admin?moxamoxa",
+                "moxa_thermal": "50.23.169.211?admin?moxamoxa",
+                "overlay_interval": 2000
             }
         ]
     }
