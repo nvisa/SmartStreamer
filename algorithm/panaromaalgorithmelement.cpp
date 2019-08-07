@@ -34,7 +34,7 @@ int PanaromaAlgorithmElement::init()
 	resetPosition();
 	control.started.pan = pt->getPanAngle();
 	control.started.tilt = pt->getTiltAngle();
-	doPivot(0.03);
+	doPivot(0.13);
 	control.init = 1;
 	return BaseAlgorithmElement::init();
 }
