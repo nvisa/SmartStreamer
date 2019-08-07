@@ -1,6 +1,6 @@
 #include "motionalgorithmelement.h"
 #include "applicationinfo.h"
-
+#include "algorithmgrpcserver.h"
 
 #include "lmm/debug.h"
 #include "algorithmfunctions.h"
@@ -54,8 +54,9 @@ int MotionAlgorithmElement::processAlgo(const RawBuffer &buf)
 				  control.meta, control.panTiltZoomRead, control.alarmFlag,
 				  control.initialize, control.sensitivity,control.classification, false);
 	if (control.meta[1] == 1) {
-		//generate alarm
-	}
+		AlgorithmGrpcServer::instance()->setAlarmField("tamper_detection", "severity", "1.0");
+	} else
+		AlgorithmGrpcServer::instance()->removeAlarm("tamper_detection");
 #endif // HAVE_TK1
 #endif // HAVE_VIA_MOTION
 

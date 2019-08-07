@@ -127,16 +127,16 @@ AlgoManIface *AlgorithmGrpcServer::getAlgorithmManagementInterface()
 	return manif;
 }
 
-void AlgorithmGrpcServer::setAlarmField(const QString &key, const QString &value)
+void AlgorithmGrpcServer::setAlarmField(const QString &alarm, const QString &key, const QString &value)
 {
 	QMutexLocker ml(&mutex);
-	alarms[key] = value;
+	alarms[alarm][key] = value;
 }
 
-void AlgorithmGrpcServer::removeAlarmField(const QString &key)
+void AlgorithmGrpcServer::removeAlarm(const QString &alarm)
 {
 	QMutexLocker ml(&mutex);
-	alarms.clear();
+	alarms.remove(alarm);
 }
 
 grpc::Status AlgorithmGrpcServer::RunAlgorithm(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfRequests *response)
@@ -639,14 +639,20 @@ grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc:
 		}
 
 		mutex.lock();
-		if (alarms.size()) {
+		QHashIterator<QString, QHash<QString, QString> > hi(alarms);
+		while (hi.hasNext()) {
+			hi.next();
+			const QString name = hi.key();
 			AlgorithmCommunication::Alarm *alarm = res.add_alarms();
-			alarm->set_type("motion_detection");
-			QHashIterator<QString, QString> ait(alarms);
-			while (ait.hasNext()) {
-				ait.next();
-				alarm->add_key(ait.key().toStdString());
-				alarm->add_value(ait.value().toStdString());
+			alarm->set_type(name.toStdString());
+			const QHash<QString, QString> &list = hi.value();
+			QHashIterator<QString, QString> hi2(list);
+			while (hi2.hasNext()) {
+				hi2.next();
+				const QString key = hi2.key();
+				const QString value = hi2.value();
+				alarm->add_key(key.toStdString());
+				alarm->add_value(value.toStdString());
 			}
 		}
 		mutex.unlock();

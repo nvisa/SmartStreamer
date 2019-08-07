@@ -309,9 +309,9 @@ int TX1Streamer::frameGenerator(const RawBuffer &buf)
 int TX1Streamer::notifyGrpcForAlarm(const RawBuffer &buf)
 {
 	if (buf.constPars()->metaData.size())
-		AlgorithmGrpcServer::instance()->setAlarmField("motion_xml", QString::fromUtf8(buf.constPars()->metaData));
+		AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "motion_xml", QString::fromUtf8(buf.constPars()->metaData));
 	else
-		AlgorithmGrpcServer::instance()->removeAlarmField("motion_xml");
+		AlgorithmGrpcServer::instance()->removeAlarm("motion_detection");
 	return 0;
 }
 
