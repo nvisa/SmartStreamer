@@ -1322,24 +1322,12 @@ grpc::Status KardelenAPIServer::UpdateCameraStatus(grpc::ServerContext *context,
 
 grpc::Status KardelenAPIServer::CommunicationChannel(grpc::ServerContext *, ::grpc::ServerReaderWriter<kaapi::CommRead, kaapi::CommWrite> *stream)
 {
-	while (1) {
-		kaapi::CommWrite msgw;
-		stream->Read(&msgw);
+	kaapi::CommWrite msgw;
+	while (stream->Read(&msgw)) {
 
 		kaapi::CommRead msgr;
 
 		mutex.lock();
-		int objCount = lastMotionObjects.size();
-		while (!objCount) {
-			mutex.unlock();
-			usleep(50 * 1000);
-			mutex.lock();
-			objCount = lastMotionObjects.size();
-
-			if (lastImage.size())
-				break;
-		}
-		/* we have the lock */
 		for (uint i = 0; i < lastMotionObjects.size(); i++) {
 			alarmGeneratorElement::TargetStruct ts = lastMotionObjects[i];
 			kaapi::Rectangle* rect = msgr.mutable_status()->add_objectdetections();
@@ -1354,6 +1342,8 @@ grpc::Status KardelenAPIServer::CommunicationChannel(grpc::ServerContext *, ::gr
 		if (lastImage.size()) {
 			qDebug() << "sending the image to Kardelen side with size of " << lastImage.size();
 			msgr.set_framedata((const void *)lastImage.constData(), lastImage.size());
+			msgr.add_keys()->append("image_location_index");
+			msgr.add_values()->append(lastImgTag);
 		}
 		mutex.unlock();
 
