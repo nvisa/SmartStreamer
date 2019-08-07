@@ -90,6 +90,10 @@ public:
 		grpc::ServerContext ctx;
 		AlgorithmCommunication::ResponseOfRequests resp;
 
+		if (_mymode != CONTROL_MODE_JOYSTICK && mode != CONTROL_MODE_JOYSTICK)
+			return 0;
+//		if (_mymode != mode && _mymode != CONTROL_MODE_JOYSTICK)
+//			return 0;
 		qDebug() << "Set modeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" << mode;
 
 		if (mode == CONTROL_MODE_JOYSTICK) {
@@ -510,7 +514,7 @@ public:
 		if (index == ENUM_PARAM_DETECTION_CREATION_MODE)
 			return DETECTION_OPEN_MODE;
 		if (index == ENUM_PARAM_POLARITY) {
-			if (ptzp->getHead(0)->getProperty(map["polarity"].toInt()))
+			if (ptzp->getHead(0)->getProperty(5))
 				return BLACK_HOT;
 			else
 				return WHITE_HOT;
@@ -552,7 +556,7 @@ public:
 	virtual void setNumericParameter(int index, double &value, int32_t bytes[3])
 	{
 		if (index == NUM_PARAM_FOV)
-			ptzp->getHead(0)->setProperty("fov_pos", value); /* TODO: what is this? an enum */
+			ptzp->getHead(0)->setProperty(4, value); /* TODO: what is this? an enum */
 		else if (index == NUM_PARAM_FOCUS){
 			if (bytes[2] == 1)
 				ptzp->getHead(0)->focusIn(value);
@@ -1017,13 +1021,13 @@ public:
 		} else if (index == NUM_PARAM_PITCH)
 			value = ptzp->getHead(1)->getTiltAngle();
 		else if (index == NUM_PARAM_FOCUS)
-			value = (double(ptzp->getHead(0)->getProperty(1)) / 12604) * 100;
+			value = 100 - ((double(ptzp->getHead(0)->getProperty(1)) / 12604) * 100);
 		else if (index == NUM_PARAM_HORIZONTAL_RES)
 			value = 720;
 		else if (index == NUM_PARAM_VERTICAL_RES)
 			value = 576;
 		else if (index == NUM_PARAM_ZOOM)
-			value = (double(ptzp->getHead(0)->getZoom()) / 36796) * 100;
+			value = 100 - ((double(ptzp->getHead(0)->getZoom()) / 36796) * 100);
 		else if (index == NUM_PARAM_PREDEFINED_GAIN_COUNT)
 			value = 3;
 		else if (index == NUM_PARAM_HPF_GAIN)
