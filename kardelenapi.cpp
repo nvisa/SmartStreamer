@@ -1344,6 +1344,7 @@ grpc::Status KardelenAPIServer::CommunicationChannel(grpc::ServerContext *, ::gr
 			msgr.set_framedata((const void *)lastImage.constData(), lastImage.size());
 			msgr.add_keys()->append("image_location_index");
 			msgr.add_values()->append(lastImgTag);
+			lastImage.clear();
 		}
 		mutex.unlock();
 
@@ -1363,7 +1364,6 @@ grpc::Status KardelenAPIServer::CommunicationChannel(grpc::ServerContext *, ::gr
 		impl->setPosi(msgr.mutable_posinfo());
 		impl->fillCameraStatus(msgr.mutable_status());
 		stream->Write(msgr);
-		lastImage.clear();
 	}
 
 	return grpc::Status::OK;
