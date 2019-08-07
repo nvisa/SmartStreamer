@@ -168,6 +168,7 @@ int PanChangeAlgorithmElement::saveLocations()
 
 int PanChangeAlgorithmElement::loadLocations()
 {
+	locationIndex = 0;
 	if (!QFileInfo("locations.bin").exists()) {
 		mDebug("The file doesn't existed");
 		return -1;
@@ -177,6 +178,9 @@ int PanChangeAlgorithmElement::loadLocations()
 		return -EPERM;
 	QByteArray ba = f.readAll();
 	listOfLocationInformationFromAlgComm->ParseFromString(std::string(ba.data(), ba.size()));
+	for (int i = 0; i < listOfLocationInformationFromAlgComm->locationinformation_size(); i++)
+		numberOfTurnAtGivenIndex.push_back(1);
+	QProcess::execute("bash -c \"rm -f /home/nvidia/Pictures/ChangeLogs/*\"");
 	f.close();
 	return 0;
 }
