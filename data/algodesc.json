@@ -36,6 +36,10 @@
 			"enabled": false,
 			"stabilization": false,
 			"privacy": true
+		},
+		{
+			"type": "panaroma",
+			"enabled": false
 		}
 	]
 }
