@@ -126,9 +126,12 @@ int ApplicationInfo::startPtzpDriver()
 			driver = new KayiDriver(relayConfig);
 			break;
 		}
-		case ARYA_ORION:
+		case ARYA_ORION: {
 			driver = new AryaDriver;
+			((AryaDriver*) driver)->setMoxaControl(obj["moxa_thermal"].toString(), obj["moxa_day"].toString());
+			((AryaDriver*) driver)->setOverlayInterval(obj["overlay_interval"].toInt());
 			break;
+		}
 		case TBGTH:
 			if (!obj["thermal"].toBool())
 				driver = new TbgthDriver(false);
