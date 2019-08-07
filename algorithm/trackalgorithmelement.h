@@ -3,6 +3,8 @@
 
 #include "basealgorithmelement.h"
 
+class alarmGeneratorElement;
+
 class TrackAlgorithmElement: public BaseAlgorithmElement
 {
 	Q_OBJECT
@@ -71,6 +73,7 @@ protected:
 	QJsonObject resaveJson(const QJsonObject &node);
 	float objProp[4];
 	bool reverseTilt;
+	alarmGeneratorElement *algen;
 };
 
 #endif // TRACKALGORITHMELEMENT_H

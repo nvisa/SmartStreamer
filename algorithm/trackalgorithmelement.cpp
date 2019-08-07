@@ -1,8 +1,10 @@
 #include "trackalgorithmelement.h"
+#include "alarmgeneratorelement.h"
 
 #include "lmm/debug.h"
 #include "algorithmfunctions.h"
 #include "applicationinfo.h"
+#include "alarmgeneratorelement.h"
 
 #include <ecl/ptzp/ptzphead.h>
 #include <ecl/ptzp/ptzpdriver.h>
@@ -10,6 +12,7 @@
 TrackAlgorithmElement::TrackAlgorithmElement(QObject *parent)
 	: BaseAlgorithmElement(parent)
 {
+	algen = new alarmGeneratorElement;
 	if (ApplicationInfo::instance()->KAYI_SAHINGOZ)
 		reverseTilt = true;
 	else

@@ -51,5 +51,18 @@ void alarmGeneratorElement::generateMotionStructure(unsigned char meta[])
 
 void alarmGeneratorElement::generateTrackingStructure(unsigned char meta[])
 {
-
+	time_t rawtime;
+	struct tm * timeInfo;
+	char buffer[80];
+	time(&rawtime);
+	timeInfo = localtime(&rawtime);
+	strftime(buffer,sizeof(buffer),"%d-%m-%Y %H:%M:%S",timeInfo);
+	string str(buffer);
+	generatedAlarmInfo->date = str;
+	TargetStruct target;
+	target.topLeftX = meta[19];
+	target.topLeftY = meta[21];
+	target.widthOfTarget = abs(meta[19] - meta[23]);
+	target.heightOfTarget = abs(meta[21] - meta[25]);
+	generatedAlarmInfo->target.push_back(target);
 }
