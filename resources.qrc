@@ -44,5 +44,7 @@
         <file>data/tk1/track_parameters.txt</file>
         <file>data/motion0/sei_alarm_template.xml</file>
         <file>data/platforms.json</file>
+        <file>data/ZoomRatios_sony_value.txt</file>
+        <file>data/ZoomRatios_value.txt</file>
     </qresource>
 </RCC>
