@@ -75,7 +75,7 @@ int PanChangeAlgorithmElement::processAlgo(const RawBuffer &buf)
 		if(f.open(QIODevice::ReadOnly)) {
 			const QByteArray &imdata = f.readAll();
 			f.close();
-			KardelenAPIServer::instance()->setPanChangeFrame("", imdata);
+			KardelenAPIServer::instance()->setPanChangeFrame(QString("index%1").arg(locationIndex).toStdString(), imdata);
 			//QProcess::startDetached(QString("rm %1").arg(QString("%1_%2_%3_diff.png").arg(fileInitial).arg(locationIndex).arg(counter)));
 			counter++;
 			if (counter == 10)
