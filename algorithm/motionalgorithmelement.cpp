@@ -42,6 +42,23 @@ int MotionAlgorithmElement::processAlgo(const RawBuffer &buf)
 	if(headz->whoAmI() == "thermal")
 		v.ill = 0;
 
+	float panTiltZoomRead[] = {10, 10, 0, 57.6, 34.3}; //some sane defaults
+	if (v.privacy) {
+		PtzpHead *headz = ApplicationInfo::instance()->getPtzpDriver(0)->getHead(0);
+		PtzpHead *headpt = ApplicationInfo::instance()->getPtzpDriver(0)->getHead(1);
+		if (headpt) {
+			panTiltZoomRead[0] = headpt->getPanAngle();
+			panTiltZoomRead[1] = headpt->getTiltAngle();
+		}
+		if (headz) {
+			float fovh = 0, fovv = 0;
+			if (!headz->getFOV(fovh, fovv)) {
+				panTiltZoomRead[3] = fovh;
+				panTiltZoomRead[4] = fovv;
+			}
+		}
+	}
+
 #if HAVE_VIA_MOTION
 #if HAVE_TK1
 	asel_via_base((uchar*)buf.constData(), width * height * 3 / 2, width, height,
@@ -51,7 +68,7 @@ int MotionAlgorithmElement::processAlgo(const RawBuffer &buf)
 #elif HAVE_TX1
 	asel_via_base((uchar*)buf.constData(), width * height, width, height,
 				  v.rgb, v.shadow, v.ill, v.debug, v.stabilization, v.privacy,
-				  control.meta, control.panTiltZoomRead, control.alarmFlag,
+				  control.meta, panTiltZoomRead, control.alarmFlag,
 				  control.initialize, control.sensitivity,control.classification, false);
 	if (control.meta[1] == 1) {
 		AlgorithmGrpcServer::instance()->setAlarmField("tamper_detection", "severity", "1.0");
