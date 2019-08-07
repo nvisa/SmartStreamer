@@ -141,9 +141,9 @@ int TX1Streamer::runAlgorithm(int channel)
 		if (panchange->getState() != BaseAlgorithmElement::UNKNOWN)
 			return -EINVAL;
 		if (motion->getState() != BaseAlgorithmElement::UNKNOWN) {
+			StabilizationAlgorithmElement *sel = (StabilizationAlgorithmElement *)privacy;
+			((MotionAlgorithmElement *)motion)->enableExtra(sel->getPrivacy(), sel->getStabilization());
 			/* Requirement 1 */
-			motion->setState(BaseAlgorithmElement::STOPALGO);
-			algosPending = MOTION_RUNNING;
 			motionExtraEnabled = true;
 			return 0;
 		}
@@ -172,8 +172,8 @@ int TX1Streamer::stopAlgorithm(int channel)
 			/* we may have privacy running thru motion */
 			if (!motionExtraEnabled)
 				return -EINVAL;
-			motion->setState(BaseAlgorithmElement::STOPALGO);
-			algosPending = MOTION_RUNNING;
+			StabilizationAlgorithmElement *sel = (StabilizationAlgorithmElement *)privacy;
+			((MotionAlgorithmElement *)motion)->enableExtra(sel->getPrivacy(), sel->getStabilization());
 			motionExtraEnabled = false;
 			return 0;
 		}
