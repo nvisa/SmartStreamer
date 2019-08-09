@@ -71,6 +71,7 @@ int AryaStreamer::generatePipeline(const QString &url)
 	sei->setAlarmTemplate("sei_alarm_template.xml");
 
 	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(0);
+	rtpout->forwardRtpTs(true);
 	StreamerCommon::createRtspServer(rtpout);
 
 	createAlgorithms();
