@@ -2,6 +2,7 @@
 #include "proto/KardelenAPI.pb.h"
 #include "algorithm/algorithmgrpcserver.h"
 
+#include <ecl/debug.h>
 #include <ecl/ptzp/ptzphead.h>
 #include <ecl/ptzp/ptzpdriver.h>
 
@@ -38,14 +39,18 @@ static KardelenAPIServer *apiinst = nullptr;
 class KaapiThread : public QThread
 {
 public:
-	KaapiThread(quint16 port, KardelenAPIServer *s)
+	KaapiThread(quint16 port, KardelenAPIServer *s, PtzpDriver *p)
 	{
 		servicePort = port;
 		kaapi = s;
+		ptzp = p;
 	}
 	void run()
 	{
-		sleep(10);
+		while(!ptzp->isReady()) {
+			fDebug("Waiting ptzp driver to be ready");
+			QThread::sleep(1);
+		}
 		std::string ep(qPrintable(QString("0.0.0.0:%1").arg(servicePort)));
 		ServerBuilder builder;
 		builder.AddListeningPort(ep, grpc::InsecureServerCredentials());
@@ -57,6 +62,7 @@ public:
 protected:
 	int servicePort;
 	KardelenAPIServer *kaapi;
+	PtzpDriver *ptzp;
 };
 
 class KardelenAPIImpl
@@ -1254,7 +1260,7 @@ public:
 
 KardelenAPIServer::KardelenAPIServer(PtzpDriver *ptzp, QString nodeType)
 {
-	KaapiThread *grpcServ = new KaapiThread(50060, this);
+	KaapiThread *grpcServ = new KaapiThread(50060, this, ptzp);
 	grpcServ->start();
 	if (nodeType == "kayi")
 		impl = new KardelenAPIFalconEyeImpl;
