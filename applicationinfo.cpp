@@ -123,7 +123,7 @@ int ApplicationInfo::startPtzpDriver()
 				relayConfig << obj["relay"].toObject()["thermal"].toInt();
 				relayConfig << obj["relay"].toObject()["standby"].toInt();
 			}
-			driver = new KayiDriver(relayConfig);
+			driver = new KayiDriver(relayConfig, obj["gps"].toBool());
 			break;
 		}
 		case ARYA_ORION:
