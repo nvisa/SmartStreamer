@@ -342,6 +342,14 @@ InDeviceTest *ApplicationInfo::getIDT()
 	return idt;
 }
 
+int ApplicationInfo::init()
+{
+	QTimer *timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), SLOT(timeoutApp()));
+	timer->start(1000);
+	return 0;
+}
+
 QString ApplicationInfo::algorithmSet()
 {
 #if HAVE_TX1
@@ -364,11 +372,16 @@ BaseAlgorithmElement *ApplicationInfo::getAlgorithmInstance(const QString &type,
 
 qint64 ApplicationInfo::getLifeTime()
 {
-	return lifetime->saveInterval(60000);
+	return lifetime->saveInterval(1000);
 }
 
 ApplicationInfo::ApplicationInfo()
 {
 	lifetime = new LifeTimeTracker("/etc/system.lifetime");
 	idt = nullptr;
+}
+
+void ApplicationInfo::timeoutApp()
+{
+	lifetime->saveInterval();
 }

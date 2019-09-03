@@ -6,14 +6,16 @@
 #include <QJsonObject>
 #include <QCoreApplication>
 
+
 class PtzpDriver;
 class BaseStreamer;
 class InDeviceTest;
 class BaseAlgorithmElement;
 class LifeTimeTracker;
 
-class ApplicationInfo
+class ApplicationInfo : public QObject
 {
+	Q_OBJECT
 public:
 	static ApplicationInfo* instance()
 	{
@@ -45,6 +47,7 @@ public:
 	BaseAlgorithmElement * createAlgorithm(const QString &type, int index = 0);
 	void checkStartupDelay();
 	InDeviceTest * getIDT();
+	int init();
 
 	QString algorithmSet();
 	BaseAlgorithmElement * getAlgorithmInstance(int index);
@@ -53,6 +56,10 @@ public:
 
 	LifeTimeTracker *lifetime;
 	qint64 getLifeTime();
+
+public slots:
+	void timeoutApp();
+
 protected:
 	ApplicationInfo();
 
