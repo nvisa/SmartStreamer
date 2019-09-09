@@ -75,7 +75,7 @@ int PanaromaAlgorithmElement::processAlgo(const RawBuffer &buf)
 	if (control.init)
 		control.init = 0;
 	reallocate();
-	return newOutputBuffer(buf);
+	return 0;
 }
 
 int PanaromaAlgorithmElement::stopAlgo()
