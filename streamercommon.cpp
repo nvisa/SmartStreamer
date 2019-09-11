@@ -97,6 +97,9 @@ BaseRtspServer *StreamerCommon::createRtspServer(QList<RtpTransmitter *> rtpout)
 		rtspServer->addStream(QString("stream%1%2").arg(i + 1).arg("m"),true, rtpout[i], 15678 + (2 * i));
 		rtspServer->addMedia2Stream("videoTrack", QString("stream%1").arg(i + 1), false, rtpout[i]);
 		rtspServer->addMedia2Stream("videoTrack", QString("stream%1%2").arg(i + 1).arg("m"), true, rtpout[i]);
+		rtspServer->setMulticastAddressBase(QString("stream%1%2").arg(i + 1).arg("m"), "videoTrack",
+									  rtpout[i]->property("multicast_address_base").toString());
+		rtspServer->setForceTCP(QString("stream%1").arg(i + 1), rtpout[i]->property("force_tcp").toBool());
 	}
 	return rtspServer;
 }
@@ -197,8 +200,20 @@ int StreamerCommon::reloadJson(BaseLmmElement *el)
 			return 0;
 		if (obj.contains("shaping")) {
 			QJsonObject sobj = obj["shaping"].toObject();
-			rtp->setTrafficShaping(sobj["enabled"].toBool(), sobj["bitrate"].toInt(), 0);
+			rtp->setTrafficShaping(sobj["enabled"].toBool(), sobj["bitrate"].toInt(), sobj["interval"].toInt());
 		}
+		if (obj.contains("mtu"))
+			rtp->setMaximumPayloadSize(obj["mtu"].toInt());
+		if (obj.contains("ttl"))
+			rtp->setMulticastTTL(obj["ttl"].toInt());
+		if (obj.contains("rtcp_enabled"))
+			rtp->setRtcp(obj["rtcp_enabled"].toBool());
+		if (obj.contains("rtcp_timeout"))
+			rtp->setRtcpTimeoutValue(obj["rtcp_timeout"].toInt());
+		if (obj.contains("multicast_address_base"))
+			rtp->setProperty("multicast_address_base", obj["multicast_address_base"].toString());
+		if (obj.contains("force_tcp"))
+			rtp->setProperty("force_tcp", obj["force_tcp"].toBool());
 	} else
 		return -ENOENT;
 	return 0;

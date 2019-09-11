@@ -7,10 +7,12 @@
 		"bitrate_max": 15000,
 		"bitrate": 6000,
 		"frameRate": 25,
-		"framerate_min": 5,
-        	"framerate_max": 25,
+		"mtu": 1412,
+		"framerate_min": 1,
+		"framerate_max": 25,
 		"shaping": {
 			"enabled": false,
+			"interval": 10,
 			"bitrate": 6000000
 		}
 	},
@@ -21,9 +23,10 @@
 		"bitrate_min": 500,
 		"bitrate_max": 4000,
 		"bitrate": 1250,
-	        "frameRate": 25,
-		"framerate_min": 5,
+		"frameRate": 25,
+		"framerate_min": 1,
 		"framerate_max": 25,
+		"mtu": 1412,
 		"resolution": "1280x720",
 		"resolutions": [
 			"1920x1080",
@@ -37,6 +40,7 @@
 		],
 		"shaping": {
 			"enabled": false,
+			"interval": 10,
 			"bitrate": 6000000
 		}
 	},
@@ -48,8 +52,9 @@
 		"bitrate_max": 15000,
 		"bitrate": 6000,
 		"frameRate": 25,
-		"framerate_min": 5,
+		"framerate_min": 1,
 		"framerate_max": 25,
+		"mtu": 1412,
 		"resolution": "640x360",
 		"resolutions": [
 			"1920x1080",
@@ -63,6 +68,7 @@
 		],
 		"shaping": {
 			"enabled": false,
+			"interval": 10,
 			"bitrate": 6000000
 		}
 	},
@@ -74,8 +80,9 @@
 		"bitrate_max": 15000,
 		"bitrate": 6000,
 		"frameRate": 25,
-		"framerate_min": 5,
+		"framerate_min": 1,
 		"framerate_max": 25,
+		"mtu": 1412,
 		"resolution": "1920x1080",
 		"resolutions": [
 			"1920x1080",
@@ -89,6 +96,7 @@
 		],
 		"shaping": {
 			"enabled": false,
+			"interval": 10,
 			"bitrate": 6000000
 		}
 	}
