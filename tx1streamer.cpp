@@ -568,5 +568,14 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 		recorder->start();
 	}
 #endif
+
+	/* on TX1 we have IPv4 fragmentation on by default, close it. */
+	QFile f("/proc/sys/net/ipv4/ip_no_pmtu_disc");
+	if (f.open(QIODevice::WriteOnly | QIODevice::Unbuffered)) {
+		f.write("1\n");
+		f.close();
+	} else {
+		mDebug("Error opening %s", qPrintable(f.fileName()));
+	}
 }
 
