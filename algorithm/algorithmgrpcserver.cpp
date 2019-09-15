@@ -261,7 +261,7 @@ grpc::Status AlgorithmGrpcServer::SetAlgorithmParameters(grpc::ServerContext *co
 		break;
 	}
 	case AlgorithmCommunication::RequestForAlgorithm::TRACKING:
-		setTrackParameters((TrackAlgorithmElement*)el, trackpar);
+		return setTrackParameters((TrackAlgorithmElement*)el, trackpar);
 		break;
 	case AlgorithmCommunication::RequestForAlgorithm::PANAROMA:
 		break;
@@ -567,7 +567,7 @@ int AlgorithmGrpcServer::setMotionParameters(MotionAlgorithmElement *el, Algorit
 	return ret;
 }
 
-int AlgorithmGrpcServer::setTrackParameters(TrackAlgorithmElement *el, AlgorithmCommunication::TrackParameters p)
+grpc::Status AlgorithmGrpcServer::setTrackParameters(TrackAlgorithmElement *el, AlgorithmCommunication::TrackParameters p)
 {
 	switch (p.tracktype()) {
 	case AlgorithmCommunication::TrackParameters::AUTO:
@@ -578,6 +578,23 @@ int AlgorithmGrpcServer::setTrackParameters(TrackAlgorithmElement *el, Algorithm
 		// el->setMode(TrackAlgorithmElement::SEMIAUTO);
 		break;
 	case AlgorithmCommunication::TrackParameters::MANUAL: {
+		float var = p.target().point_x();
+		if (var < 0) {
+			return grpc::Status(grpc::OUT_OF_RANGE, "Negative point_x.");
+		}
+		var = p.target().point_y();
+		if (var < 0) {
+			return grpc::Status(grpc::OUT_OF_RANGE, "Negative point_y.");
+		}
+		var = p.target().width();
+		if (var < 0) {
+			return grpc::Status(grpc::OUT_OF_RANGE, "Negative width.");
+		}
+		var = p.target().height();
+		if (var < 0) {
+			return grpc::Status(grpc::OUT_OF_RANGE, "Negative height.");
+		}
+
 		el->setMode(TrackAlgorithmElement::MANUAL);
 		el->setTrackObjInfo(p.target().point_x(), p.target().point_y(), p.target().width(), p.target().height());
 		break;
@@ -588,7 +605,7 @@ int AlgorithmGrpcServer::setTrackParameters(TrackAlgorithmElement *el, Algorithm
 	el->setTrackInterval(p.trackinterval());
 	el->setTrackScore(p.trackscore());
 	el->savetoJson();
-	return 0;
+	return grpc::Status::OK;
 }
 
 int AlgorithmGrpcServer::setStabilizationParameters(StabilizationAlgorithmElement *el, AlgorithmCommunication::StabilizationParameters p)

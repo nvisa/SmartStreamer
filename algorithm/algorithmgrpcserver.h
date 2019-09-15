@@ -59,7 +59,7 @@ protected:
 	int setMotionParameters(MotionAlgorithmElement *el, AlgorithmCommunication::MotionParameters p);
 	int getMotionParameters(AlgorithmCommunication::MotionParameters p);
 	BaseAlgorithmElement *algorithmElementManager(int chn);
-	int setTrackParameters(TrackAlgorithmElement *el, AlgorithmCommunication::TrackParameters p);
+	grpc::Status setTrackParameters(TrackAlgorithmElement *el, AlgorithmCommunication::TrackParameters p);
 	int setStabilizationParameters(StabilizationAlgorithmElement *el, AlgorithmCommunication::StabilizationParameters p);
 	int setPanChangeParameters(PanChangeAlgorithmElement *el, AlgorithmCommunication::PanChangeParameters &p);
 private:
