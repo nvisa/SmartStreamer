@@ -130,6 +130,8 @@ int ApplicationInfo::startPtzpDriver()
 			driver = new AryaDriver;
 			((AryaDriver*) driver)->setMoxaControl(obj["moxa_thermal"].toString(), obj["moxa_day"].toString());
 			((AryaDriver*) driver)->setOverlayInterval(obj["overlay_interval"].toInt());
+			((AryaDriver*) driver)->setThermalInterval(obj["thermal_interval"].toInt());
+			((AryaDriver*) driver)->setGungorInterval(obj["gungor_interval"].toInt());
 			break;
 		}
 		case TBGTH:
