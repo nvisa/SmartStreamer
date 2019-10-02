@@ -109,6 +109,11 @@ tk1 {
 	DEFINES += HAVE_TK1
 }
 
+metrics {
+    include($$PWD/../../metricslib/metrics.pri)
+    DEFINES += HAVE_METRICS_PROMETHEUS
+}
+
 deprecated {
     SOURCES += \
         algorithmmanager.cpp \
