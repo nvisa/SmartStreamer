@@ -362,7 +362,9 @@ QString ApplicationInfo::algorithmSet()
 
 BaseAlgorithmElement *ApplicationInfo::getAlgorithmInstance(int index)
 {
-	return algorithms[index];
+	if (index < algorithms.size())
+		return algorithms[index];
+	return NULL;
 }
 
 BaseAlgorithmElement *ApplicationInfo::getAlgorithmInstance(const QString &type, int index)
