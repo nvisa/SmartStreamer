@@ -32,7 +32,6 @@ FlirStreamer::FlirStreamer(const QJsonObject &config, QObject *parent)
 	:BaseStreamer(parent)
 {
 	priv = new FlirStreamerPriv;
-	qDebug() << config;
 	if (!config.isEmpty()) {
 		priv->width = config.value("width").toInt();
 		priv->height = config.value("height").toInt();
@@ -58,6 +57,7 @@ int FlirStreamer::generatePipeline(const QString &url)
 	RtspClient *rtsp = StreamerCommon::createRtspClient(rtp, url, priv->rtspUser, priv->rtspPass);
 
 	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(0);
+	rtpout->forwardRtpTs(true);
 	StreamerCommon::createRtspServer(rtpout);
 
 	BufferQueue *queue = new BufferQueue();
