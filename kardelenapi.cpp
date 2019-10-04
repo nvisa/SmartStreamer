@@ -1312,7 +1312,6 @@ grpc::Status KardelenAPIServer::CommunicationChannel(grpc::ServerContext *, ::gr
 			pt->set_y(ts.topLeftY);
 			rect->set_width(ts.widthOfTarget);
 			rect->set_height(ts.heightOfTarget);
-			qDebug() << "detection" << ts.topLeftX << ts.topLeftY << ts.widthOfTarget << ts.heightOfTarget;
 		}
 		lastMotionObjects.clear();
 		if (lastImage.size()) {
