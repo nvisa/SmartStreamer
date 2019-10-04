@@ -33,7 +33,6 @@ TrackAlgorithmElement::TrackAlgorithmElement(QObject *parent)
 	for(int ii=0;ii<ZoomLevelNo;ii++)
 			fscanf(file_alg_params3, "%f%*[^\n]",&zoomvalues[ii + 2*ZoomLevelNo]);
 	fclose(file_alg_params3);
-
 	printf("end zoom reading\n");
 }
 
@@ -82,7 +81,6 @@ int TrackAlgorithmElement::init()
 	v.shadow = 0;
 	v.stabilization = 0;
 	control.initialize = 1;
-
 	return BaseAlgorithmElement::init();
 }
 
@@ -141,7 +139,6 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 		panTiltZoomRead[4] = fovv;
 	}
 
-	qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~fov values are  are " << panTiltZoomRead[0] <<  panTiltZoomRead[1] << panTiltZoomRead[3] <<  panTiltZoomRead[4];
 #if HAVE_VIA_TRACK
 	asel_via_track((uchar *)buf.constData(), width * height, width , height,
 				   v.rgb,v.shadow, v.ill, v.debug, v.stabilization, v.privacy,
@@ -160,9 +157,9 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 	if(speed_tilt>64)
 		speed_tilt = -(speed_tilt-64);
 
-	qDebug() << "Pan&Tilt degree values are " << panTiltZoomRead[3] <<  panTiltZoomRead[4];
-	if (control.initialize == 0 && (control.meta[31] != 0) && (control.meta[31] != 1))
-		headpt->panTiltDegree(panTiltZoomRead[3], panTiltZoomRead[4]);
+	if (control.initialize == 0 && (control.meta[31] != 0) && (control.meta[31] != 1) && (control.meta[31] >= 2)) {
+			headpt->panTiltDegree(panTiltZoomRead[3], panTiltZoomRead[4]);
+	}
 
 	if (control.initialize == 0 && control.meta[31] == 1) {
 		headpt->panTiltStop();
@@ -211,7 +208,6 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 		panTiltZoomRead[3] = fovh;
 		panTiltZoomRead[4] = fovv;
 	}
-	qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~fov values are " << panTiltZoomRead[3] <<  panTiltZoomRead[4] << headz->getZoom();
 	bool migrateDebug = false;
 	if (migrateDebug) {
 		mDebug("######################### ptzp head fovh=%f fovv=%f", fovv, fovh);
@@ -247,17 +243,19 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 		mDebug("######################### cevo speed pan=%d tilt=%d", speed_pan, speed_tilt);
 		mDebug("######################### ptzp head pan=%d tilt=%d", panTiltZoomRead[3], panTiltZoomRead[4]);
 	}
-	qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~speed values for pan&tilt are " << panTiltZoomRead[3] <<  panTiltZoomRead[4];
-	if (control.initialize == 0 && control.meta[31] != 1)
+
+	if (control.initialize == 0 && control.meta[31] >= 3)
 		headpt->panTiltDegree(panTiltZoomRead[3], panTiltZoomRead[4]);
 
 	if (control.initialize == 0 && control.meta[31] == 1) {
 		headpt->panTiltStop();
 		setState(BaseAlgorithmElement::AlgoState::STOPALGO);
 	}
-
-	if (control.initialize)
+	if (control.initialize == 1)
 		control.initialize = 0;
+	else if (control.meta[31] == 2) {
+		control.initialize = 0;
+	}
 
 	QByteArray ba = QByteArray((char *)control.meta, 4096);
 
@@ -305,14 +303,15 @@ QJsonObject TrackAlgorithmElement::resaveJson(const QJsonObject &node)
 	return tr;
 }
 
-int TrackAlgorithmElement::forwardToObjPropFromControl(const TrackAlgorithmElement::TrackControl &control)
+int TrackAlgorithmElement::forwardToObjPropFromControl(const TrackAlgorithmElement::TrackControl &controlFromAPI)
 {
-	objProp[0] = control.obj.point_x;
-	objProp[1] = control.obj.point_y;
-	objProp[2] = control.obj.width;
-	objProp[3] = control.obj.height;
-	if (BaseAlgorithmElement::AlgoState::PROCESS && mode == MANUAL)
-		this->control.initialize = 2;
+	objProp[0] = controlFromAPI.obj.point_x;
+	objProp[1] = controlFromAPI.obj.point_y;
+	objProp[2] = controlFromAPI.obj.width;
+	objProp[3] = controlFromAPI.obj.height;
+	if (BaseAlgorithmElement::AlgoState::PROCESS && mode == MANUAL) {
+		control.initialize = 2;
+	}
 	return 0;
 }
 
