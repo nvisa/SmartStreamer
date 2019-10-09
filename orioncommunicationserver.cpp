@@ -130,18 +130,18 @@ grpc::Status OrionCommunicationServer::SetSensivityParameter(grpc::ServerContext
 grpc::Status OrionCommunicationServer::GotoPanaromaPixel(grpc::ServerContext *context, const OrionCommunication::TPoint *request, OrionCommunication::AppCommandResult *response)
 {
 	Q_UNUSED(context)
+	((BaseAlgorithmElement*)panaromaEl)->reloadJson();
 	float panS = panaromaEl->getPanaromaControl().started.pan;
 	float tiltS = panaromaEl->getPanaromaControl().started.tilt;
+	float fovValue = panaromaEl->getPanaromaControl().fovValue;
 
-	float angle = (request->x() * (360 + 4.5) + panS);
+	float angle = (request->x() * (360 + fovValue / 2.0) + 10);
 	if(angle > 360)
 		angle -= 360;
 	if(angle < 0)
 		angle += 360;
-	angle = angle / 360;
-	float point_x = angle * 360;
+	float point_x = angle;
 
-	float fovValue = 7.5;
 	float theta = fovValue * 576.0 / 720.0;
 
 	float point_y = tiltS - ((((float)request->y() - 0.5) / 0.5) * theta / 2.0);
@@ -149,7 +149,9 @@ grpc::Status OrionCommunicationServer::GotoPanaromaPixel(grpc::ServerContext *co
 		point_y = 45.0;
 	if (point_y < -45.0)
 		point_y = -45.0;
-	ffDebug() << "Position info: point_x %d, point_y %d" <<point_x << point_y;
+
+	ffDebug() << "ReqX: %d, ReqY: %d, point_x: %d, point_y: %d" << request->x()
+			  << request->y() << point_x << point_y;
 	ApplicationInfo::instance()->getPtzpDriver(0)->getHead(0)->panTiltGoPos(point_x, point_y);
 	return grpc::Status::OK;
 }

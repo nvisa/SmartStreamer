@@ -27,6 +27,8 @@ public:
 		Started started;
 		float panTiltZoomRead[10];
 		int init;
+		float fovValue;
+		int targetFov;
 	};
 	PanaromaControl getPanaromaControl() { return control;}
 	QByteArray getPanaromaFrame(const QString &picture);
