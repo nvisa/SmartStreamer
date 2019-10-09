@@ -5,10 +5,11 @@
 		"smartRecord": false,
 		"bitrate_min": 1000,
 		"bitrate_max": 15000,
-		"bitrate": 6000,
+		"bitrate": 5000,
 		"frameRate": 25,
 		"multicast_address_base": "239.0.0.0",
 		"mtu": 1412,
+		"multicast_address_base": "239.0.0.0",
 		"framerate_min": 1,
 		"framerate_max": 25,
 		"shaping": {
@@ -23,12 +24,13 @@
 		"smartRecord": false,
 		"bitrate_min": 500,
 		"bitrate_max": 4000,
-		"bitrate": 1250,
+		"bitrate": 2250,
 		"frameRate": 25,
 		"framerate_min": 1,
 		"framerate_max": 25,
 		"multicast_address_base": "239.0.0.0",
 		"mtu": 1412,
+		"multicast_address_base": "238.0.0.0",
 		"resolution": "1280x720",
 		"resolutions": [
 			"1920x1080",
@@ -43,21 +45,22 @@
 		"shaping": {
 			"enabled": false,
 			"interval": 10,
-			"bitrate": 6000000
+			"bitrate": 2500000
 		}
 	},
 	{
 		"name": "Third stream",
 		"h265": false,
 		"smartRecord": false,
-		"bitrate_min": 1000,
+		"bitrate_min": 500,
 		"bitrate_max": 15000,
-		"bitrate": 6000,
+		"bitrate": 600,
 		"frameRate": 25,
 		"framerate_min": 1,
 		"framerate_max": 25,
 		"multicast_address_base": "239.0.0.0",
 		"mtu": 1412,
+		"multicast_address_base": "237.0.0.0",
 		"resolution": "640x360",
 		"resolutions": [
 			"1920x1080",
@@ -81,12 +84,13 @@
 		"smartRecord": false,
 		"bitrate_min": 1000,
 		"bitrate_max": 15000,
-		"bitrate": 6000,
+		"bitrate": 5000,
 		"frameRate": 25,
 		"framerate_min": 1,
 		"framerate_max": 25,
 		"multicast_address_base": "239.0.0.0",
 		"mtu": 1412,
+		"multicast_address_base": "236.0.0.0",
 		"resolution": "1920x1080",
 		"resolutions": [
 			"1920x1080",
