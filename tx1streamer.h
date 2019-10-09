@@ -6,6 +6,7 @@
 
 #include <QUrl>
 
+class VideoScaler;
 class SeiInserter;
 class RtpTransmitter;
 class BaseRtspServer;
@@ -35,6 +36,7 @@ protected:
 	int notifyGrpcForAlarm(const RawBuffer &buf);
 	int processBuffer(const RawBuffer &buf);
 	int recordIfNvrDead(const RawBuffer &buf);
+	void enableRGBPortion(bool en);
 
 	virtual BaseLmmPipeline * createYUV420Pipeline(QSize &res0) = 0;
 
@@ -43,6 +45,7 @@ protected:
 	BaseAlgorithmElement *motion;
 	BaseAlgorithmElement *track;
 	BaseAlgorithmElement *panchange;
+	BaseAlgorithmElement *face;
 	BaseLmmElement *enc0;
 	BaseLmmElement *enc1;
 	BaseLmmElement *enc2;
@@ -51,6 +54,8 @@ protected:
 	AlgorithmGrpcServer *grpcserv;
 	alarmGeneratorElement *algen;
 	InternalRecorder* recorder;
+	VideoScaler *yuv2rgb;
+	VideoScaler *rgb2yuv;
 
 	bool secondStream;
 	bool thirdStream;
@@ -71,6 +76,8 @@ private:
 		TRACK_RUNNING,
 		TO_DIFF_RUNNING,
 		DIFF_RUNNING,
+		TO_FACE_RUNNING,
+		FACE_RUNNING,
 	};
 
 	AlgorithmState algos;

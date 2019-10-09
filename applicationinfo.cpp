@@ -267,7 +267,7 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithmFromJson(const QJsonObject
 			track->setTiltReversing(true);
 		return track;
 	} else if (algo["type"] == QString("faceDetection")) {
-		return new BaseAlgorithmElement;
+		return new FaceAlgorithmElement;
 #endif
 #if HAVE_TK1
 	} else if (algo["type"] == QString("panaroma")) {

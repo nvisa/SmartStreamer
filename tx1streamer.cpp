@@ -79,6 +79,8 @@ int TX1Streamer::start()
 			runAlgorithm(1);
 		} else if (panchange->isAutoStart()) {
 			runAlgorithm(3);
+		} else if (face->isAutoStart()) {
+			runAlgorithm(4);
 		}
 	}
 
@@ -159,6 +161,10 @@ int TX1Streamer::runAlgorithm(int channel)
 			return -EINVAL;
 		/* we have nothing running so track can start */
 		algosPending = DIFF_RUNNING;
+	} else if (el == face) {
+		algosPending = FACE_RUNNING;
+		/* face recides in RGB portion */
+		enableRGBPortion(true);
 	}
 
 	return 0;
@@ -179,6 +185,8 @@ int TX1Streamer::stopAlgorithm(int channel)
 		}
 		return -EBUSY;
 	}
+	if (el == face)
+		enableRGBPortion(false);
 	el->setState(BaseAlgorithmElement::STOPALGO);
 	if (el == motion && motionExtraEnabled) {
 		/* we need to enable privacy masking */
@@ -211,8 +219,10 @@ void TX1Streamer::apiUrlRequested(const QUrl &url)
 			el = motion;
 		} else if (index == 2) {
 			el = privacy;
-		}else if (index == 1) {
+		} else if (index == 1) {
 			el = track;
+		} else if (index == 4) {
+			el = face;
 		} else
 			return;
 		if (action == "jsonreload")
@@ -331,6 +341,11 @@ int TX1Streamer::recordIfNvrDead(const RawBuffer &buf)
 	return 0;
 }
 
+void TX1Streamer::enableRGBPortion(bool en)
+{
+	yuv2rgb->setPassThru(!en);
+}
+
 void TX1Streamer::checkAlgoState()
 {
 	//ffDebug() << algos;
@@ -365,6 +380,10 @@ void TX1Streamer::checkAlgoState()
 			if (algosPending == DIFF_RUNNING) {
 				algos = TO_DIFF_RUNNING;
 				panchange->setState(BaseAlgorithmElement::INIT);
+			}
+			if (algosPending == FACE_RUNNING) {
+				algos = TO_FACE_RUNNING;
+				face->setState(BaseAlgorithmElement::INIT);
 			}
 			algosPending = NONE;
 		}
@@ -402,6 +421,15 @@ void TX1Streamer::checkAlgoState()
 		algos = DIFF_RUNNING;
 	case DIFF_RUNNING:
 		if (panchange->getState() != BaseAlgorithmElement::PROCESS)
+			algos = TO_GPU_FREE;
+		break;
+	case TO_FACE_RUNNING:
+		if (face->getState() != BaseAlgorithmElement::PROCESS)
+			break;
+		algos = FACE_RUNNING;
+		break;
+	case FACE_RUNNING:
+		if (face->getState() != BaseAlgorithmElement::PROCESS)
 			algos = TO_GPU_FREE;
 		break;
 	case NONE:
@@ -442,6 +470,7 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	track = ApplicationInfo::instance()->createAlgorithm("track");
 	privacy = ApplicationInfo::instance()->createAlgorithm("privacy");
 	panchange = ApplicationInfo::instance()->createAlgorithm("panchange");
+	face = ApplicationInfo::instance()->createAlgorithm("faceDetection");
 
 	enc0 = StreamerCommon::createEncoder(0);
 	((TX1VideoEncoder *)enc0)->setOutputResolution(res0.width(), res0.height());
@@ -477,11 +506,26 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	RtpTransmitter *rtpout3 = StreamerCommon::createRtpTransmitter(fps2, 2);
 	RtpTransmitter *rtpout4 = StreamerCommon::createRtpTransmitter(fps3, 3);
 
+	/* rgb portion is passthru by default */
+	yuv2rgb = new  VideoScaler;
+	yuv2rgb->setOutputFormat(AV_PIX_FMT_ARGB);
+	yuv2rgb->setMode(1);
+	yuv2rgb->setPassThru(true);
+	rgb2yuv = new  VideoScaler;
+	rgb2yuv->setOutputFormat(AV_PIX_FMT_YUV420P);
+	rgb2yuv->setMode(1);
+
 	p1->setQuitOnThreadError(true);
 	p1->append(privacy);
 	p1->append(motion);
 	p1->append(track);
 	p1->append(panchange);
+
+	/* rgb portion */
+	p1->append(yuv2rgb);
+	p1->append(face);
+	p1->append(rgb2yuv);
+
 	p1->append(newFunctionPipe(TX1Streamer, this, TX1Streamer::checkSeiAlarm));
 	p1->append(textOverlay);
 	p1->append(queue);
