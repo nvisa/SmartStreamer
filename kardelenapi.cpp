@@ -1,6 +1,8 @@
 #include "kardelenapi.h"
 #include "proto/KardelenAPI.pb.h"
 #include "algorithm/algorithmgrpcserver.h"
+#include "applicationinfo.h"
+#include "indevicetest.h"
 
 #include <ecl/debug.h>
 #include <ecl/ptzp/ptzphead.h>
@@ -1365,6 +1367,13 @@ grpc::Status KardelenAPIServer::CommunicationChannel(grpc::ServerContext *, ::gr
 
 		} else if (msgw.action() == kaapi::CommWrite_Action_SET_CAMERA) {
 
+		}
+
+		if (msgw.action() == 5) {
+			msgr.add_keys()->append("last_cit_results");
+			QJsonObject cit = ApplicationInfo::instance()->getIDT()->getLastCheckResults();
+			const QByteArray ba = QJsonDocument(cit).toJson();
+			msgr.add_values()->append(std::string(ba.constData(), ba.size()));
 		}
 
 		impl->setPosi(msgr.mutable_posinfo());
