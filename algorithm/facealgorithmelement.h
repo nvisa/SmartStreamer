@@ -14,7 +14,6 @@ class FaceAlgorithmElement : public BaseAlgorithmElement
 public:
 	explicit FaceAlgorithmElement(QObject *parent = 0);
 	int init();
-	int reallocate();
 	int processAlgo(const RawBuffer &buf);
 	int release();
 	virtual QString getTypeString();

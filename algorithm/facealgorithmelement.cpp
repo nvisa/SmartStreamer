@@ -4,6 +4,18 @@
 
 #include "algorithmfunctions.h"
 
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QProcess>
+#include <QDebug>
+#include <QFile>
+#include <QDir>
+
+extern "C" {
+	#include <libavformat/avformat.h>
+}
+
 FaceAlgorithmElement::FaceAlgorithmElement(QObject *parent)
 	: BaseAlgorithmElement(parent)
 {
@@ -15,30 +27,29 @@ int FaceAlgorithmElement::init()
 	control.initialize = 1;
 	control.camId = 12;
 	control.counter = 0;
-	control.debug = 1;
-	return 0;
-}
-
-int FaceAlgorithmElement::reallocate()
-{
-	return 0;
+	control.debug = 0;
+	return BaseAlgorithmElement::init();
 }
 
 int FaceAlgorithmElement::processAlgo(const RawBuffer &buf)
 {
+#ifdef HAVE_TX1
+	if (buf.constPars()->avPixelFormat != AV_PIX_FMT_ARGB) {
+		mDebug("Skipping non-rgb buffer");
+		return 0;
+	}
 	int numFace = 0;
-	if(control.counter % faceParams.skipFrame == 0)
-	{
-//		qDebug() << "Count " << control.counter;
-		//asel_face((uchar *)buf.constData(), numFace, control.debug, control.meta, control.initialize, control.camId, faceParams);
+	if(control.counter % faceParams.skipFrame == 0) {
+		asel_face((uchar *)buf.constData(), numFace, control.debug, control.meta, control.initialize, control.camId, faceParams);
+		if (control.initialize)
+			getInputQueue(0)->clear();
 		control.counter = 0;
 	}
 	control.counter++;
 	control.numface = numFace;
 	if (control.initialize)
-	{
 		control.initialize = 0;
-	}
+#endif
 	return 0;
 }
 
@@ -78,16 +89,13 @@ void FaceAlgorithmElement::setFaceParams(const QJsonObject &node)
 	faceParams.saveFrameCount = node["saveFrameCount"].toInt();
 	faceParams.eraseFaceThresh = node["eraseFaceThresh"].toInt();
 	faceParams.validFaceThresh = node["validFaceThresh"].toInt();
-	faceParams.roiRatioX1 = node["roiRatioX1"].toDouble();
-	faceParams.roiRatioY1 = node["roiRatioY1"].toDouble();
-	faceParams.roiRatioX2 = node["roiRatioX2"].toDouble();
-	faceParams.roiRatioY2 = node["roiRatioY2"].toDouble();
 	faceParams.blurThreshold = node["blurThreshold"].toInt();
 	faceParams.skipFrame = node["skipFrame"].toInt();
 }
 
 int FaceAlgorithmElement::reloadJson(const QJsonObject &node)
 {
+	control.camId = node["camId"].toInt();
 	setFaceParams(node);
 	return 0;
 }
@@ -97,6 +105,3 @@ int FaceAlgorithmElement::release()
 	asel_face_release();
 	return 0;
 }
-
-
-
