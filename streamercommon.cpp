@@ -50,11 +50,11 @@ RtpTransmitter *StreamerCommon::createRtpTransmitter(float fps, int id)
 	rtpout->forwardRtpTs(false);
 	rtpout->setRtcp(false);
 	rtpout->setH264SEIInsertion(true);
-	rtpout->useIncomingTimestamp(false);
 	if (fps > 0.001) {
-		rtpout->setUseAbsoluteTimestamp(false);
-		rtpout->setFrameRate(fps);
+		rtpout->useIncomingTimestamp(true);
+		rtpout->setUseAbsoluteTimestamp(true);
 	} else {
+		rtpout->useIncomingTimestamp(false);
 		rtpout->setUseAbsoluteTimestamp(true);
 	}
 	rtpout->setProperty("commonTag", "rtptransmitter");
