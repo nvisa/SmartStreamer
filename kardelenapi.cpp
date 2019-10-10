@@ -100,9 +100,6 @@ public:
 
 		if (_mymode != CONTROL_MODE_JOYSTICK && mode != CONTROL_MODE_JOYSTICK)
 			return 0;
-//		if (_mymode != mode && _mymode != CONTROL_MODE_JOYSTICK)
-//			return 0;
-		qDebug() << "Set modeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" << mode;
 
 		if (mode == CONTROL_MODE_JOYSTICK) {
 			/* we need to stop all algorithms */
@@ -239,14 +236,12 @@ public:
 	KardelenAPIFalconEyeImpl()
 	{
 		_mymode = CONTROL_MODE_JOYSTICK;
-		//setMode(CONTROL_MODE_JOYSTICK);
 	}
 
 	int64_t getCapabilities()
 	{
 		int64_t caps = 0;
 		if (!ptzp->getHead(0)->getProperty(3)) {
-			qDebug() << "capabilities of thermal" << ptzp->getHead(0)->getProperty(3) << "soft" << ptzp->getHead(0)->getProperty(61);
 			addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
 			addcap(caps, CAPABILITY_DETECTION);
 			addcap(caps, CAPABILITY_TRACKING);
@@ -272,7 +267,6 @@ public:
 			addcap(caps, CAPABILITY_CHANGE_DETECTION);
 			addcap(caps, CAPABILITY_SHOW_RETICLE);
 		} else {
-			qDebug() << "capabilities of day";
 			addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
 			addcap(caps, CAPABILITY_DETECTION);
 			addcap(caps, CAPABILITY_TRACKING);
@@ -317,10 +311,7 @@ public:
 		int32_t v = 0;
 
 		/* numeric parameters */
-//		addNumericParameter(v, NUM_PARAM_RANGE, response);
-//		addNumericParameter(v, NUM_PARAM_HEIGHT, response);
 		addNumericParameter(v, NUM_PARAM_FOV, response);
-//		addNumericParameter(v, NUM_PARAM_FOCUS, response);
 		addNumericParameter(v, NUM_PARAM_YAW, response);
 		addNumericParameter(v, NUM_PARAM_PITCH, response);
 		addNumericParameter(v, NUM_PARAM_HORIZONTAL_RES, response);
@@ -330,8 +321,6 @@ public:
 		addNumericParameter(v, NUM_PARAM_RETICLE_INTENSITY, response);
 		addNumericParameter(v, NUM_PARAM_TARGET_LAT, response);
 		addNumericParameter(v, NUM_PARAM_TARGET_LON, response);
-//		addNumericParameter(v, NUM_PARAM_HPF_GAIN, response);
-//		addNumericParameter(v, NUM_PARAM_HPF_SPATIAL, response);
 		response->set_numericparametersvector(v);
 
 		/* enum parameters */
@@ -460,26 +449,7 @@ public:
 		/* Toplam fov sayısı(wide, middle, narrow) */
 		else if(index == NUM_PARAM_PREDEFINED_FOV_COUNT)
 			value = 3;
-			/*  Şartname içeriğinde olmadığı için kaldırıldı
-		else if (index == NUM_PARAM_HPF_GAIN) {
-			value = ptzp->getHead(0)->getProperty(map["hf_sigma_coeff"].toUInt());
-		} else if (index == NUM_PARAM_HPF_SPATIAL) {
-			value = ptzp->getHead(0)->getProperty(map["hf_filter_std"].toUInt());
-		}
-		 else if (index == NUM_PARAM_RANGE || index == NUM_PARAM_HEIGHT) {
-			QString lref = map["laser_reflections"].toString();
-			if (lref.size()) {
-//				 TODO: how to report multiple detections
-				QString ref0 = lref.split(";").first();
-				QStringList flds = ref0.split(",");
-				if (value == NUM_PARAM_RANGE)
-					value = flds[0].toInt();
-				else
-					value = flds[1].toInt();
-//				 TODO: we have laser range but no laser height?
-			}
-		}
-*/		else if (index == NUM_PARAM_LASER_RANGE){
+		else if (index == NUM_PARAM_LASER_RANGE){
 			QVariant range = ptzp->getHead(0)->getProperty("laser_reflections");
 			QStringList rangeStr = range.toString().split(",");
 			value = rangeStr.first().toInt();
@@ -605,8 +575,6 @@ public:
 
 	virtual void setEnumParameter(int index, int32_t value)
 	{
-		qDebug() << "enum param setting" << index << value;
-
 		if (index == ENUM_PARAM_CAMERA_TYPE) {
 			if (value == TV)
 				ptzp->getHead(0)->setProperty(5, 1);
@@ -648,11 +616,9 @@ public:
 	{
 		// TODO: implement digital zoom
 		// TODO: cache all enum and numeric values
-		qDebug() << "set enum command" << index << value;
 		/* digital zoom operational mode digital window select'e bağlanacak */
 		if (index == ENUM_COMMAND_DIGITAL_ZOOM){
 			if (value == DIGITAL_ZOOM_START ){
-//				setMode(CONTROL_MODE_DIGITAL_ZOOM_STARTED);
 				ptzp->getHead(0)->setProperty(6, 1);
 				_mymode = CONTROL_MODE_DIGITAL_ZOOM_STARTED;
 			}
