@@ -512,6 +512,8 @@ public:
 		if (index == ENUM_PARAM_THERMAL_MODE) {
 			if (ptzp->getHead(0)->getProperty(61) == 0)
 				return THERMAL_ONLINE;
+			else if (ptzp->getHead(0)->getProperty(61) == 2)
+				return STANDBY;
 			else
 				return THERMAL_OFFLINE;
 		}

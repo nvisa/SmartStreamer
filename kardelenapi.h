@@ -188,6 +188,7 @@ const static byte GAIN_LEVEL_6 = (byte) 0x06;
 const static int ENUM_PARAM_THERMAL_MODE = 14;
 const static byte THERMAL_ONLINE = (byte) 0x01;
 const static byte THERMAL_OFFLINE = (byte) 0x02;
+const static byte STANDBY = (byte) 0x03;
 
 const static int ENUM_PARAM_RETICLE_MODE = 15;
 const static byte RETICLE_ON = 0x01;
