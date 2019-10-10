@@ -1126,7 +1126,7 @@ public:
 		addcap(caps, CAPABILITY_PT);
 		addcap(caps, CAPABILITY_DAY_VIEW);
 		addcap(caps, CAPABILITY_FOCUS);
-
+		addcap(caps, CAPABILITY_ROI);
 		return caps;
 	}
 
