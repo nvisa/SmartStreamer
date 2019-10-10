@@ -110,6 +110,7 @@ RtspClient *StreamerCommon::createRtspClient(RtpReceiver *rtp, const QString &ur
 	rtsp->addSetupTrack("videoTrack", rtp);
 	rtsp->addSetupTrack("trackID=0", rtp);
 	rtsp->addSetupTrack("trackID=1", rtp);
+	rtsp->addSetupTrack("stream=0", rtp);
 	rtsp->addSetupTrack("video", rtp);
 	if (!user.isEmpty())
 		rtsp->setAuthCredentials(user, pass);

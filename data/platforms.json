@@ -210,5 +210,25 @@
                 "overlay_interval": 2000
             }
         ]
+    },
+    "htr swir" : {
+        "flir_config": {
+                "fps": 10,
+                "height": 512,
+                "rtsp_pass": "admin",
+                "rtsp_user": "admin",
+                "url": "rtsp://50.31.29.166:8554/mokamp",
+                "width": 640
+            },
+            "flirstreamer": true,
+            "ptzp": [
+                {
+                    "grpc_port": 50058,
+                    "kardelen": false,
+                    "target": "localhost:28282",
+                    "type": "htrswir"
+                }
+            ],
+            "startup_delay": 60
     }
 }

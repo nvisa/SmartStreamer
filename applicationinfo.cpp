@@ -31,6 +31,7 @@
 #include <ecl/ptzp/irdomedriver.h>
 #include <ecl/ptzp/yamgozdriver.h>
 #include <ecl/ptzp/swirdriver.h>
+#include <ecl/ptzp/htrswirdriver.h>
 #include <ecl/drivers/systeminfo.h>
 #include <ecl/ptzp/virtualptzpdriver.h>
 
@@ -152,6 +153,8 @@ int ApplicationInfo::startPtzpDriver()
 			break;
 		case MGEO_SWIR:
 			driver = new SwirDriver;
+		case HTR_SWIR:
+			driver = new HtrSwirDriver;
 		}
 		if (driver) {
 			fDebug("Starting PTZP driver for %s", qPrintable(obj["type"].toString()));
@@ -194,6 +197,8 @@ ApplicationInfo::Platform ApplicationInfo::getApplicationPlatform()
 			return FLIR_ORION;
 		} else if (obj["type"] == QString("mgeoswir")) {
 			return MGEO_SWIR;
+		} else if (obj["type"] == QString("htrswir")) {
+			return HTR_SWIR;
 		}
 	}
 	return GENERIC;
