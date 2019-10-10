@@ -265,10 +265,19 @@ int TX1Streamer::checkSeiAlarm(const RawBuffer &buf)
 
 		if (KardelenAPIServer::instance()) {
 			/* notify kardelen as well */
-			algen->generateAlarmStructure((uchar *)seiData.constData(), alarmGeneratorElement::MOTION);
-			alarmGeneratorElement::AlarmInfo *info = algen->getAlarmInfo();
-			if (info->target.size())
-				KardelenAPIServer::instance()->setMotionObjects(info->target);
+			if (motion->getState() == BaseAlgorithmElement::PROCESS) {
+				algen->generateAlarmStructure((uchar *)seiData.constData(), alarmGeneratorElement::MOTION);
+				alarmGeneratorElement::AlarmInfo *info = algen->getAlarmInfo();
+				if (info->target.size())
+					KardelenAPIServer::instance()->setMotionObjects(info->target);
+			} else if (track->getState() == BaseAlgorithmElement::PROCESS) {
+				QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
+				QByteArray seiData = hash["track_results"].toByteArray();
+				algen->generateAlarmStructure((uchar *)seiData.constData(), alarmGeneratorElement::TRACKING);
+				alarmGeneratorElement::AlarmInfo *info = algen->getAlarmInfo();
+				if (info->target.size())
+					KardelenAPIServer::instance()->setMotionObjects(info->target);
+			}
 		}
 
 	} else if (buf.constPars()->metaData.size() == 0) {
