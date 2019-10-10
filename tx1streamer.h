@@ -13,6 +13,7 @@ class BaseRtspServer;
 class BaseAlgorithmElement;
 class alarmGeneratorElement;
 class InternalRecorder;
+class BufferQueue;
 
 class TX1Streamer : public BaseStreamer, public AlgoManIface
 {
@@ -56,6 +57,7 @@ protected:
 	InternalRecorder* recorder;
 	VideoScaler *yuv2rgb;
 	VideoScaler *rgb2yuv;
+	BufferQueue *jpegQueue;
 
 	bool secondStream;
 	bool thirdStream;
@@ -80,6 +82,12 @@ private:
 		FACE_RUNNING,
 	};
 
+	struct MotionAlarmState {
+		QString uuid;
+		int frameNo;
+	};
+
+	MotionAlarmState motionAlarmState;
 	AlgorithmState algos;
 	AlgorithmState algosPending;
 	bool motionExtraEnabled;

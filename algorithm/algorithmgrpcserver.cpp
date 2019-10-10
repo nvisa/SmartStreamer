@@ -127,7 +127,19 @@ AlgoManIface *AlgorithmGrpcServer::getAlgorithmManagementInterface()
 	return manif;
 }
 
+void AlgorithmGrpcServer::removeAlarmField(const QString &alarm, const QString &key)
+{
+	QMutexLocker ml(&mutex);
+	alarms[alarm].remove(key);
+}
+
 void AlgorithmGrpcServer::setAlarmField(const QString &alarm, const QString &key, const QString &value)
+{
+	QMutexLocker ml(&mutex);
+	alarms[alarm][key] = QVariant(value);
+}
+
+void AlgorithmGrpcServer::setAlarmField(const QString &alarm, const QString &key, const QVariant &value)
 {
 	QMutexLocker ml(&mutex);
 	alarms[alarm][key] = value;
@@ -639,20 +651,28 @@ grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc:
 		}
 
 		mutex.lock();
-		QHashIterator<QString, QHash<QString, QString> > hi(alarms);
+		QHashIterator<QString, QHash<QString, QVariant> > hi(alarms);
 		while (hi.hasNext()) {
 			hi.next();
 			const QString name = hi.key();
 			AlgorithmCommunication::Alarm *alarm = res.add_alarms();
 			alarm->set_type(name.toStdString());
-			const QHash<QString, QString> &list = hi.value();
-			QHashIterator<QString, QString> hi2(list);
+			const QHash<QString, QVariant> &list = hi.value();
+			QHashIterator<QString, QVariant> hi2(list);
 			while (hi2.hasNext()) {
 				hi2.next();
 				const QString key = hi2.key();
-				const QString value = hi2.value();
+				const QVariant value = hi2.value();
 				alarm->add_key(key.toStdString());
-				alarm->add_value(value.toStdString());
+				if (value.canConvert(QVariant::ByteArray)) {
+					const QByteArray &ba = value.toByteArray();
+					std::string str(ba.constData(), ba.size());
+					alarm->add_value(str);
+				} else if (value.canConvert(QVariant::String)) {
+					alarm->add_value(value.toString().toStdString());
+				} else {
+					alarm->add_value("N/A");
+				}
 			}
 		}
 		mutex.unlock();

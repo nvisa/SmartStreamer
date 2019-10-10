@@ -33,6 +33,7 @@ extern "C" {
 
 #include "streamercommon.h"
 
+#include <QUuid>
 #include <QPainter>
 
 struct fg {
@@ -318,10 +319,24 @@ int TX1Streamer::frameGenerator(const RawBuffer &buf)
 
 int TX1Streamer::notifyGrpcForAlarm(const RawBuffer &buf)
 {
-	if (buf.constPars()->metaData.size())
+	if (buf.constPars()->metaData.size()) {
+		if (motionAlarmState.uuid.isEmpty()) {
+			motionAlarmState.uuid = QUuid::createUuid().toString();
+			motionAlarmState.frameNo = 0;
+		}
 		AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "motion_xml", QString::fromUtf8(buf.constPars()->metaData));
-	else
+		AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "motion_id", motionAlarmState.uuid);
+		if (!motionAlarmState.frameNo) {
+			const RawBuffer &jpegbuf = jpegQueue->getLast();
+			QByteArray ba = QByteArray::fromRawData((const char *)jpegbuf.constData(), jpegbuf.size());
+			AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "snapshot_jpeg", QString::fromUtf8(ba.toBase64()));
+		} else
+			AlgorithmGrpcServer::instance()->removeAlarmField("motion_detection", "snapshot_jpeg");
+		motionAlarmState.frameNo++;
+	} else {
 		AlgorithmGrpcServer::instance()->removeAlarm("motion_detection");
+		motionAlarmState.uuid = "";
+	}
 	return 0;
 }
 
@@ -465,6 +480,8 @@ void TX1Streamer::checkAlgoState()
 void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res0)
 {
 	BufferQueue* queue = new BufferQueue;
+	jpegQueue = new BufferQueue;
+	jpegQueue->setQueueSize(2);
 
 	motion = ApplicationInfo::instance()->createAlgorithm("motion");
 	track = ApplicationInfo::instance()->createAlgorithm("track");
@@ -553,6 +570,7 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	p3->append(newFunctionPipe(TX1Streamer, this, TX1Streamer::frameGenerator));
 	p3->append(jenc);
 	p3->append(jpegel);
+	p3->append(jpegQueue);
 	p3->end();
 
 	if (thirdStream) {
