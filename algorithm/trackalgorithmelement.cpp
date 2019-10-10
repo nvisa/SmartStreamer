@@ -114,6 +114,7 @@ int TrackAlgorithmElement::release()
 
 int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 {
+	QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
 
 	int width = buf.constPars()->videoWidth;
 	int height = buf.constPars()->videoHeight;
@@ -171,6 +172,11 @@ int TrackAlgorithmElement::autoTrack(const RawBuffer &buf)
 	if (control.initialize)
 		control.initialize = 0;
 
+	QByteArray ba = QByteArray((char *)control.meta, 4096);
+
+	hash.insert("track_results", ba);
+	((RawBuffer *)&buf)->pars()->metaData = RawBuffer::serializeMetadata(hash);
+
 	return 0;
 }
 
@@ -181,6 +187,8 @@ int TrackAlgorithmElement::semiAutoTrack(const RawBuffer &buf)
 
 int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 {
+	QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
+
 	int width = buf.constPars()->videoWidth;
 	int height = buf.constPars()->videoHeight;
 
@@ -251,6 +259,11 @@ int TrackAlgorithmElement::manualTrack(const RawBuffer &buf)
 	if (control.initialize)
 		control.initialize = 0;
 
+	QByteArray ba = QByteArray((char *)control.meta, 4096);
+
+	hash.insert("track_results", ba);
+	((RawBuffer *)&buf)->pars()->metaData = RawBuffer::serializeMetadata(hash);
+
 	return 0;
 }
 
@@ -298,6 +311,8 @@ int TrackAlgorithmElement::forwardToObjPropFromControl(const TrackAlgorithmEleme
 	objProp[1] = control.obj.point_y;
 	objProp[2] = control.obj.width;
 	objProp[3] = control.obj.height;
+	if (BaseAlgorithmElement::AlgoState::PROCESS && mode == MANUAL)
+		this->control.initialize = 2;
 	return 0;
 }
 
