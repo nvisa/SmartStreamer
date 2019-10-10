@@ -36,6 +36,40 @@
 			"enabled": false,
 			"stabilization": false,
 			"privacy": true
+		},
+		{
+			"type": "panchange",
+			"enabled": false
+		},
+		{
+			"type": "faceDetection",
+			"enabled": false,
+			"detectionModel": "/home/nvidia/workspace/Orion_x1/models/face/vinoface/face-detection-adas-0001",
+			"allignmentModel": "/home/nvidia/workspace/Orion_x1/models/face/onet/onet",
+			"tiling": false,
+			"includeFullFrame": false,
+			"xTile": 2,
+			"yTile": 1,
+			"displayMode": "rectangle",
+			"rectangleColor": "blue",
+			"allignment": true,
+			"saveFaces": true,
+			"saveOptions": "nonAlligned",
+			"saveDir": "/media/nvidia/sd_card/",
+			"allignmentErrorThreshold": 10,
+			"scoreThreshold": 0.5,
+			"sizePercentageUpperLimitX": 0.5,
+			"sizePercentageUpperLimitY": 0.5,
+			"sizePercentageLowerLimitX": 0.035,
+			"sizePercentageLowerLimitY": 0.065,
+			"trackFaces": true,
+			"bestFaceNum": 3,
+			"enlargePercentage": 20,
+			"saveFrameCount": 200,
+			"eraseFaceThresh": 15,
+			"validFaceThresh": 10,
+			"blurThreshold": 0,
+			"skipFrame": 10
 		}
 	]
 }
