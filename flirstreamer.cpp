@@ -86,6 +86,7 @@ int FlirStreamer::generatePipeline(const QString &url)
 
 	BaseLmmPipeline *p2 = addPipeline();
 	p2->append(queue);
+	p2->append(sei);
 	p2->append(rtpout);
 	p2->end();
 
