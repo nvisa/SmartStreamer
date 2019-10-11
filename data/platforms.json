@@ -211,7 +211,7 @@
             }
         ]
     },
-    "htr swir" : {
+    "htr_swir" : {
         "flir_config": {
                 "fps": 10,
                 "height": 512,
