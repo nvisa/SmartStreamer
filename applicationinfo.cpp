@@ -266,7 +266,7 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithmFromJson(const QJsonObject
 {
 	if (algo["type"] == QString("motion")) {
 		return new MotionAlgorithmElement;
-#if 1
+#if HAVE_TX1
 	} else if (algo["type"] == QString("bypass")) {
 		return new StabilizationAlgorithmElement;
 	} else if (algo["type"] == QString("privacy")) {
