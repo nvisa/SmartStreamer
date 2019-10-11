@@ -70,6 +70,10 @@
 			"validFaceThresh": 10,
 			"blurThreshold": 0,
 			"skipFrame": 10
+		},
+		{
+			"type": "panaroma",
+			"enabled": false
 		}
 	]
 }

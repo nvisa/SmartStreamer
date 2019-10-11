@@ -1111,6 +1111,95 @@ public:
 	QVariantMap map;
 };
 
+class KardelenAPIHtrSwirImpl : public KardelenAPIImpl
+{
+public:
+	KardelenAPIHtrSwirImpl()
+	{
+		_mymode = CONTROL_MODE_JOYSTICK;
+	}
+	int64_t getCapabilities()
+	{
+		int64_t caps = 0;
+		addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
+		addcap(caps, CAPABILITY_ZOOM);
+		addcap(caps, CAPABILITY_PT);
+		return caps;
+	}
+	void setPosi(kaapi::PosInfo *posi)
+	{
+
+	}
+
+	void fillCameraStatus(kaapi::CameraStatus *response)
+	{
+	}
+
+	void moveRelative(const kaapi::RelativeMoveParameters *request)
+	{
+
+	}
+
+	void moveAbsolute(const kaapi::AbsoluteMoveParameters *request)
+	{
+	}
+
+	void setCamera(int32_t type)
+	{
+	}
+
+	virtual void getNumericParameter(int index, double &value, int32_t bytes[3])
+	{
+		if (map.isEmpty())
+			map = ptzp->getHead(0)->getSettings();
+
+		value = 0;
+
+		if (index == NUM_PARAM_HORIZONTAL_RES)
+			value = 512;
+		else if (index == NUM_PARAM_VERTICAL_RES)
+			value = 640;
+		else if (index == NUM_PARAM_ZOOM)
+			ptzp->getHead(1)->getProperty(0);
+		else {
+			value = 100000;
+		}
+	}
+
+	virtual int32_t getEnumParameter(int index)
+	{
+		if (map.isEmpty())
+			map = ptzp->getHead(0)->getSettings();
+
+		if (index == ENUM_PARAM_CAMERA_TYPE)
+				return THERMAL;
+		if (index == ENUM_PARAM_OPERATIONAL_MODE)
+			return getMode();
+		/* API wants this */
+		return -1;
+	}
+
+	virtual void setNumericParameter(int index, double &value, int32_t bytes[3])
+	{
+
+	}
+
+	virtual void setEnumParameter(int index, int32_t value)
+	{
+		if (index == ENUM_PARAM_OPERATIONAL_MODE)
+			setMode(value);
+	}
+
+	virtual void setEnumCommand(int index, int32_t value)
+	{
+	}
+
+	virtual void screenClick(int x, int y, int action)
+	{
+	}
+	QVariantMap map;
+};
+
 class KardelenAPIMgeoFlirImpl : public KardelenAPIImpl
 {
 public:
@@ -1128,7 +1217,7 @@ public:
 		addcap(caps, CAPABILITY_PT);
 		addcap(caps, CAPABILITY_DAY_VIEW);
 		addcap(caps, CAPABILITY_FOCUS);
-
+		addcap(caps, CAPABILITY_ROI);
 		return caps;
 	}
 
@@ -1272,6 +1361,8 @@ KardelenAPIServer::KardelenAPIServer(PtzpDriver *ptzp, QString nodeType)
 		impl = new KardelenAPIMgeoSwirImpl;
 	else if (nodeType == "flir")
 		impl = new KardelenAPIMgeoFlirImpl;
+	else if (nodeType == "htrswir")
+		impl = new KardelenAPIHtrSwirImpl;
 	impl->ptzp = ptzp;
 	apiinst = this;
 }
