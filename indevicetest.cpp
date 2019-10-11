@@ -59,7 +59,7 @@ void InDeviceTest::timeout()
 			int lastPing = d->getHead(i)->communicationElapsed();
 			mInfo("Checking head %d (%d)", i, lastPing);
 			if (lastPing > headPingFaultTime)
-				faults.append(addHeadFault(dit.key(), i, lastPing));
+				faults.append(addHeadFault(d->getHead(i)->getHeadName(), i, lastPing));
 		}
 		QJsonObject extra = d->doExtraDeviceTests();
 		if (!extra.isEmpty())
