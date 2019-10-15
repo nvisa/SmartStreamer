@@ -262,11 +262,23 @@ BaseStreamer *ApplicationInfo::createAppStreamer()
 	return streamer;
 }
 
+#if HAVE_TK1
 BaseAlgorithmElement *ApplicationInfo::createAlgorithmFromJson(const QJsonObject &algo)
 {
 	if (algo["type"] == QString("motion")) {
 		return new MotionAlgorithmElement;
+	} else if (algo["type"] == QString("panaroma")) {
+		return new PanaromaAlgorithmElement;
+	}
+	return new BaseAlgorithmElement;
+}
+#endif
+
 #if HAVE_TX1
+BaseAlgorithmElement *ApplicationInfo::createAlgorithmFromJson(const QJsonObject &algo)
+{
+	if (algo["type"] == QString("motion")) {
+		return new MotionAlgorithmElement;
 	} else if (algo["type"] == QString("bypass")) {
 		return new StabilizationAlgorithmElement;
 	} else if (algo["type"] == QString("privacy")) {
@@ -278,16 +290,12 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithmFromJson(const QJsonObject
 		return track;
 	} else if (algo["type"] == QString("faceDetection")) {
 		return new FaceAlgorithmElement;
-#endif
-#if HAVE_TK1
-	} else if (algo["type"] == QString("panaroma")) {
-		return new PanaromaAlgorithmElement;
-#endif
 	} else if (algo["type"] == QString("panchange")) {
 		return new PanChangeAlgorithmElement;
 	}
 	return new BaseAlgorithmElement;
 }
+#endif
 
 BaseAlgorithmElement *ApplicationInfo::createAlgorithm(const QString &type, int index)
 {
