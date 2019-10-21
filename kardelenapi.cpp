@@ -1336,7 +1336,7 @@ grpc::Status KardelenAPIServer::CommunicationChannel(grpc::ServerContext *, ::gr
 
 		}
 
-		if (msgw.action() == 5) {
+		if (msgw.action() == 5 || msgw.action() == 4) {
 			msgr.add_keys()->append("last_cit_results");
 			QJsonObject cit = ApplicationInfo::instance()->getIDT()->getLastCheckResults();
 			const QByteArray ba = QJsonDocument(cit).toJson();
