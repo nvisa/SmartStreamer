@@ -332,6 +332,7 @@ int TX1Streamer::notifyGrpcForAlarm(const RawBuffer &buf)
 		if (motionAlarmState.uuid.isEmpty()) {
 			motionAlarmState.uuid = QUuid::createUuid().toString();
 			motionAlarmState.frameNo = 0;
+			motionAlarmState.last = false;
 		}
 		AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "motion_xml", QString::fromUtf8(buf.constPars()->metaData));
 		AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "motion_id", motionAlarmState.uuid);
@@ -343,8 +344,15 @@ int TX1Streamer::notifyGrpcForAlarm(const RawBuffer &buf)
 			AlgorithmGrpcServer::instance()->removeAlarmField("motion_detection", "snapshot_jpeg");
 		motionAlarmState.frameNo++;
 	} else {
-		AlgorithmGrpcServer::instance()->removeAlarm("motion_detection");
-		motionAlarmState.uuid = "";
+		if (!motionAlarmState.last) {
+			const RawBuffer &jpegbuf = jpegQueue->getLast();
+			QByteArray ba = QByteArray::fromRawData((const char *)jpegbuf.constData(), jpegbuf.size());
+			AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "snapshot_jpeg", QString::fromUtf8(ba.toBase64()));
+			motionAlarmState.last = true;
+		} else {
+			AlgorithmGrpcServer::instance()->removeAlarm("motion_detection");
+			motionAlarmState.uuid = "";
+		}
 	}
 	return 0;
 }

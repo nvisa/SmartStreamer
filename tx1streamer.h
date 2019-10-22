@@ -85,6 +85,7 @@ private:
 	struct MotionAlarmState {
 		QString uuid;
 		int frameNo;
+		bool last;
 	};
 
 	MotionAlarmState motionAlarmState;
