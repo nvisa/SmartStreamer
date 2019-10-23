@@ -334,7 +334,26 @@ int TX1Streamer::notifyGrpcForAlarm(const RawBuffer &buf)
 			motionAlarmState.frameNo = 0;
 			motionAlarmState.last = false;
 		}
-		AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "motion_xml", QString::fromUtf8(buf.constPars()->metaData));
+
+		/* convert to json */
+		QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
+		QByteArray seiData = hash["motion_results"].toByteArray();
+		algen->generateAlarmStructure((uchar *)seiData.constData(), alarmGeneratorElement::MOTION);
+		alarmGeneratorElement::AlarmInfo *info = algen->getAlarmInfo();
+		QJsonArray motionObjects;
+		for (uint i = 0; i < info->target.size(); i++) {
+			alarmGeneratorElement::TargetStruct ts = info->target[i];
+			QJsonObject obj;
+			obj["x"] = ts.topLeftX;
+			obj["y"] = ts.topLeftY;
+			obj["w"] = ts.widthOfTarget;
+			obj["h"] = ts.heightOfTarget;
+			motionObjects.append(obj);
+		}
+		QJsonObject obj;
+		obj["objects"] = motionObjects;
+		const QByteArray jsondata = QJsonDocument(obj).toJson();
+		AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "motion_json", QString::fromUtf8(jsondata));
 		AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "motion_id", motionAlarmState.uuid);
 		if (!motionAlarmState.frameNo) {
 			const RawBuffer &jpegbuf = jpegQueue->getLast();
@@ -561,11 +580,11 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	p1->append(rgb2yuv);
 
 	p1->append(newFunctionPipe(TX1Streamer, this, TX1Streamer::checkSeiAlarm));
+	p1->append(newFunctionPipe(TX1Streamer, this, TX1Streamer::notifyGrpcForAlarm));
 	p1->append(textOverlay);
 	p1->append(queue);
 	p1->append(enc0);
 	p1->append(sei);
-	p1->append(newFunctionPipe(TX1Streamer, this, TX1Streamer::notifyGrpcForAlarm));
 	if (videoRecordingEnabled)
 		p1->append(newFunctionPipe(TX1Streamer, this, TX1Streamer::recordIfNvrDead));
 	p1->append(rtpout);
