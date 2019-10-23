@@ -1,8 +1,8 @@
 #ifndef IPSTREAMER_H
 #define IPSTREAMER_H
 
-#include "lmm/players/basestreamer.h"
-#include "ecl/debug.h"
+#include "tx1streamer.h"
+
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -16,13 +16,13 @@ class SeiInserter;
 class AlgorithmManager;
 
 
-class IpStreamer : public BaseStreamer
+class IpStreamer : public TX1Streamer
 {
 
 Q_OBJECT
 
 public:
-	explicit IpStreamer(QObject *parent = 0);
+	explicit IpStreamer(const QJsonObject &config, QObject *parent = 0);
 	int generatePipelineForOneSource(const QString &Url);
 	int generatePipelineForMultipleSource(const QStringList &Url);
 	void addRtspServer(RtpTransmitter *rtpout, RtpTransmitter *rtpoutvs, int sno);
@@ -84,14 +84,8 @@ public:
 	// BaseLmmElement interface
 protected:
 	int pipelineOutput(BaseLmmPipeline *p, const RawBuffer &buf) override;
-
-	// BaseLmmElement interface
-public:
-	int process(int ch) override;
-	int processBlocking(int ch) override;
-
-protected:
-	int processBuffer(const RawBuffer &buf) override;
+	BaseLmmPipeline * createYUV420Pipeline(QSize &res0) override;
+	void addExtraRtpTransmitters(QList<RtpTransmitter *> &list) override;
 
 protected:
 	RtpReceiver *rtp;
@@ -110,7 +104,7 @@ protected:
 	float decOutputInFps;
 	float decOutputOutFps;
 	QHash <int,int> enc_bitrate_set;
-
+	QJsonObject config;
 
 	QString rtspClientUser;
 	QString rtspClientPass;

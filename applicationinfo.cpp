@@ -24,6 +24,7 @@
 #include <QFile>
 #include <QDir>
 
+#include <ecl/debug.h>
 #include <ecl/ptzp/kayidriver.h>
 #include <ecl/ptzp/tbgthdriver.h>
 #include <ecl/ptzp/aryadriver.h>
@@ -217,8 +218,7 @@ BaseStreamer *ApplicationInfo::createAppStreamer()
 #if HAVE_TX1
 	if (obj.value("ipstreamer").toBool()) {
 		qDebug() << "starting ip stramer";
-		IpStreamer *ipStr = new IpStreamer;
-		ipStr->generatePipelineForOneSource("");
+		IpStreamer *ipStr = new IpStreamer(obj["ipstreamer_config"].toObject());
 		streamer = ipStr;
 	} else if (obj.value("analogstreamer").toBool()) {
 		qDebug() << "starting analog streamer";
