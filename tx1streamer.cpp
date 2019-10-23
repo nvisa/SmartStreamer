@@ -649,6 +649,7 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	rtplist << rtpout2;
 	rtplist << rtpout3;
 	rtplist << rtpout4;
+	addExtraRtpTransmitters(rtplist);
 	StreamerCommon::createRtspServer(rtplist);
 
 	queue->getOutputQueue(0)->setRateReduction(25, fps0);

@@ -39,6 +39,7 @@ protected:
 	int recordIfNvrDead(const RawBuffer &buf);
 	void enableRGBPortion(bool en);
 
+	virtual void addExtraRtpTransmitters(QList<RtpTransmitter *> &) {}
 	virtual BaseLmmPipeline * createYUV420Pipeline(QSize &res0) = 0;
 
 	SeiInserter *sei;
