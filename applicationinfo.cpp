@@ -133,6 +133,7 @@ int ApplicationInfo::startPtzpDriver()
 			((AryaDriver*) driver)->setOverlayInterval(obj["overlay_interval"].toInt());
 			((AryaDriver*) driver)->setThermalInterval(obj["thermal_interval"].toInt());
 			((AryaDriver*) driver)->setGungorInterval(obj["gungor_interval"].toInt());
+			((AryaDriver*) driver)->setHeadType(obj["head_type"].toString());
 			break;
 		}
 		case TBGTH:
