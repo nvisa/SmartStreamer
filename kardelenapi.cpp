@@ -1079,6 +1079,175 @@ public:
 	QVariantMap map;
 };
 
+class KardelenAPIHtrSwirImpl : public KardelenAPIImpl
+{
+public:
+	KardelenAPIHtrSwirImpl()
+	{
+		_mymode = CONTROL_MODE_JOYSTICK;
+	}
+	int64_t getCapabilities()
+	{
+		int64_t caps = 0;
+		addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
+		addcap(caps, CAPABILITY_NIGHT_VIEW);
+		addcap(caps, CAPABILITY_ZOOM);
+		addcap(caps, CAPABILITY_HPF_GAIN);
+		addcap(caps, CAPABILITY_PT);
+		addcap(caps, CAPABILITY_FOCUS);
+		return caps;
+	}
+	void setPosi(kaapi::PosInfo *posi)
+	{
+		/*this device not support cont zoom*/
+		posi->set_panpos(ptzp->getHead(0)->getPanAngle());
+		posi->set_tiltpos(ptzp->getHead(0)->getTiltAngle());
+	}
+
+	void fillCameraStatus(kaapi::CameraStatus *response)
+	{
+		response->set_capabilities(getCapabilities());
+
+		int32_t v = 0;
+		/* numeric parameters */
+		addNumericParameter(v, NUM_PARAM_FOCUS, response);
+		addNumericParameter(v, NUM_PARAM_YAW, response);
+		addNumericParameter(v, NUM_PARAM_PITCH, response);
+		addNumericParameter(v, NUM_PARAM_HORIZONTAL_RES, response);
+		addNumericParameter(v, NUM_PARAM_VERTICAL_RES, response);
+		addNumericParameter(v, NUM_PARAM_ZOOM, response);
+		addNumericParameter(v, NUM_PARAM_HPF_GAIN, response);
+		addNumericParameter(v, NUM_PARAM_PREDEFINED_GAIN_COUNT, response);
+		response->set_numericparametersvector(v);
+
+		/* enum parameters */
+		v = 0;
+		addEnumParameter(v, ENUM_PARAM_GAIN_LEVEL, response);
+		response->set_enumparametersvector(v);
+	}
+
+	void moveRelative(const kaapi::RelativeMoveParameters *request)
+	{
+		if (request->zoomspeed() > 0)
+			ptzp->getHead(1)->setProperty(0, ptzp->getHead(1)->getProperty(0) + 1);
+		else if (request->zoomspeed() < 0)
+			ptzp->getHead(1)->setProperty(0, ptzp->getHead(1)->getProperty(0) - 1);
+		qDebug() << "move relative speed";
+		qDebug() << "pan: " << request->panspeed() << "tilt: " << request->tiltspeed();
+		ptzp->getHead(0)->panTiltAbs(request->panspeed() / 100.0, -1 * request->tiltspeed() / 100.0);
+	}
+
+	void moveAbsolute(const kaapi::AbsoluteMoveParameters *request)
+	{
+		qDebug() << "move absolute speed";
+		qDebug() << "pan: " << request->panpos() << "tilt: " << request->tiltpos();
+		ptzp->getHead(0)->panTiltGoPos(request->panpos(), request->tiltpos());
+	}
+
+	void setCamera(int32_t type)
+	{
+	}
+
+	virtual void getNumericParameter(int index, double &value, int32_t bytes[3])
+	{
+		if (map.isEmpty())
+			map = ptzp->getHead(1)->getSettings();
+
+		value = 0;
+
+		if (index == NUM_PARAM_HORIZONTAL_RES)
+			value = 512;
+		else if (index == NUM_PARAM_VERTICAL_RES)
+			value = 640;
+		else if ( index == NUM_PARAM_HPF_GAIN){
+			bytes[1] = 1;
+			if(ptzp->getHead(1)->getProperty(2) == 1)
+				bytes[0] = 1;
+			else if (ptzp->getHead(1)->getProperty(2) == 0)
+				bytes[0] = 2;
+		}
+		else if (index == NUM_PARAM_ZOOM)
+			ptzp->getHead(1)->getProperty(0);
+		else if (index == NUM_PARAM_YAW) {
+			float pana = ptzp->getHead(0)->getPanAngle();
+			if (pana > 180)
+				value = pana - 360;
+			else
+				value = pana;
+		} else if (index == NUM_PARAM_PITCH)
+			value = ptzp->getHead(0)->getTiltAngle();
+		else if (index == NUM_PARAM_ZOOM)
+			value = 100 - double(ptzp->getHead(1)->getProperty(0));
+		else if (index == NUM_PARAM_PREDEFINED_GAIN_COUNT)
+			value = 15;
+		else {
+			value = 100000;
+		}
+	}
+
+	virtual int32_t getEnumParameter(int index)
+	{
+		if (map.isEmpty())
+			map = ptzp->getHead(1)->getSettings();
+
+		if (index == ENUM_PARAM_CAMERA_TYPE)
+				return THERMAL;
+		if (index == ENUM_PARAM_OPERATIONAL_MODE)
+			return getMode();
+		if (index == ENUM_PARAM_CAMERA_TYPE)
+			return THERMAL;
+		if (index == ENUM_PARAM_GAIN_LEVEL)
+			return ptzp->getHead(1)->getProperty(1) + 1;
+		/* API wants this */
+		return -1;
+	}
+
+	virtual void setNumericParameter(int index, double &value, int32_t bytes[3])
+	{
+		if (index == NUM_PARAM_FOCUS){
+			if (value > 0){
+				if (bytes[2] == 1)
+					ptzp->getHead(1)->focusIn(value);
+				else if (bytes[2] == 2)
+					ptzp->getHead(1)->focusOut(value);
+			}
+			else if (value == 0)
+				ptzp->getHead(0)->focusStop();
+		}
+		else if (index == NUM_PARAM_ZOOM){
+			if (ptzp->getHead(1)->getProperty(0) < 23){
+				if (bytes[2] == 1)
+					ptzp->getHead(1)->setProperty(0, ptzp->getHead(1)->getProperty(0) + 1);
+				else if (bytes[2] == 2)
+					ptzp->getHead(1)->setProperty(0, ptzp->getHead(1)->getProperty(0) + 1);
+			}
+		}
+		else if ( index == NUM_PARAM_HPF_GAIN){
+			if (bytes[1] == 1)
+				ptzp->getHead(1)->setProperty(3, 1);
+			else if ( bytes[1] == 2)
+				ptzp->getHead(1)->setProperty(3, 0);
+		}
+	}
+
+	virtual void setEnumParameter(int index, int32_t value)
+	{
+		if (index == ENUM_PARAM_OPERATIONAL_MODE)
+			setMode(value);
+		if (index == ENUM_PARAM_GAIN_LEVEL)
+			ptzp->getHead(1)->setProperty(2, value - 1);
+	}
+
+	virtual void setEnumCommand(int index, int32_t value)
+	{
+	}
+
+	virtual void screenClick(int x, int y, int action)
+	{
+	}
+	QVariantMap map;
+};
+
 class KardelenAPIMgeoFlirImpl : public KardelenAPIImpl
 {
 public:
@@ -1096,7 +1265,7 @@ public:
 		addcap(caps, CAPABILITY_PT);
 		addcap(caps, CAPABILITY_DAY_VIEW);
 		addcap(caps, CAPABILITY_FOCUS);
-
+		addcap(caps, CAPABILITY_ROI);
 		return caps;
 	}
 
@@ -1240,6 +1409,8 @@ KardelenAPIServer::KardelenAPIServer(PtzpDriver *ptzp, QString nodeType)
 		impl = new KardelenAPIMgeoSwirImpl;
 	else if (nodeType == "flir")
 		impl = new KardelenAPIMgeoFlirImpl;
+	else if (nodeType == "htrswir")
+		impl = new KardelenAPIHtrSwirImpl;
 	impl->ptzp = ptzp;
 	apiinst = this;
 }

@@ -32,6 +32,7 @@
 #include <ecl/ptzp/irdomedriver.h>
 #include <ecl/ptzp/yamgozdriver.h>
 #include <ecl/ptzp/swirdriver.h>
+#include <ecl/ptzp/htrswirdriver.h>
 #include <ecl/drivers/systeminfo.h>
 #include <ecl/ptzp/virtualptzpdriver.h>
 
@@ -127,9 +128,15 @@ int ApplicationInfo::startPtzpDriver()
 			driver = new KayiDriver(relayConfig, obj["gps"].toBool());
 			break;
 		}
-		case ARYA_ORION:
+		case ARYA_ORION: {
 			driver = new AryaDriver;
+			((AryaDriver*) driver)->setMoxaControl(obj["moxa_thermal"].toString(), obj["moxa_day"].toString());
+			((AryaDriver*) driver)->setOverlayInterval(obj["overlay_interval"].toInt());
+			((AryaDriver*) driver)->setThermalInterval(obj["thermal_interval"].toInt());
+			((AryaDriver*) driver)->setGungorInterval(obj["gungor_interval"].toInt());
+			((AryaDriver*) driver)->setHeadType(obj["head_type"].toString());
 			break;
+		}
 		case TBGTH:
 			if (!obj["thermal"].toBool())
 				driver = new TbgthDriver(false);
@@ -148,6 +155,8 @@ int ApplicationInfo::startPtzpDriver()
 			break;
 		case MGEO_SWIR:
 			driver = new SwirDriver;
+		case HTR_SWIR:
+			driver = new HtrSwirDriver;
 		}
 		if (driver) {
 			fDebug("Starting PTZP driver for %s", qPrintable(obj["type"].toString()));
@@ -190,6 +199,8 @@ ApplicationInfo::Platform ApplicationInfo::getApplicationPlatform()
 			return FLIR_ORION;
 		} else if (obj["type"] == QString("mgeoswir")) {
 			return MGEO_SWIR;
+		} else if (obj["type"] == QString("htrswir")) {
+			return HTR_SWIR;
 		}
 	}
 	return GENERIC;
@@ -252,11 +263,23 @@ BaseStreamer *ApplicationInfo::createAppStreamer()
 	return streamer;
 }
 
+#if HAVE_TK1
 BaseAlgorithmElement *ApplicationInfo::createAlgorithmFromJson(const QJsonObject &algo)
 {
 	if (algo["type"] == QString("motion")) {
 		return new MotionAlgorithmElement;
-#if 1
+	} else if (algo["type"] == QString("panaroma")) {
+		return new PanaromaAlgorithmElement;
+	}
+	return new BaseAlgorithmElement;
+}
+#endif
+
+#if HAVE_TX1
+BaseAlgorithmElement *ApplicationInfo::createAlgorithmFromJson(const QJsonObject &algo)
+{
+	if (algo["type"] == QString("motion")) {
+		return new MotionAlgorithmElement;
 	} else if (algo["type"] == QString("bypass")) {
 		return new StabilizationAlgorithmElement;
 	} else if (algo["type"] == QString("privacy")) {
@@ -268,16 +291,12 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithmFromJson(const QJsonObject
 		return track;
 	} else if (algo["type"] == QString("faceDetection")) {
 		return new FaceAlgorithmElement;
-#endif
-#if HAVE_TK1
-	} else if (algo["type"] == QString("panaroma")) {
-		return new PanaromaAlgorithmElement;
-#endif
 	} else if (algo["type"] == QString("panchange")) {
 		return new PanChangeAlgorithmElement;
 	}
 	return new BaseAlgorithmElement;
 }
+#endif
 
 BaseAlgorithmElement *ApplicationInfo::createAlgorithm(const QString &type, int index)
 {

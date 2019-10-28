@@ -17,6 +17,8 @@ PanaromaAlgorithmElement::PanaromaAlgorithmElement(QObject *parent)
 {
 	algoState = UNKNOWN;
 	pt = nullptr;
+	control.fovValue = 17.5;
+	control.targetFov = 0;
 }
 
 int PanaromaAlgorithmElement::init()
@@ -34,7 +36,7 @@ int PanaromaAlgorithmElement::init()
 	resetPosition();
 	control.started.pan = pt->getPanAngle();
 	control.started.tilt = pt->getTiltAngle();
-	doPivot(0.03);
+	doPivot(0.20);
 	control.init = 1;
 	return BaseAlgorithmElement::init();
 }
@@ -75,7 +77,7 @@ int PanaromaAlgorithmElement::processAlgo(const RawBuffer &buf)
 	if (control.init)
 		control.init = 0;
 	reallocate();
-	return newOutputBuffer(buf);
+	return 0;
 }
 
 int PanaromaAlgorithmElement::stopAlgo()
@@ -97,6 +99,7 @@ int PanaromaAlgorithmElement::resetPosition()
 {
 	if (!pt)
 		pt = getPanTiltHead();
+	ApplicationInfo::instance()->getPtzpDriver(0)->getHead(1)->setProperty(2, control.targetFov);
 	int time = 5;
 	int pan = pt->getPanAngle();
 	if (pan >= 180)
@@ -104,7 +107,7 @@ int PanaromaAlgorithmElement::resetPosition()
 	else
 		time = (pan - 0) * 0.04 + 1;
 	pt->panTiltGoPos(0, 0);
-	sleep(time);
+	sleep(time + 6); // zoom position reset.
 	return 0;
 }
 
@@ -120,6 +123,9 @@ int PanaromaAlgorithmElement::doPivot(float speed)
 int PanaromaAlgorithmElement::reloadJson(const QJsonObject &node)
 {
 	Q_UNUSED(node);
+	control.fovValue = node["fov"].toDouble();
+	control.targetFov = node["target_fov"].toInt();
+	return 0;
 }
 
 QJsonObject PanaromaAlgorithmElement::resaveJson(const QJsonObject &node)
