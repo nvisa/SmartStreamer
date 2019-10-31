@@ -17,9 +17,7 @@ SOURCES += main.cpp \
     snapshotelement.cpp \
     indevicetest.cpp \
     alarmgeneratorelement.cpp \
-    kardelenapi.cpp \
-    tk1streamer.cpp
-
+    kardelenapi.cpp
 HEADERS += \
     moxadriver.h \
     mjpegserver.h \
@@ -32,18 +30,32 @@ HEADERS += \
     snapshotelement.h \
     indevicetest.h \
     alarmgeneratorelement.h \
-	kardelenapi.h \
-	algorithmparameters.h \
-    tk1streamer.h
+    kardelenapi.h \
+    algorithmparameters.h
 
 websockets {
     SOURCES += websocketstreamer.cpp
     HEADERS += websocketstreamer.h
 }
 
+include (platform.pri)
 include (build_config.pri)
 include (proto/grpc.pri)
 include (algorithm/algorithm.pri)
+
+lmm {
+    INSTALL_PREFIX=$$OUT_PWD/..
+    INCLUDEPATH += $$PWD/../lmm/
+    LIBS += $$INSTALL_PREFIX/lmm/lmm/liblmm.a
+    PRE_TARGETDEPS += $$INSTALL_PREFIX/lmm/lmm/liblmm.a
+}
+
+ecl {
+    INCLUDEPATH += $$PWD/../
+    INSTALL_PREFIX=$$OUT_PWD/..
+    LIBS += $$INSTALL_PREFIX/ecl/libEncoderCommonLibrary.a
+    PRE_TARGETDEPS += $$INSTALL_PREFIX/ecl/libEncoderCommonLibrary.a
+}
 
 videoRecorder {
 	SOURCES += helper/datetime.cpp \
@@ -95,20 +107,23 @@ tk1 {
 		orioncommunicationserver.cpp \
 		flirstreamer.cpp \
 		tk1omxpipeline.cpp \
-		moxak1streamer.cpp
+		moxak1streamer.cpp \
+		tk1streamer.cpp
+
 
 	HEADERS += \
 		aryastreamer.h \
 		orioncommunicationserver.h \
 		flirstreamer.h \
 		tk1omxpipeline.h \
-		moxak1streamer.h
+		moxak1streamer.h \
+		tk1streamer.h
 
 	LIBS += -lvdpau -lX11 -lXv -lva-drm -lva-x11
 	INCLUDEPATH += /usr/include/gstreamer-1.0
 	INCLUDEPATH += /usr/include/glib-2.0
 	INCLUDEPATH += /usr/lib/arm-linux-gnueabihf/glib-2.0/include
-	DEFINES += HAVE_TK1
+	DEFINES += HAVE_TK1 HAVE_VIA_MOTION HAVE_VIA_PANAROMA
 }
 
 metrics {
