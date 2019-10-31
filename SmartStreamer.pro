@@ -43,20 +43,6 @@ include (build_config.pri)
 include (proto/grpc.pri)
 include (algorithm/algorithm.pri)
 
-lmm {
-    INSTALL_PREFIX=$$OUT_PWD/..
-    INCLUDEPATH += $$PWD/../lmm/
-    LIBS += $$INSTALL_PREFIX/lmm/lmm/liblmm.a
-    PRE_TARGETDEPS += $$INSTALL_PREFIX/lmm/lmm/liblmm.a
-}
-
-ecl {
-    INCLUDEPATH += $$PWD/../
-    INSTALL_PREFIX=$$OUT_PWD/..
-    LIBS += $$INSTALL_PREFIX/ecl/libEncoderCommonLibrary.a
-    PRE_TARGETDEPS += $$INSTALL_PREFIX/ecl/libEncoderCommonLibrary.a
-}
-
 videoRecorder {
 	SOURCES += helper/datetime.cpp \
 		helper/filewriter.cpp \

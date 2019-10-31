@@ -1,5 +1,6 @@
 PLATFORM_TEGRA = $$system("head -n 1 /etc/nv_tegra_release | awk '{print $9}' | tr -d ,")
-message($$PLATFORM_TEGRA)
+
+CONFIG += $$PLATFORM_TEGRA
 
 ardbeg {
 # jetpack tegra tk1 What is apalis tk1 board name ??? !!

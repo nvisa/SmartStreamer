@@ -1,9 +1,15 @@
+INSTALL_PREFIX=$$OUT_PWD/../..
+INCLUDEPATH += $$INSTALL_PREFIX/usr/local/include
 DEFINES += DEBUG INFO LOG LOGV DEBUG_TIMING
+LIBS += $$INSTALL_PREFIX/usr/local/lib/liblmm.a
+PRE_TARGETDEPS += $$INSTALL_PREFIX/usr/local/lib/liblmm.a
+LIBS += $$INSTALL_PREFIX/usr/local/lib/libEncoderCommonLibrary.a
+PRE_TARGETDEPS += $$INSTALL_PREFIX/usr/local/lib/libEncoderCommonLibrary.a
 
 LIBS += -lx264 -lyuv
-
-LIBS += -L/usr/local/lib/ -lavformat -lswscale -lavcodec -lavutil -lswresample
-LIBS += $$INSTALL_PREFIX/usr/local/lib/libgpu.a
+LIBS += -L$$INSTALL_PREFIX/usr/local/lib/ -lavformat -lswscale -lavcodec -lavutil -lswresample
+LIBS += -lgstreamer-1.0 -lgobject-2.0 -lglib-2.0 -lgstbase-1.0 -lgstapp-1.0 -lz -llzma -lva
+LIBS += /usr/local/lib/libgpu.a
 LIBS += -L/usr/local/cuda/lib -lcudart -lcufft -lcublas
 LIBS += -lopencv_core \
     -lopencv_imgproc \
@@ -13,8 +19,5 @@ LIBS += -lopencv_core \
 
 DEFINES += HAVE_LIBYUV
 
-INCLUDEPATH += /usr/lib/x86_64-linux-gnu/glib-2.0/include/
-CONFIG += smart-grpc ecl lmm
-
-
+CONFIG += smart-grpc
 
