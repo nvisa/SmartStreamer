@@ -61,7 +61,7 @@ int MotionAlgorithmElement::processAlgo(const RawBuffer &buf)
 
 #if HAVE_VIA_MOTION
 #if HAVE_TK1
-	asel_via_base((uchar*)buf.constData(), width * height * 3 / 2, width, height,
+	asel_via_base((uchar*)buf.constData(), width * height, width, height,
 				  v.rgb, v.record, v.shadow, v.ill, v.debug, v.stabilization, v.privacy,
 				  control.meta, control.panTiltZoomRead, control.alarmFlag,
 				  control.initialize, control.sensitivity);
