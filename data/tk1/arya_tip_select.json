@@ -1,0 +1,14 @@
+{
+	"tip3": {
+		"min_angle": 1.98,
+		"max_angle": 23.70
+	},
+	"tip4": {
+		"min_angle": 1.32,
+		"max_angle": 15.8
+	},
+	"tip8": {
+		"min_angle": 0.46,
+		"max_angle": 12.05
+	}
+}

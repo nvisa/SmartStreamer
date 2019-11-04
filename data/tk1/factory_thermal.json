@@ -1,0 +1,13 @@
+{
+	"symbology": 0,
+	"brightness": 100,
+	"contrast": 100,
+	"fov": 0,
+	"polarity": 1,
+	"reticle": 0,
+	"digi_zoom": 0,
+	"image_freeze": 0,
+	"ipm": 2,
+	"hpf_gain": 20,
+	"hpf_spatial": 10
+}

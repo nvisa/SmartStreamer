@@ -46,5 +46,8 @@
         <file>data/platforms.json</file>
         <file>data/ZoomRatios_sony_value.txt</file>
         <file>data/ZoomRatios_value.txt</file>
+        <file>data/tk1/arya_tip_select.json</file>
+        <file>data/tk1/factory_gungor.json</file>
+        <file>data/tk1/factory_thermal.json</file>
     </qresource>
 </RCC>
