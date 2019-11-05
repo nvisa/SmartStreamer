@@ -201,7 +201,7 @@ int StreamerCommon::reloadJson(BaseLmmElement *el)
 			return 0;
 		if (obj.contains("shaping")) {
 			QJsonObject sobj = obj["shaping"].toObject();
-			rtp->setTrafficShaping(sobj["enabled"].toBool(), sobj["bitrate"].toInt(), sobj["interval"].toInt());
+			rtp->setTrafficShaping(sobj["enabled"].toBool(), sobj["bitrate"].toInt(), 0, sobj["interval"].toInt());
 		}
 		if (obj.contains("mtu"))
 			rtp->setMaximumPayloadSize(obj["mtu"].toInt());
