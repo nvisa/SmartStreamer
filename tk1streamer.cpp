@@ -58,9 +58,7 @@ void TK1Streamer::finishPipeline(BaseLmmPipeline *p1)
 	p1->end();
 
 	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(0);
-	if (objectName() != "arya") {
-		rtpout->forwardRtpTs(true);
-	}
+	rtpout->forwardRtpTs(true); // check it on flir
 	StreamerCommon::createRtspServer(rtpout);
 
 	BaseLmmPipeline *p2 = addPipeline();
