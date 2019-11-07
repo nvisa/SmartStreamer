@@ -177,6 +177,28 @@ static void printHelp()
 #include <grpc++/security/credentials.h>
 #include <grpc++/security/server_credentials.h>
 #include "proto/AlgorithmCommunication.grpc.pb.h"
+#include "proto/OrionCommunication.grpc.pb.h"
+
+static int testOrionGrpc(const QString &action)
+{
+	QString ep = QString("127.0.0.1:50060");
+	std::shared_ptr<grpc::Channel> chn = grpc::CreateChannel(ep.toStdString(), grpc::InsecureChannelCredentials());
+	std::shared_ptr<OrionCommunication::OrionCommunicationService::Stub> stub = OrionCommunication::OrionCommunicationService::NewStub(chn);
+	grpc::ClientContext ctx;
+	::grpc::Status status;
+	OrionCommunication::AppCommandResult res;
+	if (action == "run_motion") {
+		qDebug() << "running motion";
+		OrionCommunication::DummyInfo req;
+		status = stub->RunMotion(&ctx, req, &res);
+	} else if (action == "stop_motion") {
+		qDebug() << "stoping motion";
+		OrionCommunication::DummyInfo req;
+		status = stub->StopMotion(&ctx, req, &res);
+	}
+	qDebug() << status.error_code();
+	return 0;
+}
 
 static int testGrpc(const QString &action)
 {
@@ -443,6 +465,8 @@ int main(int argc, char *argv[])
 		return kaapiClient(argc, argv);
 	if (QString::fromLatin1(argv[0]).contains("apic"))
 		return testGrpc(argv[1]);
+	if (QString::fromLatin1(argv[0]).contains("orionc"))
+		return testOrionGrpc(argv[1]);
 
 #if HAVE_TX1
 	{
