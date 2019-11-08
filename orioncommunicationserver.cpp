@@ -130,6 +130,9 @@ grpc::Status OrionCommunicationServer::SetSensivityParameter(grpc::ServerContext
 grpc::Status OrionCommunicationServer::GotoPanaromaPixel(grpc::ServerContext *context, const OrionCommunication::TPoint *request, OrionCommunication::AppCommandResult *response)
 {
 	Q_UNUSED(context)
+	if (request->x() > 1.0 || request->y() > 1.0)
+		return grpc::Status(StatusCode::INVALID_ARGUMENT,
+							"Any request x,y coors must be less than 1.0");
 	((BaseAlgorithmElement*)panaromaEl)->reloadJson();
 	float panS = panaromaEl->getPanaromaControl().started.pan;
 	float tiltS = panaromaEl->getPanaromaControl().started.tilt;
