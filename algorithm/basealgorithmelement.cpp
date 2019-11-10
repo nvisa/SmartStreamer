@@ -1,38 +1,11 @@
 #include "basealgorithmelement.h"
+#include "streamercommon.h"
 
 #include "lmm/debug.h"
 
-#include <QFile>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
-
-static QJsonObject readJson(const QString &filename)
-{
-	QJsonObject obj;
-	QFile f(filename);
-	if (!f.open(QIODevice::ReadOnly)) {
-		qDebug() << "File opening error: " << errno << filename;
-		return obj;
-	}
-	QByteArray ba = f.readAll();
-	f.close();
-	QJsonDocument doc = QJsonDocument::fromJson(ba);
-	obj = doc.object();
-	return obj;
-}
-
-static int saveJson(const QString &filename, const QJsonDocument &doc)
-{
-	QFile f(filename);
-	if (!f.open(QIODevice::WriteOnly)) {
-		qDebug() << "File opening error: " << errno << filename;
-		return -1;
-	}
-	f.write(doc.toJson());
-	f.close();
-	return 0;
-}
 
 BaseAlgorithmElement::BaseAlgorithmElement(QObject *parent)
 	: BaseLmmElement(parent)
@@ -130,7 +103,7 @@ QString BaseAlgorithmElement::getTypeString()
 
 int BaseAlgorithmElement::reloadJson()
 {
-	QJsonObject obj = readJson("/etc/smartstreamer/algodesc.json");
+	QJsonObject obj = StreamerCommon::readSettingsJSON("/etc/smartstreamer/algodesc.json").object();
 	QJsonArray arr = obj["algorithms"].toArray();
 	if (arr.size() <= algIndex)
 		return -EINVAL;
@@ -141,7 +114,7 @@ int BaseAlgorithmElement::reloadJson()
 
 int BaseAlgorithmElement::savetoJson()
 {
-	QJsonObject obj = readJson("/etc/smartstreamer/algodesc.json");
+	QJsonObject obj = StreamerCommon::readSettingsJSON("/etc/smartstreamer/algodesc.json").object();
 	QJsonArray arr = obj["algorithms"].toArray();
 	if (arr.size() <= algIndex)
 		return -EINVAL;
@@ -152,7 +125,7 @@ int BaseAlgorithmElement::savetoJson()
 		return -1;
 	arr[algIndex] = aj;
 	obj["algorithms"] = arr;
-	saveJson("/etc/smartstreamer/algodesc.json", QJsonDocument(obj));
+	StreamerCommon::writeSettingsJSON("/etc/smartstreamer/algodesc.json", QJsonDocument(obj));
 	return 0;
 }
 

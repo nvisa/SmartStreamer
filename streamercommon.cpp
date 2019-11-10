@@ -24,9 +24,31 @@ static QJsonDocument readJson(const QString &filename)
 	return doc;
 }
 
+static int saveJson(const QString &filename, const QJsonDocument &doc)
+{
+	QFile f(filename);
+	if (!f.open(QIODevice::WriteOnly)) {
+		qDebug() << "File opening error: " << errno << filename;
+		return -1;
+	}
+	f.write(doc.toJson());
+	f.close();
+	return 0;
+}
+
 StreamerCommon::StreamerCommon()
 {
 
+}
+
+QJsonDocument StreamerCommon::readSettingsJSON(const QString &filename)
+{
+	return readJson(filename);
+}
+
+int StreamerCommon::writeSettingsJSON(const QString &filename, const QJsonDocument &doc)
+{
+	return saveJson(filename, doc);
 }
 
 int StreamerCommon::detectRtspPort()
@@ -155,7 +177,7 @@ int StreamerCommon::reloadJson(BaseLmmElement *el)
 	int id = el->property("commonTagId").toInt();
 	if (tag == "overlay") {
 		TextOverlay *overlay = (TextOverlay *)el;
-		QJsonObject obj = readJson("/etc/smartstreamer/overlay.json").object();
+		QJsonObject obj = readSettingsJSON("/etc/smartstreamer/overlay.json").object();
 		if (obj.isEmpty())
 			return 0;
 		overlay->setPassThru(!obj["enabled"].toBool());
@@ -170,7 +192,7 @@ int StreamerCommon::reloadJson(BaseLmmElement *el)
 		}
 	} else if (tag == "tx1encoder") {
 		TX1VideoEncoder *enc = (TX1VideoEncoder *)el;
-		QJsonArray arr = readJson("/etc/smartstreamer/encoders.json").array();
+		QJsonArray arr = readSettingsJSON("/etc/smartstreamer/encoders.json").array();
 		if (arr.size() <= id)
 			return 0;
 		QJsonObject obj = arr[id].toObject();
@@ -193,7 +215,7 @@ int StreamerCommon::reloadJson(BaseLmmElement *el)
 		enc->setFps(obj["frameRate"].toInt());
 	} else if (tag == "rtptransmitter") {
 		RtpTransmitter *rtp = (RtpTransmitter *)el;
-		QJsonArray arr = readJson("/etc/smartstreamer/encoders.json").array();
+		QJsonArray arr = readSettingsJSON("/etc/smartstreamer/encoders.json").array();
 		if (arr.size() <= id)
 			return 0;
 		QJsonObject obj = arr[id].toObject();

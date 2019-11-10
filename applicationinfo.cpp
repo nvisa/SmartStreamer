@@ -9,6 +9,7 @@
 #include "tbgthstreamer.h"
 #include "videotestsourcestreamer.h"
 #include "moxak1streamer.h"
+#include "streamercommon.h"
 
 #include "algorithm/motionalgorithmelement.h"
 #include "algorithm/stabilizationalgorithmelement.h"
@@ -37,21 +38,6 @@
 #include <ecl/ptzp/virtualptzpdriver.h>
 
 #include <unistd.h>
-
-static QJsonObject readJson(const QString &filename)
-{
-	QJsonObject obj;
-	QFile f(filename);
-	if (!f.open(QIODevice::ReadOnly)) {
-		qDebug() << "File opening error: " << errno << filename;
-		return obj;
-	}
-	QByteArray ba = f.readAll();
-	f.close();
-	QJsonDocument doc = QJsonDocument::fromJson(ba);
-	obj = doc.object();
-	return obj;
-}
 
 class LifeTimeTracker
 {
@@ -108,7 +94,7 @@ bool ApplicationInfo::isGuiApplication()
 int ApplicationInfo::startPtzpDriver()
 {
 	/* PTZP driver management */
-	QJsonObject obj = readJson("/etc/smartstreamer/smartconfig.json");
+	QJsonObject obj = StreamerCommon::readSettingsJSON("/etc/smartstreamer/smartconfig.json").object();
 	QJsonArray arr = obj["ptzp"].toArray();
 	Platform plat = getApplicationPlatform();
 	foreach (QJsonValue val, arr) {
@@ -181,7 +167,7 @@ int ApplicationInfo::startPtzpDriver()
 
 ApplicationInfo::Platform ApplicationInfo::getApplicationPlatform()
 {
-	QJsonObject obj = readJson("/etc/smartstreamer/smartconfig.json");
+	QJsonObject obj = StreamerCommon::readSettingsJSON("/etc/smartstreamer/smartconfig.json").object();
 	QJsonArray arr = obj["ptzp"].toArray();
 	foreach (QJsonValue val, arr) {
 		QJsonObject obj = val.toObject();
@@ -215,7 +201,7 @@ PtzpDriver *ApplicationInfo::getPtzpDriver(int index)
 
 QJsonObject ApplicationInfo::getPtzpObject(int index)
 {
-	QJsonObject obj = readJson("/etc/smartstreamer/smartconfig.json");
+	QJsonObject obj = StreamerCommon::readSettingsJSON("/etc/smartstreamer/smartconfig.json").object();
 	QJsonArray arr = obj["ptzp"].toArray();
 	if (index < arr.size())
 		return arr[index].toObject();
@@ -225,7 +211,7 @@ QJsonObject ApplicationInfo::getPtzpObject(int index)
 BaseStreamer *ApplicationInfo::createAppStreamer()
 {
 	BaseStreamer *streamer = nullptr;
-	QJsonObject obj = readJson("/etc/smartstreamer/smartconfig.json");
+	QJsonObject obj = StreamerCommon::readSettingsJSON("/etc/smartstreamer/smartconfig.json").object();
 #if HAVE_TX1
 	if (obj.value("ipstreamer").toBool()) {
 		qDebug() << "starting ip stramer";
@@ -300,7 +286,7 @@ BaseAlgorithmElement *ApplicationInfo::createAlgorithmFromJson(const QJsonObject
 
 BaseAlgorithmElement *ApplicationInfo::createAlgorithm(const QString &type, int index)
 {
-	QJsonObject obj = readJson("/etc/smartstreamer/algodesc.json");
+	QJsonObject obj = StreamerCommon::readSettingsJSON("/etc/smartstreamer/algodesc.json").object();
 	QJsonArray arr = obj["algorithms"].toArray();
 	QJsonArray filtered;
 	QHash<int, int> imap;
@@ -346,7 +332,7 @@ void ApplicationInfo::checkStartupDelay()
 		//QProcess::execute(QString("i2cset -f -y 1 0x70 0x01 0x%1").arg((1 << (relayConfig[0] - 1)), 2, 16));
 
 	}
-	QJsonObject obj = readJson("/etc/smartstreamer/smartconfig.json");
+	QJsonObject obj = StreamerCommon::readSettingsJSON("/etc/smartstreamer/smartconfig.json").object();
 	if (!obj.contains("startup_delay"))
 		return;
 	int sec = obj["startup_delay"].toInt() - SystemInfo::getUptime();

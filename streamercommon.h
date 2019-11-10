@@ -11,6 +11,8 @@ class StreamerCommon
 public:
 	StreamerCommon();
 
+	static QJsonDocument readSettingsJSON(const QString &filename);
+	static int writeSettingsJSON(const QString &filename, const QJsonDocument &doc);
 	static int detectRtspPort();
 	static RtpTransmitter * createRtpTransmitter(float fps, int id = 0);
 	static BaseRtspServer * createRtspServer(RtpTransmitter *rtp0);

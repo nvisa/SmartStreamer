@@ -1,6 +1,7 @@
 #include "algorithmgrpcserver.h"
 #include "diagnosticserviceimpl.h"
 #include "indevicetest.h"
+#include "streamercommon.h"
 
 #include <ecl/drivers/patternng.h>
 
@@ -33,7 +34,6 @@ using namespace std;
 #include "ecl/ptzp/ptzpdriver.h"
 #include "applicationinfo.h"
 
-#include <QFile>
 #include <QImage>
 #include <QBuffer>
 #include <QDateTime>
@@ -351,41 +351,6 @@ grpc::Status AlgorithmGrpcServer::GetScreenShotStream(grpc::ServerContext *conte
 	return grpc::Status::OK;
 }
 
-static QJsonDocument readJson(const QString &filename)
-{
-	QFile f(filename);
-	if (!f.open(QIODevice::ReadOnly))
-		return QJsonDocument();
-	QByteArray ba = f.readAll();
-	f.close();
-	QJsonDocument doc = QJsonDocument::fromJson(ba);
-	return doc;
-}
-
-static QJsonObject readJsonObj(const QString &filename)
-{
-	QJsonObject obj;
-	QFile f(filename);
-	if (!f.open(QIODevice::ReadOnly)) {
-		qDebug() << "File opening error: " << errno << filename;
-		return obj;
-	}
-	QByteArray ba = f.readAll();
-	f.close();
-	QJsonDocument doc = QJsonDocument::fromJson(ba);
-	obj = doc.object();
-	return obj;
-}
-
-static void saveSettings(const QString &filename, const QJsonObject &obj)
-{
-	QFile f(filename);
-	if (!f.open(QIODevice::WriteOnly))
-		return;
-	f.write(QJsonDocument(obj).toJson());
-	f.close();
-}
-
 grpc::Status AlgorithmGrpcServer::GetSystemFeature(grpc::ServerContext *context, const AlgorithmCommunication::SystemFeature *request, AlgorithmCommunication::SystemFeature *response)
 {
 	AlgorithmCommunication::SystemFeature *resp = response;
@@ -395,7 +360,7 @@ grpc::Status AlgorithmGrpcServer::GetSystemFeature(grpc::ServerContext *context,
 		response->set_key("LifeTime");
 		return grpc::Status::OK;
 	} else if (request->key() == "Bitrate") {
-		QJsonArray arr = readJson("/etc/smartstreamer/encoders.json").array();
+		QJsonArray arr = StreamerCommon::readSettingsJSON("/etc/smartstreamer/encoders.json").array();
 		if (arr.size() <= 0)
 			return grpc::Status::CANCELLED;
 		int device = request->device();
@@ -407,7 +372,7 @@ grpc::Status AlgorithmGrpcServer::GetSystemFeature(grpc::ServerContext *context,
 		response->set_device(device);
 		return grpc::Status::OK;
 	}	else if (request->key() == "FrameRate") {
-		QJsonArray arr = readJson("/etc/smartstreamer/encoders.json").array();
+		QJsonArray arr = StreamerCommon::readSettingsJSON("/etc/smartstreamer/encoders.json").array();
 		if (arr.size() <= 0)
 			return grpc::Status::CANCELLED;
 		int device = request->device();
@@ -419,7 +384,7 @@ grpc::Status AlgorithmGrpcServer::GetSystemFeature(grpc::ServerContext *context,
 		response->set_device(device);
 		return grpc::Status::OK;
 	}	else if (request->key() == "Resolution") {
-		QJsonArray arr = readJson("/etc/smartstreamer/encoders.json").array();
+		QJsonArray arr = StreamerCommon::readSettingsJSON("/etc/smartstreamer/encoders.json").array();
 		if (arr.size() <= 0)
 			return grpc::Status::CANCELLED;
 		int device = request->device();
@@ -437,7 +402,7 @@ grpc::Status AlgorithmGrpcServer::GetSystemFeature(grpc::ServerContext *context,
 grpc::Status AlgorithmGrpcServer::SetSystemFeature(grpc::ServerContext *context, const AlgorithmCommunication::SystemFeature *request, AlgorithmCommunication::SystemFeature *response)
 {
 	if (request->key() == "Bitrate") {
-		QJsonDocument doc = readJson("/etc/smartstreamer/encoders.json");
+		QJsonDocument doc = StreamerCommon::readSettingsJSON("/etc/smartstreamer/encoders.json");
 		QJsonArray arr = doc.array();
 		if (arr.size() <= 0)
 			return grpc::Status::CANCELLED;
@@ -449,18 +414,13 @@ grpc::Status AlgorithmGrpcServer::SetSystemFeature(grpc::ServerContext *context,
 		obj["bitrate"] = btr;
 		arr[device] = obj;
 		QJsonDocument docToSave(arr);
-		QFile f("/etc/smartstreamer/encoders.json");
-		if (!f.open(QIODevice::WriteOnly)) {
-			return grpc::Status::CANCELLED;
-		}
-		f.write(docToSave.toJson());
-		f.close();
+		StreamerCommon::writeSettingsJSON("/etc/smartstreamer/encoders.json", docToSave);
 		response->set_value(request->value());
 		response->set_key("Bitrate");
 		response->set_device(device);
 		return grpc::Status::OK;
 	} else if (request->key() == "FrameRate") {
-		QJsonDocument doc = readJson("/etc/smartstreamer/encoders.json");
+		QJsonDocument doc = StreamerCommon::readSettingsJSON("/etc/smartstreamer/encoders.json");
 		QJsonArray arr = doc.array();
 		if (arr.size() <= 0)
 			return grpc::Status::CANCELLED;
@@ -472,18 +432,13 @@ grpc::Status AlgorithmGrpcServer::SetSystemFeature(grpc::ServerContext *context,
 		obj["frameRate"] = fps;
 		arr[device] = obj;
 		QJsonDocument docToSave(arr);
-		QFile f("/etc/smartstreamer/encoders.json");
-		if (!f.open(QIODevice::WriteOnly)) {
-			return grpc::Status::CANCELLED;
-		}
-		f.write(docToSave.toJson());
-		f.close();
+		StreamerCommon::writeSettingsJSON("/etc/smartstreamer/encoders.json", docToSave);
 		response->set_value(request->value());
 		response->set_key("FrameRate");
 		response->set_device(device);
 		return grpc::Status::OK;
 	} else if (request->key() == "Resolution") {
-		QJsonDocument doc = readJson("/etc/smartstreamer/encoders.json");
+		QJsonDocument doc = StreamerCommon::readSettingsJSON("/etc/smartstreamer/encoders.json");
 		QJsonArray arr = doc.array();
 		if (arr.size() <= 0)
 			return grpc::Status::CANCELLED;
@@ -496,12 +451,7 @@ grpc::Status AlgorithmGrpcServer::SetSystemFeature(grpc::ServerContext *context,
 		obj["resolution"] = resolution;
 		arr[device] = obj;
 		QJsonDocument docToSave(arr);
-		QFile f("/etc/smartstreamer/encoders.json");
-		if (!f.open(QIODevice::WriteOnly)) {
-			return grpc::Status::CANCELLED;
-		}
-		f.write(docToSave.toJson());
-		f.close();
+		StreamerCommon::writeSettingsJSON("/etc/smartstreamer/encoders.json", docToSave);
 		response->set_value(request->value());
 		response->set_key("Resolution");
 		response->set_device(device);
