@@ -328,47 +328,77 @@ int TX1Streamer::frameGenerator(const RawBuffer &buf)
 
 int TX1Streamer::notifyGrpcForAlarm(const RawBuffer &buf)
 {
-	if (buf.constPars()->metaData.size()) {
-		if (motionAlarmState.uuid.isEmpty()) {
-			motionAlarmState.uuid = QUuid::createUuid().toString();
-			motionAlarmState.frameNo = 0;
-			motionAlarmState.last = false;
-		}
-
-		/* convert to json */
-		QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
-		QByteArray seiData = hash["motion_results"].toByteArray();
-		algen->generateAlarmStructure((uchar *)seiData.constData(), alarmGeneratorElement::MOTION);
-		alarmGeneratorElement::AlarmInfo *info = algen->getAlarmInfo();
-		QJsonArray motionObjects;
-		for (uint i = 0; i < info->target.size(); i++) {
-			alarmGeneratorElement::TargetStruct ts = info->target[i];
-			QJsonObject obj;
-			obj["x"] = ts.topLeftX;
-			obj["y"] = ts.topLeftY;
-			obj["w"] = ts.widthOfTarget;
-			obj["h"] = ts.heightOfTarget;
-			motionObjects.append(obj);
-		}
-		if (motionObjects.size() == 0) {
-			clearMotionState();
-			return 0;
-		}
-		QJsonObject obj;
-		obj["objects"] = motionObjects;
-		const QByteArray jsondata = QJsonDocument(obj).toJson();
-		AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "motion_json", QString::fromUtf8(jsondata));
-		AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "motion_id", motionAlarmState.uuid);
-		if (!motionAlarmState.frameNo) {
-			const RawBuffer &jpegbuf = jpegQueue->getLast();
-			QByteArray ba = QByteArray::fromRawData((const char *)jpegbuf.constData(), jpegbuf.size());
-			AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "snapshot_jpeg", QString::fromUtf8(ba.toBase64()));
-		} else
-			AlgorithmGrpcServer::instance()->removeAlarmField("motion_detection", "snapshot_jpeg");
-		motionAlarmState.frameNo++;
-	} else {
+	if (motion->getState() == BaseAlgorithmElement::PROCESS) {
+		notifyGrpcForMotionAlarm(buf);
+	} else
 		clearMotionState();
+
+	if (track->getState() == BaseAlgorithmElement::PROCESS) {
+		QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
+		QByteArray seiData = hash["track_results"].toByteArray();
+		algen->generateAlarmStructure((uchar *)seiData.constData(), alarmGeneratorElement::TRACKING);
+		alarmGeneratorElement::AlarmInfo *info = algen->getAlarmInfo();
+		if (info->target.size()) {
+			QJsonArray trackObjects;
+			for (uint i = 0; i < info->target.size(); i++) {
+				alarmGeneratorElement::TargetStruct ts = info->target[i];
+				QJsonObject obj;
+				obj["x"] = ts.topLeftX;
+				obj["y"] = ts.topLeftY;
+				obj["w"] = ts.widthOfTarget;
+				obj["h"] = ts.heightOfTarget;
+				trackObjects.append(obj);
+			}
+			QJsonObject obj;
+			obj["objects"] = trackObjects;
+			const QByteArray jsondata = QJsonDocument(obj).toJson();
+			AlgorithmGrpcServer::instance()->setAlarmField("track_alarm", "track_json", QString::fromUtf8(jsondata));
+		}
+	} else
+		AlgorithmGrpcServer::instance()->removeAlarm("track_alarm");
+
+	return 0;
+}
+
+int TX1Streamer::notifyGrpcForMotionAlarm(const RawBuffer &buf)
+{
+	if (motionAlarmState.uuid.isEmpty()) {
+		motionAlarmState.uuid = QUuid::createUuid().toString();
+		motionAlarmState.frameNo = 0;
+		motionAlarmState.last = false;
 	}
+
+	/* convert to json */
+	QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
+	QByteArray seiData = hash["motion_results"].toByteArray();
+	algen->generateAlarmStructure((uchar *)seiData.constData(), alarmGeneratorElement::MOTION);
+	alarmGeneratorElement::AlarmInfo *info = algen->getAlarmInfo();
+	QJsonArray motionObjects;
+	for (uint i = 0; i < info->target.size(); i++) {
+		alarmGeneratorElement::TargetStruct ts = info->target[i];
+		QJsonObject obj;
+		obj["x"] = ts.topLeftX;
+		obj["y"] = ts.topLeftY;
+		obj["w"] = ts.widthOfTarget;
+		obj["h"] = ts.heightOfTarget;
+		motionObjects.append(obj);
+	}
+	if (motionObjects.size() == 0) {
+		clearMotionState();
+		return 0;
+	}
+	QJsonObject obj;
+	obj["objects"] = motionObjects;
+	const QByteArray jsondata = QJsonDocument(obj).toJson();
+	AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "motion_json", QString::fromUtf8(jsondata));
+	AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "motion_id", motionAlarmState.uuid);
+	if (!motionAlarmState.frameNo) {
+		const RawBuffer &jpegbuf = jpegQueue->getLast();
+		QByteArray ba = QByteArray::fromRawData((const char *)jpegbuf.constData(), jpegbuf.size());
+		AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "snapshot_jpeg", QString::fromUtf8(ba.toBase64()));
+	} else
+		AlgorithmGrpcServer::instance()->removeAlarmField("motion_detection", "snapshot_jpeg");
+	motionAlarmState.frameNo++;
 	return 0;
 }
 

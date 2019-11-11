@@ -35,6 +35,7 @@ protected:
 	int checkSeiAlarm(const RawBuffer &buf);
 	int frameGenerator(const RawBuffer &buf);
 	int notifyGrpcForAlarm(const RawBuffer &buf);
+	int notifyGrpcForMotionAlarm(const RawBuffer &buf);
 	int processBuffer(const RawBuffer &buf);
 	int recordIfNvrDead(const RawBuffer &buf);
 	void enableRGBPortion(bool en);
