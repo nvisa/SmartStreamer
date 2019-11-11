@@ -17,7 +17,8 @@ SOURCES += main.cpp \
     snapshotelement.cpp \
     indevicetest.cpp \
     alarmgeneratorelement.cpp \
-    kardelenapi.cpp
+    kardelenapi.cpp \
+    usersettings.cpp
 HEADERS += \
     moxadriver.h \
     mjpegserver.h \
@@ -31,7 +32,8 @@ HEADERS += \
     indevicetest.h \
     alarmgeneratorelement.h \
     kardelenapi.h \
-    algorithmparameters.h
+    algorithmparameters.h \
+    usersettings.h
 
 websockets {
     SOURCES += websocketstreamer.cpp
