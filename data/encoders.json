@@ -12,9 +12,9 @@
 		"framerate_min": 1,
 		"framerate_max": 25,
 		"shaping": {
-			"enabled": false,
+			"enabled": true,
 			"interval": 10,
-			"bitrate": 6000000
+			"bitrate": 10000000
 		}
 	},
 	{
