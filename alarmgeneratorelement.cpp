@@ -60,6 +60,7 @@ void alarmGeneratorElement::generateTrackingStructure(unsigned char meta[])
 	string str(buffer);
 	generatedAlarmInfo->date = str;
 	TargetStruct target;
+	generatedAlarmInfo->target.clear();
 
 	target.topLeftX = meta[19] + (meta[20] << 8) ;
 	target.topLeftY = meta[21] + (meta[22] << 8) ;
