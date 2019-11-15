@@ -266,6 +266,7 @@ public:
 			addcap(caps, CAPABILITY_THERMAL_STANDBY_MODE);
 			addcap(caps, CAPABILITY_CHANGE_DETECTION);
 			addcap(caps, CAPABILITY_SHOW_RETICLE);
+			addcap(caps, CAPABILITY_FOV_BASED_PT_SPEED);
 		} else {
 			addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
 			addcap(caps, CAPABILITY_DETECTION);
@@ -289,6 +290,7 @@ public:
 			addcap(caps, CAPABILITY_THERMAL_STANDBY_MODE);
 			addcap(caps, CAPABILITY_CHANGE_DETECTION);
 			addcap(caps, CAPABILITY_SHOW_RETICLE);
+			addcap(caps, CAPABILITY_FOV_BASED_PT_SPEED);
 		}
 
 		return caps;
