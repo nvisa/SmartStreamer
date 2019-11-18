@@ -5,6 +5,7 @@
 #include <QJsonObject>
 #include <QProcess>
 
+#include "alarmsource.h"
 #include "snapshotelement.h"
 #include "proto/AlgorithmCommunication.grpc.pb.h"
 
@@ -39,6 +40,7 @@ public:
 	void setAlarmField(const QString &alarm, const QString &key, const QString &value);
 	void setAlarmField(const QString &alarm, const QString &key, const QVariant &value);
 	void removeAlarm(const QString &alarm);
+	void addAlarmSource(QSharedPointer<AlarmSource> source);
 	grpc::Status RunAlgorithm(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfRequests *response);
 	grpc::Status StopAlgorithm(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfRequests *response);
 
@@ -73,6 +75,7 @@ private:
 	AlgoManIface *manif;
 	QMutex mutex;
 	QHash<QString, QHash<QString, QVariant> > alarms;
+	QList<QSharedPointer<AlarmSource>> alarmSources;
 
 	// Service interface
 public:

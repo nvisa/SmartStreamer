@@ -2,6 +2,7 @@
 #include "diagnosticserviceimpl.h"
 #include "indevicetest.h"
 #include "streamercommon.h"
+#include "alarmsource.h"
 
 #include <ecl/drivers/patternng.h>
 
@@ -149,6 +150,11 @@ void AlgorithmGrpcServer::removeAlarm(const QString &alarm)
 {
 	QMutexLocker ml(&mutex);
 	alarms.remove(alarm);
+}
+
+void AlgorithmGrpcServer::addAlarmSource(QSharedPointer<AlarmSource> source)
+{
+	alarmSources << source;
 }
 
 grpc::Status AlgorithmGrpcServer::RunAlgorithm(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfRequests *response)
@@ -581,6 +587,11 @@ BaseAlgorithmElement* AlgorithmGrpcServer::algorithmElementManager(int chn)
 
 grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc::ServerReaderWriter<AlgorithmCommunication::Alarms, AlgorithmCommunication::AlarmReqInfo> *stream)
 {
+	MultipleAlarmSource mals;
+	for (int i = 0; i < alarmSources.size(); i++)
+		mals.addSource(alarmSources[i]);
+	bool useMals = true;
+
 	InDeviceTest *idt = ApplicationInfo::instance()->getIDT();
 	while (1) {
 		AlgorithmCommunication::Alarms res;
@@ -591,8 +602,11 @@ grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc:
 
 		std::string filter = req.filter();
 		int32_t interval = req.intervalmsecs();
-		usleep(interval * 1000);
+		if (!useMals)
+			usleep(interval * 1000);
 		res.set_ts(QDateTime::currentMSecsSinceEpoch());
+
+		/* JIT alarms still don't use alarmsource */
 		if (idt) {
 			QJsonObject cit = idt->getLastCheckResults();
 			if (cit.contains("faults")) {
@@ -617,32 +631,59 @@ grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc:
 			}
 		}
 
-		mutex.lock();
-		QHashIterator<QString, QHash<QString, QVariant> > hi(alarms);
-		while (hi.hasNext()) {
-			hi.next();
-			const QString name = hi.key();
-			AlgorithmCommunication::Alarm *alarm = res.add_alarms();
-			alarm->set_type(name.toStdString());
-			const QHash<QString, QVariant> &list = hi.value();
-			QHashIterator<QString, QVariant> hi2(list);
-			while (hi2.hasNext()) {
-				hi2.next();
-				const QString key = hi2.key();
-				const QVariant value = hi2.value();
-				alarm->add_key(key.toStdString());
-				if (value.canConvert(QVariant::ByteArray)) {
-					const QByteArray &ba = value.toByteArray();
-					std::string str(ba.constData(), ba.size());
-					alarm->add_value(str);
-				} else if (value.canConvert(QVariant::String)) {
-					alarm->add_value(value.toString().toStdString());
-				} else {
-					alarm->add_value("N/A");
+		if (!useMals) {
+			mutex.lock();
+			QHashIterator<QString, QHash<QString, QVariant> > hi(alarms);
+			while (hi.hasNext()) {
+				hi.next();
+				const QString name = hi.key();
+				AlgorithmCommunication::Alarm *alarm = res.add_alarms();
+				alarm->set_type(name.toStdString());
+				const QHash<QString, QVariant> &list = hi.value();
+				QHashIterator<QString, QVariant> hi2(list);
+				while (hi2.hasNext()) {
+					hi2.next();
+					const QString key = hi2.key();
+					const QVariant value = hi2.value();
+					alarm->add_key(key.toStdString());
+					if (value.canConvert(QVariant::ByteArray)) {
+						const QByteArray &ba = value.toByteArray();
+						std::string str(ba.constData(), ba.size());
+						alarm->add_value(str);
+					} else if (value.canConvert(QVariant::String)) {
+						alarm->add_value(value.toString().toStdString());
+					} else {
+						alarm->add_value("N/A");
+					}
+				}
+			}
+			mutex.unlock();
+		} else {
+			auto list = mals.wait(interval);
+			for (int i = 0; i < list.size(); i++) {
+				const auto source = list[i];
+				AlgorithmCommunication::Alarm *alarm = res.add_alarms();
+				alarm->set_type(source->typeString().toStdString());
+				const QHash<QString, QVariant> &list = source->fields();
+				source->clearFields();
+				QHashIterator<QString, QVariant> hi2(list);
+				while (hi2.hasNext()) {
+					hi2.next();
+					const QString key = hi2.key();
+					const QVariant value = hi2.value();
+					alarm->add_key(key.toStdString());
+					if (value.canConvert(QVariant::ByteArray)) {
+						const QByteArray &ba = value.toByteArray();
+						std::string str(ba.constData(), ba.size());
+						alarm->add_value(str);
+					} else if (value.canConvert(QVariant::String)) {
+						alarm->add_value(value.toString().toStdString());
+					} else {
+						alarm->add_value("N/A");
+					}
 				}
 			}
 		}
-		mutex.unlock();
 
 		success = stream->Write(res);
 		if (!success)

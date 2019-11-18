@@ -59,6 +59,8 @@ TX1Streamer::TX1Streamer(QObject *parent)
 	enablePreview = false;
 	motionExtraEnabled = false;
 	videoRecordingEnabled = false;
+	motionAlarmSource = QSharedPointer<MotionAlarmSource>(new MotionAlarmSource);
+	AlgorithmGrpcServer::instance()->addAlarmSource(motionAlarmSource);
 }
 
 int TX1Streamer::start()
@@ -383,6 +385,17 @@ int TX1Streamer::notifyGrpcForMotionAlarm(const RawBuffer &buf)
 		obj["h"] = ts.heightOfTarget;
 		motionObjects.append(obj);
 	}
+
+	QJsonObject obj;
+	obj["objects"] = motionObjects;
+	const QByteArray jsondata = QJsonDocument(obj).toJson();
+	const RawBuffer &jpegbuf = jpegQueue->getLast();
+	QByteArray ba = QByteArray::fromRawData((const char *)jpegbuf.constData(), jpegbuf.size());
+	if (motionObjects.size())
+		motionAlarmSource->produce("", QString::fromUtf8(jsondata), ba);
+	else
+		motionAlarmSource->notifyNoMotion("", "", ba);
+#if 0
 	if (motionObjects.size() == 0) {
 		clearMotionState();
 		return 0;
@@ -399,6 +412,7 @@ int TX1Streamer::notifyGrpcForMotionAlarm(const RawBuffer &buf)
 	} else
 		AlgorithmGrpcServer::instance()->removeAlarmField("motion_detection", "snapshot_jpeg");
 	motionAlarmState.frameNo++;
+#endif
 	return 0;
 }
 

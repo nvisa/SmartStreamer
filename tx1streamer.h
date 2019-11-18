@@ -1,10 +1,13 @@
 #ifndef TX1STREAMER_H
 #define TX1STREAMER_H
 
+#include "alarmsource.h"
+
 #include <lmm/players/basestreamer.h>
 #include <algorithm/algorithmgrpcserver.h>
 
 #include <QUrl>
+#include <QSharedPointer>
 
 class VideoScaler;
 class SeiInserter;
@@ -61,6 +64,7 @@ protected:
 	VideoScaler *yuv2rgb;
 	VideoScaler *rgb2yuv;
 	BufferQueue *jpegQueue;
+	QSharedPointer<MotionAlarmSource> motionAlarmSource;
 
 	bool secondStream;
 	bool thirdStream;
