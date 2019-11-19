@@ -152,6 +152,7 @@ void TrackAlarmSource::produce(const QString &uuid, const QString &json, const Q
 {
 	lDebug("producing track event");
 	QHash<QString, QVariant> h;
+	h["track_id"] = uuid;
 	h["track_json"] = json;
 	h["snapshot_jpeg"] = QString::fromUtf8(snapshot.toBase64());
 	setFields(h);
