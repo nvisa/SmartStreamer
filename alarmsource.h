@@ -51,6 +51,15 @@ protected:
 	QElapsedTimer noAlarmElapsed;
 };
 
+class TrackAlarmSource : public AlarmSource
+{
+public:
+	TrackAlarmSource();
+
+	virtual QString typeString() const;
+	void produce(const QString &uuid, const QString &json, const QByteArray &snapshot);
+};
+
 class MultipleAlarmSource
 {
 public:

@@ -136,3 +136,24 @@ QList<QSharedPointer<AlarmSource> > MultipleAlarmSource::wait(int msecs)
 	}
 	return active;
 }
+
+TrackAlarmSource::TrackAlarmSource()
+	: AlarmSource()
+{
+
+}
+
+QString TrackAlarmSource::typeString() const
+{
+	return "track_alarm";
+}
+
+void TrackAlarmSource::produce(const QString &uuid, const QString &json, const QByteArray &snapshot)
+{
+	lDebug("producing track event");
+	QHash<QString, QVariant> h;
+	h["track_json"] = json;
+	h["snapshot_jpeg"] = QString::fromUtf8(snapshot.toBase64());
+	setFields(h);
+	notify();
+}
