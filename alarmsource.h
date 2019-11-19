@@ -13,6 +13,8 @@
 
 #include <memory>
 
+#include "proto/AlgorithmCommunication.pb.h"
+
 class MultipleAlarmSource;
 
 class AlarmSource
@@ -25,6 +27,7 @@ public:
 	QHash<QString, QVariant> fetch();
 	bool check();
 	virtual void reset();
+	void setParameters(const AlgorithmCommunication::AlarmReqAdvancedParameters &pars);
 
 protected:
 	virtual void fetching(QHash<QString, QVariant> &);
@@ -34,7 +37,7 @@ protected:
 	void addListener(MultipleAlarmSource *s);
 	void removeListener(MultipleAlarmSource *s);
 
-	int queueLen;
+	AlgorithmCommunication::AlarmReqAdvancedParameters advanced;
 private:
 	QMutex m;
 	QWaitCondition wc;

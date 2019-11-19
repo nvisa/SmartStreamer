@@ -576,6 +576,9 @@ grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc:
 			return Status::OK;
 
 		std::string filter = req.filter();
+		auto pars = req.advancedparams();
+		for (int i = 0; i < alarmSources.size(); i++)
+			alarmSources[i]->setParameters(pars);
 		int32_t interval = req.intervalmsecs();
 		res.set_ts(QDateTime::currentMSecsSinceEpoch());
 

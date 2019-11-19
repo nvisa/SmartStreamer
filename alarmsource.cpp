@@ -11,7 +11,7 @@
 
 AlarmSource::AlarmSource()
 {
-	queueLen = 1;
+	setParameters(AlgorithmCommunication::AlarmReqAdvancedParameters());
 }
 
 bool AlarmSource::wait(int msecs)
@@ -47,6 +47,18 @@ void AlarmSource::reset()
 	queue.clear();
 }
 
+void AlarmSource::setParameters(const AlgorithmCommunication::AlarmReqAdvancedParameters &pars)
+{
+	advanced = pars;
+	if (!advanced.enabled()) {
+		/* set defaults */
+		advanced.set_alarmqueuelength(1);
+		advanced.set_suppressinterval(90);
+		advanced.set_smartsnapshot(true);
+		advanced.set_smartsnapshotinterval(1000);
+	}
+}
+
 void AlarmSource::fetching(QHash<QString, QVariant> &)
 {
 }
@@ -55,7 +67,7 @@ void AlarmSource::push(const QHash<QString, QVariant> &h)
 {
 	QMutexLocker ml(&m);
 	queue << h;
-	if (queue.size() > queueLen)
+	if (queue.size() > advanced.alarmqueuelength())
 		queue.removeFirst();
 	wc.wakeAll();
 	for (int i = 0; i < listeners.size(); i++)
@@ -110,7 +122,7 @@ void MotionAlarmSource::notifyNoMotion(const QString &uuid, const QString &json,
 {
 	lDebug("no motion notification");
 	lastAlarmElapsed.restart();
-	if (noAlarmElapsed.elapsed() > 90)
+	if (noAlarmElapsed.elapsed() > advanced.suppressinterval())
 		id = "";
 }
 
