@@ -60,7 +60,9 @@ TX1Streamer::TX1Streamer(QObject *parent)
 	motionExtraEnabled = false;
 	videoRecordingEnabled = false;
 	motionAlarmSource = QSharedPointer<MotionAlarmSource>(new MotionAlarmSource);
+	trackAlarmSource = QSharedPointer<TrackAlarmSource>(new TrackAlarmSource);
 	AlgorithmGrpcServer::instance()->addAlarmSource(motionAlarmSource);
+	AlgorithmGrpcServer::instance()->addAlarmSource(trackAlarmSource);
 }
 
 int TX1Streamer::start()
@@ -354,10 +356,11 @@ int TX1Streamer::notifyGrpcForAlarm(const RawBuffer &buf)
 			QJsonObject obj;
 			obj["objects"] = trackObjects;
 			const QByteArray jsondata = QJsonDocument(obj).toJson();
-			AlgorithmGrpcServer::instance()->setAlarmField("track_alarm", "track_json", QString::fromUtf8(jsondata));
+			const RawBuffer &jpegbuf = jpegQueue->getLast();
+			QByteArray ba = QByteArray::fromRawData((const char *)jpegbuf.constData(), jpegbuf.size());
+			trackAlarmSource->produce("", QString::fromUtf8(jsondata), ba);
 		}
-	} else
-		AlgorithmGrpcServer::instance()->removeAlarm("track_alarm");
+	}
 
 	return 0;
 }

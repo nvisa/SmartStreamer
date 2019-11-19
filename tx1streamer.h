@@ -65,6 +65,7 @@ protected:
 	VideoScaler *rgb2yuv;
 	BufferQueue *jpegQueue;
 	QSharedPointer<MotionAlarmSource> motionAlarmSource;
+	QSharedPointer<TrackAlarmSource> trackAlarmSource;
 
 	bool secondStream;
 	bool thirdStream;
