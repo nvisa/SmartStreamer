@@ -13,6 +13,8 @@
 
 #include <memory>
 
+class MultipleAlarmSource;
+
 class AlarmSource
 {
 public:
@@ -21,16 +23,23 @@ public:
 	bool wait(int msecs);
 	virtual QString typeString() const = 0;
 	QHash<QString, QVariant> fetch();
+	bool check();
 	virtual void reset();
 
 protected:
+	virtual void fetching(QHash<QString, QVariant> &);
 	void push(const QHash<QString, QVariant> &h);
+
+	friend class MultipleAlarmSource;
+	void addListener(MultipleAlarmSource *s);
+	void removeListener(MultipleAlarmSource *s);
 
 	int queueLen;
 private:
 	QMutex m;
 	QWaitCondition wc;
 	QList<QHash<QString, QVariant>> queue;
+	QList<MultipleAlarmSource *> listeners;
 };
 
 class GenericAlarmSource : public AlarmSource
@@ -57,9 +66,15 @@ public:
 	void reset() override;
 
 protected:
+	void fetching(QHash<QString, QVariant> &h) override;
+
 	QString id;
+	QByteArray lastSnapshot;
+	QHash<QString, int> alarmCount;
 	QElapsedTimer lastAlarmElapsed;
 	QElapsedTimer noAlarmElapsed;
+	QElapsedTimer lastSnapshotTime;
+	QMutex motex;
 };
 
 class TrackAlarmSource : public AlarmSource
@@ -75,12 +90,19 @@ class MultipleAlarmSource
 {
 public:
 	MultipleAlarmSource();
+	~MultipleAlarmSource();
 
 	void addSource(QSharedPointer<AlarmSource> source);
 	QList<QSharedPointer<AlarmSource>> wait(int msecs = 1000);
 
 protected:
+	friend class AlarmSource;
+	void notify();
+
+protected:
 	QList<QSharedPointer<AlarmSource>> sources;
+	QWaitCondition wc;
+	QMutex mutex;
 };
 
 #endif // ALARMSOURCE_H
