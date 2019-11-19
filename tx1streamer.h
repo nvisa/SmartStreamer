@@ -42,7 +42,6 @@ protected:
 	int processBuffer(const RawBuffer &buf);
 	int recordIfNvrDead(const RawBuffer &buf);
 	void enableRGBPortion(bool en);
-	void clearMotionState();
 
 	virtual void addExtraRtpTransmitters(QList<RtpTransmitter *> &) {}
 	virtual BaseLmmPipeline * createYUV420Pipeline(QSize &res0) = 0;
@@ -90,13 +89,6 @@ private:
 		FACE_RUNNING,
 	};
 
-	struct MotionAlarmState {
-		QString uuid;
-		int frameNo;
-		bool last;
-	};
-
-	MotionAlarmState motionAlarmState;
 	AlgorithmState algos;
 	AlgorithmState algosPending;
 	bool motionExtraEnabled;

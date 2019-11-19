@@ -367,12 +367,6 @@ int TX1Streamer::notifyGrpcForAlarm(const RawBuffer &buf)
 
 int TX1Streamer::notifyGrpcForMotionAlarm(const RawBuffer &buf)
 {
-	if (motionAlarmState.uuid.isEmpty()) {
-		motionAlarmState.uuid = QUuid::createUuid().toString();
-		motionAlarmState.frameNo = 0;
-		motionAlarmState.last = false;
-	}
-
 	/* convert to json */
 	QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
 	QByteArray seiData = hash["motion_results"].toByteArray();
@@ -398,24 +392,7 @@ int TX1Streamer::notifyGrpcForMotionAlarm(const RawBuffer &buf)
 		motionAlarmSource->produce("", QString::fromUtf8(jsondata), ba);
 	else
 		motionAlarmSource->notifyNoMotion("", "", ba);
-#if 0
-	if (motionObjects.size() == 0) {
-		clearMotionState();
-		return 0;
-	}
-	QJsonObject obj;
-	obj["objects"] = motionObjects;
-	const QByteArray jsondata = QJsonDocument(obj).toJson();
-	AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "motion_json", QString::fromUtf8(jsondata));
-	AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "motion_id", motionAlarmState.uuid);
-	if (!motionAlarmState.frameNo) {
-		const RawBuffer &jpegbuf = jpegQueue->getLast();
-		QByteArray ba = QByteArray::fromRawData((const char *)jpegbuf.constData(), jpegbuf.size());
-		AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "snapshot_jpeg", QString::fromUtf8(ba.toBase64()));
-	} else
-		AlgorithmGrpcServer::instance()->removeAlarmField("motion_detection", "snapshot_jpeg");
-	motionAlarmState.frameNo++;
-#endif
+
 	return 0;
 }
 
@@ -438,19 +415,6 @@ int TX1Streamer::recordIfNvrDead(const RawBuffer &buf)
 void TX1Streamer::enableRGBPortion(bool en)
 {
 	yuv2rgb->setPassThru(!en);
-}
-
-void TX1Streamer::clearMotionState()
-{
-	if (!motionAlarmState.last) {
-		const RawBuffer &jpegbuf = jpegQueue->getLast();
-		QByteArray ba = QByteArray::fromRawData((const char *)jpegbuf.constData(), jpegbuf.size());
-		AlgorithmGrpcServer::instance()->setAlarmField("motion_detection", "snapshot_jpeg", QString::fromUtf8(ba.toBase64()));
-		motionAlarmState.last = true;
-	} else {
-		AlgorithmGrpcServer::instance()->removeAlarm("motion_detection");
-		motionAlarmState.uuid = "";
-	}
 }
 
 void TX1Streamer::checkAlgoState()
