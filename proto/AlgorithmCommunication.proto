@@ -129,10 +129,19 @@ message GeneralInfo {
 	CITInfo citInfo = 2;
 }
 
+message AlarmReqAdvancedParameters {
+    bool enabled = 1;
+    int32 suppressInterval = 2;
+    int32 alarmQueueLength = 3;
+    bool smartSnapshot = 4;
+    int32 smartSnapshotInterval = 5;
+}
+
 message AlarmReqInfo {
 	string filter = 1;
 	int32 channel = 2;
 	int32 intervalMsecs = 3;
+    AlarmReqAdvancedParameters advancedParams = 4;
 }
 
 message Alarm {
