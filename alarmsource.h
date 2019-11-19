@@ -33,6 +33,19 @@ private:
 	QList<QHash<QString, QVariant>> queue;
 };
 
+class GenericAlarmSource : public AlarmSource
+{
+public:
+	GenericAlarmSource(const QString &type);
+
+	QString typeString() const;
+	void produce(const QHash<QString, QVariant> &h);
+	void produce(const QString &key, const QVariant &value);
+
+protected:
+	QString type;
+};
+
 class MotionAlarmSource : public AlarmSource
 {
 public:

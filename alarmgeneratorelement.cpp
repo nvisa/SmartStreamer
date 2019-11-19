@@ -34,6 +34,7 @@ void alarmGeneratorElement::generateMotionStructure(unsigned char meta[])
 	strftime(buffer,sizeof(buffer),"%d-%m-%Y %H:%M:%S",timeInfo);
 	string str(buffer);
 
+	generatedAlarmInfo->tamper = meta[1];
 	generatedAlarmInfo->target.clear();
 	generatedAlarmInfo->date = str;
 	for (int i = 0; i < objectNo; ++i) {

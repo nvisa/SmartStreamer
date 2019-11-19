@@ -61,8 +61,10 @@ TX1Streamer::TX1Streamer(QObject *parent)
 	videoRecordingEnabled = false;
 	motionAlarmSource = QSharedPointer<MotionAlarmSource>(new MotionAlarmSource);
 	trackAlarmSource = QSharedPointer<TrackAlarmSource>(new TrackAlarmSource);
+	tamperAlarmSource = QSharedPointer<GenericAlarmSource>(new GenericAlarmSource("tamper_detection"));
 	AlgorithmGrpcServer::instance()->addAlarmSource(motionAlarmSource);
 	AlgorithmGrpcServer::instance()->addAlarmSource(trackAlarmSource);
+	AlgorithmGrpcServer::instance()->addAlarmSource(tamperAlarmSource);
 }
 
 int TX1Streamer::start()
@@ -334,8 +336,7 @@ int TX1Streamer::notifyGrpcForAlarm(const RawBuffer &buf)
 {
 	if (motion->getState() == BaseAlgorithmElement::PROCESS) {
 		notifyGrpcForMotionAlarm(buf);
-	} else
-		clearMotionState();
+	}
 
 	if (track->getState() == BaseAlgorithmElement::PROCESS) {
 		QHash<QString, QVariant> hash = RawBuffer::deserializeMetadata(buf.constPars()->metaData);
@@ -392,6 +393,9 @@ int TX1Streamer::notifyGrpcForMotionAlarm(const RawBuffer &buf)
 		motionAlarmSource->produce("", QString::fromUtf8(jsondata), ba);
 	else
 		motionAlarmSource->notifyNoMotion("", "", ba);
+
+	if (info->tamper)
+		tamperAlarmSource->produce("severity", "1.0");
 
 	return 0;
 }

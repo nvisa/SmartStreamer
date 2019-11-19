@@ -65,6 +65,7 @@ protected:
 	BufferQueue *jpegQueue;
 	QSharedPointer<MotionAlarmSource> motionAlarmSource;
 	QSharedPointer<TrackAlarmSource> trackAlarmSource;
+	QSharedPointer<GenericAlarmSource> tamperAlarmSource;
 
 	bool secondStream;
 	bool thirdStream;

@@ -148,3 +148,26 @@ void TrackAlarmSource::produce(const QString &uuid, const QString &json, const Q
 	h["snapshot_jpeg"] = QString::fromUtf8(snapshot.toBase64());
 	push(h);
 }
+
+GenericAlarmSource::GenericAlarmSource(const QString &type)
+	: AlarmSource()
+{
+	this->type = type;
+}
+
+QString GenericAlarmSource::typeString() const
+{
+	return type;
+}
+
+void GenericAlarmSource::produce(const QHash<QString, QVariant> &h)
+{
+	push(h);
+}
+
+void GenericAlarmSource::produce(const QString &key, const QVariant &value)
+{
+	QHash<QString, QVariant> h;
+	h.insert(key, value);
+	push(h);
+}

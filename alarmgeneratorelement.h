@@ -38,6 +38,7 @@ public:
 		bool alarmFlag;
 		vector<TargetStruct> target;
 		//byte frameOfAlarm8;
+		bool tamper;
 	};
 	alarmGeneratorElement();
 	void generateAlarmStructure(unsigned char meta[],ALARMTYPE type);

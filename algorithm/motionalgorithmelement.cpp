@@ -70,10 +70,6 @@ int MotionAlgorithmElement::processAlgo(const RawBuffer &buf)
 				  v.rgb, v.shadow, v.ill, v.debug, v.stabilization, v.privacy,
 				  control.meta, panTiltZoomRead, control.alarmFlag,
 				  control.initialize, control.sensitivity,control.classification, false);
-	if (control.meta[1] == 1) {
-		AlgorithmGrpcServer::instance()->setAlarmField("tamper_detection", "severity", QString("1.0"));
-	} else
-		AlgorithmGrpcServer::instance()->removeAlarm("tamper_detection");
 #endif // HAVE_TK1
 #endif // HAVE_VIA_MOTION
 
