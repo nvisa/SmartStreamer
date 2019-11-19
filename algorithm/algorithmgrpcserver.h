@@ -36,10 +36,6 @@ public:
 	void setStabilizationAlgorithmElement(StabilizationAlgorithmElement *el) {stabilizationEl = el;}
 	void setPanChangeAlgorithmElement(PanChangeAlgorithmElement *el) {panChangeEl = el;}
 	void setSnapshotElement(SnapshotElement *el) {snapshotEl = el;}
-	void removeAlarmField(const QString &alarm, const QString &key);
-	void setAlarmField(const QString &alarm, const QString &key, const QString &value);
-	void setAlarmField(const QString &alarm, const QString &key, const QVariant &value);
-	void removeAlarm(const QString &alarm);
 	void addAlarmSource(QSharedPointer<AlarmSource> source);
 	grpc::Status RunAlgorithm(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfRequests *response);
 	grpc::Status StopAlgorithm(grpc::ServerContext *context, const AlgorithmCommunication::RequestForAlgorithm *request, AlgorithmCommunication::ResponseOfRequests *response);
@@ -73,8 +69,6 @@ private:
 	PanChangeAlgorithmElement *panChangeEl;
 	SnapshotElement *snapshotEl;
 	AlgoManIface *manif;
-	QMutex mutex;
-	QHash<QString, QHash<QString, QVariant> > alarms;
 	QList<QSharedPointer<AlarmSource>> alarmSources;
 
 	// Service interface

@@ -128,30 +128,6 @@ AlgoManIface *AlgorithmGrpcServer::getAlgorithmManagementInterface()
 	return manif;
 }
 
-void AlgorithmGrpcServer::removeAlarmField(const QString &alarm, const QString &key)
-{
-	QMutexLocker ml(&mutex);
-	alarms[alarm].remove(key);
-}
-
-void AlgorithmGrpcServer::setAlarmField(const QString &alarm, const QString &key, const QString &value)
-{
-	QMutexLocker ml(&mutex);
-	alarms[alarm][key] = QVariant(value);
-}
-
-void AlgorithmGrpcServer::setAlarmField(const QString &alarm, const QString &key, const QVariant &value)
-{
-	QMutexLocker ml(&mutex);
-	alarms[alarm][key] = value;
-}
-
-void AlgorithmGrpcServer::removeAlarm(const QString &alarm)
-{
-	QMutexLocker ml(&mutex);
-	alarms.remove(alarm);
-}
-
 void AlgorithmGrpcServer::addAlarmSource(QSharedPointer<AlarmSource> source)
 {
 	alarmSources << source;
@@ -590,7 +566,6 @@ grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc:
 	MultipleAlarmSource mals;
 	for (int i = 0; i < alarmSources.size(); i++)
 		mals.addSource(alarmSources[i]);
-	bool useMals = true;
 
 	InDeviceTest *idt = ApplicationInfo::instance()->getIDT();
 	while (1) {
@@ -602,8 +577,6 @@ grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc:
 
 		std::string filter = req.filter();
 		int32_t interval = req.intervalmsecs();
-		if (!useMals)
-			usleep(interval * 1000);
 		res.set_ts(QDateTime::currentMSecsSinceEpoch());
 
 		/* JIT alarms still don't use alarmsource */
@@ -631,56 +604,26 @@ grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc:
 			}
 		}
 
-		if (!useMals) {
-			mutex.lock();
-			QHashIterator<QString, QHash<QString, QVariant> > hi(alarms);
-			while (hi.hasNext()) {
-				hi.next();
-				const QString name = hi.key();
-				AlgorithmCommunication::Alarm *alarm = res.add_alarms();
-				alarm->set_type(name.toStdString());
-				const QHash<QString, QVariant> &list = hi.value();
-				QHashIterator<QString, QVariant> hi2(list);
-				while (hi2.hasNext()) {
-					hi2.next();
-					const QString key = hi2.key();
-					const QVariant value = hi2.value();
-					alarm->add_key(key.toStdString());
-					if (value.canConvert(QVariant::ByteArray)) {
-						const QByteArray &ba = value.toByteArray();
-						std::string str(ba.constData(), ba.size());
-						alarm->add_value(str);
-					} else if (value.canConvert(QVariant::String)) {
-						alarm->add_value(value.toString().toStdString());
-					} else {
-						alarm->add_value("N/A");
-					}
-				}
-			}
-			mutex.unlock();
-		} else {
-			auto list = mals.wait(interval);
-			for (int i = 0; i < list.size(); i++) {
-				const auto source = list[i];
-				AlgorithmCommunication::Alarm *alarm = res.add_alarms();
-				alarm->set_type(source->typeString().toStdString());
-				const QHash<QString, QVariant> &list = source->fields();
-				source->clearFields();
-				QHashIterator<QString, QVariant> hi2(list);
-				while (hi2.hasNext()) {
-					hi2.next();
-					const QString key = hi2.key();
-					const QVariant value = hi2.value();
-					alarm->add_key(key.toStdString());
-					if (value.canConvert(QVariant::ByteArray)) {
-						const QByteArray &ba = value.toByteArray();
-						std::string str(ba.constData(), ba.size());
-						alarm->add_value(str);
-					} else if (value.canConvert(QVariant::String)) {
-						alarm->add_value(value.toString().toStdString());
-					} else {
-						alarm->add_value("N/A");
-					}
+		auto list = mals.wait(interval);
+		for (int i = 0; i < list.size(); i++) {
+			const auto source = list[i];
+			AlgorithmCommunication::Alarm *alarm = res.add_alarms();
+			alarm->set_type(source->typeString().toStdString());
+			const QHash<QString, QVariant> &list = source->fetch();
+			QHashIterator<QString, QVariant> hi2(list);
+			while (hi2.hasNext()) {
+				hi2.next();
+				const QString key = hi2.key();
+				const QVariant value = hi2.value();
+				alarm->add_key(key.toStdString());
+				if (value.canConvert(QVariant::ByteArray)) {
+					const QByteArray &ba = value.toByteArray();
+					std::string str(ba.constData(), ba.size());
+					alarm->add_value(str);
+				} else if (value.canConvert(QVariant::String)) {
+					alarm->add_value(value.toString().toStdString());
+				} else {
+					alarm->add_value("N/A");
 				}
 			}
 		}
