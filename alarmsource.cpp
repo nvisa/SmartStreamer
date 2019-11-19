@@ -11,7 +11,7 @@
 
 AlarmSource::AlarmSource()
 {
-
+	queueLen = 1;
 }
 
 bool AlarmSource::wait(int msecs)
@@ -22,35 +22,27 @@ bool AlarmSource::wait(int msecs)
 	return v;
 }
 
-QHash<QString, QVariant> AlarmSource::fields()
+QHash<QString, QVariant> AlarmSource::fetch()
 {
 	QMutexLocker ml(&m);
-	return fieldsHash;
-}
-
-void AlarmSource::clearFields()
-{
-	QMutexLocker ml(&m);
-	fieldsHash.clear();
+	if (queue.size())
+		return queue.takeFirst();
+	return QHash<QString, QVariant>();
 }
 
 void AlarmSource::reset()
 {
-	clearFields();
+	QMutexLocker ml(&m);
+	queue.clear();
 }
 
-void AlarmSource::notify()
-{
-	wc.wakeAll();
-}
-
-void AlarmSource::setFields(const QHash<QString, QVariant> &h)
+void AlarmSource::push(const QHash<QString, QVariant> &h)
 {
 	QMutexLocker ml(&m);
-	if (fieldsHash.size()) {
-		lDebug("oops! overwriting fields!");
-	}
-	fieldsHash = h;
+	queue << h;
+	if (queue.size() > queueLen)
+		queue.removeFirst();
+	wc.wakeAll();
 }
 
 MotionAlarmSource::MotionAlarmSource()
@@ -85,8 +77,7 @@ void MotionAlarmSource::produce(const QString &uuid, const QString &json, const 
 	h["motion_json"] = json;
 	if (first || last)
 		h["snapshot_jpeg"] = QString::fromUtf8(snapshot.toBase64());
-	setFields(h);
-	notify();
+	push(h);
 	noAlarmElapsed.restart();
 }
 
@@ -155,6 +146,5 @@ void TrackAlarmSource::produce(const QString &uuid, const QString &json, const Q
 	h["track_id"] = uuid;
 	h["track_json"] = json;
 	h["snapshot_jpeg"] = QString::fromUtf8(snapshot.toBase64());
-	setFields(h);
-	notify();
+	push(h);
 }

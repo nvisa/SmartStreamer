@@ -19,20 +19,18 @@ public:
 	AlarmSource();
 
 	bool wait(int msecs);
-
 	virtual QString typeString() const = 0;
-	QHash<QString, QVariant> fields();
-	void clearFields();
+	QHash<QString, QVariant> fetch();
 	virtual void reset();
 
 protected:
-	void notify();
-	void setFields(const QHash<QString, QVariant> &h);
+	void push(const QHash<QString, QVariant> &h);
 
+	int queueLen;
 private:
 	QMutex m;
 	QWaitCondition wc;
-	QHash<QString, QVariant> fieldsHash;
+	QList<QHash<QString, QVariant>> queue;
 };
 
 class MotionAlarmSource : public AlarmSource
