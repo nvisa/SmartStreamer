@@ -140,7 +140,8 @@ void MotionAlarmSource::reset()
 void MotionAlarmSource::fetching(QHash<QString, QVariant> &h)
 {
 	QString id = h["motion_id"].toString();
-	if (alarmCount[id] == 0) {
+	if (alarmCount[id] == 0 ||
+			lastSnapshotTime.elapsed() > advanced.smartsnapshotinterval()) {
 		/* first time fetching this alarm, put snapshot */
 		motex.lock();
 		h["snapshot_jpeg"] = QString::fromUtf8(lastSnapshot.toBase64());
