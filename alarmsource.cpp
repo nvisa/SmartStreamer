@@ -74,6 +74,19 @@ void AlarmSource::push(const QHash<QString, QVariant> &h)
 		listeners[i]->notify();
 }
 
+void AlarmSource::addSnapshotToAlarm(QHash<QString, QVariant> &h, const QString &id)
+{
+	if (alarmCount[id] == 0 ||
+			lastSnapshotTime.elapsed() > advanced.smartsnapshotinterval()) {
+		/* first time fetching this alarm, put snapshot */
+		motex.lock();
+		h["snapshot_jpeg"] = QString::fromUtf8(lastSnapshot.toBase64());
+		lastSnapshotTime.restart();
+		motex.unlock();
+	}
+	alarmCount[id]++;
+}
+
 void AlarmSource::addListener(MultipleAlarmSource *s)
 {
 	QMutexLocker ml(&m);
@@ -139,16 +152,7 @@ void MotionAlarmSource::reset()
 
 void MotionAlarmSource::fetching(QHash<QString, QVariant> &h)
 {
-	QString id = h["motion_id"].toString();
-	if (alarmCount[id] == 0 ||
-			lastSnapshotTime.elapsed() > advanced.smartsnapshotinterval()) {
-		/* first time fetching this alarm, put snapshot */
-		motex.lock();
-		h["snapshot_jpeg"] = QString::fromUtf8(lastSnapshot.toBase64());
-		lastSnapshotTime.restart();
-		motex.unlock();
-	}
-	alarmCount[id]++;
+	addSnapshotToAlarm(h, h["motion_id"].toString());
 }
 
 MultipleAlarmSource::MultipleAlarmSource()

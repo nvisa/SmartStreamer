@@ -32,12 +32,17 @@ public:
 protected:
 	virtual void fetching(QHash<QString, QVariant> &);
 	void push(const QHash<QString, QVariant> &h);
+	void addSnapshotToAlarm(QHash<QString, QVariant> &h, const QString &id);
 
 	friend class MultipleAlarmSource;
 	void addListener(MultipleAlarmSource *s);
 	void removeListener(MultipleAlarmSource *s);
 
 	AlgorithmCommunication::AlarmReqAdvancedParameters advanced;
+	QByteArray lastSnapshot;
+	QHash<QString, int> alarmCount;
+	QElapsedTimer lastSnapshotTime;
+	QMutex motex;
 private:
 	QMutex m;
 	QWaitCondition wc;
@@ -72,12 +77,8 @@ protected:
 	void fetching(QHash<QString, QVariant> &h) override;
 
 	QString id;
-	QByteArray lastSnapshot;
-	QHash<QString, int> alarmCount;
 	QElapsedTimer lastAlarmElapsed;
 	QElapsedTimer noAlarmElapsed;
-	QElapsedTimer lastSnapshotTime;
-	QMutex motex;
 };
 
 class TrackAlarmSource : public AlarmSource
