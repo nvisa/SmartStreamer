@@ -189,6 +189,19 @@ QList<QSharedPointer<AlarmSource> > MultipleAlarmSource::wait(int msecs)
 	return active;
 }
 
+int MultipleAlarmSource::count()
+{
+	return sources.size();
+}
+
+bool MultipleAlarmSource::contains(const QString &type)
+{
+	for(int i = 0; i < sources.size(); i++)
+		if (sources[i]->typeString() == type)
+			return true;
+	return false;
+}
+
 void MultipleAlarmSource::notify()
 {
 	wc.wakeOne();

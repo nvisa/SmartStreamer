@@ -98,6 +98,8 @@ public:
 
 	void addSource(QSharedPointer<AlarmSource> source);
 	QList<QSharedPointer<AlarmSource>> wait(int msecs = 1000);
+	int count();
+	bool contains(const QString &type);
 
 protected:
 	friend class AlarmSource;
