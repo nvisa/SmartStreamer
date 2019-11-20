@@ -224,7 +224,17 @@ void TrackAlarmSource::produce(const QString &uuid, const QString &json, const Q
 	QHash<QString, QVariant> h;
 	h["track_id"] = uuid;
 	h["track_json"] = json;
+	motex.lock();
+	lastSnapshot = snapshot;
+	motex.unlock();
 	push(h);
+}
+
+void TrackAlarmSource::fetching(QHash<QString, QVariant> &h)
+{
+	QString id = h["track_id"].toString();
+	if (!id.isEmpty())
+		addSnapshotToAlarm(h, id);
 }
 
 GenericAlarmSource::GenericAlarmSource(const QString &type)

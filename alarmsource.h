@@ -88,6 +88,9 @@ public:
 
 	virtual QString typeString() const;
 	void produce(const QString &uuid, const QString &json, const QByteArray &snapshot);
+
+protected:
+	void fetching(QHash<QString, QVariant> &h) override;
 };
 
 class MultipleAlarmSource
