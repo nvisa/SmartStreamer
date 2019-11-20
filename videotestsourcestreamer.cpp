@@ -9,6 +9,8 @@
 #include <lmm/multibuffersource.h>
 #include <lmm/tx1/tx1jpegencoder.h>
 #include <lmm/tx1/tx1videoencoder.h>
+#include <lmm/tx1/tx1videodecoder.h>
+#include <lmm/ffmpeg/baselmmdemux.h>
 #include <lmm/pipeline/functionpipeelement.h>
 
 #include <QTimer>
@@ -28,6 +30,12 @@ public:
 	QJsonObject config;
 };
 
+static RawBuffer inspect(const RawBuffer &buf)
+{
+	qDebug() << buf.getMimeType() << buf.size();
+	return buf;
+}
+
 VideoTestSourceStreamer::VideoTestSourceStreamer(const QJsonObject &config, QObject *parent)
 	: TX1Streamer(parent)
 {
@@ -42,9 +50,11 @@ VideoTestSourceStreamer::VideoTestSourceStreamer(const QJsonObject &config, QObj
 
 int VideoTestSourceStreamer::start()
 {
-	QTimer *timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), SLOT(frameTimeout()));
-	timer->start(40);
+	if (!priv->config.contains("srcfile")) {
+		QTimer *timer = new QTimer(this);
+		connect(timer, SIGNAL(timeout()), SLOT(frameTimeout()));
+		timer->start(40);
+	}
 	return TX1Streamer::start();
 }
 
@@ -86,6 +96,21 @@ BaseLmmPipeline *VideoTestSourceStreamer::createYUV420Pipeline(QSize &res0)
 	to420->setMode(1);
 
 	BaseLmmPipeline *p = addPipeline();
+
+	if (priv->config.contains("srcfile")) {
+		QString srcurl = priv->config["srcfile"].toString();
+		mDebug("Playing video from file %s", qPrintable(srcurl));
+		BaseLmmDemux *filesrc = new BaseLmmDemux;
+		filesrc->setAudioDemuxing(false);
+		filesrc->setLoopFile(true);
+		filesrc->setSource(srcurl);
+		TX1VideoDecoder *dec = new TX1VideoDecoder;
+		p->append(filesrc);
+		p->append(dec);
+		//p->append(new FunctionPipeElement(inspect));
+		filesrc->getOutputQueue(0)->setRateLimitInterval(0);
+	}
+
 	p->append(to420);
 	return p;
 }
