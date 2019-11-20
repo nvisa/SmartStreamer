@@ -5,6 +5,8 @@
 #include <algorithm/algorithmgrpcserver.h>
 #include <orioncommunicationserver.h>
 #include <lmm/rtp/rtpreceiver.h>
+#include <lmm/rtsp/rtspclient.h>
+#include <lmm/ffmpeg/baselmmdemux.h>
 
 #include <lmm/bufferqueue.h>
 
@@ -18,6 +20,7 @@ public:
 	QString rtspUser;
 	QString rtspPass;
 	bool orionComm;
+	QString receiverType;
 };
 
 class SeiInserter;
@@ -43,7 +46,10 @@ protected:
 	SeiInserter *sei;
 	BufferQueue *queue;
 	alarmGeneratorElement *algen;
+	BaseLmmDemux *rtpmux;
+	RtspClient *rtsp;
 
+	void createReceiverEl(QString type);
 };
 
 #endif // TK1STREAMER_H

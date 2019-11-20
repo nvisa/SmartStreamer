@@ -23,14 +23,42 @@ TK1Streamer::TK1Streamer(const QJsonObject &obj, QObject *parent)
 		priv->url = obj.value("url").toString();
 		priv->fps = obj.value("fps").toDouble();
 		priv->orionComm = obj.value("orion_api").toBool();
+		priv->receiverType = obj.value("receiver_type").toString();
 	}
-
+	rtp = NULL;
+	rtsp = NULL;
+	rtpmux = NULL;
 	algen = NULL;
+	queue = new BufferQueue();
 	AlgorithmGrpcServer::instance()->setAlgorithmManagementInterface(this);
+}
+
+void TK1Streamer::createReceiverEl(QString type)
+{
+	if (type.isEmpty())
+		type = "demux";
+	mDebug("selecting receiver type '%s'", qPrintable(type));
+	if (type == "demux") {
+		rtpmux = new BaseLmmDemux;
+		if (priv->rtspUser.isEmpty())
+			rtpmux->setSource(priv->url);
+		else {
+			rtpmux->setSource(QString("rtsp://%1:%2@%3")
+					.arg(priv->rtspUser)
+					.arg(priv->rtspPass)
+					.arg(priv->url.split("//").last()));
+		}
+		rtpmux->suppressDebugMessages();
+		//rtpmux->setLoopFile(true);
+	} else if (type == "rtp") {
+		rtp = new RtpReceiver(this);
+		rtsp = StreamerCommon::createRtspClient(rtp, priv->url, priv->rtspUser, priv->rtspPass);
+	}
 }
 
 int TK1Streamer::start()
 {
+	createReceiverEl(priv->receiverType);
 	BaseLmmPipeline *p1 = generatePipeline();
 	if (p1) {
 		finishPipeline(p1);
@@ -57,8 +85,7 @@ void TK1Streamer::finishPipeline(BaseLmmPipeline *p1)
 	p1->append(panaroma);
 	p1->end();
 
-	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(0);
-	rtpout->forwardRtpTs(true); // check it on flir
+	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(priv->fps);
 	StreamerCommon::createRtspServer(rtpout);
 
 	BaseLmmPipeline *p2 = addPipeline();
