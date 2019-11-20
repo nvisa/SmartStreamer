@@ -359,7 +359,8 @@ int TX1Streamer::notifyGrpcForAlarm(const RawBuffer &buf)
 			const QByteArray jsondata = QJsonDocument(obj).toJson();
 			const RawBuffer &jpegbuf = jpegQueue->getLast();
 			QByteArray ba = QByteArray::fromRawData((const char *)jpegbuf.constData(), jpegbuf.size());
-			trackAlarmSource->produce("", QString::fromUtf8(jsondata), ba);
+			trackAlarmSource->produce(((TrackAlgorithmElement *)(track))->getTrackID(),
+									  QString::fromUtf8(jsondata), ba);
 		}
 	}
 

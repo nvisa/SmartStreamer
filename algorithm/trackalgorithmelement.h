@@ -57,6 +57,7 @@ public:
 	float *getTrackObjInfo() {return objProp;}
 	void setTiltReversing(bool on) { reverseTilt = on; }
 	virtual QString getTypeString();
+	QString getTrackID();
 
 	void setTrackStyle(int s) { control.style = (TrackStyle)s; }
 	int ZoomLevelNo;
@@ -74,6 +75,7 @@ protected:
 	float objProp[4];
 	bool reverseTilt;
 	alarmGeneratorElement *algen;
+	QString trackId;
 };
 
 #endif // TRACKALGORITHMELEMENT_H

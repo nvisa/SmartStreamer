@@ -9,6 +9,8 @@
 #include <ecl/ptzp/ptzphead.h>
 #include <ecl/ptzp/ptzpdriver.h>
 
+#include <QUuid>
+
 TrackAlgorithmElement::TrackAlgorithmElement(QObject *parent)
 	: BaseAlgorithmElement(parent)
 {
@@ -81,6 +83,7 @@ int TrackAlgorithmElement::init()
 	v.shadow = 0;
 	v.stabilization = 0;
 	control.initialize = 1;
+	trackId = QUuid::createUuid().toString();
 	return BaseAlgorithmElement::init();
 }
 
@@ -328,5 +331,10 @@ int TrackAlgorithmElement::setTrackObjInfo(float x, float y, float w, float h)
 QString TrackAlgorithmElement::getTypeString()
 {
 	return "track";
+}
+
+QString TrackAlgorithmElement::getTrackID()
+{
+	return trackId;
 }
 
