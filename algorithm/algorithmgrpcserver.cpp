@@ -564,8 +564,6 @@ BaseAlgorithmElement* AlgorithmGrpcServer::algorithmElementManager(int chn)
 grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc::ServerReaderWriter<AlgorithmCommunication::Alarms, AlgorithmCommunication::AlarmReqInfo> *stream)
 {
 	MultipleAlarmSource mals;
-	for (int i = 0; i < alarmSources.size(); i++)
-		mals.addSource(alarmSources[i]);
 
 	InDeviceTest *idt = ApplicationInfo::instance()->getIDT();
 	while (1) {
@@ -576,6 +574,17 @@ grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc:
 			return Status::OK;
 
 		std::string filter = req.filter();
+		if (mals.count() == 0) {
+			if (!filter.size()) {
+				for (int i = 0; i < alarmSources.size(); i++)
+					mals.addSource(alarmSources[i]);
+			} else {
+				QStringList sources = QString::fromStdString(filter).split(";");
+				for (int i = 0; i < alarmSources.size(); i++)
+					if (sources.contains(alarmSources[i]->typeString()))
+						mals.addSource(alarmSources[i]);
+			}
+		}
 		auto pars = req.advancedparams();
 		for (int i = 0; i < alarmSources.size(); i++)
 			alarmSources[i]->setParameters(pars);
@@ -583,7 +592,7 @@ grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc:
 		res.set_ts(QDateTime::currentMSecsSinceEpoch());
 
 		/* JIT alarms still don't use alarmsource */
-		if (idt) {
+		if (idt && mals.contains("cit")) {
 			QJsonObject cit = idt->getLastCheckResults();
 			if (cit.contains("faults")) {
 				AlgorithmCommunication::Alarm *alarm = res.add_alarms();
