@@ -1,7 +1,7 @@
 #include "aryastreamer.h"
-#include "streamercommon.h"
 
 #include <lmm/debug.h>
+#include <lmm/bufferqueue.h>
 #include <lmm/baselmmpipeline.h>
 #include <lmm/rtsp/rtspclient.h>
 
@@ -16,14 +16,10 @@ BaseLmmPipeline * AryaStreamer::generatePipeline()
 	if (rtsp)
 		rtsp->setMoxaHacks(true);
 
-	FFmpegDecoder *dec = StreamerCommon::createFFmpegDecoder(priv->width, priv->height);
 	BaseLmmPipeline *p1 = addPipeline();
-	if (rtpmux)
-		p1->append(rtpmux);
-	else
-		p1->append(rtp);
+	p1->append(rtp);
 	p1->append(queue);
-	p1->append(dec);
+	p1->append(decoder);
 	return p1;
 }
 

@@ -4,9 +4,12 @@
 #include "streamercommon.h"
 #include "applicationinfo.h"
 #include "alarmgeneratorelement.h"
+#include "orioncommunicationserver.h"
 #include "algorithm/basealgorithmelement.h"
 
 #include <lmm/debug.h>
+#include <lmm/bufferqueue.h>
+#include <lmm/rtp/rtpreceiver.h>
 #include <lmm/baselmmpipeline.h>
 #include <lmm/rtp/rtptransmitter.h>
 #include <lmm/pipeline/functionpipeelement.h>
@@ -24,10 +27,9 @@ TK1Streamer::TK1Streamer(const QJsonObject &obj, QObject *parent)
 		priv->fps = obj.value("fps").toDouble();
 		priv->orionComm = obj.value("orion_api").toBool();
 		priv->receiverType = obj.value("receiver_type").toString();
+		priv->decoderType = obj.value("decoder_type").toString();
 	}
-	rtp = NULL;
 	rtsp = NULL;
-	rtpmux = NULL;
 	algen = NULL;
 	queue = new BufferQueue();
 	AlgorithmGrpcServer::instance()->setAlgorithmManagementInterface(this);
@@ -39,26 +41,29 @@ void TK1Streamer::createReceiverEl(QString type)
 		type = "demux";
 	mDebug("selecting receiver type '%s'", qPrintable(type));
 	if (type == "demux") {
-		rtpmux = new BaseLmmDemux;
-		if (priv->rtspUser.isEmpty())
-			rtpmux->setSource(priv->url);
-		else {
-			rtpmux->setSource(QString("rtsp://%1:%2@%3")
-					.arg(priv->rtspUser)
-					.arg(priv->rtspPass)
-					.arg(priv->url.split("//").last()));
-		}
-		rtpmux->suppressDebugMessages();
-		//rtpmux->setLoopFile(true);
+		rtp = StreamerCommon::createRtspDemux(priv->url, priv->rtspUser, priv->rtspPass, "tcp");
 	} else if (type == "rtp") {
 		rtp = new RtpReceiver(this);
-		rtsp = StreamerCommon::createRtspClient(rtp, priv->url, priv->rtspUser, priv->rtspPass);
+		rtsp = StreamerCommon::createRtspClient(((RtpReceiver*)rtp), priv->url, priv->rtspUser, priv->rtspPass);
+	}
+}
+
+void TK1Streamer::createDecoderEl(QString type)
+{
+	if (type.isEmpty())
+		type = "hw";
+	mDebug("selecting decoder element '%s'", qPrintable(type));
+	if (type.contains("soft")) {
+		decoder = StreamerCommon::createFFmpegDecoder(priv->width, priv->height);
+	} else if (type.contains("hw")) {
+		decoder = StreamerCommon::createOmxDecoder(priv->fps);
 	}
 }
 
 int TK1Streamer::start()
 {
 	createReceiverEl(priv->receiverType);
+	createDecoderEl(priv->decoderType);
 	BaseLmmPipeline *p1 = generatePipeline();
 	if (p1) {
 		finishPipeline(p1);
@@ -85,7 +90,13 @@ void TK1Streamer::finishPipeline(BaseLmmPipeline *p1)
 	p1->append(panaroma);
 	p1->end();
 
-	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(priv->fps);
+	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(0);
+	if (priv->receiverType == "rtp") {
+		rtpout->forwardRtpTs(true);
+	} else if (priv->receiverType == "demux") {
+		rtpout->setUseAbsoluteTimestamp(false);
+		rtpout->setFrameRate(priv->fps);
+	}
 	StreamerCommon::createRtspServer(rtpout);
 
 	BaseLmmPipeline *p2 = addPipeline();

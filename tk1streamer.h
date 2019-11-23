@@ -2,13 +2,7 @@
 #define TK1STREAMER_H
 
 #include <lmm/players/basestreamer.h>
-#include <algorithm/algorithmgrpcserver.h>
-#include <orioncommunicationserver.h>
-#include <lmm/rtp/rtpreceiver.h>
-#include <lmm/rtsp/rtspclient.h>
-#include <lmm/ffmpeg/baselmmdemux.h>
-
-#include <lmm/bufferqueue.h>
+#include "algorithm/algorithmgrpcserver.h"
 
 class TK1StreamerPriv
 {
@@ -21,10 +15,14 @@ public:
 	QString rtspPass;
 	bool orionComm;
 	QString receiverType;
+	QString decoderType;
 };
 
 class SeiInserter;
 class alarmGeneratorElement;
+class RtspClient;
+class RtpReceiver;
+class BufferQueue;
 class TK1Streamer: public BaseStreamer, public AlgoManIface
 {
 	Q_OBJECT
@@ -39,17 +37,19 @@ protected:
 	int PerformSEI(const RawBuffer &buf);
 	void finishPipeline(BaseLmmPipeline *p1);
 	int processBuffer(const RawBuffer &buf);
+	void createDecoderEl(QString type);
+	void createReceiverEl(QString type);
+protected:
+	RtspClient *rtsp;
+	BufferQueue *queue;
+	BaseLmmElement *rtp;
+	BaseLmmElement *decoder;
+	alarmGeneratorElement *algen;
+private:
+	SeiInserter *sei;
 	TK1StreamerPriv *priv;
 	BaseAlgorithmElement *motion;
 	BaseAlgorithmElement *panaroma;
-	RtpReceiver *rtp;
-	SeiInserter *sei;
-	BufferQueue *queue;
-	alarmGeneratorElement *algen;
-	BaseLmmDemux *rtpmux;
-	RtspClient *rtsp;
-
-	void createReceiverEl(QString type);
 };
 
 #endif // TK1STREAMER_H

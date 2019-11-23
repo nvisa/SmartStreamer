@@ -153,6 +153,39 @@ FFmpegDecoder *StreamerCommon::createFFmpegDecoder(int w, int h, int count)
 	return dec;
 }
 
+#if HAVE_TK1
+TK1OmxPipeline *StreamerCommon::createOmxDecoder(float fps)
+{
+	TK1OmxPipeline * dec = new TK1OmxPipeline();
+	dec->setPipelineDescription("appsrc name=source ! h264parse ! omxh264dec ! appsink name=sink");
+	dec->getSourceCaps(0)->setMime("video/x-h264,stream-format=byte-stream");
+	dec->doTimestamp(true, 1000000 / fps);
+	return dec;
+}
+#endif
+
+BaseLmmDemux *StreamerCommon::createRtspDemux(const QString &url, const QString &user, const QString &pass, const QString &rtspTransport)
+{
+	QString link = url;
+	if (!url.startsWith("rtsp://"))
+		link = QString("rtsp://%1").arg(url);
+	BaseLmmDemux *rtpmux = new BaseLmmDemux;
+	if (user.isEmpty())
+		rtpmux->setSource(link);
+	else {
+		rtpmux->setSource(QString("rtsp://%1:%2@%3")
+				.arg(user)
+				.arg(pass)
+				.arg(link.split("//").last()));
+	}
+	rtpmux->suppressDebugMessages();
+	if (!rtspTransport.isEmpty()) {
+		rtpmux->setParameter("rtsp_transport", rtspTransport);
+	}
+	//rtpmux->setLoopFile(true);
+	return rtpmux;
+}
+
 #if HAVE_TX1
 BaseLmmElement *StreamerCommon::createOverlay()
 {
