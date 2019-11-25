@@ -11,6 +11,34 @@
 #include <QProcess>
 #include <QBuffer>
 #include <QImage>
+#include <QFile>
+
+static int refreshPanConfigs(float fov)
+{
+	QFile f("/etc/smartstreamer/tk1/pan_params.txt");
+	if (!f.open(QIODevice::ReadOnly))
+		return -1;
+	QString data = f.readAll();
+	f.close();
+	if (data.isEmpty())
+		return -2;
+	QStringList configs;
+	foreach (QString line, data.split("\n")) {
+		if (line.isEmpty())
+			continue;
+		if (line.contains(" "))
+			line = line.split(" ").first();
+		if (line.contains("//"))
+			line.remove("//");
+		configs << line;
+	}
+	configs.replace(1, QString("%1").arg(fov));
+	if (f.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) {
+		f.write(configs.join("\n").toLatin1());
+		f.close();
+	}
+	return 0;
+}
 
 PanaromaAlgorithmElement::PanaromaAlgorithmElement(QObject *parent)
 	: BaseAlgorithmElement(parent)
@@ -107,7 +135,10 @@ int PanaromaAlgorithmElement::resetPosition()
 	else
 		time = (pan - 0) * 0.04 + 1;
 	pt->panTiltGoPos(0, 0);
-	sleep(time + 6); // zoom position reset.
+	sleep(time + 15); // zoom position reset.
+	int ret = refreshPanConfigs(ApplicationInfo::instance()->getPtzpDriver(0)->getHead(1)->getAngle());
+	if (ret < 0)
+		mDebug("Fov value can't write to 'pan_params.txt'");
 	return 0;
 }
 

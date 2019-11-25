@@ -138,7 +138,7 @@ grpc::Status OrionCommunicationServer::GotoPanaromaPixel(grpc::ServerContext *co
 	float tiltS = panaromaEl->getPanaromaControl().started.tilt;
 	float fovValue = panaromaEl->getPanaromaControl().fovValue;
 
-	float angle = (request->x() * (360 + fovValue / 2.0) + 10);
+	float angle = (request->x() * (360) + 10);
 	if(angle > 360)
 		angle -= 360;
 	if(angle < 0)
