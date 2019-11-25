@@ -16,6 +16,7 @@ public:
 	bool orionComm;
 	QString receiverType;
 	QString decoderType;
+	QString rtspTransport;
 };
 
 class SeiInserter;

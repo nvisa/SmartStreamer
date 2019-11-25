@@ -28,6 +28,7 @@ TK1Streamer::TK1Streamer(const QJsonObject &obj, QObject *parent)
 		priv->orionComm = obj.value("orion_api").toBool();
 		priv->receiverType = obj.value("receiver_type").toString();
 		priv->decoderType = obj.value("decoder_type").toString();
+		priv->rtspTransport = obj.value("rtsp_transport").toString();
 	}
 	rtsp = NULL;
 	algen = NULL;
@@ -41,7 +42,7 @@ void TK1Streamer::createReceiverEl(QString type)
 		type = "demux";
 	mDebug("selecting receiver type '%s'", qPrintable(type));
 	if (type == "demux") {
-		rtp = StreamerCommon::createRtspDemux(priv->url, priv->rtspUser, priv->rtspPass, "tcp");
+		rtp = StreamerCommon::createRtspDemux(priv->url, priv->rtspUser, priv->rtspPass, priv->rtspTransport);
 	} else if (type == "rtp") {
 		rtp = new RtpReceiver(this);
 		rtsp = StreamerCommon::createRtspClient(((RtpReceiver*)rtp), priv->url, priv->rtspUser, priv->rtspPass);
