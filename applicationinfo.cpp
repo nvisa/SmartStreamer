@@ -141,8 +141,10 @@ int ApplicationInfo::startPtzpDriver()
 			break;
 		case MGEO_SWIR:
 			driver = new SwirDriver;
+			break;
 		case HTR_SWIR:
 			driver = new HtrSwirDriver;
+			break;
 		}
 		if (driver) {
 			fDebug("Starting PTZP driver for %s", qPrintable(obj["type"].toString()));
