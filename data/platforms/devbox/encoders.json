@@ -1,0 +1,23 @@
+[
+	{
+		"bitrate": 5000,
+		"frameRate": 25,
+		"shaping": {
+			"enabled": true,
+			"interval": 10,
+			"bitrate": 10000000
+		}
+	},
+	{
+		"bitrate": 2250,
+		"frameRate": 25,
+		"resolution": "1280x960"
+	},
+	{
+		"bitrate": 600
+	},
+	{
+		"bitrate": 5000,
+		"resolution": "224x224"
+	}
+]
