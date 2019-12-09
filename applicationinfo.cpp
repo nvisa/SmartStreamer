@@ -10,6 +10,7 @@
 #include "videotestsourcestreamer.h"
 #include "moxak1streamer.h"
 #include "streamercommon.h"
+#include "usersettings.h"
 
 #include "algorithm/motionalgorithmelement.h"
 #include "algorithm/stabilizationalgorithmelement.h"
@@ -397,6 +398,7 @@ qint64 ApplicationInfo::getLifeTime()
 
 ApplicationInfo::ApplicationInfo()
 {
+	UserSettings::instance().setPlatform(getAselsanPlatform());
 	lifetime = new LifeTimeTracker("/etc/system.lifetime");
 	idt = nullptr;
 }

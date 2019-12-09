@@ -1,4 +1,5 @@
 #include "streamercommon.h"
+#include "usersettings.h"
 
 #include <lmm/textoverlay.h>
 #include <lmm/rtsp/rtspclient.h>
@@ -43,12 +44,12 @@ StreamerCommon::StreamerCommon()
 
 QJsonDocument StreamerCommon::readSettingsJSON(const QString &filename)
 {
-	return readJson(filename);
+	return UserSettings::instance().GetOverlayed(filename, readJson(filename));
 }
 
 int StreamerCommon::writeSettingsJSON(const QString &filename, const QJsonDocument &doc)
 {
-	return saveJson(filename, doc);
+	return UserSettings::instance().WriteOverlay(filename, doc);
 }
 
 int StreamerCommon::detectRtspPort()
