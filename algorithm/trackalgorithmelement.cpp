@@ -15,7 +15,7 @@ TrackAlgorithmElement::TrackAlgorithmElement(QObject *parent)
 	: BaseAlgorithmElement(parent)
 {
 	algen = new alarmGeneratorElement;
-	if (ApplicationInfo::instance()->KAYI_SAHINGOZ)
+	if (ApplicationInfo::instance()->getApplicationPlatform() == ApplicationInfo::KAYI_SAHINGOZ)
 		reverseTilt = true;
 	else
 		reverseTilt = false;
