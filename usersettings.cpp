@@ -1,7 +1,10 @@
 #include "usersettings.h"
 
+#include <ecl/debug.h>
+
 #include <QFile>
 #include <QDebug>
+#include <QFileInfo>
 #include <QJsonArray>
 #include <QJsonObject>
 
@@ -28,13 +31,124 @@ static int saveJson(const QString &filename, const QJsonDocument &doc)
 	return 0;
 }
 
+class OverlayedSetting
+{
+public:
+	OverlayedSetting()
+	{
+	}
+
+	void setPlatform(const QString &plat)
+	{
+		platform = plat;
+	}
+
+	QJsonDocument GetOverlayed(const QJsonDocument &doc)
+	{
+		QJsonDocument final = doc;
+
+		QFileInfo finfo(GetFileName());
+		/* first check and overlay platform settings */
+		if (!platform.isEmpty()) {
+			QString platfile = QString("/etc/smartstreamer/platforms/%2/%1").arg(finfo.fileName()).arg(platform);
+			if (QFile::exists(platfile)) {
+				QJsonDocument overlay = readJson(platfile);
+				final = Overlay(final, overlay);
+			}
+		}
+
+		/* then use user settings */
+		QString userfile = QString("/etc/smartstreamer_user/%1").arg(finfo.fileName());
+		if (QFile::exists(userfile)) {
+			QJsonDocument overlay = readJson(userfile);
+			final = Overlay(final, overlay);
+		}
+
+		return final;
+	}
+
+	int WriteOverlay(const QJsonDocument &doc)
+	{
+		QString userfile = GetFileName().replace("/etc/smartstreamer/", "/etc/smartstreamer_user/");
+		return saveJson(userfile, doc);
+	}
+
+	virtual QString GetFileName() = 0;
+
+protected:
+	/**
+	 * @brief Overlay
+	 * @param src
+	 * @param overlay
+	 * @return
+	 *
+	 * Overlays given overlay json into given source file.
+	 *
+	 * If documents are objects, they are merged key-by-key.
+	 *
+	 * If given documents are arrays, it works on element wise.
+	 * This means i'th element in overlay file is overlayed onto
+	 * i'th element in source file. If array indexes doesn't
+	 * correspond each other, results may be undefined. For best results, in array
+	 * case both documents should contain identical number of elements.
+	 *
+	 */
+	QJsonDocument Overlay(const QJsonDocument &src, const QJsonDocument &overlay)
+	{
+		if (overlay.isArray()) {
+			QJsonArray arr = overlay.array();
+			QJsonArray overlayed = src.array();
+			for (int i = 0; i < arr.size(); i++) {
+				const QJsonObject obj = arr[i].toObject();
+				QJsonObject objo = overlayed[i].toObject();
+				overlayObjects(objo, obj, keys);
+				overlayed[i] = objo;
+			}
+			return QJsonDocument(overlayed);
+		}
+
+		QJsonObject obj = src.object();
+		const QJsonObject objo = overlay.object();
+		overlayObjects(obj, objo, keys);
+		return QJsonDocument(obj);
+	}
+
+	void overlayObjects(QJsonObject &src, const QJsonObject &overlay, const QStringList &keys = QStringList())
+	{
+		QStringList keylist = keys;
+		if (keylist.isEmpty())
+			keylist = overlay.keys();
+		foreach (const QString &key, keylist)
+			src[key] = overlay[key];
+	}
+
+	QStringList keys; //TODO: It seems like we can get rid of this completely
+	QString platform;
+};
+
+class EncoderOverlayedSetting : public OverlayedSetting
+{
+public:
+	EncoderOverlayedSetting()
+	{
+		keys << "bitrate";
+		keys << "frameRate";
+		keys << "shaping";
+		keys << "resolution";
+		keys << "multicast_address_base";
+	}
+
+	QString GetFileName()
+	{
+		/* TODO: embedding config filename here is not nice */
+		return "/etc/smartstreamer/encoders.json";
+	}
+};
+
 UserSettings::UserSettings()
 {
-	encoderOverlayKeys << "bitrate";
-	encoderOverlayKeys << "frameRate";
-	encoderOverlayKeys << "shaping";
-	encoderOverlayKeys << "resolution";
-	encoderOverlayKeys << "multicast_address_base";
+	auto s = new EncoderOverlayedSetting;
+	overlays.insert(s->GetFileName(), s);
 }
 
 UserSettings &UserSettings::instance()
@@ -45,44 +159,27 @@ UserSettings &UserSettings::instance()
 
 QJsonDocument UserSettings::GetOverlayed(const QString &filename, const QJsonDocument &doc)
 {
-	if (filename.endsWith("encoders.json"))
-		return GetOverlayedEncoders(doc);
-	return doc;
+	QJsonDocument doc2 = doc;
+	if (doc2.isEmpty())
+		doc2 = readJson(filename);
+	if (overlays.contains(filename))
+		return overlays[filename]->GetOverlayed(doc2);
+	return doc2;
 }
 
 int UserSettings::WriteOverlay(const QString &filename, const QJsonDocument &doc)
 {
-	if (filename.endsWith("encoders.json"))
-		return WriteOverlayEncoders(doc);
+	if (overlays.contains(filename))
+		return overlays[filename]->WriteOverlay(doc);
 	return -ENOENT;
 }
 
-QJsonDocument UserSettings::GetOverlayedEncoders(const QJsonDocument &doc)
+void UserSettings::setPlatform(const QString &plat)
 {
-	QJsonDocument overlay = readJson("/etc/smartstreamer_user/encoders.json");
-	QJsonArray arr = overlay.array();
-	QJsonArray overlayed = doc.array();
-	for (int i = 0; i < arr.size(); i++) {
-		const QJsonObject obj = arr[i].toObject();
-		QJsonObject objo = overlayed[i].toObject();
-		foreach (const QString &key, encoderOverlayKeys)
-			objo[key] = obj[key];
+	platform = plat;
+	QHashIterator<QString, OverlayedSetting *> hi(overlays);
+	while (hi.hasNext()) {
+		hi.next();
+		hi.value()->setPlatform(platform);
 	}
-
-	return doc;
 }
-
-int UserSettings::WriteOverlayEncoders(const QJsonDocument &doc)
-{
-	QJsonArray overlayed;
-	foreach (const QJsonValue &v, doc.array()) {
-		const QJsonObject obj = v.toObject();
-		QJsonObject objo;
-		foreach (const QString &key, encoderOverlayKeys)
-			objo.insert(key, obj[key]);
-		overlayed.append(objo);
-	}
-
-	return saveJson("/etc/smartstreamer_user/encoders.json", QJsonDocument(overlayed));
-}
-

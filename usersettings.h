@@ -1,25 +1,29 @@
 #ifndef USERSETTINGS_H
 #define USERSETTINGS_H
 
+#include <QHash>
 #include <QStringList>
 #include <QJsonDocument>
+
+class OverlayedSetting;
 
 class UserSettings
 {
 public:
 	static UserSettings & instance();
 
-	QJsonDocument GetOverlayed(const QString &filename, const QJsonDocument &doc);
+	QJsonDocument GetOverlayed(const QString &filename, const QJsonDocument &doc = QJsonDocument());
 	int WriteOverlay(const QString &filename, const QJsonDocument &doc);
+	void setPlatform(const QString &plat);
 
 protected:
 	UserSettings();
-	QJsonDocument GetOverlayedEncoders(const QJsonDocument &doc);
 
 	int WriteOverlayEncoders(const QJsonDocument &doc);
 
 private:
-	QStringList encoderOverlayKeys;
+	QString platform;
+	QHash<QString, OverlayedSetting *> overlays;
 };
 
 #endif // USERSETTINGS_H
