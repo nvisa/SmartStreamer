@@ -41,6 +41,7 @@ public:
 	bool isGuiApplication();
 	int startPtzpDriver();
 	Platform getApplicationPlatform();
+	QString getAselsanPlatform();
 	PtzpDriver * getPtzpDriver(int index = 0);
 	QJsonObject getPtzpObject(int index = 0);
 	BaseStreamer * createAppStreamer();

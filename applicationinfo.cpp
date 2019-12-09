@@ -192,6 +192,19 @@ ApplicationInfo::Platform ApplicationInfo::getApplicationPlatform()
 	return GENERIC;
 }
 
+QString ApplicationInfo::getAselsanPlatform()
+{
+	/*
+	 * TODO: We need to sync this info with getApplicationPlatform().
+	 * Moreover, we need to get rid of from one.
+	 */
+	QFile f("/etc/aselsan_platform");
+	f.open(QIODevice::ReadOnly);
+	QString plat = QString::fromUtf8(f.readAll()).trimmed();
+	f.close();
+	return plat;
+}
+
 PtzpDriver *ApplicationInfo::getPtzpDriver(int index)
 {
 	if (index < drivers.size())
