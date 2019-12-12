@@ -280,22 +280,10 @@ void SeiInserter::processMessage(QByteArray datagram)
 	int ind = 0;
 	int datasize = getUInt8LE(datagram.constData() + ind, ind);
 	if (datasize <= 2) {
-		//ffDebug() << "size of datagram is " << datasize;
-		//ffDebug() << "sei is empty";
 		return;
 	}
 	int trackmode = getUInt8LE(datagram.constData() + ind, ind);
-	if (trackmode) {
-		int x = getInt32LE(datagram.constData() + ind, ind);
-		int y = getInt32LE(datagram.constData() + ind, ind);
-		//Ptz365Driver::movDirection movDr = (Ptz365Driver::movDirection)getUInt8LE(datagram.constData() + ind, ind);
-		int panSp = getUInt8LE(datagram.constData() + ind, ind);
-		int tiltSp = getUInt8LE(datagram.constData() + ind, ind);
-		//setTrackerPantTilt(movDr, panSp, tiltSp);
-	}
-#if 1
-	if (datasize > 2) {
-		//qDebug() << "ind: " << ind;
+	if (!trackmode) {
 		seiXml->sType = (seiXmlData::seiType2)(getUInt8LE(datagram.constData() + ind, ind));
 		seiXml->nText = getUInt8LE(datagram.constData() + ind, ind);
 		seiXml->nLine = getUInt8LE(datagram.constData() + ind, ind);
@@ -312,7 +300,6 @@ void SeiInserter::processMessage(QByteArray datagram)
 	} else {
 		setSeiProps(ALARM_IDLE, 0);
 	}
-#endif
 }
 
 QByteArray SeiInserter::createSEI(seiXmlData *xmlData, QByteArray in)
