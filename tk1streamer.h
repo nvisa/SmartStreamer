@@ -11,6 +11,7 @@ public:
 	int width;
 	int height;
 	QString url;
+	QString url2;
 	QString rtspUser;
 	QString rtspPass;
 	bool orionComm;
@@ -42,8 +43,10 @@ protected:
 	void createReceiverEl(QString type);
 protected:
 	RtspClient *rtsp;
+	RtspClient *rtsp2;
 	BufferQueue *queue;
 	BaseLmmElement *rtp;
+	BaseLmmElement *rtp2;
 	BaseLmmElement *decoder;
 	alarmGeneratorElement *algen;
 private:

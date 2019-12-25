@@ -29,8 +29,11 @@ TK1Streamer::TK1Streamer(const QJsonObject &obj, QObject *parent)
 		priv->receiverType = obj.value("receiver_type").toString();
 		priv->decoderType = obj.value("decoder_type").toString();
 		priv->rtspTransport = obj.value("rtsp_transport").toString();
+		priv->url2 = obj.value("url2").toString();
 	}
+	rtp2 = NULL;
 	rtsp = NULL;
+	rtsp2 = NULL;
 	algen = NULL;
 	queue = new BufferQueue();
 	AlgorithmGrpcServer::instance()->setAlgorithmManagementInterface(this);
@@ -43,9 +46,15 @@ void TK1Streamer::createReceiverEl(QString type)
 	mDebug("selecting receiver type '%s'", qPrintable(type));
 	if (type == "demux") {
 		rtp = StreamerCommon::createRtspDemux(priv->url, priv->rtspUser, priv->rtspPass, priv->rtspTransport);
+		if (!priv->url2.isEmpty())
+			rtp2 = StreamerCommon::createRtspDemux(priv->url2, priv->rtspUser, priv->rtspPass, priv->rtspTransport);
 	} else if (type == "rtp") {
 		rtp = new RtpReceiver(this);
 		rtsp = StreamerCommon::createRtspClient(((RtpReceiver*)rtp), priv->url, priv->rtspUser, priv->rtspPass);
+		if (!priv->url2.isEmpty()) {
+			rtp2 = new RtpReceiver(this);
+			rtsp2 = StreamerCommon::createRtspClient(((RtpReceiver*)rtp2), priv->url2, priv->rtspUser, priv->rtspPass);
+		}
 	}
 }
 
@@ -92,19 +101,30 @@ void TK1Streamer::finishPipeline(BaseLmmPipeline *p1)
 	p1->end();
 
 	RtpTransmitter *rtpout = StreamerCommon::createRtpTransmitter(0);
+	RtpTransmitter *rtpout2 = StreamerCommon::createRtpTransmitter(0);
 	if (priv->receiverType == "rtp") {
 		rtpout->forwardRtpTs(true);
+		rtpout2->forwardRtpTs(true);
 	} else if (priv->receiverType == "demux") {
 		rtpout->setUseAbsoluteTimestamp(false);
 		rtpout->setFrameRate(priv->fps);
+		rtpout2->setUseAbsoluteTimestamp(false);
+		rtpout2->setFrameRate(priv->fps);
 	}
-	StreamerCommon::createRtspServer(rtpout);
+	StreamerCommon::createRtspServer(rtpout, rtpout2);
 
 	BaseLmmPipeline *p2 = addPipeline();
 	p2->append(queue);
 	p2->append(sei);
 	p2->append(rtpout);
 	p2->end();
+
+	if (!priv->url2.isEmpty()) {
+		BaseLmmPipeline *psub = addPipeline();
+		psub->append(rtp2);
+		psub->append(rtpout2);
+		psub->end();
+	}
 	return;
 }
 
