@@ -35,7 +35,8 @@ public:
 		TBGTH,
 		FLIR_ORION,
 		MGEO_SWIR,
-		HTR_SWIR
+		HTR_SWIR,
+		OEM4K
 	};
 
 	bool isGuiApplication();

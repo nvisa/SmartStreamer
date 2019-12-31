@@ -230,5 +230,25 @@
                 }
             ],
             "startup_delay": 60
-    }
+    },
+    "oem4k" : {
+            "ipstreamer_config": {
+                "fps": 25,
+                "height": 1080,
+                "rtsp_pass": "",
+                "rtsp_user": "",
+                "url": "rtsp://192.168.1.108/stream1",
+                "width": 1920
+            },
+            "ipstreamer": true,
+            "ptzp": [
+                {
+                    "grpc_port": 50058,
+                    "kardelen": false,
+                    "target": "http://192.168.1.108?admin?aselsan",
+                    "type": "oem4k"
+                }
+            ],
+            "startup_delay": 60
+        }
 }

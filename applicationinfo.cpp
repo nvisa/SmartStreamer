@@ -35,6 +35,7 @@
 #include <ecl/ptzp/yamgozdriver.h>
 #include <ecl/ptzp/swirdriver.h>
 #include <ecl/ptzp/htrswirdriver.h>
+#include <ecl/ptzp/oem4kdriver.h>
 #include <ecl/drivers/systeminfo.h>
 #include <ecl/ptzp/virtualptzpdriver.h>
 
@@ -144,6 +145,9 @@ int ApplicationInfo::startPtzpDriver()
 			driver = new SwirDriver;
 		case HTR_SWIR:
 			driver = new HtrSwirDriver;
+		case OEM4K:
+			driver = new Oem4kDriver;
+			break;
 		}
 		if (driver) {
 			fDebug("Starting PTZP driver for %s", qPrintable(obj["type"].toString()));
@@ -188,7 +192,10 @@ ApplicationInfo::Platform ApplicationInfo::getApplicationPlatform()
 			return MGEO_SWIR;
 		} else if (obj["type"] == QString("htrswir")) {
 			return HTR_SWIR;
+		} else if (obj["type"] == QString("oem4k")) {
+			return OEM4K;
 		}
+
 	}
 	return GENERIC;
 }
