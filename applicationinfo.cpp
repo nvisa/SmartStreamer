@@ -143,8 +143,10 @@ int ApplicationInfo::startPtzpDriver()
 			break;
 		case MGEO_SWIR:
 			driver = new SwirDriver;
+			break;
 		case HTR_SWIR:
 			driver = new HtrSwirDriver;
+			break;
 		case OEM4K:
 			driver = new Oem4kDriver;
 			break;
