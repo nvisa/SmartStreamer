@@ -123,6 +123,10 @@ int BaseAlgorithmElement::savetoJson()
 	mInfo("Object redefinition %s", qPrintable(QJsonDocument(aj).toJson()));
 	if (aj.isEmpty())
 		return -1;
+	if (algoState >= STOPALGO)
+		aj["enabled"] = false;
+	else
+		aj["enabled"] = true;
 	arr[algIndex] = aj;
 	obj["algorithms"] = arr;
 	StreamerCommon::writeSettingsJSON("/etc/smartstreamer/algodesc.json", QJsonDocument(obj));
@@ -153,6 +157,7 @@ void BaseAlgorithmElement::setState(BaseAlgorithmElement::AlgoState state)
 		return;
 	}
 	algoState = state;
+	savetoJson();
 }
 
 int BaseAlgorithmElement::reloadJson(const QJsonObject &node)
