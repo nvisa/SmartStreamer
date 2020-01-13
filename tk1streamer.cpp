@@ -77,6 +77,11 @@ int TK1Streamer::start()
 	BaseLmmPipeline *p1 = generatePipeline();
 	if (p1) {
 		finishPipeline(p1);
+
+		if (motion->isAutoStart())
+			runAlgorithm(0);
+		else if (panaroma->isAutoStart())
+			runAlgorithm(1);
 	}
 	return BaseStreamer::start();
 }
