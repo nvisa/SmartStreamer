@@ -1,0 +1,186 @@
+syntax="proto3";
+
+package algorithm.v2;
+
+import "google/protobuf/empty.proto";
+
+service AlgorithmService {
+	rpc GetScreenShot(ScreenshotInfo) returns(ScreenFrame) {}
+	rpc GetScreenShotStream(ScreenshotInfo) returns(stream ScreenFrame) {}
+    
+    rpc RunAlgorithm(AlgorithmHead) returns(google.protobuf.Empty) {}
+	rpc RestartAlgorithm(AlgorithmHead) returns(google.protobuf.Empty) {}
+	rpc StopAlgorithm(AlgorithmHead) returns(google.protobuf.Empty) {}
+	rpc SetAlgorithmParameters(AlgorithmParametersSetRequest) returns(google.protobuf.Empty) {}
+    rpc GetAlgorithmParameters(AlgorithmHead) returns(AlgorithmParameters) {}
+    rpc ListAlgorithms(google.protobuf.Empty) returns (AlgorithmListResponse) {}
+
+	rpc GetSystemFeature(SystemFeature) returns(SystemFeature) {}
+	rpc SetSystemFeature(SystemFeature) returns(SystemFeature) {}
+	rpc GetAllSystemFeatures(SystemFeatures) returns(SystemFeatures) {}
+	rpc SetAllSystemFeatures(SystemFeatures) returns(SystemFeatures) {}
+
+	rpc GetAlarm(stream AlarmReqInfo) returns(stream Alarms) {}
+    rpc AssignTask(TaskInformation) returns(google.protobuf.Empty) {}
+}
+
+message AlgorithmHead {
+    oneof head_selection {
+        int32 ptz_head = 1;
+        int32 algorithm_index = 2;
+        string algorithm_node = 3;
+    }
+}
+
+message AlgorithmStatus {
+    bool is_running = 1;
+}
+
+message AlgorithmInformation {
+    AlgorithmHead head_info = 1;
+    AlgorithmStatus status = 2;
+}
+
+message AlgorithmListResponse {
+    repeated AlgorithmInformation algorithms = 1;
+}
+
+message TrackAlgorithmParameters {
+    
+}
+
+message SmartMotionRegion {
+    enum MotionDirection {
+        VERTICAL = 1;
+        HORIZONTAL = 2;
+    }
+    Polygon detection_region = 1;
+    int32 wander_time_msecs = 2;
+    int32 stand_time_msecs = 3;
+    bool active = 4;
+    repeated MotionDirection valid_directions = 5;
+}
+
+message SmartMotionAlgorithmParameters {
+    repeated SmartMotionRegion regions = 1;
+    Rectangle min_region = 2;
+    Rectangle max_region = 3;
+}
+
+message PanChangeAlgorithmParameters {
+
+}
+
+message StabilizationParameters {
+
+}
+
+message PrivacyMaskingParameters {
+
+}
+
+message FaceDetectionParameters {
+
+}
+
+message AlgorithmParameters {
+    oneof parameters {
+        SmartMotionAlgorithmParameters smart_parameters = 1;
+        TrackAlgorithmParameters track_parameters = 2;
+        PanChangeAlgorithmParameters pan_change_parameters = 3;
+        StabilizationParameters stabilization_parameters = 4;
+        PrivacyMaskingParameters masking_parameters = 5;
+        FaceDetectionParameters detection_parameters = 6;
+    }
+}
+
+message AlgorithmParametersSetRequest {
+    AlgorithmHead algorithm = 1;
+    AlgorithmParameters parameters = 2;
+}
+
+message Point {
+    float x = 1;
+    float y = 2;
+}
+
+message Line {
+    Point pt1 = 1;
+    Point pt2 = 2;
+    bool active = 3;
+}
+
+message Polygon {
+    repeated Point points = 1;
+    bool active = 2;
+    int32 color = 3;
+}
+
+message Rectangle {
+    Point top_left = 1;
+    Point bottom_right = 2;
+}
+
+message DetectedObject {
+    Rectangle bounding_box = 1;
+    enum ObjectType {
+        HUMAN = 0;
+        CAR = 1;
+        OTHER = 2;
+    }
+    ObjectType object_type = 2;
+}
+
+message TaskInformation {
+	int32 channel = 1;
+	string sourceAddress = 2;
+}
+
+message ScreenshotInfo {
+	int32 channelId = 1;
+	int32 quality = 2;
+	float fps = 3;
+}
+
+message ScreenFrame {
+    bytes frame = 1;
+    int32 quality = 2;
+    int64 ts = 3;
+    string metadata = 4;
+}
+
+message AlarmReqAdvancedParameters {
+    bool enabled = 1;
+    int32 suppressInterval = 2;
+    int32 alarmQueueLength = 3;
+    bool smartSnapshot = 4;
+    int32 smartSnapshotInterval = 5;
+}
+
+message AlarmReqInfo {
+	string filter = 1;
+	int32 channel = 2;
+	int32 intervalMsecs = 3;
+    AlarmReqAdvancedParameters advancedParams = 4;
+}
+
+message Alarm {
+	repeated string key = 1;
+	repeated string value = 2;
+	string type = 3;
+}
+
+message Alarms {
+	repeated Alarm alarms = 1;
+	int64 ts = 2;
+}
+
+message SystemFeature {
+	string key = 1;
+	string value = 2;
+	int32 device = 3;
+}
+
+message SystemFeatures {
+	repeated SystemFeature features = 1;
+}
