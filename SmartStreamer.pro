@@ -19,7 +19,8 @@ SOURCES += main.cpp \
     alarmgeneratorelement.cpp \
     kardelenapi.cpp \
     usersettings.cpp \
-    alarmsource.cpp
+    alarmsource.cpp \
+    algorithmcommunicationv2.cpp
 
 HEADERS += \
     moxadriver.h \
@@ -36,7 +37,8 @@ HEADERS += \
     kardelenapi.h \
     algorithmparameters.h \
     usersettings.h \
-    alarmsource.h
+    alarmsource.h \
+    algorithmcommunicationv2.h
 
 websockets {
     SOURCES += websocketstreamer.cpp

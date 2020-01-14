@@ -9,6 +9,7 @@ smart-grpc {
     PROTOS += proto/AlgorithmCommunication.proto
     PROTOS += proto/OrionCommunication.proto
     PROTOS += proto/KardelenAPI.proto
+    PROTOS += proto/v2/AlgorithmCommunicationV2.proto
 
     protobuf_decl.name = protobuf headers
     protobuf_decl.input = PROTOS

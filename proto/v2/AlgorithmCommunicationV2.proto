@@ -51,8 +51,8 @@ message TrackAlgorithmParameters {
 
 message SmartMotionRegion {
     enum MotionDirection {
-        VERTICAL = 1;
-        HORIZONTAL = 2;
+        VERTICAL = 0;
+        HORIZONTAL = 1;
     }
     Polygon detection_region = 1;
     int32 wander_time_msecs = 2;
