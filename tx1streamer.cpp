@@ -520,9 +520,8 @@ void TX1Streamer::checkAlgoState()
 		int headCnt = driver->getHeadCount();
 		for (int i= 0; i < headCnt; ++i) {
 			PtzpHead *headpt = driver->getHead(i);
-			if(headpt->getCapabilities() & PtzpHead::CAP_ZOOM) {
+			if (headpt->hasCapability(ptzp::PtzHead_Capability_ZOOM))
 				zrList.append(QString("X%1").arg(headpt->getZoomRatio()));
-			}
 		}
 		((TextOverlay *)textOverlay)->setOverlayFieldText(1, zrList.join(" "));
 	}
