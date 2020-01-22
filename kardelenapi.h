@@ -198,6 +198,15 @@ const static int ENUM_PARAM_RETICLE_TYPE = 16;
 const static byte RETICLE_TYPE_MILLIEME = 0x01;
 const static byte RETICLE_TYPE_TEST = 0x02;
 
+const static int ENUM_PARAM_IR_STATE = 17;
+const static byte IR_DAY = (byte) 0x00;
+const static byte IR_NIGHT = (byte) 0x01;
+const static byte IR_EXTERNAL = (byte) 0x02;
+const static byte IR_SCHEDULE = (byte) 0x03;
+const static byte IR_INPUT_TRIGGER = (byte) 0x04;
+const static byte IR_AUTO_INTERNAL = (byte) 0x05;
+
+
 // ENUM COMMANDS
 const static int ENUM_COMMAND_TRACK = 0;
 const static byte TRACK_START = (byte) 0x01;

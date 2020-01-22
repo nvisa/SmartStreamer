@@ -1266,6 +1266,8 @@ public:
 		addcap(caps, CAPABILITY_DAY_VIEW);
 		addcap(caps, CAPABILITY_FOCUS);
 		addcap(caps, CAPABILITY_ROI);
+		addcap(caps, CAPABILITY_DAY_VIEW);
+		addcap(caps, CAPABILITY_NIGHT_VIEW);
 		return caps;
 	}
 
@@ -1363,6 +1365,8 @@ public:
 			return getMode();
 		if (index == ENUM_PARAM_DETECTION_CREATION_MODE)
 			return DETECTION_OPEN_MODE;
+		if (index == ENUM_PARAM_IR_STATE)
+			return ptzp->getHead(0)->getProperty(13);
 
 		/* API wants this */
 		return -1;
@@ -1384,10 +1388,13 @@ public:
 	{
 		if (index == ENUM_PARAM_OPERATIONAL_MODE)
 			setMode(value);
+		else if (index == ENUM_PARAM_IR_STATE)
+			ptzp->getHead(0)->setProperty(8, value);
 	}
 
 	virtual void setEnumCommand(int index, int32_t value)
 	{
+
 	}
 
 	virtual void screenClick(int x, int y, int action)
