@@ -1324,6 +1324,10 @@ public:
 
 	void setCamera(int32_t type)
 	{
+		if (type == TV)
+			ptzp->getHead(0)->setProperty(8, 0);
+		else if (type == THERMAL)
+			ptzp->getHead(0)->setProperty(8, 1);
 	}
 
 	virtual void getNumericParameter(int index, double &value, int32_t bytes[3])
@@ -1359,8 +1363,13 @@ public:
 		if (map.isEmpty())
 			map = ptzp->getHead(0)->getSettings();
 
-		if (index == ENUM_PARAM_CAMERA_TYPE)
+		if (index == ENUM_PARAM_CAMERA_TYPE) {
+			int value = ptzp->getHead(0)->getProperty(13);
+			if (value == 0)
 				return TV;
+			else return THERMAL;
+			return TV;
+		}
 		if (index == ENUM_PARAM_OPERATIONAL_MODE)
 			return getMode();
 		if (index == ENUM_PARAM_DETECTION_CREATION_MODE)
@@ -1388,8 +1397,9 @@ public:
 	{
 		if (index == ENUM_PARAM_OPERATIONAL_MODE)
 			setMode(value);
-		else if (index == ENUM_PARAM_IR_STATE)
+		else if (index == ENUM_PARAM_IR_STATE) {
 			ptzp->getHead(0)->setProperty(8, value);
+		}
 	}
 
 	virtual void setEnumCommand(int index, int32_t value)
