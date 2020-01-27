@@ -12,6 +12,7 @@ Tbgthstreamer::Tbgthstreamer(const QJsonObject &config,QObject *parent) : TX1Str
 		width = config["resolution_width"].toInt();
 		height = config["resolution_height"].toInt();
 	}
+	AlgorithmGrpcServer::instance()->setCITAlarmForcing(true);
 }
 
 BaseLmmPipeline *Tbgthstreamer::createYUV420Pipeline(QSize &res0)
