@@ -105,6 +105,7 @@ AlgorithmGrpcServer::AlgorithmGrpcServer(QObject *parent)
 	panChangeEl = NULL;
 	snapshotEl = NULL;
 	manif = NULL;
+	forceCITAlarm = false;
 
 	AlgorithmGrpcServerGrpcThreadAlg *grpcServ = new AlgorithmGrpcServerGrpcThreadAlg(50059, this);
 	grpcServ->start();
@@ -564,6 +565,7 @@ BaseAlgorithmElement* AlgorithmGrpcServer::algorithmElementManager(int chn)
 grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc::ServerReaderWriter<AlgorithmCommunication::Alarms, AlgorithmCommunication::AlarmReqInfo> *stream)
 {
 	MultipleAlarmSource mals;
+	bool sendIDTAlarms = true;
 
 	InDeviceTest *idt = ApplicationInfo::instance()->getIDT();
 	while (1) {
@@ -583,6 +585,8 @@ grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc:
 				for (int i = 0; i < alarmSources.size(); i++)
 					if (sources.contains(alarmSources[i]->typeString()))
 						mals.addSource(alarmSources[i]);
+				if (!sources.contains("cit"))
+					sendIDTAlarms = false;
 			}
 		}
 		auto pars = req.advancedparams();
@@ -592,9 +596,9 @@ grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc:
 		res.set_ts(QDateTime::currentMSecsSinceEpoch());
 
 		/* JIT alarms still don't use alarmsource */
-		if (idt && mals.contains("cit")) {
+		if (idt && sendIDTAlarms) {
 			QJsonObject cit = idt->getLastCheckResults();
-			if (cit.contains("faults")) {
+			if (cit.contains("faults") || forceCITAlarm) {
 				AlgorithmCommunication::Alarm *alarm = res.add_alarms();
 				alarm->set_type("cit");
 				AlgorithmCommunication::CITInfo *citinfo = alarm->mutable_cit();
@@ -603,7 +607,8 @@ grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc:
 				citinfo->set_usbinfo(AlgorithmCommunication::CITInfo_Info_OK);
 				foreach (QJsonValue v, cit["faults"].toArray()) {
 					QJsonObject obj = v.toObject();
-					if (obj["type"].toString() == "control_module" && obj["index"].toInt() == 0)
+					/* head index hack for TBGTH */
+					if (obj["type"].toString() == "control_module" && (obj["index"].toInt() == 0 || obj["index"].toInt() == 2))
 						citinfo->set_moduleinfo(AlgorithmCommunication::CITInfo_Info_NOK);
 					if (obj["type"].toString() == "control_module" && obj["index"].toInt() == 1)
 						citinfo->set_motorinfo(AlgorithmCommunication::CITInfo_Info_NOK);

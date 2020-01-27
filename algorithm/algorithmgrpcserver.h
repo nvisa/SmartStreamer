@@ -51,6 +51,7 @@ public:
 
 	void enableTrackAutoStopping();
 	void ptzCommandRecved(int cmd);
+	void setCITAlarmForcing(bool on) { forceCITAlarm = on; }
 
 protected:
 	explicit AlgorithmGrpcServer(QObject *parent = 0);
@@ -70,6 +71,7 @@ private:
 	SnapshotElement *snapshotEl;
 	AlgoManIface *manif;
 	QList<QSharedPointer<AlarmSource>> alarmSources;
+	bool forceCITAlarm;
 
 	// Service interface
 public:
