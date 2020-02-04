@@ -20,7 +20,10 @@ SOURCES += main.cpp \
     kardelenapi.cpp \
     usersettings.cpp \
     alarmsource.cpp \
-    algorithmcommunicationv2.cpp
+    algorithmcommunicationv2.cpp \
+    videostreamer.cpp \
+	libsmartelement.cpp \
+	algorithmcontrolwidget.cpp \
 
 HEADERS += \
     moxadriver.h \
@@ -38,7 +41,10 @@ HEADERS += \
     algorithmparameters.h \
     usersettings.h \
     alarmsource.h \
-    algorithmcommunicationv2.h
+    algorithmcommunicationv2.h \
+    videostreamer.h \
+	libsmartelement.h \
+	algorithmcontrolwidget.h \
 
 websockets {
     SOURCES += websocketstreamer.cpp
@@ -157,4 +163,7 @@ RESOURCES += \
 DISTFILES += \
     data/algodesc.json \
     build_config.pri
+
+FORMS += \
+    algorithmcontrolwidget.ui
 

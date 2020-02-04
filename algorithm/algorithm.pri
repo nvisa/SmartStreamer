@@ -13,7 +13,8 @@ HEADERS += \
 	$$PWD/stabilizationalgorithmelement.h \
 	$$PWD/panaromaalgorithmelement.h \
 	$$PWD/trackalgorithmelement.h \
-	$$PWD/panchangealgorithmelement.h
+	$$PWD/panchangealgorithmelement.h \
+    $$PWD/algorithmgrpcserverv2.h
 
 SOURCES += \
 	$$PWD/basealgorithmelement.cpp \
@@ -22,4 +23,5 @@ SOURCES += \
 	$$PWD/stabilizationalgorithmelement.cpp \
 	$$PWD/panaromaalgorithmelement.cpp \
 	$$PWD/trackalgorithmelement.cpp \
-	$$PWD/panchangealgorithmelement.cpp
+	$$PWD/panchangealgorithmelement.cpp \
+    $$PWD/algorithmgrpcserverv2.cpp
