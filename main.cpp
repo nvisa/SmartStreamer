@@ -12,6 +12,7 @@
 #include "algorithm/algorithmgrpcserver.h"
 #include "applicationinfo.h"
 #include "indevicetest.h"
+#include "algorithmcontrolwidget.h"
 
 #include <lmm/lmmcommon.h>
 
@@ -459,6 +460,13 @@ int kaapiClient(int argc, char *argv[])
 	return 0;
 }
 
+static void init_smart_init()
+{
+	#undef DEBUG_H
+	#include "inc/debug.h"
+	aselsmart::initSmartDebugging(3);
+}
+
 int main(int argc, char *argv[])
 {
 	if (QString::fromLatin1(argv[0]).contains("kaapic"))
@@ -468,6 +476,7 @@ int main(int argc, char *argv[])
 	if (QString::fromLatin1(argv[0]).contains("orionc"))
 		return testOrionGrpc(argv[1]);
 
+	init_smart_init();
 #if HAVE_TX1
 	{
 		extern char* get_libgpu_version();
@@ -545,6 +554,9 @@ int main(int argc, char *argv[])
 			QFile::setPermissions(dst, QFile::ReadOwner | QFile::WriteOwner | QFile::ReadGroup | QFile::ReadOther);
 		}
 	}
+
+	AlgorithmControlWidget *cw = AlgorithmControlWidget::instance();
+	cw->show();
 
 	if (!QFile::exists("alg_parameters.txt"))
 		QDir::setCurrent("/etc/smartstreamer/" + info->algorithmSet());

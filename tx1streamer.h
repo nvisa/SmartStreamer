@@ -41,6 +41,7 @@ protected:
 	int notifyGrpcForMotionAlarm(const RawBuffer &buf);
 	int processBuffer(const RawBuffer &buf);
 	int recordIfNvrDead(const RawBuffer &buf);
+	int overlayResults(const RawBuffer &buf);
 	void enableRGBPortion(bool en);
 
 	virtual void addExtraRtpTransmitters(QList<RtpTransmitter *> &) {}

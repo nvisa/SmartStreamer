@@ -9,6 +9,9 @@
 #include "alarmgeneratorelement.h"
 #include "algorithm/algorithmgrpcserver.h"
 #include "algorithm/basealgorithmelement.h"
+#include "libsmartelement.h"
+#include "algorithmcontrolwidget.h"
+
 #include <ecl/ptzp/ptzpdriver.h>
 
 #include <lmm/debug.h>
@@ -417,6 +420,66 @@ int TX1Streamer::recordIfNvrDead(const RawBuffer &buf)
 	return 0;
 }
 
+int TX1Streamer::overlayResults(const RawBuffer &buf)
+{
+	QImage im;
+	if (buf.size() == buf.constPars()->videoWidth * buf.constPars()->videoHeight * 3)
+		im = QImage((uchar *)buf.constData(), buf.constPars()->videoWidth, buf.constPars()->videoHeight,
+			  QImage::Format_RGB888);
+	else
+		im = QImage((uchar *)buf.constData(), buf.constPars()->videoWidth, buf.constPars()->videoHeight,
+					QImage::Format_RGB32);
+
+	QPainter p(&im);
+	p.setPen(Qt::red);
+	p.setBrush(QBrush());
+	p.setFont(QFont("Arial", 24));
+
+	int w = buf.constPars()->videoWidth;
+	int h = buf.constPars()->videoHeight;
+
+	/* draw ROI and Line's */
+	auto pars = LibSmartElement::instance()->getParameters();
+	if (pars.has_smart_parameters()) {
+		auto spars = pars.smart_parameters();
+		foreach (auto r, spars.regions()) {
+			QPolygon poly(r.detection_region_point_size());
+			for (int i = 0; i < r.detection_region_point_size(); i++) {
+				auto p = r.detection_region_point(i);
+				poly.setPoint(i, p.x() * w, p.y() * h);
+			}
+			p.drawPolygon(poly);
+		}
+		foreach (auto l, spars.lines()) {
+			QPoint pt1(l.pt1().x() * w, l.pt1().y() * h);
+			QPoint pt2(l.pt2().x() * w, l.pt2().y() * h);
+			p.drawLine(QLine(pt1, pt2));
+		}
+	}
+
+	if (buf.constPars()->metaDataRaw == nullptr)
+		return 0;
+
+	auto res = std::static_pointer_cast<algorithm::v2::Alarm>(buf.constPars()->metaDataRaw);
+	if (!res)
+		return 0;
+
+	p.setPen(Qt::red);
+	p.setBrush(QColor(0, 255, 255, 100));
+	for (int i = 0; i < res->detected_object_size(); i++) {
+		auto alarm = res->detected_object(i);
+		auto bb = alarm.bounding_box();
+		float x = bb.top_left().x();
+		float y = bb.top_left().y();
+		float w = bb.bottom_right().x() - x;
+		float h = bb.bottom_right().y() - y;
+		p.drawRect(x * im.width(), y * im.height(),
+				   w * im.width(), h * im.height());
+	}
+
+	return 0;
+}
+
 void TX1Streamer::enableRGBPortion(bool en)
 {
 	yuv2rgb->setPassThru(!en);
@@ -583,8 +646,10 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	RtpTransmitter *rtpout3 = StreamerCommon::createRtpTransmitter(fps2, 2);
 	RtpTransmitter *rtpout4 = StreamerCommon::createRtpTransmitter(fps3, 3);
 
+	LibSmartElement *smartel = new LibSmartElement;
+
 	/* rgb portion is passthru by default */
-	yuv2rgb = new  VideoScaler;
+	yuv2rgb = new VideoScaler;
 	yuv2rgb->setOutputFormat(AV_PIX_FMT_ARGB);
 	yuv2rgb->setMode(1);
 	yuv2rgb->setPassThru(true);
@@ -597,6 +662,7 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	p1->append(motion);
 	p1->append(track);
 	p1->append(panchange);
+	p1->append(smartel);
 
 	/* rgb portion */
 	p1->append(yuv2rgb);
@@ -662,8 +728,14 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 		rgbConv1->setMode(1);
 		p7->append(sc0);
 		p7->append(rgbConv1);
-		QtVideoOutput *vout = new QtVideoOutput;
-		vout->getWidget()->setGeometry(0, 0, 640, 360);
+		p7->append(newFunctionPipe(TX1Streamer, this, TX1Streamer::overlayResults));
+		QtVideoOutput *vout = new QtVideoOutput(AlgorithmControlWidget::instance()->getVideoParent());
+		if (!vout->parent())
+			vout->getWidget()->setGeometry(0, 0, 640, 360);
+		else {
+			AlgorithmControlWidget::instance()->useVideoWidget(vout->getWidget());
+			vout->getWidget()->show();
+		}
 		p7->append(vout);
 		p7->end();
 	}
