@@ -626,7 +626,8 @@ grpc::Status AlgorithmGrpcServer::GetAlarm(grpc::ServerContext *context, ::grpc:
 			const auto source = list[i];
 			AlgorithmCommunication::Alarm *alarm = res.add_alarms();
 			alarm->set_type(source->typeString().toStdString());
-			const QHash<QString, QVariant> &list = source->fetch();
+			AlarmSource::QueueData qd = source->fetch();
+			const QHash<QString, QVariant> &list = qd.hash;
 			QHashIterator<QString, QVariant> hi2(list);
 			while (hi2.hasNext()) {
 				hi2.next();

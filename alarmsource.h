@@ -14,6 +14,7 @@
 #include <memory>
 
 #include "proto/AlgorithmCommunication.pb.h"
+#include "proto/v2/AlgorithmCommunicationV2.pb.h"
 
 class MultipleAlarmSource;
 
@@ -22,23 +23,32 @@ class AlarmSource
 public:
 	AlarmSource();
 
+	class QueueData
+	{
+	public:
+		QHash<QString, QVariant> hash;
+		QList<algorithm::v2::DetectedObject> detectedObjects;
+	};
+
 	bool wait(int msecs);
 	virtual QString typeString() const = 0;
-	QHash<QString, QVariant> fetch();
+	QueueData fetch();
 	bool check();
 	virtual void reset();
 	void setParameters(const AlgorithmCommunication::AlarmReqAdvancedParameters &pars);
+	void setParameters(const algorithm::v2::AlarmReqAdvancedParameters &pars);
 
 protected:
-	virtual void fetching(QHash<QString, QVariant> &);
-	void push(const QHash<QString, QVariant> &h);
-	void addSnapshotToAlarm(QHash<QString, QVariant> &h, const QString &id);
+	virtual void fetching(QueueData &);
+	void push(const QueueData &h);
+	void addSnapshotToAlarm(QueueData &h, const QString &id);
 
 	friend class MultipleAlarmSource;
 	void addListener(MultipleAlarmSource *s);
 	void removeListener(MultipleAlarmSource *s);
 
 	AlgorithmCommunication::AlarmReqAdvancedParameters advanced;
+	algorithm::v2::AlarmReqAdvancedParameters advancedV2;
 	QByteArray lastSnapshot;
 	QHash<QString, int> alarmCount;
 	QElapsedTimer lastSnapshotTime;
@@ -46,7 +56,7 @@ protected:
 private:
 	QMutex m;
 	QWaitCondition wc;
-	QList<QHash<QString, QVariant>> queue;
+	QList<QueueData> queue;
 	QList<MultipleAlarmSource *> listeners;
 };
 
@@ -56,7 +66,7 @@ public:
 	GenericAlarmSource(const QString &type);
 
 	QString typeString() const;
-	void produce(const QHash<QString, QVariant> &h);
+	void produce(const QueueData &h);
 	void produce(const QString &key, const QVariant &value);
 
 protected:
@@ -69,12 +79,12 @@ public:
 	MotionAlarmSource();
 
 	virtual QString typeString() const;
-	void produce(const QString &uuid, const QString &json, const QByteArray &snapshot);
+	void produce(const QString &uuid, const QString &json, const QByteArray &snapshot, QList<algorithm::v2::DetectedObject> objects = QList<algorithm::v2::DetectedObject>());
 	void notifyNoMotion(const QString &uuid, const QString &json, const QByteArray &snapshot);
 	void reset() override;
 
 protected:
-	void fetching(QHash<QString, QVariant> &h) override;
+	void fetching(QueueData &h) override;
 
 	QString id;
 	QElapsedTimer lastAlarmElapsed;
@@ -90,7 +100,7 @@ public:
 	void produce(const QString &uuid, const QString &json, const QByteArray &snapshot);
 
 protected:
-	void fetching(QHash<QString, QVariant> &h) override;
+	void fetching(QueueData &h) override;
 };
 
 class MultipleAlarmSource
