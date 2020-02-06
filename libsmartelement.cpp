@@ -389,7 +389,6 @@ protected:
 
 	std::vector<ROI> initROIStatic()
 	{
-		return std::vector<ROI>();
 		ROI r;
 		r.active = true;
 		r.wander_time = 500;

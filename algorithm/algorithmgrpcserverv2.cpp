@@ -144,9 +144,13 @@ grpc::Status AlgorithmGrpcServerV2::SetAlgorithmParameters(grpc::ServerContext *
 	case AlgorithmParametersSetRequest::kPreProcessingDegree:
 		el->setPreprocessingDegree(request->pre_processing_degree());
 		break;
-	case AlgorithmParametersSetRequest::kSmartParameters:
-		el->setSmartMotionParameters(request->smart_parameters());
+	case AlgorithmParametersSetRequest::kSmartParameters: {
+		auto spars = request->smart_parameters();
+		if (spars.regions_size() == 0)
+			return grpc::Status(grpc::INVALID_ARGUMENT, "You should at least provide (1) ROI region");
+		el->setSmartMotionParameters(spars);
 		break;
+	}
 	case AlgorithmParametersSetRequest::kPanChangeParameters:
 	case AlgorithmParametersSetRequest::kDetectionParameters:
 	case AlgorithmParametersSetRequest::kPrivacyMasking:
