@@ -555,9 +555,6 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	AlgorithmControlWidget *cw = AlgorithmControlWidget::instance();
-	cw->show();
-
 	if (!QFile::exists("alg_parameters.txt"))
 		QDir::setCurrent("/etc/smartstreamer/" + info->algorithmSet());
 	info->startPtzpDriver();

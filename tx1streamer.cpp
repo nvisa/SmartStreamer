@@ -751,6 +751,7 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 		p7->append(sc0);
 		p7->append(rgbConv1);
 		p7->append(newFunctionPipe(TX1Streamer, this, TX1Streamer::overlayResults));
+		AlgorithmControlWidget::instance()->show();
 		QtVideoOutput *vout = new QtVideoOutput(AlgorithmControlWidget::instance()->getVideoParent());
 		if (!vout->parent())
 			vout->getWidget()->setGeometry(0, 0, 640, 360);
