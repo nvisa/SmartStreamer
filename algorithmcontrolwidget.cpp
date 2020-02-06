@@ -192,16 +192,14 @@ void AlgorithmControlWidget::on_comboRunMode_activated(int index)
 		pt->set_y(0.9);
 
 		spars->clear_lines();
-#if 0
 		// following line crashes the system
 		auto line = spars->add_lines();
 		line->set_active(true);
 		line->mutable_pt1()->set_x(0.05);
 		line->mutable_pt1()->set_y(0.3);
 		line->mutable_pt2()->set_x(0.85);
-		line->mutable_pt2()->set_y(0.3);
+		line->mutable_pt2()->set_y(0.4);
 		el->setSmartMotionParameters(*spars);
-#endif
 	}
 	el->setRunMode(algorithm::v2::RunMode(index));
 }
