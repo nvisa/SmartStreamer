@@ -79,9 +79,14 @@ static void fromGrpc(LINE &line, const algorithm::v2::LineCrossRegion &region, i
 	pt.u = region.pt1().x() * w;
 	pt.v = region.pt1().y() * h;
 	line.list_of_points.push_back(pt);
-	pt.u = region.pt2().x() * w;
-	pt.v = region.pt2().y() * h;
-	line.list_of_points.push_back(pt);
+	points pt2;
+	pt2.u = region.pt2().x() * w;
+	pt2.v = region.pt2().y() * h;
+	if (pt.v == pt2.v)
+		pt2.v += 5;
+	if (pt.u == pt2.u)
+		pt2.u += 5;
+	line.list_of_points.push_back(pt2);
 	line.updated = false;
 }
 
