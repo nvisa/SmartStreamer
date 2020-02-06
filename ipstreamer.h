@@ -29,6 +29,8 @@ public:
 	int PerformAlgorithmForYUV(const RawBuffer &buf);
 	int readSourceInformation();
 	int setupAlgorithmManager();
+	QString getCurrentSource();
+	void setCurrentSource(const QString &url);
 
 	class Parameters {
 	public:
@@ -109,6 +111,7 @@ protected:
 	QString rtspClientUser;
 	QString rtspClientPass;
 	AlgorithmManager *algMan;
+	QString currentSourceUrl;
 
 	friend class MultiSource;
 };

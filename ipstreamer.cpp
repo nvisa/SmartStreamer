@@ -39,6 +39,18 @@ IpStreamer::IpStreamer(const QJsonObject &config, QObject *parent):
 	this->config = config;
 }
 
+void IpStreamer::setCurrentSource(const QString &url)
+{
+	mDebug("Switching video source to %s", qPrintable(url));
+	BaseLmmDemux *demux = (BaseLmmDemux *)getPipeline(0)->getPipe(0);
+	demux->restart(url);
+}
+
+QString IpStreamer::getCurrentSource()
+{
+	return currentSourceUrl;
+}
+
 int IpStreamer::pipelineOutput(BaseLmmPipeline *p, const RawBuffer &buf)
 {
 	//qDebug() << buf.size() << buf.getMimeType();
@@ -55,6 +67,7 @@ BaseLmmPipeline *IpStreamer::createYUV420Pipeline(QSize &res0)
 	if (!rtspTransport.isEmpty())
 		rtp->setParameter("rtsp_transport", rtspTransport);
 	rtp->setSource(rtspUrl);
+	currentSourceUrl = rtspUrl;
 
 	int width = config["outputWidth"].toInt();
 	if (!width)
