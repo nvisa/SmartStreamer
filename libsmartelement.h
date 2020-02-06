@@ -22,11 +22,15 @@ public:
 	bool isVideoStabilizationEnabled();
 	bool isTamperDetectionEnabled();
 	bool isPrivacyMaskingEnabled();
-	algorithm::v2::AlgorithmParameters_RunMode runMode();
-	int setRunMode(algorithm::v2::AlgorithmParameters_RunMode mode);
+	algorithm::v2::PreProcessing preProcessingType();
+	float preProcessingDegree();
+	algorithm::v2::RunMode runMode();
+	int setRunMode(algorithm::v2::RunMode mode);
 	void setTrackRegion(QRectF rect);
+	void setSmartMotionParameters(const algorithm::v2::SmartMotionAlgorithmParameters &pars);
 	algorithm::v2::AlgorithmParameters getParameters();
-	void setPreprocessingType(algorithm::v2::AlgorithmParameters_PreProcessing type, float degree);
+	void setPreprocessingType(algorithm::v2::PreProcessing type);
+	void setPreprocessingDegree(float degree);
 
 	int processBuffer(const RawBuffer &buf);
 
