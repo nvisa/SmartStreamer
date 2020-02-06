@@ -461,7 +461,7 @@ int kaapiClient(int argc, char *argv[])
 }
 
 #undef DEBUG_H
-#include "inc/debug.h"
+#include "libsmart/debug.h"
 static void init_smart_init()
 {
 	aselsmart::initSmartDebugging(3);
