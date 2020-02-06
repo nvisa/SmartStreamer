@@ -1,7 +1,7 @@
 #include "videostreamer.h"
 
 #include "iostream"
-#include "inc/BasicStructures.h"
+#include "libsmart/BasicStructures.h"
 
 #include <lmm/debug.h>
 #include <lmm/videoscaler.h>
