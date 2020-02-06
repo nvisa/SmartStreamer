@@ -11,6 +11,7 @@
 #include "algorithm/basealgorithmelement.h"
 #include "libsmartelement.h"
 #include "algorithmcontrolwidget.h"
+#include "algorithm/algorithmgrpcserverv2.h"
 
 #include <ecl/ptzp/ptzpdriver.h>
 
@@ -68,6 +69,7 @@ TX1Streamer::TX1Streamer(QObject *parent)
 	AlgorithmGrpcServer::instance()->addAlarmSource(motionAlarmSource);
 	AlgorithmGrpcServer::instance()->addAlarmSource(trackAlarmSource);
 	AlgorithmGrpcServer::instance()->addAlarmSource(tamperAlarmSource);
+	AlgorithmGrpcServerV2::instance()->addAlarmSource(motionAlarmSource);
 }
 
 int TX1Streamer::start()
@@ -366,6 +368,26 @@ int TX1Streamer::notifyGrpcForAlarm(const RawBuffer &buf)
 									  QString::fromUtf8(jsondata), ba);
 		}
 	}
+
+	/* check libsmart alarms */
+	if (buf.constPars()->metaDataRaw == nullptr)
+		return 0;
+
+	auto res = std::static_pointer_cast<algorithm::v2::Alarm>(buf.constPars()->metaDataRaw);
+	if (!res)
+		return 0;
+
+	QList<algorithm::v2::DetectedObject> objs;
+	for (int i = 0; i < res->detected_object_size(); i++) {
+		auto alarm = res->detected_object(i);
+		objs << alarm;
+	}
+	const RawBuffer &jpegbuf = jpegQueue->getLast();
+	QByteArray ba = QByteArray::fromRawData((const char *)jpegbuf.constData(), jpegbuf.size());
+	if (res->detected_object_size())
+		motionAlarmSource->produce("", "", ba, objs);
+	else
+		motionAlarmSource->notifyNoMotion("", "", ba);
 
 	return 0;
 }
