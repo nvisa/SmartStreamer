@@ -25,7 +25,7 @@ AlgorithmControlWidget::AlgorithmControlWidget(QWidget *parent) :
 	ui(new Ui::AlgorithmControlWidget)
 {
 	ui->setupUi(this);
-	QTimer::singleShot(3000, this, SLOT(updateSettings()));
+	QTimer::singleShot(500, this, SLOT(updateSettings()));
 	ui->frameVideo->setLayout(new QVBoxLayout());
 	ui->frameVideo->layout()->setContentsMargins(0, 0, 0, 0);
 }
@@ -114,9 +114,9 @@ bool AlgorithmControlWidget::eventFilter(QObject *obj, QEvent *ev)
 			auto el = LibSmartElement::instance();
 			el->setTrackRegion(r);
 			if (action == 0)
-				el->setRunMode(algorithm::v2::AlgorithmParameters_RunMode_MANUEL_TRACK);
+				el->setRunMode(algorithm::v2::MANUEL_TRACK);
 			else if (action == 1)
-				el->setRunMode(algorithm::v2::AlgorithmParameters_RunMode_AUTO_TRACK);
+				el->setRunMode(algorithm::v2::AUTO_TRACK);
 		}
 	}
 
@@ -130,6 +130,13 @@ void AlgorithmControlWidget::updateSettings()
 	ui->checkTamper->setChecked(el->isTamperDetectionEnabled());
 	ui->checkMasking->setChecked(el->isPrivacyMaskingEnabled());
 	ui->comboRunMode->setCurrentIndex((int)el->runMode());
+	ui->horizontalScrollBarPre->setValue(el->preProcessingDegree() * 100);
+	if (el->preProcessingType() == algorithm::v2::NONE)
+		ui->radioPre_1->setChecked(true);
+	if (el->preProcessingType() == algorithm::v2::CONTRAST_ENHANCEMENT)
+		ui->radioPre_2->setChecked(true);
+	if (el->preProcessingType() == algorithm::v2::DEHAZING)
+		ui->radioPre_3->setChecked(true);
 
 	QTimer::singleShot(3000, this, SLOT(updateSettings()));
 }
@@ -155,36 +162,70 @@ void AlgorithmControlWidget::on_comboRunMode_activated(int index)
 {
 	qDebug() << "run mode" << index;
 	auto el = LibSmartElement::instance();
-	el->setRunMode(algorithm::v2::AlgorithmParameters_RunMode(index));
+	if (index == algorithm::v2::SMART_MOTION) {
+		auto pars = el->getParameters();
+		algorithm::v2::SmartMotionAlgorithmParameters *spars = pars.mutable_smart_parameters();
+		spars->clear_regions();
+		auto reg = spars->add_regions();
+		reg->set_wander_time_msecs(5000);
+		reg->set_stand_time_msecs(5000);
+		reg->set_active(true);
+		reg->add_motion_direction(algorithm::v2::UP);
+		reg->add_motion_direction(algorithm::v2::UP_LEFT);
+		reg->add_motion_direction(algorithm::v2::UP_RIGHT);
+		reg->add_motion_direction(algorithm::v2::DOWN);
+		reg->add_motion_direction(algorithm::v2::DOWN_LEFT);
+		reg->add_motion_direction(algorithm::v2::DOWN_RIGHT);
+		reg->add_motion_direction(algorithm::v2::RIGHT);
+		reg->add_motion_direction(algorithm::v2::LEFT);
+		auto pt = reg->add_detection_region_point();
+		pt->set_x(0.1);
+		pt->set_y(0.05);
+		pt = reg->add_detection_region_point();
+		pt->set_x(0.9);
+		pt->set_y(0.05);
+		pt = reg->add_detection_region_point();
+		pt->set_x(0.95);
+		pt->set_y(0.9);
+		pt = reg->add_detection_region_point();
+		pt->set_x(0.05);
+		pt->set_y(0.9);
+
+		spars->clear_lines();
+#if 0
+		// following line crashes the system
+		auto line = spars->add_lines();
+		line->set_active(true);
+		line->mutable_pt1()->set_x(0.05);
+		line->mutable_pt1()->set_y(0.3);
+		line->mutable_pt2()->set_x(0.85);
+		line->mutable_pt2()->set_y(0.3);
+		el->setSmartMotionParameters(*spars);
+#endif
+	}
+	el->setRunMode(algorithm::v2::RunMode(index));
 }
 
 void AlgorithmControlWidget::on_radioPre_1_clicked()
 {
 	auto el = LibSmartElement::instance();
-	el->setPreprocessingType(algorithm::v2::AlgorithmParameters_PreProcessing_NONE, ui->horizontalScrollBarPre->value() / 100.0);
+	el->setPreprocessingType(algorithm::v2::NONE);
 }
 
 void AlgorithmControlWidget::on_radioPre_2_clicked()
 {
 	auto el = LibSmartElement::instance();
-	el->setPreprocessingType(algorithm::v2::AlgorithmParameters_PreProcessing_CONTRAST_ENHANCEMENT, ui->horizontalScrollBarPre->value() / 100.0);
+	el->setPreprocessingType(algorithm::v2::CONTRAST_ENHANCEMENT);
 }
 
 void AlgorithmControlWidget::on_radioPre_3_clicked()
 {
 	auto el = LibSmartElement::instance();
-	el->setPreprocessingType(algorithm::v2::AlgorithmParameters_PreProcessing_DEHAZING, ui->horizontalScrollBarPre->value() / 100.0);
+	el->setPreprocessingType(algorithm::v2::DEHAZING);
 }
 
 void AlgorithmControlWidget::on_horizontalScrollBarPre_sliderMoved(int position)
 {
 	auto el = LibSmartElement::instance();
-	algorithm::v2::AlgorithmParameters_PreProcessing pre = algorithm::v2::AlgorithmParameters_PreProcessing_NONE;
-	if (ui->radioPre_1->isChecked())
-		pre = algorithm::v2::AlgorithmParameters_PreProcessing_NONE;
-	else if (ui->radioPre_2->isChecked())
-		pre = algorithm::v2::AlgorithmParameters_PreProcessing_CONTRAST_ENHANCEMENT;
-	else if (ui->radioPre_3->isChecked())
-		pre = algorithm::v2::AlgorithmParameters_PreProcessing_DEHAZING;
-	el->setPreprocessingType(pre, position / 100.0);
+	el->setPreprocessingDegree(position / 100.0);
 }

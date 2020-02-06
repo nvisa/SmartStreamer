@@ -125,6 +125,11 @@
           <string>Smart Motion</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>Bypass</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item>

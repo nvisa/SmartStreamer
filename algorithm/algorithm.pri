@@ -14,7 +14,7 @@ HEADERS += \
 	$$PWD/panaromaalgorithmelement.h \
 	$$PWD/trackalgorithmelement.h \
 	$$PWD/panchangealgorithmelement.h \
-    $$PWD/algorithmgrpcserverv2.h
+	$$PWD/algorithmgrpcserverv2.h \
 
 SOURCES += \
 	$$PWD/basealgorithmelement.cpp \
@@ -24,4 +24,4 @@ SOURCES += \
 	$$PWD/panaromaalgorithmelement.cpp \
 	$$PWD/trackalgorithmelement.cpp \
 	$$PWD/panchangealgorithmelement.cpp \
-    $$PWD/algorithmgrpcserverv2.cpp
+	$$PWD/algorithmgrpcserverv2.cpp \

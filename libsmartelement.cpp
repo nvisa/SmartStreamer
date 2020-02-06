@@ -4,6 +4,9 @@
 #include <lmm/debug.h>
 #include <lmm/tools/unittimestat.h>
 
+#include <google/protobuf/util/json_util.h>
+
+#include <QFile>
 #include <QThread>
 
 using namespace aselsmart;
@@ -21,6 +24,7 @@ LibSmartElement * LibSmartElement::inst = nullptr;
  *
  */
 
+
 static void toGrpc(const BBox &box, algorithm::v2::DetectedObject &obj, int w, int h)
 {
 	auto rect = obj.mutable_bounding_box();
@@ -30,6 +34,24 @@ static void toGrpc(const BBox &box, algorithm::v2::DetectedObject &obj, int w, i
 	pt = rect->mutable_bottom_right();
 	pt->set_x(box.uE / (float)w);
 	pt->set_y(box.vE / (float)h);
+}
+
+static void fromGrpc(ROI &roi, const algorithm::v2::SmartMotionRegion &region, int w, int h)
+{
+	roi.active = region.active();
+	roi.stand_time = region.stand_time_msecs() / 40; //TODO: use real fps
+	roi.wander_time = region.wander_time_msecs() / 40; //TODO: use real fps
+	for (int i = 0; i < region.detection_region_point_size(); i++) {
+		auto p = region.detection_region_point(i);
+		points pt;
+		pt.u = p.x() * w;
+		pt.v = p.y() * h;
+		roi.list_of_points.push_back(pt);
+	}
+	for (int i = 0; i < region.motion_direction_size(); i++) {
+		auto md = region.motion_direction(i);
+		roi.valid_directions_for_alarm.push_back((MotionDirection)md);
+	}
 }
 
 static void toGrpc(const ROI &roi, algorithm::v2::SmartMotionRegion &region, int w, int h)
@@ -48,6 +70,19 @@ static void toGrpc(const ROI &roi, algorithm::v2::SmartMotionRegion &region, int
 		region.add_motion_direction(
 					algorithm::v2::MotionDirection(d));
 	}
+}
+
+static void fromGrpc(LINE &line, const algorithm::v2::LineCrossRegion &region, int w, int h)
+{
+	line.active = true;
+	points pt;
+	pt.u = region.pt1().x() * w;
+	pt.v = region.pt1().y() * h;
+	line.list_of_points.push_back(pt);
+	pt.u = region.pt2().x() * w;
+	pt.v = region.pt2().y() * h;
+	line.list_of_points.push_back(pt);
+	line.updated = false;
 }
 
 static void toGrpc(const LINE &line, algorithm::v2::LineCrossRegion &region, int w, int h)
@@ -82,16 +117,50 @@ public:
 		algoCtx = nullptr;
 		vbuf = nullptr;
 		thr = nullptr;
-		settings.set_tamper_detection(config["tamper"].toBool());
-		settings.set_video_stabilization(config["stabilization"].toBool());
-		settings.set_privacy_masking(config["privacy"].toBool());
-		settings.set_run_mode(algorithm::v2::AlgorithmParameters_RunMode_SMART_MOTION);
-		settings.mutable_smart_parameters();
+
+		if (QFile("smart_algorithm_parameters.bin").exists()) {
+			fDebug("Loading smart algorithm parmeters");
+			QFile f("smart_algorithm_parameters.bin");
+			if (f.open(QIODevice::ReadOnly)) {
+				QByteArray ba = f.readAll();
+				settings.ParseFromString(std::string(ba.data(), ba.size()));
+				f.close();
+			}
+			initDynamic();
+		} else {
+			settings.set_run_mode(algorithm::v2::BYPASS);
+			settings.set_tamper_detection(true);
+			if (config.contains("tamper"))
+				settings.set_tamper_detection(config["tamper"].toBool());
+			settings.set_video_stabilization(config["stabilization"].toBool());
+			settings.set_privacy_masking(config["privacy"].toBool());
+			settings.mutable_smart_parameters();
+			initStatic();
+		}
 	}
 
-	void setSettings(const algorithm::v2::AlgorithmParameters &sets)
+	int setSettings(const algorithm::v2::AlgorithmParameters &sets)
 	{
+		std::string str;
 		settings = sets;
+		settings.SerializeToString(&str);
+		if (input) {
+			input->ui.rois = initROIFromParamaters();
+			input->ui.lines = initLinesFromParameters();
+		}
+#if 0
+		std::string strj;
+		google::protobuf::util::MessageToJsonString(settings, &strj);
+		qDebug() << QString::fromStdString(strj);
+		qDebug() << "------------------------------------------------------";
+#endif
+		QFile file("smart_algorithm_parameters.bin");
+		if (!file.open(QIODevice::WriteOnly)) {
+			return -EPERM;
+		}
+		file.write(str.data(), str.size());
+		file.close();
+		return 0;
 	}
 
 	void setTrackRect(QRectF rect)
@@ -111,7 +180,7 @@ public:
 	int process(const RawBuffer &buf)
 	{
 		if (!input)
-			init();
+			initDynamic();
 
 		if (!vbuf)
 			vbuf = new VideoBuffer;
@@ -122,7 +191,7 @@ public:
 
 		if (thr) {
 			if (!thr->isFinished()) {
-				qDebug("Waiting init thread");
+				fDebug("Waiting init thread");
 				return 0;
 			}
 			delete thr;
@@ -139,6 +208,11 @@ public:
 		int err = processSmartMotion();
 		if (err)
 			return err;
+
+		for (uint i = 0; i < input->ui.rois.size(); i++)
+			input->ui.rois[i].updated = false;
+		for (uint i = 0; i < input->ui.lines.size(); i++)
+			input->ui.lines[i].updated = false;
 
 		return processOutputs((RawBuffer *)&buf);
 	}
@@ -171,7 +245,6 @@ protected:
 		input->states.stabilization = settings.video_stabilization();
 		input->states.enhancement_type = settings.pre_processing();
 		input->states.enhancement_degree = settings.pre_processing_degree() * 100;
-		qDebug() << input->states.enhancement_type << input->states.enhancement_degree;
 		stat.startStat();
 		process_algorithm(algoCtx, input, output, bufs);
 		stat.addStat(t.elapsed());
@@ -180,18 +253,18 @@ protected:
 		return 0;
 	}
 
-	void init()
+	void initDynamic()
 	{
 		input = new Allinputs;
 		output = new Alloutputs;
 
-		input->ui.rois = initROI();
-		input->ui.lines = initLines();
+		input->ui.rois = initROIFromParamaters();
+		input->ui.lines = initLinesFromParameters();
 
-		input->ui.track_object.uS = 0;
-		input->ui.track_object.vS = 0;
-		input->ui.track_object.uE = 100;
-		input->ui.track_object.vE = 100;
+		input->ui.track_object.uS = 100;
+		input->ui.track_object.vS = 100;
+		input->ui.track_object.uE = 200;
+		input->ui.track_object.vE = 200;
 
 		AlgorithmStates states;
 		states.track = 1;
@@ -212,6 +285,50 @@ protected:
 		states.pan_tilt_zoom_read[4] = 12;
 
 		QJsonObject track = config["track"].toObject();
+		states.track_states.scoreThreshold = 0.0;
+		if (!track.isEmpty()) {
+			states.track_states.centerize_time = track["centerize_time"].toDouble();
+			states.track_states.gate_percentage = track["gate_percentage"].toDouble();
+			states.track_states.scoreThreshold = track["scoreThreshold"].toDouble();
+			states.track_states.track_type = track["track_type"].toInt();
+		}
+
+		input->states = states;
+	}
+
+	void initStatic()
+	{
+		input = new Allinputs;
+		output = new Alloutputs;
+
+		input->ui.rois = initROIStatic();
+		input->ui.lines = initLinesStatic();
+
+		input->ui.track_object.uS = 100;
+		input->ui.track_object.vS = 100;
+		input->ui.track_object.uE = 200;
+		input->ui.track_object.vE = 200;
+
+		AlgorithmStates states;
+		states.track = 1;
+		states.videoformat = PIXEL_FORMAT_YUV420P;
+		states.shadow = 1;
+		states.illumination_correction = 1;
+		states.debug = 1;
+		states.stabilization = 0;
+		states.privacy = 0;
+		states.sensitivity = 95;
+		states.classify = 0;
+		states.enhancement_type = 2;
+		states.enhancement_degree = 50;
+		states.pan_tilt_zoom_read[0] = 0;
+		states.pan_tilt_zoom_read[1] = 0;
+		states.pan_tilt_zoom_read[2] = 0;
+		states.pan_tilt_zoom_read[3] = 12;
+		states.pan_tilt_zoom_read[4] = 12;
+
+		QJsonObject track = config["track"].toObject();
+		states.track_states.scoreThreshold = 0.0;
 		if (!track.isEmpty()) {
 			states.track_states.centerize_time = track["centerize_time"].toDouble();
 			states.track_states.gate_percentage = track["gate_percentage"].toDouble();
@@ -230,8 +347,44 @@ protected:
 		return pt;
 	}
 
-	std::vector<ROI> initROI()
+	std::vector<LINE> initLinesFromParameters()
 	{
+		std::vector<LINE> list;
+		if (!settings.has_smart_parameters())
+			return list;
+
+		auto spars = settings.smart_parameters();
+		foreach (auto l, spars.lines()) {
+			LINE line;
+			line.active = true;
+			line.updated = true;
+			fromGrpc(line, l, 1920, 1080);
+			list.push_back(line);
+		}
+
+		return list;
+	}
+
+	std::vector<ROI> initROIFromParamaters()
+	{
+		std::vector<ROI> l;
+		if (!settings.has_smart_parameters())
+			return l;
+
+		auto spars = settings.smart_parameters();
+		foreach (auto r, spars.regions()) {
+			ROI roi;
+			fromGrpc(roi, r, 1920, 1080);
+			roi.updated = true;
+			l.push_back(roi);
+		}
+
+		return l;
+	}
+
+	std::vector<ROI> initROIStatic()
+	{
+		return std::vector<ROI>();
 		ROI r;
 		r.active = true;
 		r.wander_time = 500;
@@ -264,8 +417,9 @@ protected:
 		return l;
 	}
 
-	std::vector<LINE> initLines()
+	std::vector<LINE> initLinesStatic()
 	{
+		return std::vector<LINE>();
 		LINE l;
 		l.active = true;
 		points pt0;
@@ -334,12 +488,22 @@ bool LibSmartElement::isPrivacyMaskingEnabled()
 	return ctx->getSettings().privacy_masking();
 }
 
-algorithm::v2::AlgorithmParameters_RunMode LibSmartElement::runMode()
+algorithm::v2::PreProcessing LibSmartElement::preProcessingType()
+{
+	return ctx->getSettings().pre_processing();
+}
+
+float LibSmartElement::preProcessingDegree()
+{
+	return ctx->getSettings().pre_processing_degree();
+}
+
+algorithm::v2::RunMode LibSmartElement::runMode()
 {
 	return ctx->getSettings().run_mode();
 }
 
-int LibSmartElement::setRunMode(algorithm::v2::AlgorithmParameters_RunMode mode)
+int LibSmartElement::setRunMode(algorithm::v2::RunMode mode)
 {
 	auto sets = ctx->getSettings();
 	sets.set_run_mode(mode);
@@ -352,16 +516,30 @@ void LibSmartElement::setTrackRegion(QRectF rect)
 	ctx->setTrackRect(rect);
 }
 
+void LibSmartElement::setSmartMotionParameters(const algorithm::v2::SmartMotionAlgorithmParameters &pars)
+{
+	auto apars = ctx->getSettings();
+	apars.clear_smart_parameters();
+	apars.mutable_smart_parameters()->CopyFrom(pars);
+	ctx->setSettings(apars);
+}
+
 algorithm::v2::AlgorithmParameters LibSmartElement::getParameters()
 {
 	return ctx->getSettings();
 }
 
-void LibSmartElement::setPreprocessingType(algorithm::v2::AlgorithmParameters_PreProcessing type, float degree)
+void LibSmartElement::setPreprocessingDegree(float degree)
+{
+	auto sets = ctx->getSettings();
+	sets.set_pre_processing_degree(degree);
+	ctx->setSettings(sets);
+}
+
+void LibSmartElement::setPreprocessingType(algorithm::v2::PreProcessing type)
 {
 	auto sets = ctx->getSettings();
 	sets.set_pre_processing(type);
-	sets.set_pre_processing_degree(degree);
 	ctx->setSettings(sets);
 }
 

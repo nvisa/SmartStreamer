@@ -17,11 +17,8 @@ service AlgorithmService {
 
 	rpc GetSystemFeature(SystemFeature) returns(SystemFeature) {}
 	rpc SetSystemFeature(SystemFeature) returns(SystemFeature) {}
-	rpc GetAllSystemFeatures(SystemFeatures) returns(SystemFeatures) {}
-	rpc SetAllSystemFeatures(SystemFeatures) returns(SystemFeatures) {}
 
 	rpc GetAlarm(stream AlarmReqInfo) returns(stream Alarms) {}
-    rpc AssignTask(TaskInformation) returns(google.protobuf.Empty) {}
 }
 
 message AlgorithmHead {
@@ -39,39 +36,56 @@ message AlgorithmStatus {
 message AlgorithmInformation {
     AlgorithmHead head_info = 1;
     AlgorithmStatus status = 2;
+	string name = 3;
 }
 
 message AlgorithmListResponse {
     repeated AlgorithmInformation algorithms = 1;
 }
 
-message TrackAlgorithmParameters {
-    
+enum MotionDirection {
+	RIGHT			= 0;
+	DOWN_RIGHT		= 1;
+	DOWN			= 2;
+	DOWN_LEFT		= 3;
+	LEFT			= 4;
+	UP_LEFT			= 5;
+	UP				= 6;
+	UP_RIGHT		= 7;
+	STOP			= 8;
 }
 
+enum PreProcessing {
+	NONE						= 0;
+	CONTRAST_ENHANCEMENT		= 1;
+	DEHAZING					= 2;
+};
+
+enum RunMode {
+	AUTO_TRACK = 0;
+	SEMI_AUTO_TRACK = 1;
+	MANUEL_TRACK = 2;
+	SMART_MOTION = 3;
+	BYPASS = 4;
+};
+
 message SmartMotionRegion {
-    enum MotionDirection {
-        VERTICAL = 0;
-        HORIZONTAL = 1;
-    }
-    Polygon detection_region = 1;
+	repeated Point detection_region_point = 1;
     int32 wander_time_msecs = 2;
     int32 stand_time_msecs = 3;
     bool active = 4;
-    repeated MotionDirection valid_directions = 5;
+	repeated MotionDirection motion_direction = 5;
 }
 
 message SmartMotionAlgorithmParameters {
     repeated SmartMotionRegion regions = 1;
     Rectangle min_region = 2;
     Rectangle max_region = 3;
+	repeated LineCrossRegion lines = 4;
+	Rectangle tracking_object = 5;
 }
 
 message PanChangeAlgorithmParameters {
-
-}
-
-message StabilizationParameters {
 
 }
 
@@ -86,17 +100,30 @@ message FaceDetectionParameters {
 message AlgorithmParameters {
     oneof parameters {
         SmartMotionAlgorithmParameters smart_parameters = 1;
-        TrackAlgorithmParameters track_parameters = 2;
         PanChangeAlgorithmParameters pan_change_parameters = 3;
-        StabilizationParameters stabilization_parameters = 4;
-        PrivacyMaskingParameters masking_parameters = 5;
         FaceDetectionParameters detection_parameters = 6;
     }
+	PreProcessing pre_processing = 7;
+	bool video_stabilization = 8;
+	bool tamper_detection = 9;
+	bool privacy_masking = 10;
+	RunMode run_mode = 11;
+	float pre_processing_degree = 12;
 }
 
 message AlgorithmParametersSetRequest {
     AlgorithmHead algorithm = 1;
-    AlgorithmParameters parameters = 2;
+	oneof parameters {
+		PreProcessing pre = 2;
+		bool video_stabilization = 3;
+		bool tamper_detection = 4;
+		bool privacy_masking = 5;
+		RunMode run_mode = 6;
+		float pre_processing_degree = 7;
+		SmartMotionAlgorithmParameters smart_parameters = 8;
+		PanChangeAlgorithmParameters pan_change_parameters = 10;
+		FaceDetectionParameters detection_parameters = 11;
+	}
 }
 
 message Point {
@@ -104,16 +131,10 @@ message Point {
     float y = 2;
 }
 
-message Line {
+message LineCrossRegion {
     Point pt1 = 1;
     Point pt2 = 2;
     bool active = 3;
-}
-
-message Polygon {
-    repeated Point points = 1;
-    bool active = 2;
-    int32 color = 3;
 }
 
 message Rectangle {
@@ -125,15 +146,39 @@ message DetectedObject {
     Rectangle bounding_box = 1;
     enum ObjectType {
         HUMAN = 0;
-        CAR = 1;
-        OTHER = 2;
+		VEHICLE = 1;
+		OTHERS = 2;
     }
-    ObjectType object_type = 2;
-}
-
-message TaskInformation {
-	int32 channel = 1;
-	string sourceAddress = 2;
+	ObjectType object_type = 2;
+	enum EventType {
+		NONE			= 0;
+		ROI_ENTER		= 1;
+		LINE_CROSS		= 2;
+		WANDERING		= 3;
+		LEFT_OBJECT		= 4;
+		STANDING		= 5;
+		ROI_LEAVE		= 6;
+		ROI_WAIT		= 7;
+		STOLEN_OBJECT	= 8;
+	}
+	EventType event = 3;
+	oneof object_id {
+		int32 object_counter = 4;
+		string object_guid = 5;
+	}
+	enum ObjectColor {
+		DARK	= 0;
+		GRAY	= 1;
+		LIGHT	= 2;
+		RED		= 3;
+		YELLOW	= 4;
+		GREEN	= 5;
+		CYAN	= 6;
+		BLUE	= 7;
+		MAGENTA	= 8;
+	}
+	ObjectColor object_color = 6;
+	MotionDirection object_direction = 7;
 }
 
 message ScreenshotInfo {
@@ -168,6 +213,7 @@ message Alarm {
 	repeated string key = 1;
 	repeated string value = 2;
 	string type = 3;
+	repeated DetectedObject detected_object = 4;
 }
 
 message Alarms {
@@ -175,12 +221,26 @@ message Alarms {
 	int64 ts = 2;
 }
 
-message SystemFeature {
-	string key = 1;
-	string value = 2;
-	int32 device = 3;
+/* system features */
+
+message FeatureIPVideoSource {
+	string url = 1;
+	enum Transport {
+		UDP = 0;
+		TCP = 1;
+	}
+	Transport transport = 2;
+	int32 buffer_size = 3;
 }
 
-message SystemFeatures {
-	repeated SystemFeature features = 1;
+message FeatureCustom {
+	string key = 1;
+	string value = 2;
+}
+
+message SystemFeature {
+	oneof feature {
+		FeatureCustom custom = 1;
+		FeatureIPVideoSource video_source = 2;
+	}
 }
