@@ -48,6 +48,7 @@ public:
 	BaseStreamer * createAppStreamer();
 	BaseAlgorithmElement * createAlgorithmFromJson(const QJsonObject &algo);
 	BaseAlgorithmElement * createAlgorithm(const QString &type, int index = 0);
+	const QList<BaseStreamer *> & getStreamers() { return streamers; }
 	void checkStartupDelay();
 	InDeviceTest * getIDT();
 	int init();
@@ -70,6 +71,7 @@ protected:
 	QList<PtzpDriver *> drivers;
 	QList<BaseAlgorithmElement*> algorithms;
 	QHash<QString, QList<BaseAlgorithmElement*> > algoNameMapping;
+	QList<BaseStreamer *> streamers;
 
 };
 

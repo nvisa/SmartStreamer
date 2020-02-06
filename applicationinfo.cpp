@@ -269,6 +269,7 @@ BaseStreamer *ApplicationInfo::createAppStreamer()
 	}
 #endif
 	ffDebug() << "Starting application under path" << QDir::currentPath();
+	streamers << streamer;
 	return streamer;
 }
 
