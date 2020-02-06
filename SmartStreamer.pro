@@ -24,6 +24,7 @@ SOURCES += main.cpp \
     videostreamer.cpp \
 	libsmartelement.cpp \
 	algorithmcontrolwidget.cpp \
+    fusionstreamer.cpp
 
 HEADERS += \
     moxadriver.h \
@@ -45,6 +46,7 @@ HEADERS += \
     videostreamer.h \
 	libsmartelement.h \
 	algorithmcontrolwidget.h \
+    fusionstreamer.h
 
 websockets {
     SOURCES += websocketstreamer.cpp

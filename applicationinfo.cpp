@@ -11,6 +11,7 @@
 #include "moxak1streamer.h"
 #include "streamercommon.h"
 #include "usersettings.h"
+#include "fusionstreamer.h"
 
 #include "algorithm/motionalgorithmelement.h"
 #include "algorithm/stabilizationalgorithmelement.h"
@@ -247,6 +248,8 @@ BaseStreamer *ApplicationInfo::createAppStreamer()
 		streamer = new YamgozStreamer(obj["yamgoz_config"].toObject());
 	} else if (obj.value("tbgthstreamer").toBool()) {
 		streamer = new Tbgthstreamer(obj["tbgth_config"].toObject());
+	} else if (obj.value("fusionstreamer").toBool()) {
+		streamer = new FusionStreamer(obj["fusion_config"].toObject());
 	} else if (obj.value("teststreamer").toBool()) {
 		streamer = new VideoTestSourceStreamer(obj["test_config"].toObject());
 	} else {

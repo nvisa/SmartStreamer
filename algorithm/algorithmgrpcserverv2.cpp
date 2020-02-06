@@ -3,6 +3,9 @@
 #include "alarmsource.h"
 #include "applicationinfo.h"
 #include "indevicetest.h"
+#include "fusionstreamer.h"
+#include "applicationinfo.h"
+#include "ipstreamer.h"
 
 #include <lmm/debug.h>
 
@@ -191,12 +194,30 @@ grpc::Status AlgorithmGrpcServerV2::ListAlgorithms(grpc::ServerContext *context,
 
 	return grpc::Status::OK;
 }
-#include "applicationinfo.h"
-#include "ipstreamer.h"
+
 grpc::Status AlgorithmGrpcServerV2::GetSystemFeature(grpc::ServerContext *context, const algorithm::v2::SystemFeature *request, algorithm::v2::SystemFeature *response)
 {
 	switch (request->feature_case()) {
-	case SystemFeature::FeatureCase::kCustom:
+	case SystemFeature::FeatureCase::kCustom: {
+		auto src = request->custom();
+		if (src.key() == "fusion_stream_mode") {
+			auto streamers = ApplicationInfo::instance()->getStreamers();
+			FusionStreamer *fstr = nullptr;
+			foreach (BaseStreamer *s, streamers) {
+				FusionStreamer *ip = qobject_cast<FusionStreamer *>(s);
+				if (!ip)
+					continue;
+				fstr = ip;
+				break;
+			}
+			if (!fstr)
+				return grpc::Status(grpc::NOT_FOUND, "Fusion source is not implemented in this streamer");
+			src.set_value(fstr->getMode().toStdString());
+			response->mutable_custom()->CopyFrom(src);
+		} else
+			return grpc::Status(grpc::UNAVAILABLE, "No such feature set request implemented");
+		break;
+	}
 		break;
 	case SystemFeature::FeatureCase::kVideoSource: {
 		auto streamers = ApplicationInfo::instance()->getStreamers();
@@ -227,8 +248,25 @@ grpc::Status AlgorithmGrpcServerV2::GetSystemFeature(grpc::ServerContext *contex
 grpc::Status AlgorithmGrpcServerV2::SetSystemFeature(grpc::ServerContext *context, const algorithm::v2::SystemFeature *request, algorithm::v2::SystemFeature *response)
 {
 	switch (request->feature_case()) {
-	case SystemFeature::FeatureCase::kCustom:
+	case SystemFeature::FeatureCase::kCustom: {
+		auto src = request->custom();
+		if (src.key() == "fusion_stream_mode") {
+			auto streamers = ApplicationInfo::instance()->getStreamers();
+			FusionStreamer *fstr = nullptr;
+			foreach (BaseStreamer *s, streamers) {
+				FusionStreamer *ip = qobject_cast<FusionStreamer *>(s);
+				if (!ip)
+					continue;
+				fstr = ip;
+				break;
+			}
+			if (!fstr)
+				return grpc::Status(grpc::NOT_FOUND, "Fusion source is not implemented in this streamer");
+			fstr->setMode(QString::fromStdString(src.value()));
+		} else
+			return grpc::Status(grpc::UNAVAILABLE, "No such feature set request implemented");
 		break;
+	}
 	case SystemFeature::FeatureCase::kVideoSource: {
 		auto streamers = ApplicationInfo::instance()->getStreamers();
 		IpStreamer *ipstr = nullptr;
