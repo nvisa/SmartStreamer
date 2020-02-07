@@ -1370,8 +1370,12 @@ public:
 			else return THERMAL;
 			return TV;
 		}
-		if (index == ENUM_PARAM_OPERATIONAL_MODE)
+		if (index == ENUM_PARAM_OPERATIONAL_MODE) {
+			BaseAlgorithmElement *el = ApplicationInfo::instance()->getAlgorithmInstance(0);
+			if (el->getState() != BaseAlgorithmElement::UNKNOWN)
+				_mymode = CONTROL_MODE_DETECTION;
 			return getMode();
+		}
 		if (index == ENUM_PARAM_DETECTION_CREATION_MODE)
 			return DETECTION_OPEN_MODE;
 		if (index == ENUM_PARAM_IR_STATE)
