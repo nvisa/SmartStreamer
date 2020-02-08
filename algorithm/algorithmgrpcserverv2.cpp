@@ -6,6 +6,7 @@
 #include "fusionstreamer.h"
 #include "applicationinfo.h"
 #include "ipstreamer.h"
+#include "algorithm/algorithmgrpcserver.h"
 
 #include <lmm/debug.h>
 
@@ -87,7 +88,25 @@ grpc::Status AlgorithmGrpcServerV2::RunAlgorithm(grpc::ServerContext *context, c
 	if (node != "node0")
 		return grpc::Status(grpc::NOT_FOUND, "No such algorithm node exists; only following are supported: node0");
 
+	std::string alname = request->friendly_name();
 	auto el = LibSmartElement::instance();
+	//BaseAlgorithmElement *cdel = ApplicationInfo::instance()->getAlgorithmInstance("panchange", 0);
+	fDebug("Trying to Starting algorithm '%s'", alname.data());
+	if (alname == "Change detection") {
+		if (el->isPassThru() == false) {
+			fDebug("We have a running algorithm, cannot start change detection.");
+			return grpc::Status(grpc::INVALID_ARGUMENT, "Please stop already running algorithm before starting change detection");
+		}
+		el->release();
+		AlgorithmGrpcServer *papi = AlgorithmGrpcServer::instance();
+		AlgorithmCommunication::RequestForAlgorithm req;
+		grpc::ServerContext ctx;
+		AlgorithmCommunication::ResponseOfRequests resp;
+		req.set_channel(3);
+		req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::PAN_CHANGE);
+		return papi->RunAlgorithm(&ctx,&req, &resp);
+	}
+
 	el->setPassThru(false);
 
 	return grpc::Status::OK;
@@ -115,6 +134,17 @@ grpc::Status AlgorithmGrpcServerV2::StopAlgorithm(grpc::ServerContext *context, 
 		return grpc::Status(grpc::NOT_FOUND, "No such algorithm node exists; only following are supported: node0");
 
 	auto el = LibSmartElement::instance();
+	std::string alname = request->friendly_name();
+	fDebug("Trying to stop algorithm '%s'", alname.data());
+	if (alname == "Change detection") {
+		AlgorithmGrpcServer *papi = AlgorithmGrpcServer::instance();
+		AlgorithmCommunication::RequestForAlgorithm req;
+		grpc::ServerContext ctx;
+		AlgorithmCommunication::ResponseOfRequests resp;
+		req.set_channel(3);
+		req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::PAN_CHANGE);
+		return papi->StopAlgorithm(&ctx,&req, &resp);
+	}
 	el->setPassThru(true);
 
 	return grpc::Status::OK;
@@ -130,6 +160,8 @@ grpc::Status AlgorithmGrpcServerV2::SetAlgorithmParameters(grpc::ServerContext *
 		return grpc::Status(grpc::NOT_FOUND, "No such algorithm node exists; only following are supported: node0");
 
 	auto el = LibSmartElement::instance();
+	std::string alname = request->algorithm().friendly_name();
+	fDebug("Setting algorithm parameter '%d' for '%s'", request->parameters_case(), alname.data());
 
 	switch (request->parameters_case()) {
 	case AlgorithmParametersSetRequest::kPre:
@@ -184,12 +216,13 @@ grpc::Status AlgorithmGrpcServerV2::ListAlgorithms(grpc::ServerContext *context,
 {
 	auto alg = response->add_algorithms();
 	alg->mutable_head_info()->set_algorithm_node("node0");
-	alg->set_name("Smart algorithms");
+	alg->mutable_head_info()->set_friendly_name("Smart algorithms");
 	alg->mutable_status()->set_is_running(LibSmartElement::instance()->isPassThru());
 
 	alg = response->add_algorithms();
 	alg->mutable_head_info()->set_algorithm_node("node0");
-	alg->set_name("Change detection");
+	alg->mutable_head_info()->set_friendly_name("Change detection");
+	/* TODO: sync change detection state */
 	alg->mutable_status()->set_is_running(false);
 
 	return grpc::Status::OK;
