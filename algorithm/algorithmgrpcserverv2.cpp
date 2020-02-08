@@ -186,7 +186,29 @@ grpc::Status AlgorithmGrpcServerV2::SetAlgorithmParameters(grpc::ServerContext *
 		el->setSmartMotionParameters(spars);
 		break;
 	}
-	case AlgorithmParametersSetRequest::kPanChangeParameters:
+	case AlgorithmParametersSetRequest::kPanChangeParameters: {
+		auto spars = request->pan_change_parameters();
+		if (spars.locationinformation_size() == 0)
+			return grpc::Status(grpc::INVALID_ARGUMENT, "You should at least provide (1) Point(Pan,Tilt,Zoom) in space");
+		AlgorithmGrpcServer *papi = AlgorithmGrpcServer::instance();
+		AlgorithmCommunication::RequestForAlgorithm req;
+		grpc::ServerContext ctx;
+		AlgorithmCommunication::ResponseOfRequests resp;
+		req.set_channel(3);
+		req.set_algorithmtype(AlgorithmCommunication::RequestForAlgorithm::PAN_CHANGE);
+		AlgorithmCommunication::PanChangeParameters *params = new AlgorithmCommunication::PanChangeParameters;
+		AlgorithmCommunication::ListOfLocationInformation *listOfLocation = params->mutable_locationinformation();
+		for (int i = 0; i < spars.locationinformation_size(); i++) {
+			AlgorithmCommunication::LocationInformation *locationInformation = listOfLocation->add_locationinformation();
+			locationInformation->set_pan(spars.locationinformation(i).pan());
+			locationInformation->set_tilt(spars.locationinformation(i).tilt());
+			locationInformation->set_zoom(spars.locationinformation(i).zoom());
+		}
+		listOfLocation->set_intervalforcirculation(spars.intervalforcirculation());
+		req.set_allocated_panchangeparam(params);
+		papi->SetAlgorithmParameters(&ctx,&req,&resp);
+		break;
+	}
 	case AlgorithmParametersSetRequest::kDetectionParameters:
 	case AlgorithmParametersSetRequest::kPrivacyMasking:
 	default:
