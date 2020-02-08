@@ -61,6 +61,9 @@ TX1Streamer::TX1Streamer(QObject *parent)
 	thirdStream = true;
 	fourthStream = true;
 	enablePreview = false;
+	QString env = QString(getenv("DISPLAY"));
+	if (env != ":99")
+		enablePreview = true;
 	motionExtraEnabled = false;
 	videoRecordingEnabled = false;
 	motionAlarmSource = QSharedPointer<MotionAlarmSource>(new MotionAlarmSource);
