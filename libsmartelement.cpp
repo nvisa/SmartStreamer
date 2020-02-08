@@ -153,6 +153,13 @@ public:
 		}
 	}
 
+	void release()
+	{
+		QMutexLocker ml(&alglock);
+		release_algorithm(algoCtx);
+		algoCtx = nullptr;
+	}
+
 	int setSettings(const algorithm::v2::AlgorithmParameters &sets)
 	{
 		std::string str;
@@ -209,6 +216,7 @@ public:
 				return 0;
 			}
 			delete thr;
+			alglock.unlock();
 			thr = nullptr;
 		}
 
@@ -217,6 +225,7 @@ public:
 			thr = new InitThread;
 			thr->ctx = this;
 			thr->start();
+			alglock.lock();
 			return 0;
 		}
 
@@ -303,7 +312,9 @@ protected:
 		input->states.enhancement_type = settings.pre_processing();
 		input->states.enhancement_degree = settings.pre_processing_degree() * 100;
 		stat.startStat();
+		alglock.lock();
 		process_algorithm(algoCtx, input, output, bufs);
+		alglock.unlock();
 		stat.addStat(t.elapsed());
 		//qDebug() << "***********************************" << stat.max << stat.min << stat.avg << stat.last;
 
@@ -515,6 +526,7 @@ protected:
 		return list;
 	}
 
+	QMutex alglock;
 	Allinputs *input;
 	Alloutputs *output;
 	VideoBuffer *vbuf;
@@ -540,6 +552,11 @@ LibSmartElement::LibSmartElement(QObject *parent, QJsonObject config)
 {
 	ctx = new LibSmartContext(config);
 	inst = this;
+}
+
+void LibSmartElement::release()
+{
+	ctx->release();
 }
 
 void LibSmartElement::setVideoStabilizationEnabled(bool en)

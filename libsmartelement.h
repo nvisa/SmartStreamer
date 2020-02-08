@@ -18,6 +18,7 @@ public:
 	static LibSmartElement * instance();
 	LibSmartElement(QObject *parent = NULL, QJsonObject config = QJsonObject());
 
+	void release();
 	void setVideoStabilizationEnabled(bool en);
 	bool isVideoStabilizationEnabled();
 	bool isTamperDetectionEnabled();
