@@ -27,6 +27,7 @@ message AlgorithmHead {
         int32 algorithm_index = 2;
         string algorithm_node = 3;
     }
+	string friendly_name = 4;
 }
 
 message AlgorithmStatus {
@@ -36,7 +37,6 @@ message AlgorithmStatus {
 message AlgorithmInformation {
     AlgorithmHead head_info = 1;
     AlgorithmStatus status = 2;
-	string name = 3;
 }
 
 message AlgorithmListResponse {
@@ -85,8 +85,15 @@ message SmartMotionAlgorithmParameters {
 	Rectangle tracking_object = 5;
 }
 
-message PanChangeAlgorithmParameters {
+message LocationInformation {
+	float pan = 1;
+	float tilt = 2;
+	float zoom = 3;
+}
 
+message PanChangeAlgorithmParameters {
+	repeated LocationInformation locationInformation= 1;
+	int64 intervalForCirculation = 2;
 }
 
 message PrivacyMaskingParameters {
