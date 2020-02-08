@@ -1,5 +1,9 @@
 #include "libsmartelement.h"
 #include "libsmart/BasicStructures.h"
+#include "applicationinfo.h"
+
+#include <ecl/ptzp/ptzphead.h>
+#include <ecl/ptzp/ptzpdriver.h>
 
 #include <lmm/debug.h>
 #include <lmm/tools/unittimestat.h>
@@ -122,6 +126,11 @@ public:
 		algoCtx = nullptr;
 		vbuf = nullptr;
 		thr = nullptr;
+		pthead = nullptr;
+		zhead = nullptr;
+		reverseTilt = true;
+		reversePan = false;
+		reverseOutputDirection = false;
 
 		if (QFile("smart_algorithm_parameters.bin").exists()) {
 			fDebug("Loading smart algorithm parmeters");
@@ -204,6 +213,7 @@ public:
 		}
 
 		if (!algoCtx) {
+			findPtzpHeads();
 			thr = new InitThread;
 			thr->ctx = this;
 			thr->start();
@@ -240,6 +250,25 @@ protected:
 		return 0;
 	}
 
+	void findPtzpHeads()
+	{
+		PtzpDriver *drv = ApplicationInfo::instance()->getPtzpDriver(0);
+		for (int i = 0; i < drv->getHeadCount(); i++) {
+			PtzpHead *head = drv->getHead(i);
+			if (head->hasCapability(ptzp::PtzHead_Capability_PAN))
+				pthead = head;
+			if (head->hasCapability(ptzp::PtzHead_Capability_ZOOM))
+				zhead = head;
+		}
+	}
+
+	bool isTracking()
+	{
+		if (input->run_mode == aselsmart::MANUEL_TRACK || input->run_mode == aselsmart::AUTO_TRACK)
+			return true;
+		return false;
+	}
+
 	int processSmartMotion()
 	{
 		std::vector<VideoBuffer *> bufs;
@@ -247,6 +276,29 @@ protected:
 		QElapsedTimer t;
 		t.start();
 		input->run_mode = (aselsmart::AlgorithmRunMode)settings.run_mode();
+
+		float hor = 0, ver = 0;
+		if (pthead && zhead) {
+			if (zhead->getFOV(hor, ver)) {
+				hor = 0;
+				ver = 0;
+			}
+			float pan = pthead->getPanAngle();
+			if (reversePan)
+				pan *= -1;
+			float tilt = pthead->getTiltAngle();
+			while (tilt > 180)
+				tilt -= 360;
+			if (reverseTilt)
+				tilt *= -1;
+			input->states.pan_tilt_zoom_read[0] = pan;
+			input->states.pan_tilt_zoom_read[1] = tilt;
+			input->states.pan_tilt_zoom_read[2] = 0;
+			input->states.pan_tilt_zoom_read[3] = hor;
+			input->states.pan_tilt_zoom_read[4] = ver;
+		}
+
+		//input->states.pan_tilt_zoom_read
 		input->states.stabilization = settings.video_stabilization();
 		input->states.enhancement_type = settings.pre_processing();
 		input->states.enhancement_degree = settings.pre_processing_degree() * 100;
@@ -254,6 +306,21 @@ protected:
 		process_algorithm(algoCtx, input, output, bufs);
 		stat.addStat(t.elapsed());
 		//qDebug() << "***********************************" << stat.max << stat.min << stat.avg << stat.last;
+
+		if (isTracking() && pthead) {
+			if (reverseOutputDirection) {
+				if (input->ui.track_object.uS < vbuf->w / 2)
+					output->track_alarm.panSpeed *= -1;
+				if (input->ui.track_object.vS < vbuf->h / 2)
+					output->track_alarm.tiltSpeed *= -1;
+			}
+			float pand = output->track_alarm.panSpeed;//input->states.pan_tilt_zoom_read[3];
+			float tiltd = output->track_alarm.tiltSpeed;//input->states.pan_tilt_zoom_read[4];
+			pthead->panTiltDegree(pand, tiltd);
+			if (pand == 0 && tiltd == 0)
+				pthead->panTiltStop();
+		} //else if (pthead)
+			//pthead->panTiltStop();
 
 		return 0;
 	}
@@ -456,6 +523,11 @@ protected:
 	UnitTimeStat stat;
 	algorithm::v2::AlgorithmParameters settings;
 	QJsonObject config;
+	PtzpHead *pthead;
+	PtzpHead *zhead;
+	bool reverseTilt;
+	bool reversePan;
+	bool reverseOutputDirection;
 };
 
 LibSmartElement *LibSmartElement::instance()
