@@ -2,6 +2,8 @@
 #include "ui_algorithmcontrolwidget.h"
 #include "libsmartelement.h"
 #include "proto/v2/AlgorithmCommunicationV2.pb.h"
+#include "tx1streamer.h"
+#include "applicationinfo.h"
 
 #include <lmm/debug.h>
 #include <lmm/qtvideooutput.h>
@@ -28,6 +30,17 @@ AlgorithmControlWidget::AlgorithmControlWidget(QWidget *parent) :
 	QTimer::singleShot(500, this, SLOT(updateSettings()));
 	ui->frameVideo->setLayout(new QVBoxLayout());
 	ui->frameVideo->layout()->setContentsMargins(0, 0, 0, 0);
+
+	auto streamers = ApplicationInfo::instance()->getStreamers();
+	TX1Streamer *str = nullptr;
+	foreach (BaseStreamer *s, streamers) {
+		TX1Streamer *ip = qobject_cast<TX1Streamer *>(s);
+		if (!ip)
+			continue;
+		str = ip;
+		break;
+	}
+	streamer = str;
 }
 
 AlgorithmControlWidget::~AlgorithmControlWidget()
@@ -63,14 +76,53 @@ void AlgorithmControlWidget::paintHook(const RawBuffer &buf)
 	lastBuffer = buf;
 }
 
+static QPoint map2Video(QPoint p, QWidget *w, int sw, int sh)
+{
+	QPoint p2;
+	p2.setX(p.x() * sw / w->width());
+	p2.setY(p.y() * sh / w->height());
+	return p2;
+}
+
 bool AlgorithmControlWidget::eventFilter(QObject *obj, QEvent *ev)
 {
 	QWidget *widget = qobject_cast<QWidget *>(obj);
 	if (!widget)
 		return false;
+	QMouseEvent *mev = (QMouseEvent *)ev;
+	if (ev->type() == QEvent::MouseMove) {
+		if (!mouseDown)
+			return false;
+		if (streamer) {
+			QRect r;
+			r.setTopLeft(map2Video(selectedPoints.first(), widget, 640, 360));
+			r.setBottomRight(map2Video(mev->pos(), widget, 640, 360));
+			streamer->drawRegion(0, r);
+		}
+	}
+	if (ev->type() == QEvent::MouseButtonRelease) {
+		mouseDown = false;
+		widget->setMouseTracking(false);
+		if (streamer)
+			streamer->clearDrawRegions();
+		QRectF r;
+		int rw = qAbs(mev->pos().x() - selectedPoints.first().x());
+		int rh = qAbs(mev->pos().y() - selectedPoints.first().y());
+		r.setX(selectedPoints.first().x() / (float)widget->width());
+		r.setY(selectedPoints.first().y() / (float)widget->height());
+		r.setWidth(rw / (float)widget->width());
+		r.setHeight(rh / (float)widget->height());
+		selectedPoints.clear();
+		return showAlgoContextMenu(r, widget->mapToGlobal(mev->pos()));
+	}
 	if (ev->type() != QEvent::MouseButtonPress)
 		return false;
-	QMouseEvent *mev = (QMouseEvent *)ev;
+
+	if (mev->button() == Qt::LeftButton) {
+		selectedPoints << mev->pos();
+		mouseDown = true;
+		widget->setMouseTracking(true);
+	}
 
 	auto res = std::static_pointer_cast<algorithm::v2::Alarm>(lastBuffer.constPars()->metaDataRaw);
 	if (!res) {
@@ -92,33 +144,37 @@ bool AlgorithmControlWidget::eventFilter(QObject *obj, QEvent *ev)
 		QRectF r(x, y, w, h);
 		bool inrect = r.contains(ptf);
 		//qDebug() << ptf << x << y << w << h << inrect;
-		if (inrect) {
-			int action = 0; //0: manuel track, 1: auto track
-			if (mev->button() == Qt::RightButton) {
-				QMenu menu;
-				menu.addAction("Start manuel track");
-				menu.addAction("Start auto track");
-				QAction *a = menu.exec(widget->mapToGlobal(mev->pos()));
-				if (!a)
-					action = -1;
-				else if (a->text() == "Start manuel track")
-					action = 0;
-				else if (a->text() == "Start auto track")
-					action = 1;
-
-			}
-
-			if (action == -1)
-				return false;
-
-			auto el = LibSmartElement::instance();
-			el->setTrackRegion(r);
-			if (action == 0)
-				el->setRunMode(algorithm::v2::MANUEL_TRACK);
-			else if (action == 1)
-				el->setRunMode(algorithm::v2::AUTO_TRACK);
-		}
+		if (inrect && mev->button() == Qt::RightButton)
+			return showAlgoContextMenu(r, widget->mapToGlobal(mev->pos()));
 	}
+
+	return true;
+}
+
+bool AlgorithmControlWidget::showAlgoContextMenu(QRectF r, QPoint pos)
+{
+	int action = 0; //0: manuel track, 1: auto track
+
+	QMenu menu;
+	menu.addAction("Start manuel track");
+	menu.addAction("Start auto track");
+	QAction *a = menu.exec(pos);
+	if (!a)
+		action = -1;
+	else if (a->text() == "Start manuel track")
+		action = 0;
+	else if (a->text() == "Start auto track")
+		action = 1;
+
+	if (action == -1)
+		return false;
+
+	auto el = LibSmartElement::instance();
+	el->setTrackRegion(r);
+	if (action == 0)
+		el->setRunMode(algorithm::v2::MANUEL_TRACK);
+	else if (action == 1)
+		el->setRunMode(algorithm::v2::AUTO_TRACK);
 
 	return true;
 }

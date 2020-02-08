@@ -6,6 +6,7 @@
 #include <lmm/rawbuffer.h>
 
 class VideoWidget;
+class TX1Streamer;
 
 namespace Ui {
 class AlgorithmControlWidget;
@@ -28,6 +29,7 @@ public:
 protected:
 	bool eventFilter(QObject *, QEvent *);
 private slots:
+	bool showAlgoContextMenu(QRectF r, QPoint pos);
 	void updateSettings();
 	void on_checkVideoStab_clicked();
 
@@ -49,6 +51,9 @@ private:
 	Ui::AlgorithmControlWidget *ui;
 	VideoWidget *videoWidget;
 	RawBuffer lastBuffer;
+	QList<QPoint> selectedPoints;
+	TX1Streamer *streamer;
+	bool mouseDown;
 };
 
 #endif // ALGORITHMCONTROLWIDGET_H

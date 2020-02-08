@@ -99,6 +99,21 @@ int TX1Streamer::start()
 	return BaseStreamer::start();
 }
 
+void TX1Streamer::drawRegion(int index, QRect r)
+{
+	Q_UNUSED(index);
+	streamLock.lock();
+	overlayRect = r;
+	streamLock.unlock();
+}
+
+void TX1Streamer::clearDrawRegions()
+{
+	streamLock.lock();
+	overlayRect = QRect();
+	streamLock.unlock();
+}
+
 /**
  * @brief TX1Streamer::runAlgorithm
  * @param channel
@@ -459,6 +474,17 @@ int TX1Streamer::overlayResults(const RawBuffer &buf)
 
 	int w = buf.constPars()->videoWidth;
 	int h = buf.constPars()->videoHeight;
+
+	/* draw selection rectangle */
+	streamLock.lock();
+	if (!overlayRect.isEmpty()) {
+		p.setPen(QColor(78, 255, 255, 100));
+		p.setBrush(QColor(78, 255, 255, 100));
+		p.drawRect(overlayRect);
+		p.setPen(Qt::red);
+		p.setBrush(QBrush());
+	}
+	streamLock.unlock();
 
 	/* draw ROI and Line's */
 	auto pars = LibSmartElement::instance()->getParameters();

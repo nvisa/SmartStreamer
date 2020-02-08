@@ -7,6 +7,7 @@
 #include <algorithm/algorithmgrpcserver.h>
 
 #include <QUrl>
+#include <QRect>
 #include <QSharedPointer>
 
 class VideoScaler;
@@ -26,6 +27,8 @@ public:
 
 	virtual int start();
 
+	void drawRegion(int index, QRect r);
+	void clearDrawRegions();
 	int runAlgorithm(int channel);
 	int stopAlgorithm(int channel);
 	~TX1Streamer();
@@ -64,6 +67,8 @@ protected:
 	VideoScaler *yuv2rgb;
 	VideoScaler *rgb2yuv;
 	BufferQueue *jpegQueue;
+	QMutex streamLock;
+	QRect overlayRect;
 	QSharedPointer<MotionAlarmSource> motionAlarmSource;
 	QSharedPointer<TrackAlarmSource> trackAlarmSource;
 	QSharedPointer<GenericAlarmSource> tamperAlarmSource;
