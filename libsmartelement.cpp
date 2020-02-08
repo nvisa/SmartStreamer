@@ -43,6 +43,7 @@ static void toGrpc(const BBox &box, algorithm::v2::DetectedObject &obj, int w, i
 static void fromGrpc(ROI &roi, const algorithm::v2::SmartMotionRegion &region, int w, int h)
 {
 	roi.active = region.active();
+	roi.updated = false;
 	roi.stand_time = region.stand_time_msecs() / 40; //TODO: use real fps
 	roi.wander_time = region.wander_time_msecs() / 40; //TODO: use real fps
 	for (int i = 0; i < region.detection_region_point_size(); i++) {
@@ -78,7 +79,7 @@ static void toGrpc(const ROI &roi, algorithm::v2::SmartMotionRegion &region, int
 
 static void fromGrpc(LINE &line, const algorithm::v2::LineCrossRegion &region, int w, int h)
 {
-	line.active = true;
+	line.active = region.active();
 	points pt;
 	pt.u = region.pt1().x() * w;
 	pt.v = region.pt1().y() * h;
@@ -168,6 +169,7 @@ public:
 		if (input) {
 			input->ui.rois = initROIFromParamaters();
 			input->ui.lines = initLinesFromParameters();
+			input->ui.track_object = initTrackObjectsFromParameters(1920, 1080);
 		}
 #if 0
 		std::string strj;
@@ -463,6 +465,20 @@ protected:
 		}
 
 		return l;
+	}
+
+	BBox initTrackObjectsFromParameters(int w, int h)
+	{
+		BBox track;
+		if (!settings.has_smart_parameters())
+			return track;
+
+		auto spars = settings.smart_parameters();
+		track.uS = spars.tracking_object().top_left().x() * w;
+		track.vS = spars.tracking_object().top_left().y() * h;
+		track.uE = spars.tracking_object().bottom_right().x() * w;
+		track.vE = spars.tracking_object().bottom_right().y() * h;
+		return track;
 	}
 
 	std::vector<ROI> initROIStatic()
