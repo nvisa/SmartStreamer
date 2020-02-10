@@ -32,6 +32,7 @@ extern "C" {
 #include <libavformat/avformat.h>
 }
 
+#include <QTcpSocket>
 
 IpStreamer::IpStreamer(const QJsonObject &config, QObject *parent):
 	TX1Streamer(parent)
@@ -39,12 +40,26 @@ IpStreamer::IpStreamer(const QJsonObject &config, QObject *parent):
 	this->config = config;
 }
 
-void IpStreamer::setCurrentSource(const QString &url)
+static bool isAlive(QString url, bool timeout)
+{
+	QTcpSocket s;
+	QUrl qurl(url);
+	s.connectToHost(qurl.host(), qurl.port());
+	return s.waitForConnected(timeout);
+}
+
+int IpStreamer::setCurrentSource(const QString &url)
 {
 	mDebug("Switching video source to %s", qPrintable(url));
 	BaseLmmDemux *demux = (BaseLmmDemux *)getPipeline(0)->getPipe(0);
+	bool ok = isAlive(url, 100);
+	if (!ok)
+		ok = isAlive(url, 5000);
+	if (!ok)
+		return -1;
 	demux->restart(url);
 	currentSourceUrl = url;
+	return 0;
 }
 
 QString IpStreamer::getCurrentSource()

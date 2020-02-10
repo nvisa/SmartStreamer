@@ -30,7 +30,7 @@ public:
 	int readSourceInformation();
 	int setupAlgorithmManager();
 	QString getCurrentSource();
-	void setCurrentSource(const QString &url);
+	int setCurrentSource(const QString &url);
 
 	class Parameters {
 	public:
