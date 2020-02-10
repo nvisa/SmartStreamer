@@ -250,5 +250,78 @@
                 }
             ],
             "startup_delay": 60
+    },
+    "sahingoz_odin_absgs": {
+        "fusionstreamer": true,
+        "fusion_config": {
+        "device": "/dev/video0;/dev/video2",
+        "resolution_width": 720,
+        "resolution_height": 576,
+        "fov_wide": {
+            "day_strecth_x_left": 0,
+            "day_strecth_y_up": 0,
+            "day_strecth_x_right": 0,
+            "day_strecth_y_down": 0,
+            "thermal_strecth_x_left": 0,
+            "thermal_strecth_y_up": 0,
+            "thermal_strecth_x_right": 0,
+            "thermal_strecth_y_down": 0
+        },
+        "fov_wide_middle": {
+            "day_strecth_x_left": 40,
+            "day_strecth_y_up": 40,
+            "day_strecth_x_right": -60,
+            "day_strecth_y_down": -40,
+            "thermal_strecth_x_left": 0,
+            "thermal_strecth_y_up": 0,
+            "thermal_strecth_x_right": 0,
+            "thermal_strecth_y_down": 0
+        },
+        "fov_middle": {
+            "day_strecth_x_left": 0,
+            "day_strecth_y_up": 0,
+            "day_strecth_x_right": 0,
+            "day_strecth_y_down": 0,
+            "thermal_strecth_x_left": 0,
+            "thermal_strecth_y_up": 0,
+            "thermal_strecth_x_right": -28,
+            "thermal_strecth_y_down": -32
+        },
+        "fov_narrow_middle": {
+            "day_strecth_x_left": 46,
+            "day_strecth_y_up": 16,
+            "day_strecth_x_right": -66,
+            "day_strecth_y_down": -26,
+            "thermal_strecth_x_left": 0,
+            "thermal_strecth_y_up": 0,
+            "thermal_strecth_x_right": 0,
+            "thermal_strecth_y_down": 0
+        },
+        "fov_narrow": {
+            "day_strecth_x_left": 0,
+            "day_strecth_y_up": 0,
+            "day_strecth_x_right": 0,
+            "day_strecth_y_down": 0,
+            "thermal_strecth_x_left": -22,
+            "thermal_strecth_y_up": -18,
+            "thermal_strecth_x_right": 22,
+            "thermal_strecth_y_down": 18
         }
+        },
+        "ptzp": [
+            {
+                "grpc_port": 50058,
+                "kardelen": false,
+                "relay": {
+                    "daycam": 1,
+                    "standby": 2,
+                    "thermal": 3
+                },
+                "target": "ttyXRUSB0?baud=9600?protocol=422;ttyXRUSB1?baud=19200?protocol=422?parity=1?databits=7?stopbits=1",
+                "type": "kayi",
+            "falcon_eye_mode": "absgs"
+            }
+        ],
+        "startup_delay": 60
+    }
 }

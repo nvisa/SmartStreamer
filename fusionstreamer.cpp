@@ -154,7 +154,8 @@ void FusionStreamer::checkCropRegion(const QJsonObject &config){
 
 static FovRatioStruct fovRatio()
 {
-	float *fovs;//ApplicationInfo::instance()->getPtzpDriver()->getHead(0)->getFovs();
+	MgeoFalconEyeHead *falcon = (MgeoFalconEyeHead *)ApplicationInfo::instance()->getPtzpDriver()->getHead(0);
+	float *fovs = falcon->getFOVAbsgs();
 	FovRatioStruct fovRatio;
 	fovRatio.width_ratio = fovs[0] / fovs[2];
 	fovRatio.height_ratio = fovs[1] / fovs[3];
