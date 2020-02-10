@@ -247,6 +247,10 @@ void SeiInserter::setSeiField(RawBuffer buf)
 
 int SeiInserter::processBuffer(const RawBuffer &buf)
 {
+	/* if we have libsmart meta, do not mess with sei */
+	if (buf.constPars()->metaDataRaw)
+		return 0;
+
 	lock.lock();
 
 	/* first check alarm duration */
