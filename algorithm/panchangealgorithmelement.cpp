@@ -21,6 +21,7 @@ PanChangeAlgorithmElement::PanChangeAlgorithmElement(QObject *parent)
 
 int PanChangeAlgorithmElement:: init()
 {
+	mInfo("Initializing PanChange Algorithm");
 	initROI = 1;
 	locationIndex = 0;
 	stateOfProcess = panIsGoingToLocation;
@@ -44,22 +45,27 @@ int PanChangeAlgorithmElement::processAlgo(const RawBuffer &buf)
 
 	float panTiltRead[2];
 	if (stateOfProcess == panIsGoingToLocation) {
+		mInfo("Currently going to pan location");
 		AlgorithmCommunication::LocationInformation myLocation = *(listOfLocationInformationFromAlgComm->mutable_locationinformation(locationIndex));
 		panTiltRead[0] = (float)myLocation.pan(); panTiltRead[1] = (float)myLocation.tilt();
 		headz->setProperty(4,myLocation.zoom());
 		headpt->panTiltGoPos(panTiltRead[0],panTiltRead[1]);
 		if (abs(headpt->getPanAngle() - myLocation.pan()) > 0.001) {
+			mInfo("Not arrived the pan location");
 			stateOfProcess = panIsGoingToLocation;
 			return 0;
 		} else {
+			mInfo("State is changed to waitForStabilView");
 			stateOfProcess = waitForStabilView;
 		}
 	} else if (stateOfProcess == waitForStabilView) {
 		static int counter = 0;
 		if (counter < 200) {
+			mInfo("Waiting for stabil view");
 			stateOfProcess = waitForStabilView;
 			counter++;
 		} else {
+			mInfo("Going into algorithm performing state");
 			stateOfProcess = algorithmIsPerforming;
 			counter = 0;
 		}
@@ -67,15 +73,18 @@ int PanChangeAlgorithmElement::processAlgo(const RawBuffer &buf)
 		AlgorithmCommunication::LocationInformation myLocation = *(listOfLocationInformationFromAlgComm->mutable_locationinformation(locationIndex));
 		panTiltRead[0] = (float)myLocation.pan(); panTiltRead[1] = (float)myLocation.tilt();
 #if HAVE_TX1
+		mInfo("Before asel_pan_change");
 		asel_pan_change((uchar*)buf.constData(), width, height, panTiltRead[0], panTiltRead[1], locationIndex, initROI);
+		mInfo("After asel_pan_change");
 		int counter = numberOfTurnAtGivenIndex.at(locationIndex);
 		QString fileInitial("/home/nvidia/Pictures/ChangeLogs/res");
 		QFile f(QString("%1_%2_%3_diff.png").arg(fileInitial).arg(locationIndex).arg(counter));
-		qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << QString("%1_%2_%3_diff.png").arg(fileInitial).arg(locationIndex).arg(counter);
+		mInfo("Looking for file");
 		if(f.open(QIODevice::ReadOnly)) {
 			const QByteArray &imdata = f.readAll();
 			f.close();
-			KardelenAPIServer::instance()->setPanChangeFrame(QString("index%1").arg(locationIndex).toStdString(), imdata);
+			if(KardelenAPIServer::instance())
+				KardelenAPIServer::instance()->setPanChangeFrame(QString("index%1").arg(locationIndex).toStdString(), imdata);
 			//QProcess::startDetached(QString("rm %1").arg(QString("%1_%2_%3_diff.png").arg(fileInitial).arg(locationIndex).arg(counter)));
 			counter++;
 			if (counter == 10)
@@ -85,8 +94,10 @@ int PanChangeAlgorithmElement::processAlgo(const RawBuffer &buf)
 #endif
 	initROI = 0;
 	stateOfProcess = algorithmIsCompletedMoveNextPoint;
+	mInfo("Moving to algorithmIsCompletedMoveNextPoint");
 	return 0;
 } else if (stateOfProcess == algorithmIsCompletedMoveNextPoint) {
+		mInfo("stateOfProcess of algorithmIsCompletedMoveNextPoint");
 	if (locationIndex == (locationSize - 1)) {
 		timer.restart();
 		stateOfProcess = waitForGivenInterval;
@@ -170,7 +181,7 @@ int PanChangeAlgorithmElement::loadLocations()
 {
 	locationIndex = 0;
 	if (!QFileInfo("locations.bin").exists()) {
-		mDebug("The file doesn't existed");
+		mInfo("The file doesn't existed");
 		return -1;
 	}
 	QFile f("locations.bin");
