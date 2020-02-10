@@ -132,6 +132,8 @@ public:
 		reverseTilt = true;
 		reversePan = false;
 		reverseOutputDirection = false;
+		vw = 1920;
+		vh = 1080;
 
 		if (QFile("smart_algorithm_parameters.bin").exists()) {
 			fDebug("Loading smart algorithm parmeters");
@@ -170,7 +172,7 @@ public:
 		if (input) {
 			input->ui.rois = initROIFromParamaters();
 			input->ui.lines = initLinesFromParameters();
-			input->ui.track_object = initTrackObjectsFromParameters(1920, 1080);
+			input->ui.track_object = initTrackObjectsFromParameters(vw, vh);
 		}
 #if 0
 		std::string strj;
@@ -190,10 +192,10 @@ public:
 	void setTrackRect(QRectF rect)
 	{
 		ffDebug() << "setting track rectangle as " << rect;
-		input->ui.track_object.uS = rect.x() * 1920;
-		input->ui.track_object.vS = rect.y() * 1080;
-		input->ui.track_object.uE = (rect.x() + rect.width()) * 1920;
-		input->ui.track_object.vE = (rect.y() + rect.height()) * 1080;
+		input->ui.track_object.uS = rect.x() * vw;
+		input->ui.track_object.vS = rect.y() * vh;
+		input->ui.track_object.uE = (rect.x() + rect.width()) * vw;
+		input->ui.track_object.vE = (rect.y() + rect.height()) * vh;
 	}
 
 	algorithm::v2::AlgorithmParameters getSettings()
@@ -444,7 +446,7 @@ protected:
 			LINE line;
 			line.active = true;
 			line.updated = true;
-			fromGrpc(line, l, 1920, 1080);
+			fromGrpc(line, l, vw, vh);
 			list.push_back(line);
 		}
 
@@ -460,7 +462,7 @@ protected:
 		auto spars = settings.smart_parameters();
 		foreach (auto r, spars.regions()) {
 			ROI roi;
-			fromGrpc(roi, r, 1920, 1080);
+			fromGrpc(roi, r, vw, vh);
 			roi.updated = true;
 			l.push_back(roi);
 		}
@@ -509,7 +511,7 @@ protected:
 			for (auto roi : l) {
 				//algorithm::v2::SmartMotionRegion region;
 				auto region = pars->add_regions();
-				toGrpc(roi, *region, 1920, 1080);
+				toGrpc(roi, *region, vw, vh);
 			}
 		}
 
@@ -536,7 +538,7 @@ protected:
 			auto pars = settings.mutable_smart_parameters();
 			for (auto line: list) {
 				auto region = pars->add_lines();
-				toGrpc(line, *region, 1920, 1080);
+				toGrpc(line, *region, vw, vh);
 			}
 		}
 
@@ -557,6 +559,8 @@ protected:
 	bool reverseTilt;
 	bool reversePan;
 	bool reverseOutputDirection;
+	int vw;
+	int vh;
 };
 
 LibSmartElement *LibSmartElement::instance()
