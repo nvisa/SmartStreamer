@@ -157,7 +157,8 @@ public:
 	void release()
 	{
 		QMutexLocker ml(&alglock);
-		release_algorithm(algoCtx);
+		if (algoCtx)
+			release_algorithm(algoCtx);
 		algoCtx = nullptr;
 	}
 
