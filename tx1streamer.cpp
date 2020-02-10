@@ -39,6 +39,7 @@ extern "C" {
 
 #include <QUuid>
 #include <QPainter>
+#include <QXmlStreamWriter>
 
 struct fg {
 	int mode;
@@ -282,6 +283,67 @@ void TX1Streamer::apiUrlRequested(const QUrl &url)
 	}
 }
 
+static QByteArray toXml(const algorithm::v2::Alarm *alarm)
+{
+	QByteArray ba;
+	QXmlStreamWriter wr(&ba);
+	wr.writeStartDocument();
+	wr.writeTextElement("TI", QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz"));
+	for (algorithm::v2::DetectedObject obj: alarm->detected_object()){
+		auto rect = obj.bounding_box();
+
+		wr.writeStartElement("AI");
+		switch (obj.object_id_case()) {
+		case algorithm::v2::DetectedObject::kObjectCounter:
+			wr.writeAttribute("N", QString::number(obj.object_counter()));
+			break;
+		case algorithm::v2::DetectedObject::kObjectGuid:
+			wr.writeAttribute("N", QString::fromStdString(obj.object_guid()));
+			break;
+		case algorithm::v2::DetectedObject::OBJECT_ID_NOT_SET:
+			wr.writeAttribute("N", "undefined");
+			break;
+		}
+		wr.writeEndElement();
+
+		wr.writeStartElement("ADI");
+		wr.writeAttribute("K", "5");
+		if (obj.object_type() == algorithm::v2::DetectedObject::HUMAN)
+			wr.writeAttribute("V", "0");
+		if (obj.object_type() == algorithm::v2::DetectedObject::VEHICLE)
+			wr.writeAttribute("V", "3");
+		if (obj.object_type() == algorithm::v2::DetectedObject::HUMAN)
+			wr.writeAttribute("V", "1");
+		wr.writeEndElement();
+
+		wr.writeStartElement("ADI");
+		wr.writeAttribute("K", "6");
+		if (obj.event() == algorithm::v2::DetectedObject::ROI_ENTER)
+			wr.writeAttribute("V", "0");
+		if (obj.event() == algorithm::v2::DetectedObject::LINE_CROSS)
+			wr.writeAttribute("V", "5");
+		if (obj.event() == algorithm::v2::DetectedObject::WANDERING)
+			wr.writeAttribute("V", "1");
+		if (obj.event() == algorithm::v2::DetectedObject::LEFT_OBJECT)
+			wr.writeAttribute("V", "2");
+		if (obj.event() == algorithm::v2::DetectedObject::STANDING)
+			wr.writeAttribute("V", "4");
+		wr.writeEndElement();
+
+		wr.writeStartElement("ADI");
+		wr.writeAttribute("K", "8");
+		wr.writeAttribute("V", QString::number(obj.object_direction()));
+		wr.writeEndElement();
+
+		wr.writeStartElement("");
+		wr.writeEndElement();
+	}
+
+	wr.writeEndDocument();
+
+	return ba;
+}
+
 int TX1Streamer::checkSeiAlarm(const RawBuffer &buf)
 {
 	checkAlgoState();
@@ -406,6 +468,8 @@ int TX1Streamer::notifyGrpcForAlarm(const RawBuffer &buf)
 		motionAlarmSource->produce("", "", ba, objs);
 	else
 		motionAlarmSource->notifyNoMotion("", "", ba);
+
+	((RawBuffer *)&buf)->pars()->metaData = toXml(res.get());
 
 	return 0;
 }
