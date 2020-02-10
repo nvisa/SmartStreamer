@@ -20,6 +20,7 @@
 #include <grpc++/security/credentials.h>
 #include <grpc++/security/server_credentials.h>
 
+#include <QDir>
 #include <QThread>
 #include <QDateTime>
 #include <QJsonDocument>
@@ -91,13 +92,14 @@ grpc::Status AlgorithmGrpcServerV2::RunAlgorithm(grpc::ServerContext *context, c
 	std::string alname = request->friendly_name();
 	auto el = LibSmartElement::instance();
 	//BaseAlgorithmElement *cdel = ApplicationInfo::instance()->getAlgorithmInstance("panchange", 0);
-	fDebug("Trying to Starting algorithm '%s'", alname.data());
+	fDebug("Trying to starting algorithm '%s'", alname.data());
 	if (alname == "Change detection") {
 		if (el->isPassThru() == false) {
 			fDebug("We have a running algorithm, cannot start change detection.");
 			return grpc::Status(grpc::INVALID_ARGUMENT, "Please stop already running algorithm before starting change detection");
 		}
 		el->release();
+		QDir::setCurrent("/etc/smartstreamer/motion0_gpu");
 		AlgorithmGrpcServer *papi = AlgorithmGrpcServer::instance();
 		AlgorithmCommunication::RequestForAlgorithm req;
 		grpc::ServerContext ctx;
@@ -137,6 +139,7 @@ grpc::Status AlgorithmGrpcServerV2::StopAlgorithm(grpc::ServerContext *context, 
 	std::string alname = request->friendly_name();
 	fDebug("Trying to stop algorithm '%s'", alname.data());
 	if (alname == "Change detection") {
+		QDir::setCurrent("/etc/smartstreamer/motion0");
 		AlgorithmGrpcServer *papi = AlgorithmGrpcServer::instance();
 		AlgorithmCommunication::RequestForAlgorithm req;
 		grpc::ServerContext ctx;
@@ -335,7 +338,8 @@ grpc::Status AlgorithmGrpcServerV2::SetSystemFeature(grpc::ServerContext *contex
 		if (!ipstr)
 			return grpc::Status(grpc::NOT_FOUND, "IP source is not implemented in this streamer");
 		FeatureIPVideoSource src = request->video_source();
-		ipstr->setCurrentSource(QString::fromStdString(src.url()));
+		if (ipstr->setCurrentSource(QString::fromStdString(src.url())))
+			return grpc::Status(grpc::ABORTED, "Given video source url is not reachable");
 		break;
 	}
 	default:
