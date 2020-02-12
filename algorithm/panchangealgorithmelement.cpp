@@ -6,6 +6,7 @@
 
 #include "lmm/debug.h"
 #include "kardelenapi.h"
+#include "algorithmgrpcserverv2.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -85,6 +86,8 @@ int PanChangeAlgorithmElement::processAlgo(const RawBuffer &buf)
 			f.close();
 			if(KardelenAPIServer::instance())
 				KardelenAPIServer::instance()->setPanChangeFrame(QString("index%1").arg(locationIndex).toStdString(), imdata);
+			if(AlgorithmGrpcServerV2::instance())
+				AlgorithmGrpcServerV2::instance()->setPanChangeFrame(QString("index%1").arg(locationIndex).toStdString(), imdata);
 			//QProcess::startDetached(QString("rm %1").arg(QString("%1_%2_%3_diff.png").arg(fileInitial).arg(locationIndex).arg(counter)));
 			counter++;
 			if (counter == 10)
