@@ -1372,7 +1372,7 @@ public:
 		}
 		if (index == ENUM_PARAM_OPERATIONAL_MODE) {
 			BaseAlgorithmElement *el = ApplicationInfo::instance()->getAlgorithmInstance(0);
-			if (el->getState() != BaseAlgorithmElement::UNKNOWN)
+			if (el->getState() == BaseAlgorithmElement::PROCESS)
 				_mymode = CONTROL_MODE_DETECTION;
 			return getMode();
 		}
