@@ -281,7 +281,7 @@ grpc::Status AlgorithmGrpcServerV2::ListAlgorithms(grpc::ServerContext *context,
 	auto alg = response->add_algorithms();
 	alg->mutable_head_info()->set_algorithm_node("node0");
 	alg->mutable_head_info()->set_friendly_name("Smart algorithms");
-	alg->mutable_status()->set_is_running(LibSmartElement::instance()->isPassThru());
+	alg->mutable_status()->set_is_running(!LibSmartElement::instance()->isPassThru());
 
 	alg = response->add_algorithms();
 	alg->mutable_head_info()->set_algorithm_node("node0");
