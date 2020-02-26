@@ -974,8 +974,12 @@ public:
 
 	void moveAbsolute(const kaapi::AbsoluteMoveParameters *request)
 	{
-		ptzp->getHead(1)->panTiltGoPos(request->panpos(), request->tiltpos());
-	}
+		float adjustedPanVal = 0;
+		if (request->panpos() < 0)
+			adjustedPanVal = request->panpos() + 360;
+		else
+			adjustedPanVal = request->panpos();
+		ptzp->getHead(1)->panTiltGoPos(adjustedPanVal, request->tiltpos());	}
 
 	void setCamera(int32_t type)
 	{
