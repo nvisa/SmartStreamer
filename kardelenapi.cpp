@@ -916,6 +916,7 @@ public:
 		addcap(caps, CAPABILITY_FOCUS);
 		addcap(caps, CAPABILITY_HPF_GAIN);
 		addcap(caps, CAPABILITY_SHOW_HIDE_SEMBOLOGY);
+		addcap(caps, CAPABILITY_ROI);
 
 		addcap(caps, CAPABILITY_DETECTION);
 		addcap(caps, CAPABILITY_PT);
