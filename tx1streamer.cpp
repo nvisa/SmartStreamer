@@ -777,7 +777,7 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	p1->append(motion);
 	p1->append(track);
 	p1->append(panchange);
-	p1->append(smartel);
+//	p1->append(smartel);
 
 	/* rgb portion */
 	p1->append(yuv2rgb);
