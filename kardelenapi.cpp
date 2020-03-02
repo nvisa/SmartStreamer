@@ -1102,6 +1102,9 @@ public:
 		addcap(caps, CAPABILITY_HPF_GAIN);
 		addcap(caps, CAPABILITY_PT);
 		addcap(caps, CAPABILITY_FOCUS);
+		addcap(caps, CAPABILITY_ROI);
+
+		addcap(caps, CAPABILITY_DETECTION);
 		return caps;
 	}
 	void setPosi(kaapi::PosInfo *posi)
@@ -1129,6 +1132,8 @@ public:
 
 		/* enum parameters */
 		v = 0;
+		addEnumParameter(v, ENUM_PARAM_OPERATIONAL_MODE, response);
+		addEnumParameter(v, ENUM_PARAM_DETECTION_CREATION_MODE, response);
 		addEnumParameter(v, ENUM_PARAM_GAIN_LEVEL, response);
 		response->set_enumparametersvector(v);
 	}
@@ -1139,15 +1144,11 @@ public:
 			ptzp->getHead(1)->setProperty(0, ptzp->getHead(1)->getProperty(0) + 1);
 		else if (request->zoomspeed() < 0)
 			ptzp->getHead(1)->setProperty(0, ptzp->getHead(1)->getProperty(0) - 1);
-		qDebug() << "move relative speed";
-		qDebug() << "pan: " << request->panspeed() << "tilt: " << request->tiltspeed();
-		ptzp->getHead(0)->panTiltAbs(request->panspeed() / 100.0, -1 * request->tiltspeed() / 100.0);
+		ptzp->getHead(0)->panTiltAbs(request->panspeed() / 100.0, request->tiltspeed() / 100.0);
 	}
 
 	void moveAbsolute(const kaapi::AbsoluteMoveParameters *request)
 	{
-		qDebug() << "move absolute speed";
-		qDebug() << "pan: " << request->panpos() << "tilt: " << request->tiltpos();
 		ptzp->getHead(0)->panTiltGoPos(request->panpos(), request->tiltpos());
 	}
 
@@ -1167,14 +1168,14 @@ public:
 		else if (index == NUM_PARAM_VERTICAL_RES)
 			value = 640;
 		else if ( index == NUM_PARAM_HPF_GAIN){
-			bytes[1] = 1;
+			bytes[0] = 1;
 			if(ptzp->getHead(1)->getProperty(2) == 1)
-				bytes[0] = 1;
+				bytes[1] = 1;
 			else if (ptzp->getHead(1)->getProperty(2) == 0)
-				bytes[0] = 2;
+				bytes[1] = 2;
 		}
 		else if (index == NUM_PARAM_ZOOM)
-			ptzp->getHead(1)->getProperty(0);
+			value = ptzp->getHead(1)->getProperty(0);
 		else if (index == NUM_PARAM_YAW) {
 			float pana = ptzp->getHead(0)->getPanAngle();
 			if (pana > 180)
@@ -1183,8 +1184,6 @@ public:
 				value = pana;
 		} else if (index == NUM_PARAM_PITCH)
 			value = ptzp->getHead(0)->getTiltAngle();
-		else if (index == NUM_PARAM_ZOOM)
-			value = 100 - double(ptzp->getHead(1)->getProperty(0));
 		else if (index == NUM_PARAM_PREDEFINED_GAIN_COUNT)
 			value = 15;
 		else {
@@ -1201,8 +1200,8 @@ public:
 				return THERMAL;
 		if (index == ENUM_PARAM_OPERATIONAL_MODE)
 			return getMode();
-		if (index == ENUM_PARAM_CAMERA_TYPE)
-			return THERMAL;
+		if (index == ENUM_PARAM_DETECTION_CREATION_MODE)
+			return DETECTION_OPEN_MODE;
 		if (index == ENUM_PARAM_GAIN_LEVEL)
 			return ptzp->getHead(1)->getProperty(1) + 1;
 		/* API wants this */
