@@ -19,12 +19,7 @@ SOURCES += main.cpp \
     alarmgeneratorelement.cpp \
     kardelenapi.cpp \
     usersettings.cpp \
-    alarmsource.cpp \
-    algorithmcommunicationv2.cpp \
-    videostreamer.cpp \
-	libsmartelement.cpp \
-	algorithmcontrolwidget.cpp \
-    fusionstreamer.cpp
+    alarmsource.cpp
 
 HEADERS += \
     moxadriver.h \
@@ -41,12 +36,7 @@ HEADERS += \
     kardelenapi.h \
     algorithmparameters.h \
     usersettings.h \
-    alarmsource.h \
-    algorithmcommunicationv2.h \
-    videostreamer.h \
-	libsmartelement.h \
-	algorithmcontrolwidget.h \
-    fusionstreamer.h
+    alarmsource.h
 
 websockets {
     SOURCES += websocketstreamer.cpp
@@ -82,6 +72,11 @@ tx1 {
 		tx1streamer.cpp \
 		tbgthstreamer.cpp \
 		videotestsourcestreamer.cpp \
+		libsmartelement.cpp \
+		algorithmcontrolwidget.cpp \
+		fusionstreamer.cpp \
+		algorithmcommunicationv2.cpp \
+		videostreamer.cpp
 
 	HEADERS += \
 		ipstreamer.h \
@@ -93,6 +88,11 @@ tx1 {
 		tx1streamer.h \
 		tbgthstreamer.h \
 		videotestsourcestreamer.h \
+		libsmartelement.h \
+		algorithmcontrolwidget.h \
+		fusionstreamer.h \
+		algorithmcommunicationv2.h \
+		videostreamer.h
 
 	LIBS += -L/usr/local/cuda/lib64 -lcudart -lcufft
 	LIBS += -L/usr/lib/aarch64-linux-gnu/tegra/ -lv4l2 -lnvbuf_utils -lnvinfer -lnvparsers -lnvjpeg -lEGL -lX11

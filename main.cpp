@@ -476,8 +476,8 @@ int main(int argc, char *argv[])
 	if (QString::fromLatin1(argv[0]).contains("orionc"))
 		return testOrionGrpc(argv[1]);
 
-	init_smart_init();
 #if HAVE_TX1
+	init_smart_init();
 	{
 		extern char* get_libgpu_version();
 		qDebug() << "libgpu.a version is" << get_libgpu_version();
