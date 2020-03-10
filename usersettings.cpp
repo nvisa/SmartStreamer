@@ -1,6 +1,6 @@
 #include "usersettings.h"
 
-#include <ecl/debug.h>
+#include <debug.h>
 
 #include <QFile>
 #include <QDebug>

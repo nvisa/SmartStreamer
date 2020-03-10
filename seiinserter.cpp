@@ -1,6 +1,6 @@
 #include "seiinserter.h"
 
-//#include <ecl/drivers/gpiocontroller.h>
+//#include <gpiocontroller.h>
 
 #include <lmm/debug.h>
 //#include <lmm/dmai/h264encoder.h>

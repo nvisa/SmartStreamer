@@ -13,7 +13,7 @@
 #include "algorithmcontrolwidget.h"
 #include "algorithm/algorithmgrpcserverv2.h"
 
-#include <ecl/ptzp/ptzpdriver.h>
+#include <ptzpdriver.h>
 
 #include <lmm/debug.h>
 #include <lmm/v4l2input.h>

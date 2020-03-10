@@ -27,18 +27,18 @@
 #include <QFile>
 #include <QDir>
 
-#include <ecl/debug.h>
-#include <ecl/ptzp/kayidriver.h>
-#include <ecl/ptzp/tbgthdriver.h>
-#include <ecl/ptzp/aryadriver.h>
-#include <ecl/ptzp/flirdriver.h>
-#include <ecl/ptzp/irdomedriver.h>
-#include <ecl/ptzp/yamgozdriver.h>
-#include <ecl/ptzp/swirdriver.h>
-#include <ecl/ptzp/htrswirdriver.h>
-#include <ecl/ptzp/oem4kdriver.h>
-#include <ecl/drivers/systeminfo.h>
-#include <ecl/ptzp/virtualptzpdriver.h>
+#include <debug.h>
+#include <kayidriver.h>
+#include <tbgthdriver.h>
+#include <aryadriver.h>
+#include <flirdriver.h>
+#include <irdomedriver.h>
+#include <yamgozdriver.h>
+#include <swirdriver.h>
+#include <htrswirdriver.h>
+#include <oem4kdriver.h>
+#include <systeminfo.h>
+#include <virtualptzpdriver.h>
 
 #include <unistd.h>
 

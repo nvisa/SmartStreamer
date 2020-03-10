@@ -24,7 +24,7 @@ using namespace std;
 #include "applicationinfo.h"
 
 #include <lmm/debug.h>
-#include <ecl/ptzp/ptzpdriver.h>
+#include <ptzpdriver.h>
 
 #include <QFile>
 #include <unistd.h>

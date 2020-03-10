@@ -16,10 +16,10 @@
 
 #include <lmm/lmmcommon.h>
 
-#include <ecl/debug.h>
-#include <ecl/drivers/exarconfig.h>
-#include <ecl/net/remotetcpconnection.h>
-#include <ecl/drivers/qextserialport/qextserialport.h>
+#include <debug.h>
+#include <exarconfig.h>
+#include <remotetcpconnection.h>
+#include <qextserialport/qextserialport.h>
 
 #include <unistd.h>
 #include <execinfo.h>

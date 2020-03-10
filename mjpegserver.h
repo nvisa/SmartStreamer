@@ -6,7 +6,7 @@
 #include <lmm/interfaces/imagesnapshotinterface.h>
 #include <lmm/interfaces/streamcontrolelementinterface.h>
 
-#include <ecl/net/simplehttpserver.h>
+#include <simplehttpserver.h>
 
 #include <QTimer>
 #include <QSemaphore>

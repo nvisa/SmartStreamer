@@ -1,8 +1,8 @@
 #include "indevicetest.h"
 
-#include <ecl/debug.h>
-#include <ecl/ptzp/ptzphead.h>
-#include <ecl/ptzp/ptzpdriver.h>
+#include <debug.h>
+#include <ptzphead.h>
+#include <ptzpdriver.h>
 
 #include <lmm/baselmmpipeline.h>
 

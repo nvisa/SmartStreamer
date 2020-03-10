@@ -4,7 +4,7 @@
 #include "streamercommon.h"
 #include "alarmsource.h"
 
-#include <ecl/drivers/patternng.h>
+#include <patternng.h>
 
 #include <lmm/debug.h>
 
@@ -31,8 +31,8 @@ using namespace std;
 #include "proto/AlgorithmCommunication.grpc.pb.h"
 #include "proto/AlgorithmCommunication.pb.h"
 
-#include "ecl/ptzp/ptzphead.h"
-#include "ecl/ptzp/ptzpdriver.h"
+#include "ptzphead.h"
+#include "ptzpdriver.h"
 #include "applicationinfo.h"
 
 #include <QImage>

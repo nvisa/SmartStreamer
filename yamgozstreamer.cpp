@@ -4,8 +4,8 @@
 #include "algorithm/basealgorithmelement.h"
 #include "applicationinfo.h"
 
-#include <ecl/ptzp/ptzpdriver.h>
-#include <ecl/ptzp/ptzphead.h>
+#include <ptzpdriver.h>
+#include <ptzphead.h>
 
 #include <lmm/debug.h>
 #include <lmm/v4l2input.h>

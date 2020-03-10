@@ -2,8 +2,8 @@
 #define PANAROMAALGORITHMELEMENT_H
 
 #include "basealgorithmelement.h"
-#include "ecl/ptzp/ptzphead.h"
-#include "ecl/ptzp/aryapthead.h"
+#include "ptzphead.h"
+#include "aryapthead.h"
 
 #include <QElapsedTimer>
 

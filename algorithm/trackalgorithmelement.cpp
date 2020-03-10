@@ -6,8 +6,8 @@
 #include "applicationinfo.h"
 #include "alarmgeneratorelement.h"
 
-#include <ecl/ptzp/ptzphead.h>
-#include <ecl/ptzp/ptzpdriver.h>
+#include <ptzphead.h>
+#include <ptzpdriver.h>
 
 #include <QUuid>
 

@@ -1,8 +1,8 @@
 #include "panchangealgorithmelement.h"
 #include "algorithmfunctions.h"
 #include "applicationinfo.h"
-#include <ecl/ptzp/ptzphead.h>
-#include <ecl/ptzp/ptzpdriver.h>
+#include <ptzphead.h>
+#include <ptzpdriver.h>
 
 #include "lmm/debug.h"
 #include "kardelenapi.h"

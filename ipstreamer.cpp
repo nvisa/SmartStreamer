@@ -5,7 +5,7 @@
 #include "algorithmelement.h"
 #include "streamercommon.h"
 
-#include <ecl/debug.h>
+#include <debug.h>
 
 #include <lmm/debug.h>
 #include <lmm/bufferqueue.h>

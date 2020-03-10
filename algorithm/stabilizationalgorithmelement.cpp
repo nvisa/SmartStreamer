@@ -4,8 +4,8 @@
 
 #include <lmm/debug.h>
 
-#include <ecl/ptzp/ptzphead.h>
-#include <ecl/ptzp/ptzpdriver.h>
+#include <ptzphead.h>
+#include <ptzpdriver.h>
 
 StabilizationAlgorithmElement::StabilizationAlgorithmElement(QObject *parent)
 	: BaseAlgorithmElement(parent)

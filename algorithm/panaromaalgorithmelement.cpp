@@ -5,8 +5,8 @@
 #include "unistd.h"
 
 #include "applicationinfo.h"
-#include "ecl/ptzp/aryadriver.h"
-#include "ecl/ptzp/aryapthead.h"
+#include "aryadriver.h"
+#include "aryapthead.h"
 
 #include <QProcess>
 #include <QBuffer>

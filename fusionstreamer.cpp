@@ -21,9 +21,9 @@ extern "C" {
 
 using namespace cv;
 
-#include <ecl/ptzp/ptzpdriver.h>
-#include <ecl/ptzp/ptzphead.h>
-#include <ecl/ptzp/mgeofalconeyehead.h>
+#include <ptzpdriver.h>
+#include <ptzphead.h>
+#include <mgeofalconeyehead.h>
 
 #include <applicationinfo.h>
 

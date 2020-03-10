@@ -1,7 +1,7 @@
 #ifndef SIMPLEAPISERVER_H
 #define SIMPLEAPISERVER_H
 
-#include <ecl/net/simplehttpserver.h>
+#include <simplehttpserver.h>
 
 #include <QUrl>
 

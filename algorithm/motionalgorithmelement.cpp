@@ -7,8 +7,8 @@
 #include <QFile>
 #include <QJsonObject>
 
-#include <ecl/ptzp/ptzphead.h>
-#include <ecl/ptzp/ptzpdriver.h>
+#include <ptzphead.h>
+#include <ptzpdriver.h>
 
 MotionAlgorithmElement::MotionAlgorithmElement(QObject *parent)
 	: BaseAlgorithmElement(parent)

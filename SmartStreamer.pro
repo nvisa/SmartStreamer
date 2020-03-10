@@ -132,17 +132,6 @@ metrics {
     DEFINES += HAVE_METRICS_PROMETHEUS
 }
 
-deprecated {
-    SOURCES += \
-        algorithmmanager.cpp \
-        algorithmelement.cpp \
-
-    HEADERS += \
-        algorithmmanager.h \
-        algorithmelement.h \
-        algorithmfunctions.h \
-}
-
 third-party {
     LIBS += -L/home/nvidia/workspace/xDNN/Release -lxDNN
     LIBS += -L/opt/caffe-dev/lib -lcaffe
