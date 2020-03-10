@@ -36,7 +36,8 @@ HEADERS += \
     kardelenapi.h \
     algorithmparameters.h \
     usersettings.h \
-    alarmsource.h
+    alarmsource.h\
+    algorithmfunctions.h
 
 websockets {
     SOURCES += websocketstreamer.cpp

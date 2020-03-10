@@ -8,7 +8,6 @@
 #include "version.h"
 #include "yamgozstreamer.h"
 #include "analogstreamer.h"
-#include "algorithmmanager.h"
 #include "algorithm/algorithmgrpcserver.h"
 #include "applicationinfo.h"
 #include "indevicetest.h"

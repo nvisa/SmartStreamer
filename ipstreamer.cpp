@@ -1,8 +1,6 @@
 #include "ipstreamer.h"
 #include "mjpegserver.h"
 #include "seiinserter.h"
-#include "algorithmmanager.h"
-#include "algorithmelement.h"
 #include "streamercommon.h"
 
 #include <debug.h>
