@@ -266,6 +266,7 @@ public:
 			addcap(caps, CAPABILITY_THERMAL_STANDBY_MODE);
 			addcap(caps, CAPABILITY_CHANGE_DETECTION);
 			addcap(caps, CAPABILITY_SHOW_RETICLE);
+			addcap(caps, CAPABILITY_FOV_BASED_PT_SPEED);
 		} else {
 			addcap(caps, CAPABILITY_JOYSTICK_CONTROL);
 			addcap(caps, CAPABILITY_DETECTION);
@@ -289,6 +290,7 @@ public:
 			addcap(caps, CAPABILITY_THERMAL_STANDBY_MODE);
 			addcap(caps, CAPABILITY_CHANGE_DETECTION);
 			addcap(caps, CAPABILITY_SHOW_RETICLE);
+			addcap(caps, CAPABILITY_FOV_BASED_PT_SPEED);
 		}
 
 		return caps;
@@ -916,6 +918,7 @@ public:
 		addcap(caps, CAPABILITY_FOCUS);
 		addcap(caps, CAPABILITY_HPF_GAIN);
 		addcap(caps, CAPABILITY_SHOW_HIDE_SEMBOLOGY);
+		addcap(caps, CAPABILITY_ROI);
 
 		addcap(caps, CAPABILITY_DETECTION);
 		addcap(caps, CAPABILITY_PT);
@@ -973,8 +976,12 @@ public:
 
 	void moveAbsolute(const kaapi::AbsoluteMoveParameters *request)
 	{
-		ptzp->getHead(1)->panTiltGoPos(request->panpos(), request->tiltpos());
-	}
+		float adjustedPanVal = 0;
+		if (request->panpos() < 0)
+			adjustedPanVal = request->panpos() + 360;
+		else
+			adjustedPanVal = request->panpos();
+		ptzp->getHead(1)->panTiltGoPos(adjustedPanVal, request->tiltpos());	}
 
 	void setCamera(int32_t type)
 	{

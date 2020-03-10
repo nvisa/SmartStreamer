@@ -179,6 +179,136 @@ static void printHelp()
 #include <grpc++/security/server_credentials.h>
 #include "proto/AlgorithmCommunication.grpc.pb.h"
 #include "proto/OrionCommunication.grpc.pb.h"
+#include "proto/v2/AlgorithmCommunicationV2.grpc.pb.h"
+
+static int testGrpcV2(const QString &action)
+{
+	QString ep = QString("1.4.1.27:50159");
+	std::shared_ptr<grpc::Channel> chn = grpc::CreateChannel(ep.toStdString(), grpc::InsecureChannelCredentials());
+	std::shared_ptr<algorithm::v2::AlgorithmService::Stub> stub = algorithm::v2::AlgorithmService::NewStub(chn);
+	grpc::ClientContext ctx;
+	::grpc::Status status;
+	if (action == "get_list_of_algorithms") {
+		algorithm::v2::AlgorithmListResponse resp;
+		google::protobuf::Empty request;
+
+		stub->ListAlgorithms(&ctx,request,&resp);
+		if (resp.algorithms_size() != 0) {
+			for (int i = 0; i < resp.algorithms_size(); i++) {
+				qDebug() << QString::fromStdString(resp.algorithms(i).head_info().algorithm_node());
+				qDebug() << QString::fromStdString(resp.algorithms(i).head_info().friendly_name());
+				qDebug() << resp.algorithms(i).status().is_running();
+			}
+		}
+	}
+	if (action == "run_algorithm")
+	{
+		google::protobuf::Empty resp;
+		algorithm::v2::AlgorithmHead request;
+		std::string algorithm_node_name = "node0";
+		request.set_algorithm_node(algorithm_node_name);
+		request.set_friendly_name("Smart Motion");
+		stub->RunAlgorithm(&ctx,request,&resp);
+	}
+	if (action == "stop_algorithm")
+	{
+		google::protobuf::Empty resp;
+		algorithm::v2::AlgorithmHead request;
+		std::string algorithm_node_name = "node0";
+		request.set_algorithm_node(algorithm_node_name);
+		request.set_friendly_name("Smart Motion");
+		stub->StopAlgorithm(&ctx,request,&resp);
+	}
+	if (action == "get_system_feature_url")
+	{
+		algorithm::v2::SystemFeature resp;
+		algorithm::v2::SystemFeature req;
+		::algorithm::v2::FeatureIPVideoSource video_source;
+		req.set_allocated_video_source(&video_source);
+		stub->GetSystemFeature(&ctx, req, &resp);
+		qDebug() << "url streamed by device is " << QString::fromStdString(resp.video_source().url());
+	}
+	if (action == "set_system_feature_url")
+		{
+			algorithm::v2::SystemFeature resp;
+			algorithm::v2::SystemFeature req;
+			::algorithm::v2::FeatureIPVideoSource video_source;
+			//Will be implemented for setting URL
+			stub->GetSystemFeature(&ctx, req, &resp);
+		}
+	if (action == "get_system_feature_custom")
+		{
+			algorithm::v2::SystemFeature resp;
+			algorithm::v2::SystemFeature req;
+			::algorithm::v2::FeatureCustom custom;
+			custom.set_key("fusion_stream_mode");
+			req.set_allocated_custom(&custom);
+			stub->GetSystemFeature(&ctx, req, &resp);
+			qDebug() << "custom feature from device is " << QString::fromStdString(resp.custom().value());
+		}
+	if (action == "set_system_feature_custom")
+	{
+		algorithm::v2::SystemFeature resp;
+		algorithm::v2::SystemFeature req;
+		::algorithm::v2::FeatureCustom custom;
+		custom.set_key("fusion_stream_mode");
+		custom.set_value("day");
+		req.set_allocated_custom(&custom);
+		stub->SetSystemFeature(&ctx, req, &resp);
+		qDebug() << "custom feature from device is " << QString::fromStdString(resp.custom().value());
+	}
+	if (action == "get_algorithm_parameters")
+	{
+		algorithm::v2::AlgorithmParameters resp;
+		algorithm::v2::AlgorithmHead req;
+		std::string algorithm_node_name = "node0";
+		req.set_algorithm_node(algorithm_node_name);
+		stub->GetAlgorithmParameters(&ctx, req, &resp);
+		qDebug() << "Algorithm Parameters are.....";
+		qDebug() << "Video stabilization is " << resp.video_stabilization();
+		qDebug() << "Tamper detection is " << resp.tamper_detection();
+		qDebug() << "Privacy masking is " << resp.privacy_masking();
+		qDebug() << "Pre_processing_degree is " << resp.pre_processing_degree();
+		qDebug() << "Smart motion parameters are....";
+		qDebug() << "--------------------------------";
+		algorithm::v2::SmartMotionAlgorithmParameters smart_param = resp.smart_parameters();
+		qDebug() << "Total Smart Motion Region size is " << smart_param.regions_size();
+		for (int i = 0; i < smart_param.regions_size(); i++)
+		{
+			algorithm::v2::SmartMotionRegion region = smart_param.regions(i);
+			qDebug() << "Wander time in msecs for region " << i << " is " << region.wander_time_msecs();
+			qDebug() << "Stand time in msecs for region " << i << " is " << region.stand_time_msecs();
+			qDebug() << "Is region " << i << " active? " << region.active();
+			for (int j = 0; j < region.detection_region_point_size(); j++) {
+				qDebug() << "Point " << j << " is " << region.detection_region_point(j).x() << region.detection_region_point(j).y();
+			}
+			for (int k = 0; k < region.motion_direction_size(); k++)
+				qDebug() << region.motion_direction(k);
+		}
+
+		qDebug() << "min region rectangle is " << smart_param.min_region().top_left().x()
+				 << smart_param.min_region().top_left().y()
+				 << smart_param.min_region().bottom_right().x()
+				 << smart_param.min_region().bottom_right().y();
+
+		qDebug() << "max region rectangle is " << smart_param.max_region().top_left().x()
+				 << smart_param.max_region().top_left().y()
+				 << smart_param.max_region().bottom_right().x()
+				 << smart_param.max_region().bottom_right().y();
+
+		for (int m = 0; m < smart_param.lines_size(); m++) {
+			algorithm::v2::LineCrossRegion line_param = smart_param.lines(m);
+			qDebug() << "first point of line " << m << " is " << line_param.pt1().x() << line_param.pt1().y();
+			qDebug() << "second point of line " << m << " is " << line_param.pt2().x() << line_param.pt2().y();
+			qDebug() << "Is line " << m << " active? " << line_param.active();
+		}
+	}
+	if (status.error_code() != grpc::OK) {
+		qDebug("error '%d' in grpc call", status.error_code());
+		return -1;
+	}
+
+}
 
 static int testOrionGrpc(const QString &action)
 {
@@ -475,6 +605,8 @@ int main(int argc, char *argv[])
 		return testGrpc(argv[1]);
 	if (QString::fromLatin1(argv[0]).contains("orionc"))
 		return testOrionGrpc(argv[1]);
+	if (QString::fromLatin1(argv[0]).contains("v2ic"))
+		return testGrpcV2(argv[1]);
 
 #if HAVE_TX1
 	init_smart_init();

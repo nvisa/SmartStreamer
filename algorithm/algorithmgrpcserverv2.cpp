@@ -25,6 +25,8 @@
 #include <QDateTime>
 #include <QJsonDocument>
 
+#include <unistd.h>
+
 using namespace algorithm::v2;
 
 class AlgorithmGrpcServerV2GrpcThreadAlg : public QThread
@@ -63,25 +65,51 @@ void AlgorithmGrpcServerV2::addAlarmSource(QSharedPointer<AlarmSource> source)
 	alarmSources << source;
 }
 
+void AlgorithmGrpcServerV2::setPanChangeFrame(const string &tag, const QByteArray &image)
+{
+	QMutexLocker ml(&mutex);
+	lastImage = image;
+	lastImgTag = tag;
+}
+
 AlgorithmGrpcServerV2::AlgorithmGrpcServerV2()
 	: AlgorithmService::Service()
 {
+	snapshotEl = NULL;
 	AlgorithmGrpcServerV2GrpcThreadAlg *grpcServ = new AlgorithmGrpcServerV2GrpcThreadAlg(50159, this);
 	grpcServ->start();
 }
 
 grpc::Status AlgorithmGrpcServerV2::GetScreenShot(grpc::ServerContext *context, const algorithm::v2::ScreenshotInfo *request, algorithm::v2::ScreenFrame *response)
 {
-	return grpc::Status(grpc::UNIMPLEMENTED, "Coming soon...");
+	Q_UNUSED(context)
+	Q_UNUSED(request)
+	if (!snapshotEl)
+		return grpc::Status(grpc::CANCELLED, "No available snapShot element in device");
+	QByteArray ba = snapshotEl->take();
+	response->set_frame(ba,ba.size());
+	return grpc::Status(grpc::OK, "Snapshot is available in response");
 }
 
 grpc::Status AlgorithmGrpcServerV2::GetScreenShotStream(grpc::ServerContext *context, const algorithm::v2::ScreenshotInfo *request, ::grpc::ServerWriter<algorithm::v2::ScreenFrame> *writer)
 {
-	return grpc::Status(grpc::UNIMPLEMENTED, "Coming soon...");
+	Q_UNUSED(context)
+	Q_UNUSED(request)
+	while(1) {
+		QByteArray ba = snapshotEl->take(1);
+		algorithm::v2::ScreenFrame frame;
+		frame.set_frame(ba, ba.size());
+		writer->Write(frame);
+		usleep(10000);
+	}
+
+	return grpc::Status(grpc::OK, "Snapshot is available in stream");
 }
 
 grpc::Status AlgorithmGrpcServerV2::RunAlgorithm(grpc::ServerContext *context, const algorithm::v2::AlgorithmHead *request, google::protobuf::Empty *response)
 {
+	Q_UNUSED(context)
+	Q_UNUSED(response)
 	if (request->head_selection_case() != AlgorithmHead::kAlgorithmNode)
 		return grpc::Status(grpc::INVALID_ARGUMENT, "Please provide a valid algorithm_node");
 
@@ -116,6 +144,8 @@ grpc::Status AlgorithmGrpcServerV2::RunAlgorithm(grpc::ServerContext *context, c
 
 grpc::Status AlgorithmGrpcServerV2::RestartAlgorithm(grpc::ServerContext *context, const algorithm::v2::AlgorithmHead *request, google::protobuf::Empty *response)
 {
+	Q_UNUSED(context)
+	Q_UNUSED(response)
 	if (request->head_selection_case() != AlgorithmHead::kAlgorithmNode)
 		return grpc::Status(grpc::INVALID_ARGUMENT, "Please provide a valid algorithm_node");
 
@@ -128,6 +158,8 @@ grpc::Status AlgorithmGrpcServerV2::RestartAlgorithm(grpc::ServerContext *contex
 
 grpc::Status AlgorithmGrpcServerV2::StopAlgorithm(grpc::ServerContext *context, const algorithm::v2::AlgorithmHead *request, google::protobuf::Empty *response)
 {
+	Q_UNUSED(context)
+	Q_UNUSED(response)
 	if (request->head_selection_case() != AlgorithmHead::kAlgorithmNode)
 		return grpc::Status(grpc::INVALID_ARGUMENT, "Please provide a valid algorithm_node");
 
@@ -155,6 +187,8 @@ grpc::Status AlgorithmGrpcServerV2::StopAlgorithm(grpc::ServerContext *context, 
 
 grpc::Status AlgorithmGrpcServerV2::SetAlgorithmParameters(grpc::ServerContext *context, const algorithm::v2::AlgorithmParametersSetRequest *request, google::protobuf::Empty *response)
 {
+	Q_UNUSED(context)
+	Q_UNUSED(response)
 	if (request->algorithm().head_selection_case() != AlgorithmHead::kAlgorithmNode)
 		return grpc::Status(grpc::INVALID_ARGUMENT, "Please provide a valid algorithm_node");
 
@@ -224,6 +258,8 @@ grpc::Status AlgorithmGrpcServerV2::SetAlgorithmParameters(grpc::ServerContext *
 
 grpc::Status AlgorithmGrpcServerV2::GetAlgorithmParameters(grpc::ServerContext *context, const algorithm::v2::AlgorithmHead *request, algorithm::v2::AlgorithmParameters *response)
 {
+	Q_UNUSED(context)
+
 	if (request->head_selection_case() != AlgorithmHead::kAlgorithmNode)
 		return grpc::Status(grpc::INVALID_ARGUMENT, "Please provide a valid algorithm_node");
 
@@ -239,10 +275,13 @@ grpc::Status AlgorithmGrpcServerV2::GetAlgorithmParameters(grpc::ServerContext *
 
 grpc::Status AlgorithmGrpcServerV2::ListAlgorithms(grpc::ServerContext *context, const google::protobuf::Empty *request, algorithm::v2::AlgorithmListResponse *response)
 {
+	Q_UNUSED(context)
+	Q_UNUSED(request)
+
 	auto alg = response->add_algorithms();
 	alg->mutable_head_info()->set_algorithm_node("node0");
 	alg->mutable_head_info()->set_friendly_name("Smart algorithms");
-	alg->mutable_status()->set_is_running(LibSmartElement::instance()->isPassThru());
+	alg->mutable_status()->set_is_running(!LibSmartElement::instance()->isPassThru());
 
 	alg = response->add_algorithms();
 	alg->mutable_head_info()->set_algorithm_node("node0");
@@ -255,6 +294,8 @@ grpc::Status AlgorithmGrpcServerV2::ListAlgorithms(grpc::ServerContext *context,
 
 grpc::Status AlgorithmGrpcServerV2::GetSystemFeature(grpc::ServerContext *context, const algorithm::v2::SystemFeature *request, algorithm::v2::SystemFeature *response)
 {
+	Q_UNUSED(context)
+
 	switch (request->feature_case()) {
 	case SystemFeature::FeatureCase::kCustom: {
 		auto src = request->custom();
@@ -305,6 +346,8 @@ grpc::Status AlgorithmGrpcServerV2::GetSystemFeature(grpc::ServerContext *contex
 
 grpc::Status AlgorithmGrpcServerV2::SetSystemFeature(grpc::ServerContext *context, const algorithm::v2::SystemFeature *request, algorithm::v2::SystemFeature *response)
 {
+	Q_UNUSED(context)
+	Q_UNUSED(response)
 	switch (request->feature_case()) {
 	case SystemFeature::FeatureCase::kCustom: {
 		auto src = request->custom();
@@ -352,6 +395,8 @@ grpc::Status AlgorithmGrpcServerV2::SetSystemFeature(grpc::ServerContext *contex
 
 grpc::Status AlgorithmGrpcServerV2::GetAlarm(grpc::ServerContext *context, ::grpc::ServerReaderWriter<algorithm::v2::Alarms, algorithm::v2::AlarmReqInfo> *stream)
 {
+	Q_UNUSED(context)
+
 	MultipleAlarmSource mals;
 	bool sendIDTAlarms = true;
 
@@ -423,7 +468,16 @@ grpc::Status AlgorithmGrpcServerV2::GetAlarm(grpc::ServerContext *context, ::grp
 				}
 			}
 		}
-
+		mutex.lock();
+		if (lastImage.size()) {
+			Alarm *alarm = res.add_alarms();
+			alarm->set_type("Pan Change Frame");
+			alarm->add_key(lastImgTag);
+			std::string frame(lastImage.constData(), lastImage.size());
+			alarm->add_value(frame);
+			lastImage.clear();
+		}
+		mutex.unlock();
 		success = stream->Write(res);
 		if (!success)
 			return grpc::Status::OK;

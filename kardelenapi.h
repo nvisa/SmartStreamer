@@ -63,6 +63,8 @@ const static int CAPABILITY_HPF_SPATIAL = 39;
 const static int CAPABILITY_THERMAL_STANDBY_MODE = 40;
 const static int CAPABILITY_CHANGE_DETECTION = 41;
 const static int CAPABILITY_SHOW_RETICLE = 42;
+const static int CAPABILITY_OVERLAY_ON_OFF = 43;
+const static int CAPABILITY_FOV_BASED_PT_SPEED = 44;
 
 const static int NUM_PARAM_SENSITIVITY = 0;
 const static int NUM_PARAM_RANGE = 1;

@@ -1,7 +1,10 @@
 #ifndef ALGORITHMGRPCSERVERV2_H
 #define ALGORITHMGRPCSERVERV2_H
 
+#include <QMutex>
+
 #include "alarmsource.h"
+#include "snapshotelement.h"
 #include "proto/v2/AlgorithmCommunicationV2.grpc.pb.h"
 
 class AlgorithmGrpcServerV2 : public algorithm::v2::AlgorithmService::Service
@@ -10,7 +13,7 @@ public:
 	static AlgorithmGrpcServerV2 * instance();
 
 	void addAlarmSource(QSharedPointer<AlarmSource> source);
-
+	void setPanChangeFrame(const std::string &tag, const QByteArray &image);
 protected:
 
 	AlgorithmGrpcServerV2();
@@ -29,8 +32,14 @@ public:
 	grpc::Status SetSystemFeature(grpc::ServerContext *context, const algorithm::v2::SystemFeature *request, algorithm::v2::SystemFeature *response) override;
 	grpc::Status GetAlarm(grpc::ServerContext *context, ::grpc::ServerReaderWriter<algorithm::v2::Alarms, algorithm::v2::AlarmReqInfo> *stream) override;
 
+	void setSnapshotElement(SnapshotElement *el) {snapshotEl = el;}
+
 protected:
 	QList<QSharedPointer<AlarmSource>> alarmSources;
+	QByteArray lastImage;
+	std::string lastImgTag;
+	QMutex mutex;
+	SnapshotElement *snapshotEl;
 };
 
 #endif // ALGORITHMGRPCSERVERV2_H
