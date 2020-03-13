@@ -1,0 +1,8 @@
+[submodule "ptzp"]
+	path = ptzp
+	url = https://gitlab.com/aselsanprojects/ptzp.git
+	branch = master
+[submodule "lmm"]
+	path = lmm
+	url = https://gitlab.com/aselsanprojects/lmm.git
+	branch = next
