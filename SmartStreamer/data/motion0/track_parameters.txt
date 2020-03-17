@@ -1,15 +1,13 @@
-1.0	image scale X
-1.0	image scale Y
-860	top-left point X
-830	top-left point Y
-140	target width
-70	target Height
-80	camera tilt angle
-10	pan-tilt stop angle percentage
-3	seconds to get the target into the center
-1	speed up facotr for tilt
-0	0->dome_gunduz, 1->thermal_pantilt, 2->sabit, 3->thermal_sabit
-0	start frame ID: for the cases we get video from file
-1	CPU/GPU : 0/1
-2	Track Alg 0/1/2/3/4/5: KCF(Gaussian) / DCT_CA / KCF_CA / Staple_DCT / Staple_KCF / KCF(linear), 5 is the default as the fastest
-0.15	Track Drop threshold
+868		top-left point X
+597		top-left point Y
+923		bottom-right point X
+687		bottom-right point Y
+5		angle_gate
+1.5		centerize time
+2		Track Alg 0/1/2/3/4/5: KCF(Gaussian) / DCT_CA / KCF_CA / Staple_DCT / Staple_KCF / KCF(linear), 5 is the default as the fastest
+0.05	Track Drop threshold
+
+868
+597
+55
+90

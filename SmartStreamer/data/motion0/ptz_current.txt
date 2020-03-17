@@ -1,0 +1,5 @@
+0	pan
+0	tilt
+0	dummy
+64	zoomX
+32	zoomY

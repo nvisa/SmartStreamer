@@ -50,5 +50,9 @@
         <file>data/tk1/factory_gungor.json</file>
         <file>data/tk1/factory_thermal.json</file>
         <file>data/platforms/devbox/encoders.json</file>
+        <file>data/motion0/detection_parameters.txt</file>
+        <file>data/motion0/calibration_points.txt</file>
+        <file>data/motion0/ptz_current.txt</file>
+        <file>data/motion0/lines.txt</file>
     </qresource>
 </RCC>
