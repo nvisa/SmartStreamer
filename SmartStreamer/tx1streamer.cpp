@@ -772,16 +772,19 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	rgb2yuv->setOutputFormat(AV_PIX_FMT_YUV420P);
 	rgb2yuv->setMode(1);
 
+	QJsonObject smartObj = StreamerCommon::readSettingsJSON("/etc/smartstreamer/smartconfig.json").object();
 	p1->setQuitOnThreadError(true);
-	p1->append(privacy);
-	p1->append(motion);
-	p1->append(track);
+	if (smartObj.value("libgpuelement").toBool()) {
+		p1->append(privacy);
+		p1->append(motion);
+		p1->append(track);
+	}
 	p1->append(panchange);
 	p1->append(smartel);
-
 	/* rgb portion */
 	p1->append(yuv2rgb);
-	p1->append(face);
+	if (smartObj.value("libgpuelement").toBool())
+		p1->append(face);
 	p1->append(rgb2yuv);
 
 	p1->append(newFunctionPipe(TX1Streamer, this, TX1Streamer::checkSeiAlarm));
