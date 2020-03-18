@@ -1,0 +1,29 @@
+0.3	scaleX
+0.3	scaleY
+8		params[0]: Matching sigma multiplier: high->less alarm --  sensitivity range (K - 1.25K)
+4		params[1]: Mode number: not to be changed
+0.0005	params[2]: Mean intensity learning rate --  sensitivity range (0.001 - 0.01)
+0.0005	params[3]: Variance and Weights learning rate -- sensitivity range (0.0002 - 0.002) 
+50		params[4]: sensitivity 0 to 100, 100 is the highest sensitivity, more alarms -- the values in this file are determined according to the most sensitive scenario
+100		params[5]: initial variance
+0.005	params[6]: initial weight
+0.7		params[7]: threshold for foreground detection -- sensitivity range (0.7 - 0.9)
+0.0001	params[8]: increment of mean learning rate (params[2]) during relearning --  sensitivity range (0.0001 - 0.001)
+0.0001	params[9]: increment of variance/weight (params[5]-params[6]) learning rates during relearning --  sensitivity range (0.0001 - 0.001)
+0.001	params[10]: increment of threshold (params[7]) during relearning --  sensitivity range (0.0001 - 0.001)
+25		params[11]: minimum area of an object - used to prevent very small targets
+800		params[12]: maximum area of an object - used for tracking size threshold
+0.20	params[13]: intersection ratio of the object over consecutive sequences -- sensitivity range (S - 0.2+S)
+50		params[14]: time counter threshold over consecutive sequences -- sensitivity range (N - 5xN)
+0.25	params[18]: The fillness ratio to eliminate reflection on thin structures
+0.4		params[19]: The degree of dehazing
+100		params[20]: Background Learn Time
+0.005	params[2]: Mean intensity learning rate -- actively used
+0.0008	params[3]: Variance and Weights learning rate -- actively used
+0.0004	params[4]: sensitivity 0 to 100, 100 is the highest sensitivity, more alarms -- from here these parameters are not utilized in order to decrease computation for Dual modelling case
+60		params[5]: initial variance
+0.005	params[6]: initial weight
+0.7		params[7]: threshold for foreground detection 
+0.0004	params[8]: increment of mean learning rate (params[2]) during relearning
+0.0002	params[9]: increment of variance/weight (params[5]-params[6]) learning rates during relearning
+0.0002	params[10]: increment of threshold (params[7]) during relearning

@@ -1,0 +1,18 @@
+0	// pan-tilt pos: 0, Phase Correlation: 1, Cylindrical: 2
+6.5	// FOV
+0.2	// Update rate
+0	// Pan start Angle
+0	// Y start Pos
+1920	// Width size of Panorama
+576	// Height size of Panorama
+1	// Fix rotation mode (0: off, 1: on)
+50	// Pan Motion Model frameNO
+70	//cutoff
+0	//single big block 0:1
+1	//Median Filter
+0	// Pan Read
+0	// Radial Correction
+-0.00008 // distortion Value
+
+
+

@@ -1,0 +1,9 @@
+0	stabilization type (Phase Correlation/KCF_tracker 0/1)
+100	target width
+100	target Height
+1	stabilization stop criteria
+2500	time period to detect new stab points (25 x N seconds)
+4	number of blocks for stabilization (4 or 8)
+128	Phase Correlation Block size
+0.25	Detection downsample rate (advice: 0.25 or 0.5)
+0	Visualize Phase Blocks

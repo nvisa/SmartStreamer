@@ -50,5 +50,25 @@
         <file>data/tk1/factory_gungor.json</file>
         <file>data/tk1/factory_thermal.json</file>
         <file>data/platforms/devbox/encoders.json</file>
+        <file>data/motion0_gpu/alg_parameters.txt</file>
+        <file>data/motion0_gpu/arya_calibration_parameters.txt</file>
+        <file>data/motion0_gpu/colorcompression_lookup.txt</file>
+        <file>data/motion0_gpu/face_parameters.txt</file>
+        <file>data/motion0_gpu/facePoints.txt</file>
+        <file>data/motion0_gpu/pan_params.txt</file>
+        <file>data/motion0_gpu/pan_shift_parameters.txt</file>
+        <file>data/motion0_gpu/panchange_parameters.txt</file>
+        <file>data/motion0_gpu/points.txt</file>
+        <file>data/motion0_gpu/preprocess_parameters.txt</file>
+        <file>data/motion0_gpu/Privacy_Points.json</file>
+        <file>data/motion0_gpu/Privacy_Points.txt</file>
+        <file>data/motion0_gpu/sei_alarm_template.xml</file>
+        <file>data/motion0_gpu/stabilization_parameters_short.txt</file>
+        <file>data/motion0_gpu/stabilization_parameters_Thermal.txt</file>
+        <file>data/motion0_gpu/stabilization_parameters.txt</file>
+        <file>data/motion0_gpu/stabilization_shifts.txt</file>
+        <file>data/motion0_gpu/System_parameters.txt</file>
+        <file>data/motion0_gpu/track_alg_parameters.txt</file>
+        <file>data/motion0_gpu/track_parameters.txt</file>
     </qresource>
 </RCC>

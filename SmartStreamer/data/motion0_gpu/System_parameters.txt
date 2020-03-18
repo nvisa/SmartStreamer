@@ -1,0 +1,12 @@
+9   	-1:arya calibration, 0: bypass, 1: pano,10: pano_diff, 2: via_track, 3: direct_track, 5: via - objects, 6: via - base, 7: via -all, 9: face
+1   	color process: 0: Gray scale, 1: RGB
+0   	shadow process: 0: OFF 1: ON
+1   	illumination normalization process: 0: OFF, 1: ON, 2: Haze removal
+0   	record events: 0: NO, 1:YES, 2: save the object rois
+3   	Debug Mode: 0: NO, 1:YES, 2: HeatMap Output, 3: show original video with SEI
+0   	Stabilization: 0: NO, 1: YES, 2: DEMO mode (half yes half no), 3: no mask stabilization, 4: no mask Demo
+0	Privacy Mask 0: OFF, 1: ON
+100	Sensitivity 0-100
+1	Start Frame
+0	Classification
+/home/aselsan/tests/out/		Output path

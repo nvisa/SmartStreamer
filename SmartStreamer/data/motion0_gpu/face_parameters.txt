@@ -1,0 +1,7 @@
+0	tile(enable)
+2	x_tile
+1	y_tile
+2	privacy:1, rectangle:0, imagecroplist: else
+1	allignment 0:off, 1: check allignment score save without allignment, 2: check allignment score and save alligned faces
+0.5	face_score_threshold
+5	pixel error threshold
