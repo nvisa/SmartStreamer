@@ -1,6 +1,7 @@
 {
     "devbox": {
         "teststreamer": true,
+		"libgpuelement": false,
         "test_config": {
             "0background_image": "/home/yca/Downloads/Grand-Canyon-South-Rim.png",
             "overlay_image": ":/oa.png"
@@ -16,6 +17,7 @@
     },
     "botas_dome": {
         "usbstreamer": true,
+		"libgpuelement": false,
         "startup_delay": 120,
         "ptzp": [
             {
@@ -28,6 +30,7 @@
     },
     "botas_fix": {
         "usbstreamer": true,
+		"libgpuelement": false,
         "startup_delay": 120,
         "ptzp": [
             {
@@ -40,6 +43,7 @@
     },
     "mgeoswir_odin": {
         "analogstreamer": true,
+		"libgpuelement": false,
         "startup_delay": 180,
         "analog_config": {
             "devices": [
@@ -60,6 +64,7 @@
     },
     "sahingoz_odin": {
         "analogstreamer": true,
+		"libgpuelement": false,
         "startup_delay": 180,
         "analog_config": {
             "devices": [
@@ -85,6 +90,7 @@
     },
     "sahingoz_tunga": {
         "analogstreamer": true,
+		"libgpuelement": false,
         "startup_delay": 180,
         "analog_config": {
             "devices": [
@@ -110,6 +116,7 @@
     },
     "yamgoz": {
         "yamgozstreamer": true,
+		"libgpuelement": false,
         "startup_delay": 60,
         "yamgoz_config": {
             "ch0": 0,
@@ -151,6 +158,7 @@
     },
 	"tbgth_x1": {
 		"startup_delay": 180,
+		"libgpuelement": false,
 		"tbgthstreamer": true,
 		"tbgth_config": {
 			"source": "rtsp://192.168.0.2/?inst=1",
@@ -167,6 +175,7 @@
 	},
     "flir": {
         "flirstreamer": true,
+		"libgpuelement": false,
         "flir_config": {
             "url": "rtsp://192.168.2.238/stream1",
             "rtsp_user": "",
@@ -187,6 +196,7 @@
     },
     "arya": {
         "aryastreamer": true,
+		"libgpuelement": false,
         "arya_config": {
                 "rtsp_user": "admin",
                 "rtsp_pass": "moxamoxa",
@@ -221,6 +231,7 @@
                 "width": 640
             },
             "flirstreamer": true,
+			"libgpuelement": false,
             "ptzp": [
                 {
                     "grpc_port": 50058,
@@ -240,7 +251,8 @@
                 "url": "rtsp://192.168.1.108/stream1",
                 "width": 1920
             },
-            "ipstreamer": true,
+			"ipstreamer": true,
+			"libgpuelement": false,
             "ptzp": [
                 {
                     "grpc_port": 50058,
@@ -253,6 +265,7 @@
     },
     "sahingoz_odin_absgs": {
         "fusionstreamer": true,
+		"libgpuelement": false,
         "fusion_config": {
         "device": "/dev/video0;/dev/video2",
         "resolution_width": 720,
