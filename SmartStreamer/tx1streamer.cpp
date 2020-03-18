@@ -762,6 +762,7 @@ void TX1Streamer::finishGeneric420Pipeline(BaseLmmPipeline *p1, const QSize &res
 	RtpTransmitter *rtpout4 = StreamerCommon::createRtpTransmitter(fps3, 3);
 
 	LibSmartElement *smartel = new LibSmartElement;
+	smartel->setPassThru(true);
 
 	/* rgb portion is passthru by default */
 	yuv2rgb = new VideoScaler;
