@@ -76,7 +76,7 @@ AlgorithmGrpcServerV2::AlgorithmGrpcServerV2()
 	: AlgorithmService::Service()
 {
 	snapshotEl = NULL;
-	AlgorithmGrpcServerV2GrpcThreadAlg *grpcServ = new AlgorithmGrpcServerV2GrpcThreadAlg(50159, this);
+	AlgorithmGrpcServerV2GrpcThreadAlg *grpcServ = new AlgorithmGrpcServerV2GrpcThreadAlg(50061, this);
 	grpcServ->start();
 }
 
