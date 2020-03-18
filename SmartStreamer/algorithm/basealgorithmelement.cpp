@@ -3,6 +3,7 @@
 
 #include "lmm/debug.h"
 
+#include <QDir>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
@@ -18,6 +19,7 @@ BaseAlgorithmElement::BaseAlgorithmElement(QObject *parent)
 
 int BaseAlgorithmElement::init()
 {
+	QDir::setCurrent("/etc/smartstreamer/motion0_gpu");
 	return 0;
 }
 
