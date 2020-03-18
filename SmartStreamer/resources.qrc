@@ -70,5 +70,9 @@
         <file>data/motion0_gpu/System_parameters.txt</file>
         <file>data/motion0_gpu/track_alg_parameters.txt</file>
         <file>data/motion0_gpu/track_parameters.txt</file>
+        <file>data/motion0/detection_parameters.txt</file>
+        <file>data/motion0/calibration_points.txt</file>
+        <file>data/motion0/ptz_current.txt</file>
+        <file>data/motion0/lines.txt</file>
     </qresource>
 </RCC>
