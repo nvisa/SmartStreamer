@@ -384,12 +384,14 @@ int ApplicationInfo::init()
 
 QString ApplicationInfo::algorithmSet()
 {
-#if HAVE_TX1
-	return "motion0";
-#endif
 #if HAVE_TK1
 	return "tk1";
 #endif
+	QJsonObject smartObj = StreamerCommon::readSettingsJSON("/etc/smartstreamer/smartconfig.json").object();
+	if (smartObj.contains("algoconfigs"))
+		return smartObj.value("algoconfigs").toString();
+	else
+		return "motion0";
 }
 
 BaseAlgorithmElement *ApplicationInfo::getAlgorithmInstance(int index)
