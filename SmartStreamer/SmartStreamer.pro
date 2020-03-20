@@ -161,4 +161,4 @@ DISTFILES += \
 
 FORMS += \
     algorithmcontrolwidget.ui
-
+QMAKE_POST_LINK=$(STRIP) $(TARGET)
