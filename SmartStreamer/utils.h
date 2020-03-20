@@ -1,8 +1,10 @@
 #ifndef UTILS_H
 #define UTILS_H
 #include <QFile>
+#include <QThread>
 #include <QJsonDocument>
 #include <signal.h>
+#include <execinfo.h>
 
 namespace utils {
 static void exportConfigs() {

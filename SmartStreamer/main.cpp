@@ -16,7 +16,6 @@
 #include <lmm/players/basestreamer.h>
 
 #include <unistd.h>
-#include <execinfo.h>
 
 #undef DEBUG_H
 #include "libsmart/debug.h"
